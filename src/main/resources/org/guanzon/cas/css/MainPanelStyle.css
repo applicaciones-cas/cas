@@ -1,0 +1,69 @@
+.menu-bar > .container > .menu-button > .label {
+    -fx-text-fill: black;
+}
+/*** Top-level menu itself (selected / hovered) ***/
+.menu-bar > .container > .menu-button:hover,
+.menu-bar > .container > .menu-button:focused,
+.menu-bar > .container > .menu-button:showing  {
+    -fx-background-color: #FF8201;
+     -fx-text-fill: white;
+}
+/*** Top-level menu's label (selected / hovered) ***/
+.menu-bar > .container > .menu-button:hover > .label,
+.menu-bar > .container > .menu-button:focused > .label,
+.menu-bar > .container > .menu-button:showing > .label {
+    -fx-text-fill: black;
+}
+
+/*** The item's label (not hovered / focused) ***/  
+.menu-item .label {
+    -fx-font-size: 14px;
+    -fx-text-fill: black;
+}
+/*** The item itself (hovered / focused) ***/    
+.menu-item:focused, .menu-item:hovered {
+    -fx-background-color: #FF8201; 
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    
+}
+
+/*** The item's label (hovered / focused) ***/  
+.menu-item:focused .label, .menu-item:hovered .label {
+    -fx-text-fill: black;
+}
+.head-ic-min {
+    -fx-background-color: transparent;
+}
+
+.head-ic-close {
+    -fx-background-color: transparent;
+}
+
+.head-ic-min:hover {
+    -fx-background-color: #5E5E5E;
+}
+
+.head-ic-close:hover {
+    -fx-background-color: #D6001C;
+}
+
+.head-ic-min:active {
+    -fx-background-color: transparent;
+}
+
+
+/*******************************************************************************
+ *                                                                             *
+ * SPLITPANE CSS                                                                     *
+ *                                                                             *
+ ******************************************************************************/
+
+.split-pane > .split-pane-divider {
+    -fx-background-color: transparent;
+}
+.split-pane > .split-pane-divider:hover,
+.split-pane > .split-pane-divider:pressed {
+    -fx-background-color: transparent;
+}
+
