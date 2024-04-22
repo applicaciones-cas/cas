@@ -78,7 +78,8 @@
                                     <Menu mnemonicParsing="false" text="_Files">
                                        <items>
                                           <MenuItem fx:id="mnuClientParameter" mnemonicParsing="false" onAction="#mnuClientParameterClick" text="Client Parameters" />
-                                          <MenuItem fx:id="mnuClientTransaction" mnemonicParsing="false" text="Client Transactions" />
+                                          <MenuItem fx:id="mnuClientTransactionCompany" mnemonicParsing="false" onAction="#mnuClientTransactionCompanyClick" text="Client Transactions Company" />
+                                          <MenuItem fx:id="mnuClientTransactionIndividual" mnemonicParsing="false" onAction="#mnuClientTransactionIndividualClick" text="Client Transactions Individual" />
                                        </items>
                                     </Menu>
                                     <Menu mnemonicParsing="false" text="_Inventory">
@@ -110,7 +111,7 @@
                               </MenuBar>
                            </children>
                         </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: E9E9E9;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="39.0">
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="39.0">
                            <children>
                               <StackPane fx:id="workingSpace" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
