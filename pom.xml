@@ -27,7 +27,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.4</version>
                 <configuration>
-                    <mainClass>org.guanzon.cas.App</mainClass>
+                    <mainClass>com.rmj.guanzongroup.cas.maven.App</mainClass>
                 </configuration>
                 <executions>
                     <execution>
@@ -79,7 +79,9 @@
                 <directory>other sources/src/main/resources</directory>
                 <includes>
                     <!-- Include your specific FXML file -->
-                    <include>/org/guanzon/cas/views/ClientMasterParameter.fxml</include>
+                    <include>/com/rmj/guanzongroup/cas/maven/views/ClientMasterParameter.fxml</include>
+                    <include>/com/rmj/guanzongroup/cas/maven/views/ClientMasterTransactionCompanyController</include>
+                    <include>/com/rmj/guanzongroup/cas/maven/views/ClientMasterTransactionIndividualController</include>
                 </includes>
             </resource>
         </resources>
@@ -111,6 +113,27 @@
             <artifactId>appdriver-base</artifactId>
             <version>0.1-SNAPSHOT</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.guanzon</groupId>
+            <artifactId>appdriver-agent</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.guanzon.validators</groupId>
+            <artifactId>cas-validators</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.guanzon.clients</groupId>
+            <artifactId>cas-clients</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.guanzon.clients</groupId>
+            <artifactId>cas-models</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     
