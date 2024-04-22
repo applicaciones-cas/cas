@@ -608,9 +608,9 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         btnSearch.setVisible(lbShow);
         btnSave.setVisible(lbShow);
         
+        btnSearch.setManaged(lbShow);
         btnSave.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
-        btnSearch.setManaged(lbShow);
         btnUpdate.setVisible(!lbShow);
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
@@ -635,6 +635,12 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
             btnUpdate.setManaged(false);
         }
         else{
+            btnNew.setVisible(true);
+            btnNew.setManaged(true);
+            btnBrowse.setVisible(true);
+            btnBrowse.setManaged(true);
+            btnUpdate.setVisible(true);
+            btnUpdate.setManaged(true);
 //            txtSeeks21.setDisable(lbShow);
 //            txtSeeks21.requestFocus();
 //            txtSeeks22.setDisable(lbShow);  
@@ -657,7 +663,17 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
             Button clickedButton = (Button) source;
             switch (clickedButton.getId()) {
                 case "btnCancel":
-                    pnEditMode = EditMode.UNKNOWN;
+                    
+                    if (ShowMessageFX.YesNo("Do you want to save transaction?", "Computerized Acounting System", pxeModuleName)){
+                        pnEditMode = EditMode.UNKNOWN;
+                        initButton(pnEditMode);
+                    }
+                    
+                    break;
+                    
+                case "btnNew":
+                    oTrans.newRecord();
+                    pnEditMode = EditMode.ADDNEW;
                     initButton(pnEditMode);
                     break;
                 case "btnSave":
