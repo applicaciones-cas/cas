@@ -426,7 +426,8 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         InitPersonalInfo();
         initAddressInfo();
         InitMobileInfo();
-        InitEmailInfo( );
+        InitEmailInfo( );        
+        InitContctPersonInfo();
         InitSocMedInfo();
         initComboBoxes();
         
@@ -722,7 +723,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                         mailFields01.clear();
                         loadEmail();
                         pnEmail = oTrans.getEmailList().size()-1;
-                        
                         tblEmail.getSelectionModel().select(pnEmail + 1);
                      break;
                 case "btnAddMobile":
@@ -774,6 +774,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         if(!nv){ /*Lost Focus*/
             switch (lnIndex){
                 case 1: /*company name*/
+                    personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
                     jsonObject = oTrans.setMaster( 8,lsValue);
                     break;
                 case 2:/*last name*/
@@ -1272,12 +1273,93 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                 oTrans.getInsContact(lnCtr, "sAccount2").toString(),
                 oTrans.getInsContact(lnCtr, "sAccount3").toString(),
                 oTrans.getInsContact(lnCtr, "sRemarksx").toString(),
-                oTrans.getInsContact(lnCtr, "cPrimaryx").toString(),
+                oTrans.getInsContact(lnCtr, 13).toString(),
                 oTrans.getInsContact(lnCtr, "cRecdStat").toString()));
         }
         
        
     }
+    
+    final ChangeListener<? super Boolean> contactinfoTextArea_Focus = (o,ov,nv)->{ 
+        if (!pbLoaded) return;
+       
+        TextArea socialinfo = (TextArea)((ReadOnlyBooleanPropertyBase)o).getBean();
+        int lnIndex = Integer.parseInt(socialinfo.getId().substring(10, 12));
+        String lsValue = socialinfo.getText();
+        JSONObject jsonObject = new JSONObject();
+        if (lsValue == null) return;         
+        if(!nv){ /*Lost Focus*/
+            switch (lnIndex){
+                case 10: /*company name*/
+                    oTrans.setInsContact(pnContact, "sRemarksx", lsValue);
+                    break;
+                
+            }
+            loadContctPerson();
+        } else
+            socialinfo.selectAll();
+        
+//            pnIndex = lnIndex;
+    };
+    private void InitContctPersonInfo(){
+        /*MOBILE INFO FOCUSED PROPERTY*/
+        txtContact01.focusedProperty().addListener(contactinfo_Focus);
+        txtContact02.focusedProperty().addListener(contactinfo_Focus);
+        txtContact03.focusedProperty().addListener(contactinfo_Focus);
+        txtContact04.focusedProperty().addListener(contactinfo_Focus);
+        txtContact05.focusedProperty().addListener(contactinfo_Focus);
+        txtContact06.focusedProperty().addListener(contactinfo_Focus);
+        txtContact07.focusedProperty().addListener(contactinfo_Focus);
+        txtContact08.focusedProperty().addListener(contactinfo_Focus);
+        txtContact09.focusedProperty().addListener(contactinfo_Focus);
+        txtContact10.focusedProperty().addListener(contactinfoTextArea_Focus);
+    }
+    
+    final ChangeListener<? super Boolean> contactinfo_Focus = (o,ov,nv)->{ 
+        if (!pbLoaded) return;
+       
+        TextField socialinfo = (TextField)((ReadOnlyBooleanPropertyBase)o).getBean();
+        int lnIndex = Integer.parseInt(socialinfo.getId().substring(10, 12));
+        String lsValue = socialinfo.getText();
+        JSONObject jsonObject = new JSONObject();
+        if (lsValue == null) return;         
+        if(!nv){ /*Lost Focus*/
+            switch (lnIndex){
+                case 1: /*company name*/
+                    oTrans.setInsContact(pnContact, 3, lsValue);
+                    break;
+                case 2: /*company name*/
+                    oTrans.setInsContact(pnContact, "sCPPosit1", lsValue);
+                    break;
+                case 3: /*company name*/
+                    oTrans.setInsContact(pnContact, "sAccount1", lsValue);
+                    break;
+                case 4: /*company name*/
+                    oTrans.setInsContact(pnContact, "sAccount2", lsValue);
+                    break;
+                case 5: /*company name*/
+                    oTrans.setInsContact(pnContact, "sAccount3", lsValue);
+                    break;
+                case 6: /*company name*/
+                    oTrans.setInsContact(pnContact, "sMobileNo", lsValue);
+                    break;
+                case 7: /*company name*/
+                    oTrans.setInsContact(pnContact, "sTelNoxxx", lsValue);
+                    break;
+                case 8: /*company name*/
+                    oTrans.setInsContact(pnContact, "sFaxNoxxx", lsValue);
+                    break;
+                case 9: /*company name*/
+                    oTrans.setInsContact(pnContact, "sEMailAdd", lsValue);
+                    break;
+                
+            }
+            loadContctPerson();
+        } else
+            socialinfo.selectAll();
+        
+//            pnIndex = lnIndex;
+    };
     
     @FXML
     private void tblMobile_Clicked(MouseEvent event) {

@@ -100,7 +100,7 @@
                 </AnchorPane>
             </bottom>
          <center>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <AnchorPane cacheShape="false" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
                   <AnchorPane style="-fx-border-color: #FF8201; -fx-border-radius: 5;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
@@ -1146,11 +1146,11 @@
                                              <content>
                                                 <AnchorPane>
                                                    <children>
-                                                      <SplitPane dividerPositions="0.6" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <SplitPane dividerPositions="0.6" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <items>
                                                             <AnchorPane>
                                                                <children>
-                                                                  <TableView fx:id="tblContact" stylesheets="@Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                  <TableView fx:id="tblContact" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <columns>
                                                                         <TableColumn fx:id="indexContact01" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="35.0" text="No." />
                                                                         <TableColumn fx:id="indexContact02" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="160.0" text="Name" />
@@ -1163,7 +1163,7 @@
                                                                   </TableView>
                                                                </children>
                                                             </AnchorPane>
-                                                            <AnchorPane prefWidth="100.0">
+                                                            <AnchorPane>
                                                                <padding>
                                                                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                                </padding>
@@ -1188,8 +1188,6 @@
                                                                         <RowConstraints minHeight="28.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                                                                         <RowConstraints minHeight="28.0" valignment="TOP" vgrow="SOMETIMES" />
                                                                         <RowConstraints minHeight="28.0" prefHeight="30.0" valignment="TOP" vgrow="SOMETIMES" />
-                                                                        <RowConstraints minHeight="28.0" prefHeight="30.0" valignment="TOP" vgrow="SOMETIMES" />
-                                                                        <RowConstraints minHeight="10.0" prefHeight="10.0" valignment="TOP" vgrow="SOMETIMES" />
                                                                         <RowConstraints minHeight="28.0" vgrow="SOMETIMES" />
                                                                      </rowConstraints>
                                                                      <children>
@@ -1223,13 +1221,13 @@
                                                                         <TextField fx:id="txtContact02" maxWidth="200.0" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                                         <TextField fx:id="txtContact03" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                                         <TextField fx:id="txtContact06" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Remarks " GridPane.rowIndex="8">
+                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Remarks " GridPane.columnIndex="3" GridPane.rowIndex="7">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
                                                                         </Text>
-                                                                        <TextArea fx:id="txtContact10" prefHeight="60.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" GridPane.rowSpan="2" />
-                                                                        <Button fx:id="btnAddInsContact" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="12">
+                                                                        <TextArea fx:id="txtContact10" prefHeight="60.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="7" GridPane.rowSpan="2" />
+                                                                        <Button fx:id="btnAddInsContact" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="10">
                                                                            <graphic>
                                                                               <FontAwesomeIconView glyphName="PLUS" size="20" textAlignment="CENTER" />
                                                                            </graphic>
@@ -1237,7 +1235,7 @@
                                                                               <Tooltip text="ADD ADDRESS" />
                                                                            </tooltip>
                                                                         </Button>
-                                                                        <Button contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="12">
+                                                                        <Button contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="10">
                                                                            <graphic>
                                                                               <FontAwesomeIconView glyphName="TRASH" size="20" textAlignment="CENTER" />
                                                                            </graphic>
@@ -1248,7 +1246,7 @@
                                                                               <Insets left="40.0" />
                                                                            </GridPane.margin>
                                                                         </Button>
-                                                                        <CheckBox fx:id="cbContact01" mnemonicParsing="false" onMouseClicked="#CheckContact01_Clicked" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="10">
+                                                                        <CheckBox fx:id="cbContact01" mnemonicParsing="false" onMouseClicked="#CheckContact01_Clicked" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="9">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
@@ -1261,7 +1259,7 @@
                                                                               <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                                                            </padding>
                                                                         </Label>
-                                                                        <CheckBox fx:id="cbContact02" mnemonicParsing="false" onMouseClicked="#CheckContact02_Clicked" text="Primary Contact Person" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="10">
+                                                                        <CheckBox fx:id="cbContact02" mnemonicParsing="false" onMouseClicked="#CheckContact02_Clicked" text="Primary Contact Person" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="9">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
@@ -1434,7 +1432,7 @@
                   </AnchorPane>
                </children>
                <padding>
-                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                  <Insets left="15.0" right="15.0" top="15.0" />
                </padding>
             </AnchorPane>
          </center>
