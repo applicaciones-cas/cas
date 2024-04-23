@@ -66,6 +66,9 @@ public class DashboardController implements Initializable {
 
     @FXML
     private MenuItem mnuClientTransaction;
+    
+    @FXML
+    private MenuItem mnuNewCustomer;
 
     @FXML
     private TabPane tabpane;
@@ -210,6 +213,8 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml":
                 return "Client Transactions Company";
             case "/org/guanzon/cas/views/ClientMasterTransactionIndividual.fxml":
+                return "Client Transactions Individual";
+            case "/org/guanzon/cas/views/NewCustomer.fxml":
                 return "Client Transactions Individual";
             default:
                 return null;
@@ -490,6 +495,8 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/ClientMasterTransactionIndividual.fxml":
                 return new ClientMasterTransactionIndividualController();
                 
+            case "/org/guanzon/cas/views/NewCustomer.fxml":
+                return new NewCustomerController();
             default:
                 return null;
         }
@@ -538,6 +545,15 @@ public class DashboardController implements Initializable {
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
+    }
+    
+    @FXML
+    private void mnuNewCustomerClick(ActionEvent event) {
+    String sformname = "/org/guanzon/cas/views/NewCustomer.fxml";
+    //check if oApp is not null before calling loadAnimate
+    if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+        setScene2(loadAnimate(sformname));
+    }
     }
 //    @FXML
 //    private void mnuClientParameterClick(ActionEvent event) {

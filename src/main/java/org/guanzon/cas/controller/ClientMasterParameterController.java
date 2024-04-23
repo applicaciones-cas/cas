@@ -1444,7 +1444,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     private void CheckContact01_Clicked(MouseEvent event) {
         boolean isChecked = cbContact01.isSelected();
         oTrans.setInsContact(pnContact, "cPrimaryx", (isChecked)? "1":"0");
-        loadSocialMedia();
+        loadContctPerson();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
         System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
@@ -1454,7 +1454,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     private void CheckContact02_Clicked(MouseEvent event) {
         boolean isChecked = cbContact02.isSelected();
         oTrans.setInsContact(pnContact, "cRecdStat", (isChecked)? "1":"0");
-        loadSocialMedia();
+        loadContctPerson();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
         System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
