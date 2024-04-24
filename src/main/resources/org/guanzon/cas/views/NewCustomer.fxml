@@ -20,7 +20,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<TabPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<TabPane stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <tabs>
       <Tab text="Client Master">
          <content>
@@ -168,7 +168,7 @@
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
                                           </DatePicker>
-                                          <TextField fx:id="personalinfo08" styleClass="text-field" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="8">
+                                          <TextField fx:id="personalinfo08" promptText="Press F3: Search" styleClass="text-field" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="8">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
@@ -199,7 +199,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Text>
-                                          <TextField fx:id="AddressField03" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="14">
+                                          <TextField fx:id="AddressField03" promptText="Press F3: Search" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="14">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>

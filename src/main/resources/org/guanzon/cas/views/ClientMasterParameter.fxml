@@ -30,7 +30,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane style="-fx-border-color: black;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane style="-fx-border-color: black;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <bottom>
@@ -54,14 +54,6 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Search">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="SEARCH" size="20" />
-                           </graphic>
-                           <effect>
-                              <Blend />
-                           </effect>
-                        </Button>
                         <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Save">
                            <graphic>
                               <FontAwesomeIconView glyphName="SAVE" size="20" />
@@ -73,6 +65,14 @@
                         <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Update">
                            <graphic>
                               <FontAwesomeIconView glyphName="EDIT" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Search">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="SEARCH" size="20" />
                            </graphic>
                            <effect>
                               <Blend />
@@ -1474,8 +1474,8 @@
                                     <Insets right="10.0" />
                                  </GridPane.margin>
                               </Text>
-                              <TextField promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.halignment="LEFT" />
-                              <ComboBox minWidth="195.0" styleClass="combo-box" GridPane.columnIndex="1">
+                              <TextField fx:id="txtSeeks99" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.halignment="LEFT" />
+                              <ComboBox fx:id="cmbSearch" minWidth="195.0" styleClass="combo-box" GridPane.columnIndex="1">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
