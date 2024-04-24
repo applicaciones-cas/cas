@@ -77,9 +77,6 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
     private TextField cmpnyInfo06;
 
     @FXML
-    private TextField cmpnyInfo04;
-
-    @FXML
     private TextField cmpnyInfo01;
 
     @FXML
@@ -211,6 +208,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         InitContctPersonInfo();
         loadContctPerson();
         initContctPersonGrid();
+        initAddressInfo();
         
         pbLoaded = true;
     
@@ -546,5 +544,93 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
     
     private void clearallFields(){
     
+    }
+    
+    private void initAddressInfo(){
+        /*Address FOCUSED PROPERTY*/
+        cmpnyInfo01.focusedProperty().addListener(address_Focus);
+        cmpnyInfo02.focusedProperty().addListener(address_Focus);
+        cmpnyInfo03.focusedProperty().addListener(address_Focus);
+        cmpnyInfo05.focusedProperty().addListener(address_Focus);        
+        cmpnyInfo06.focusedProperty().addListener(address_Focus);
+                
+        
+        /*addressin key */
+        cmpnyInfo05.setOnKeyPressed(this::companyinfo_KeyPressed);
+        cmpnyInfo06.setOnKeyPressed(this::companyinfo_KeyPressed);
+    }
+    final ChangeListener<? super Boolean> address_Focus = (o,ov,nv)->{ 
+        if (!pbLoaded) return;
+       
+        TextField cmpnyInfo = (TextField)((ReadOnlyBooleanPropertyBase)o).getBean();
+        int lnIndex = Integer.parseInt(cmpnyInfo.getId().substring(9, 11));
+        String lsValue = cmpnyInfo.getText();
+        JSONObject jsonObject = new JSONObject();
+        if (lsValue == null) return;         
+        if(!nv){ /*Lost Focus*/
+            switch (lnIndex){
+                case 1: /*houseno*/
+                    oTrans.setAddress(pnAddress, 3, lsValue);
+                    break;
+                case 2:/*address*/
+                    oTrans.setAddress(pnAddress, 4, lsValue);
+                    break;
+                case 6:/*latitude*/
+                    oTrans.setAddress(pnAddress, 7, lsValue);
+                    break;
+                case 7:/*longitud*/
+                    oTrans.setAddress(pnAddress, 8, lsValue);
+                    break;
+            }
+//            loadAddress();
+        } else
+            cmpnyInfo.selectAll();
+    };
+    
+    
+    private void companyinfo_KeyPressed(KeyEvent event){
+        TextField cmpnyInfo = (TextField)event.getSource();
+        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(9,11));
+        String lsValue = cmpnyInfo.getText();
+        JSONObject poJson;
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex){
+                    case 5: /*search town*/
+                        poJson = new JSONObject();
+                           poJson = oTrans.SearchTownAddress(pnAddress, lsValue, false);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                cmpnyInfo05.clear();
+                           }
+                           cmpnyInfo05.setText((String) poJson.get("sTownName") + ", " + (String) poJson.get("sProvName"));
+                        break;
+                    case 6: /*search barnagay*/
+                        poJson = new JSONObject();
+                           poJson =  oTrans.SearchBarangayAddress(pnAddress, lsValue, false);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                cmpnyInfo06.clear();
+                           }
+                           cmpnyInfo06.setText((String) poJson.get("sBrgyName"));
+                        break;
+                }
+            case ENTER:
+                
+        }
+        
+        switch (event.getCode()){
+        case ENTER:
+            CommonUtils.SetNextFocus(cmpnyInfo);
+        case DOWN:
+            CommonUtils.SetNextFocus(cmpnyInfo);
+            break;
+        case UP:
+            CommonUtils.SetPreviousFocus(cmpnyInfo);
+        }
     }
 }

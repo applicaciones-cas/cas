@@ -21,11 +21,17 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.UP;
+import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.model.ModelMobile;
 import org.guanzon.clients.Client_Master;
 import org.json.simple.JSONObject;
 
@@ -39,11 +45,10 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
     private final String pxeModuleName = "Client Master Parameter";
     private GRider oApp;
     private Client_Master oTrans;
-//    private JSONObject poJSON;
     private int pnEditMode;  
     
     private String oTransnox = "";
-    
+    private int pnMobile = 0;
     private boolean state = false;
     private boolean pbLoaded = false;
     
@@ -82,7 +87,10 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
 
     @FXML
     private TextArea AddressField02;
-
+    
+    @FXML
+    private TextArea txtAreaAddress01;
+    
     @FXML
     private TextField AddressField03;
 
@@ -103,10 +111,11 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
     public void setState(boolean fsValue){
         state = fsValue;
     }
-        // TODO
-    /**
-     * Initializes the controller class.
-     */
+    private ObservableList<ModelMobile> data = FXCollections.observableArrayList();
+
+    /***********************************/
+    /*Initializes the controller class.*/
+    /***********************************/
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
@@ -116,7 +125,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         }
         
         oTrans = new Client_Master(oApp, true, oApp.getBranchCode());
-
+        
         // Call newRecord to initialize a new record
         oTrans.newRecord();
 
@@ -154,12 +163,17 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
                 
                 /*button cancel*/
                 case "btnCancel":
-//                    pnEditMode = EditMode.UNKNOWN;
-////                    initButton(pnEditMode);
-                    
                     if (ShowMessageFX.YesNo("Do you want to save transaction?", "Computerized Acounting System", pxeModuleName)){
-                        pnEditMode = EditMode.UNKNOWN;
-//                        initButton(pnEditMode);
+                         JSONObject saveResult = oTrans.saveRecord();
+                         if ("success".equals((String) saveResult.get("result"))){
+                            System.err.println((String) saveResult.get("message"));
+                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                            System.out.println("Record saved successfully.");
+                        } else {
+                            ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                            System.out.println("Record not saved successfully.");
+                            System.out.println((String) saveResult.get("message"));
+                        }
                     }
                     break;                    
                 /*button okay*/    
@@ -190,15 +204,23 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         personalinfo03.focusedProperty().addListener(personalinfo_Focus);
         personalinfo04.focusedProperty().addListener(personalinfo_Focus);
         personalinfo05.focusedProperty().addListener(personalinfo_Focus);
-        
         personalinfo08.focusedProperty().addListener(personalinfo_Focus);
         personalinfo09.focusedProperty().addListener(personalinfo_Focus);
         
+        /*MOBILE INFO FOCUSED PROPERTY*/
+        txtMobile01.focusedProperty().addListener(mobileinfo_Focus);
         
+        /*ADDRESS INFO FOCUSED PROPERTY*/
+        AddressField01.focusedProperty().addListener(address_Focus);
+        AddressField02.focusedProperty().addListener(address_Focus);
+        AddressField03.focusedProperty().addListener(address_Focus);
         
         /*PERSONAL INFO KEYPRESSED*/
-//        personalinfo07.setOnKeyPressed(this::personalinfo_KeyPressed);
-//        personalinfo06.setOnKeyPressed(this::personalinfo_KeyPressed);
+        personalinfo08.setOnKeyPressed(this::personalinfo_KeyPressed);
+        
+        /*ADDRESS INFO KEYPRESSED*/
+        AddressField03.setOnKeyPressed(this::address_KeyPressed);
+        
          // Set a custom StringConverter to format date
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -223,14 +245,37 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
                 }
             }
         });
-        
     }
     
+    /**************************************/
+    /*initialize value to data            */
+    /*serves also as lost focus FOR MOBILE*/
+    /**************************************/
+    final ChangeListener<? super Boolean> mobileinfo_Focus = (o,ov,nv)->{ 
+        if (!pbLoaded) return;
+       
+        TextField mobileinfo = (TextField)((ReadOnlyBooleanPropertyBase)o).getBean();
+        int lnIndex = Integer.parseInt(mobileinfo.getId().substring(9, 11));
+        String lsValue = mobileinfo.getText();
+        JSONObject jsonObject = new JSONObject();
+        if (lsValue == null) return;         
+        if(!nv){ /*Lost Focus*/
+            switch (lnIndex){
+                case 1: /*company name*/
+                    
+                    System.out.println(pnMobile);
+                    oTrans.setMobile(pnMobile, "sMobileNo", lsValue);
+                    break;
+            }
+        } else
+            mobileinfo.selectAll();
+    };
     
-    /***************************/
-    /*initialize value to data */
-    /*serves also as lost focus*/
-    /***************************/
+
+    /*********************************************/
+    /*initialize value to data                   */
+    /*serves also as lost focus FOR PERSONAL INFO*/
+    /*********************************************/
     final ChangeListener<? super Boolean> personalinfo_Focus = (o,ov,nv)->{ 
         if (!pbLoaded) return;
        
@@ -242,43 +287,72 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         if(!nv){ /*Lost Focus*/
             switch (lnIndex){
                 case 1: /*company name*/
-                    
                     jsonObject = oTrans.setMaster( 8,lsValue);
+                    System.out.println(String.valueOf("company name = " +lsValue));
                     break;
                 case 2:/*last name*/
-                    personalinfo01.setText("");
-                    personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + (personalinfo05.getText() + " ") + personalinfo04.getText());
-                    System.out.println(String.valueOf(lsValue));
                     jsonObject = oTrans.setMaster( 3,lsValue);
+                    System.out.println(String.valueOf("last name = " +lsValue));
                     break;
                 case 3:/*frist name*/
-                    personalinfo01.setText("");
-                    personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
                     jsonObject = oTrans.setMaster( 4,lsValue);
+                    System.out.println(String.valueOf("first name = " +lsValue));
                     break;
                 case 4:/*middle name*/
-                    personalinfo01.setText("");
-                    personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
-                    jsonObject = oTrans.setMaster( 5,lsValue);
+                    jsonObject = oTrans.setMaster( 5,lsValue);                    
+                    System.out.println(String.valueOf("middle name = " +lsValue));
                     break;
                 case 5:/*suffix name*/
                     jsonObject = oTrans.setMaster( 6,lsValue);
+                    System.out.println(String.valueOf("suffix name = " +lsValue));
                     break;
                 case 6:/*citizenship */
-                    jsonObject = oTrans.setMaster( 7,lsValue);
+                    jsonObject = oTrans.setMaster( 11,lsValue);
+                    System.out.println(String.valueOf("citizenship = " + lsValue));
                     break;
                 case 7:/*birthday */
                     // Define the format of the input string
 //                    jsonObject = oTrans.setMaster( "dBirthDte", dateFormatter(lsValue));
                     break;
                 case 8:/*birth place */
-                    jsonObject = oTrans.setMaster( 9,lsValue);
+                    jsonObject = oTrans.setMaster( 13,lsValue);
+                    
+                    System.out.println(String.valueOf("birth place = " + lsValue));
                     break;
             }
+            personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
+//            txtAreaAddress01.setText(AddressField01.getText() + " " +  AddressField02.getText() + "" + AddressField03.getText());
         } else
             personalinfo.selectAll();
         
 //            pnIndex = lnIndex;
+    };
+    
+    /********************************************/
+    /*initialize value to data                  */
+    /*serves also as lost focus FOR ADDRESS INFO*/
+    /********************************************/
+    final ChangeListener<? super Boolean> address_Focus = (o,ov,nv)->{ 
+        if (!pbLoaded) return;
+       
+        TextField AddressField = (TextField)((ReadOnlyBooleanPropertyBase)o).getBean();
+        int lnIndex = Integer.parseInt(AddressField.getId().substring(12, 14));
+        String lsValue = AddressField.getText();
+        JSONObject jsonObject = new JSONObject();
+        if (lsValue == null) return;         
+        if(!nv){ /*Lost Focus*/
+            switch (lnIndex){
+                case 1:/*house no*/
+                    oTrans.setAddress(0, 3, lsValue);
+                        break;
+                case 2:/*cutomer addresss*/
+                    oTrans.setAddress(0, 4, lsValue);
+                    break;
+                case 3:/*town*/
+                    oTrans.setAddress(0, 6, lsValue);
+                    break;
+            }
+        }
     };
     
     /*********************/
@@ -295,7 +369,92 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         // Set the items of the ComboBox to the list of genders
         personalinfo09.setItems(genders);
         personalinfo09.getSelectionModel().getSelectedIndex();
-    // Create a list of civilStatuses    
+        personalinfo09.setOnAction(event ->{
+            oTrans.setMaster(9, personalinfo09.getSelectionModel().getSelectedIndex());
+        });
+    }
+    
+    
+    /**************************/
+    /*initialize value to data*/
+    /*PERSONAL INFO KEYPRESS  */
+    /**************************/
+    private void personalinfo_KeyPressed(KeyEvent event){
+        TextField personalinfo = (TextField)event.getSource();
+        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(12,14));
+        String lsValue = personalinfo.getText();
+        JSONObject poJson;
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex){
+                    
+                    case 8: /*search birthplace*/
+                        poJson = new JSONObject();
+                           poJson =  oTrans.searchBirthPlce(lsValue, false);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                personalinfo08.clear();
+                           }
+                           personalinfo08.setText((String) poJson.get("xBrthPlce"));
+                           
+                        break;
+                }
+            case ENTER:
+                switch (lnIndex){
+                }
+        }
+        switch (event.getCode()){
+        case ENTER:
+            CommonUtils.SetNextFocus(personalinfo);
+        case DOWN:
+            CommonUtils.SetNextFocus(personalinfo);
+            break;
+        case UP:
+            CommonUtils.SetPreviousFocus(personalinfo);
+        }
+    }
+    
+    /**************************/
+    /*initialize value to data*/
+    /*ADDRESS INFO KEYPRESS   */
+    /**************************/
+    private void address_KeyPressed(KeyEvent event){
+        TextField AddressField = (TextField)event.getSource();
+        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(12,14));
+        String lsValue = AddressField.getText();
+        JSONObject poJson;
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex){
+                    
+                    case 3: /*search town*/
+                        poJson = new JSONObject();
+                           poJson =  oTrans.searchBirthPlce(lsValue, false);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                AddressField03.clear();
+                           }
+                           AddressField03.setText((String) poJson.get("xBrthPlce"));
+                           
+                        break;
+                }
+            case ENTER:
+                switch (lnIndex){
+                }
+        }
+        switch (event.getCode()){
+        case ENTER:
+            CommonUtils.SetNextFocus(AddressField);
+        case DOWN:
+            CommonUtils.SetNextFocus(AddressField);
+            break;
+        case UP:
+            CommonUtils.SetPreviousFocus(AddressField);
+        }
     }
 }    
 

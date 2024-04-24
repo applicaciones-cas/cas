@@ -165,7 +165,6 @@
                                                                                         <RowConstraints minHeight="28.0" vgrow="SOMETIMES" />
                                                                                         <RowConstraints minHeight="28.0" vgrow="SOMETIMES" />
                                                                                         <RowConstraints minHeight="28.0" vgrow="SOMETIMES" />
-                                                                                        <RowConstraints minHeight="28.0" vgrow="SOMETIMES" />
                                                                                         <RowConstraints minHeight="8.0" vgrow="SOMETIMES" />
                                                                                     </rowConstraints>
                                                                                     <children>
@@ -179,27 +178,21 @@
                                                                                                 <Font size="14.0" />
                                                                                             </font>
                                                                                         </Text>
-                                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Town / City " GridPane.rowIndex="5">
+                                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Town / City " GridPane.rowIndex="4">
                                                                                             <font>
                                                                                                 <Font size="14.0" />
                                                                                             </font>
                                                                                         </Text>
-                                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Barangay " GridPane.rowIndex="6">
+                                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Barangay " GridPane.rowIndex="5">
                                                                                             <font>
                                                                                                 <Font size="14.0" />
                                                                                             </font>
                                                                                         </Text>
                                                                                         <TextField fx:id="cmpnyInfo02" minWidth="89.0" prefHeight="25.0" prefWidth="89.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                                         <TextField fx:id="cmpnyInfo03" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" />
-                                                                                        <TextField fx:id="cmpnyInfo05" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5" />
-                                                                                        <TextField fx:id="cmpnyInfo06" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" />
-                                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Province " GridPane.rowIndex="4">
-                                                                                            <font>
-                                                                                                <Font size="14.0" />
-                                                                                            </font>
-                                                                                        </Text>
-                                                                                        <TextField fx:id="cmpnyInfo04" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" />
-                                                                                        <Button contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="6">
+                                                                                        <TextField fx:id="cmpnyInfo05" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" />
+                                                                                        <TextField fx:id="cmpnyInfo06" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5" />
+                                                                                        <Button contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="5">
                                                                                             <graphic>
                                                                                                 <FontAwesomeIconView glyphName="PLUS" size="20" textAlignment="CENTER" />
                                                                                             </graphic>
@@ -207,7 +200,7 @@
                                                                                                 <Tooltip text="ADD ADDRESS" />
                                                                                             </tooltip>
                                                                                         </Button>
-                                                                                        <Button contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="6">
+                                                                                        <Button contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="5">
                                                                                             <graphic>
                                                                                                 <FontAwesomeIconView glyphName="TRASH" size="20" textAlignment="CENTER" />
                                                                                             </graphic>

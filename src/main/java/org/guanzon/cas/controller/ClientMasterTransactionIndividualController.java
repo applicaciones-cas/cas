@@ -63,26 +63,11 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     private HBox hbButtons;
 
     @FXML
-    private Button btnBrowse;
-
-    @FXML
-    private Button btnNew;
-
-    @FXML
     private Button btnSave;
 
     @FXML
-    private Button btnUpdate;
-
-    @FXML
-    private Button btnSearch;
-
-    @FXML
     private Button btnCancel;
-
-    @FXML
-    private Button btnClose;
-
+    
     @FXML
     private TextField txtField01;
 
@@ -383,10 +368,33 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         TextField personalinfo = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(12,14));
         String lsValue = personalinfo.getText();
-        
+        JSONObject poJson;
         switch (event.getCode()) {
             case F3:
-                
+                switch (lnIndex){
+                    case 6: /*search branch*/
+                        poJson = new JSONObject();
+                           poJson =  oTrans.searchCitizenship(lsValue, false);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                personalinfo06.clear();
+                           }
+                           personalinfo06.setText((String) poJson.get("sNational"));
+                        break;
+                    case 8: /*search branch*/
+                        poJson = new JSONObject();
+                           poJson =  oTrans.searchBirthPlce(lsValue, false);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                personalinfo08.clear();
+                           }
+                           personalinfo08.setText((String) poJson.get("xBrthPlce"));
+                        break;
+                }
             case ENTER:
                 switch (lnIndex){
                     case 16: /*search branch*/
@@ -410,6 +418,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             CommonUtils.SetPreviousFocus(personalinfo);
         }
     }
+    
     private void InitMobileInfo(){
         /*MOBILE INFO FOCUSED PROPERTY*/
         txtMobile01.focusedProperty().addListener(mobileinfo_Focus);
@@ -482,10 +491,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         personalinfo04.focusedProperty().addListener(personalinfo_Focus);
         personalinfo05.focusedProperty().addListener(personalinfo_Focus);
         personalinfo06.focusedProperty().addListener(personalinfo_Focus);
-        
         personalinfo08.focusedProperty().addListener(personalinfo_Focus);
-        personalinfo09.focusedProperty().addListener(personalinfo_Focus);
-        personalinfo10.focusedProperty().addListener(personalinfo_Focus);
         personalinfo11.focusedProperty().addListener(personalinfo_Focus);
         personalinfo12.focusedProperty().addListener(personalinfo_Focus);
         personalinfo13.focusedProperty().addListener(personalinfo_Focus);
@@ -493,7 +499,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         personalinfo15.focusedProperty().addListener(personalinfo_Focus);
         
         /*PERSONAL INFO KEYPRESSED*/
-//        personalinfo07.setOnKeyPressed(this::personalinfo_KeyPressed);
+        personalinfo08.setOnKeyPressed(this::personalinfo_KeyPressed);
         personalinfo06.setOnKeyPressed(this::personalinfo_KeyPressed);
          // Set a custom StringConverter to format date
           DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -528,8 +534,57 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         AddressField04.focusedProperty().addListener(address_Focus);
         AddressField05.focusedProperty().addListener(address_Focus);        
         AddressField06.focusedProperty().addListener(address_Focus);
+                
+        
+        /*addressin key */
+        AddressField03.setOnKeyPressed(this::addressinfo_KeyPressed);
+        AddressField04.setOnKeyPressed(this::addressinfo_KeyPressed);
     }
-    
+    private void addressinfo_KeyPressed(KeyEvent event){
+        TextField personalinfo = (TextField)event.getSource();
+        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(12,14));
+        String lsValue = personalinfo.getText();
+        JSONObject poJson;
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex){
+                    case 3: /*search barangay*/
+                        poJson = new JSONObject();
+                           poJson = oTrans.SearchTownAddress(pnAddress, lsValue, false);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                AddressField03.clear();
+                           }
+                           AddressField03.setText((String) poJson.get("sTownName") + ", " + (String) poJson.get("sProvName"));
+                        break;
+                    case 4: /*search branch*/
+                        poJson = new JSONObject();
+                           poJson =  oTrans.SearchBarangayAddress(pnAddress, lsValue, false);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                AddressField04.clear();
+                           }
+                           AddressField04.setText((String) poJson.get("sBrgyName"));
+                        break;
+                }
+            case ENTER:
+                
+        }
+        
+        switch (event.getCode()){
+        case ENTER:
+            CommonUtils.SetNextFocus(personalinfo);
+        case DOWN:
+            CommonUtils.SetNextFocus(personalinfo);
+            break;
+        case UP:
+            CommonUtils.SetPreviousFocus(personalinfo);
+        }
+    }
     private void initTextFields(){
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
@@ -539,15 +594,12 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         
         btnCancel.setVisible(lbShow);
-        btnSearch.setVisible(lbShow);
+       
         btnSave.setVisible(lbShow);
         
         btnSave.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
-        btnSearch.setManaged(lbShow);
-        btnUpdate.setVisible(!lbShow);
-        btnBrowse.setVisible(!lbShow);
-        btnNew.setVisible(!lbShow);
+        
 //        
 //        txtSeeks21.setDisable(!lbShow);
 //        txtSeeks22.setDisable(!lbShow);
@@ -559,14 +611,9 @@ public class ClientMasterTransactionIndividualController implements Initializabl
 //            txtSeeks22.clear();
             
             btnCancel.setVisible(lbShow);
-            btnSearch.setVisible(lbShow);
+            
             btnSave.setVisible(lbShow);
-            btnUpdate.setVisible(!lbShow);
-            btnBrowse.setVisible(!lbShow);
-            btnNew.setVisible(!lbShow);
-            btnBrowse.setManaged(false);
-            btnNew.setManaged(false);
-            btnUpdate.setManaged(false);
+            
         }
         else{
 //            txtSeeks21.setDisable(lbShow);
@@ -576,7 +623,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     }
     private void ClickButton() {
         btnCancel.setOnAction(this::handleButtonAction);
-        btnNew.setOnAction(this::handleButtonAction);
+        
         btnSave.setOnAction(this::handleButtonAction);
         btnAddMobile.setOnAction(this::handleButtonAction);
         btnAddSocMed.setOnAction(this::handleButtonAction);      
@@ -590,8 +637,21 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             Button clickedButton = (Button) source;
             switch (clickedButton.getId()) {
                 case "btnCancel":
-                    pnEditMode = EditMode.UNKNOWN;
-                    initButton(pnEditMode);
+                    if (ShowMessageFX.YesNo("Do you want to save transaction?", "Computerized Acounting System", pxeModuleName)){
+                         JSONObject saveResult = oTrans.saveRecord();
+                         if ("success".equals((String) saveResult.get("result"))){
+                            System.err.println((String) saveResult.get("message"));
+                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                            System.out.println("Record saved successfully.");
+                            clearAllFields();
+                            pnEditMode = EditMode.READY;
+                            initButton(pnEditMode);
+                        } else {
+                            ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                            System.out.println("Record not saved successfully.");
+                            System.out.println((String) saveResult.get("message"));
+                        }
+                    }
                     break;
                 case "btnSave":
                         JSONObject saveResult = oTrans.saveRecord();
@@ -691,12 +751,11 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         if (lsValue == null) return;         
         if(!nv){ /*Lost Focus*/
             switch (lnIndex){
-                case 1: /*company name*/
-                    personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
+                 case 1: /*company name*/
                     jsonObject = oTrans.setMaster( 8,lsValue);
                     break;
                 case 2:/*last name*/
-                    jsonObject = oTrans.setMaster( "sLastName",lsValue);
+                    jsonObject = oTrans.setMaster( 3,lsValue);
                     break;
                 case 3:/*frist name*/
                     jsonObject = oTrans.setMaster( 4,lsValue);
@@ -708,63 +767,35 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                     jsonObject = oTrans.setMaster( 6,lsValue);
                     break;
                 case 6:/*citizenship */
-                    jsonObject = oTrans.setMaster( 7,lsValue);
-                    break;
-                case 7:/*birthday */
-                    // Define the format of the input string
-                    jsonObject = oTrans.setMaster( "dBirthDte", dateFormatter(lsValue));
-                    break;
-                case 8:/*birth place */
-                    jsonObject = oTrans.setMaster( 9,lsValue);
-                    break;
-                case 9:/*gender */
-                    switch (lsValue) {
-                        case "Male":
-                            lsValue = "0";
-                            break;
-                        case "Female":
-                            lsValue = "2";
-                            break;
-                        case "LGBTQ":  
-                            lsValue = "3";
-                            break;
-                        default:
-                            throw new AssertionError();
-                    }
+                    jsonObject = (JSONObject) oTrans.getMaster(13);
                     
-                    jsonObject = oTrans.setMaster( 10,lsValue);
+                    System.out.println(String.valueOf("citizenship = " + oTrans.getMaster(13)));
                     break;
-                case 10:/*civil status */
-                    switch (lsValue) {
-                        case "Single":
-                            lsValue = "0";
-                            break;
-                        case "Married":
-                            lsValue = "2";
-                            break;
-                        case "Divorced":  
-                            lsValue = "3";                            
-                        case "Widowed":  
-                            lsValue = "4";
-                            break;
-                        default:
-                            throw new AssertionError();
-                    }
-                    jsonObject = oTrans.setMaster( 11,lsValue);
-                    break;
+//                case 6:/*citizenship */
+//                    jsonObject = oTrans.setMaster( 11,lsValue);
+//                    break;
+//                case 7:/*birthday */
+//                    // Define the format of the input string
+//                    jsonObject = oTrans.setMaster( "dBirthDte", dateFormatter(lsValue));
+//                    
+//                    break;
+//                case 8:/*birthplace */
+//                    jsonObject = oTrans.setMaster( 13,lsValue);
+//                    break;    
                 case 11:/*spouse */
-                    jsonObject = oTrans.setMaster( 12,lsValue);
+                    jsonObject = oTrans.setMaster( 15,lsValue);
                     break;
                 case 12:/*mothers maiden namex */
-                    jsonObject = oTrans.setMaster( 13,lsValue);
+                    jsonObject = oTrans.setMaster( 7,lsValue);
                 case 13:/*mothers maiden namex */
-                    jsonObject = oTrans.setMaster( "sTaxIDNox",lsValue);
+                    jsonObject = oTrans.setMaster( 16,lsValue);
                 case 14:/*mothers maiden namex */
-                    jsonObject = oTrans.setMaster( "sLTOIDxxx",lsValue);
+                    jsonObject = oTrans.setMaster( 17,lsValue);
                 case 15 :/*mothers maiden namex */
-                    jsonObject = oTrans.setMaster( "sPHBNIDxx",lsValue);
+                    jsonObject = oTrans.setMaster( 18,lsValue);
                     break;
             }
+            personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
         } else
             personalinfo.selectAll();
         
@@ -782,25 +813,16 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         if(!nv){ /*Lost Focus*/
             switch (lnIndex){
                 case 1: /*houseno*/
-                    oTrans.setAddress(pnAddress, "sHouseNox", lsValue);
+                    oTrans.setAddress(pnAddress, 3, lsValue);
                     break;
                 case 2:/*address*/
-                    oTrans.setAddress(pnAddress, "sAddressx", lsValue);
-                    break;
-//                case 3:/*Province*/
-//                    oTrans.setAddress(pnAddress, "cProvince", lsValue);
-//                    break;
-                case 4:/*town*/
-                    oTrans.setAddress(pnAddress, "sTownIDxx", lsValue);
-                    break;
-                case 5:/*barangay*/
-                    oTrans.setAddress(pnAddress, "sBrgyIDxx", lsValue);
+                    oTrans.setAddress(pnAddress, 4, lsValue);
                     break;
                 case 6:/*latitude*/
-                    oTrans.setAddress(pnAddress, "nLatitude", lsValue);
+                    oTrans.setAddress(pnAddress, 7, lsValue);
                     break;
                 case 7:/*longitud*/
-                    oTrans.setAddress(pnAddress, "nLongitud", lsValue);
+                    oTrans.setAddress(pnAddress, 8, lsValue);
                     break;
             }
             loadAddress();
@@ -959,6 +981,11 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         // Set the items of the ComboBox to the list of genders
         personalinfo09.setItems(genders);
         personalinfo09.getSelectionModel().getSelectedIndex();
+        personalinfo09.setOnAction(event ->{
+            oTrans.setMaster(9, personalinfo09.getSelectionModel().getSelectedIndex());
+        });
+        
+        
     // Create a list of civilStatuses    
         ObservableList<String> civilStatuses = FXCollections.observableArrayList(
             "Single",
@@ -968,6 +995,10 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         );
         // Set the items of the ComboBox to the list of genders
         personalinfo10.setItems(civilStatuses);
+        personalinfo10.getSelectionModel().getSelectedIndex();
+        personalinfo10.setOnAction(event ->{
+            oTrans.setMaster(10, personalinfo10.getSelectionModel().getSelectedIndex());
+        });
 
     }
     private void loadAddress(){
@@ -975,10 +1006,10 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         address_data.clear();
             for (lnCtr = 0; lnCtr < oTrans.getAddressList().size(); lnCtr++){
                 address_data.add(new ModelAddress(String.valueOf(lnCtr + 1),
-                    (String)oTrans.getAddress(lnCtr, "sHouseNox"), 
-                    (String)oTrans.getAddress(lnCtr, "sAddressx"), 
-                    (String)oTrans.getAddress(lnCtr,  "sTownIDxx"),
-                    (String)oTrans.getAddress(lnCtr,  "sBrgyIDxx"),
+                    (String)oTrans.getAddress(lnCtr, 3), 
+                    (String)oTrans.getAddress(lnCtr, 4), 
+                    (String)oTrans.getAddress(lnCtr,  6),
+                    (String)oTrans.getAddress(lnCtr,  5),
                 "",
                 "",
                 "",
@@ -1214,6 +1245,30 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         
     }
     
-    
+    private void clearAllFields() {
+    // Arrays of TextFields grouped by sections
+    TextField[][] allFields = {
+        // Text fields related to specific sections
+        { txtField01, txtField02, txtField03, txtField04,
+         txtField05, txtField06, txtField10, txtField08, txtField11, txtField09},
+
+        {personalinfo02, personalinfo03, personalinfo04, personalinfo05,
+         personalinfo12, personalinfo13, personalinfo14, personalinfo15,
+         personalinfo06, personalinfo08, personalinfo11, personalinfo01},
+
+        {AddressField01, AddressField02, AddressField03, AddressField04,
+         AddressField05, AddressField06},
+
+        // Other text fields
+        {txtMobile01, mailFields01, txtSocial01,}
+    };
+
+    // Loop through each array of TextFields and clear them
+    for (TextField[] fields : allFields) {
+        for (TextField field : fields) {
+            field.clear();
+        }
+    }
+}
     
 }   
