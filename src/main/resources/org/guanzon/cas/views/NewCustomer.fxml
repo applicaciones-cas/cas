@@ -20,7 +20,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <TabPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <tabs>
       <Tab text="Client Master">
@@ -33,12 +32,12 @@
                            <children>
                               <HBox layoutX="14.0" layoutY="-6.0" prefHeight="100.0" prefWidth="200.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" text="OKAY">
+                                    <Button fx:id="btnOkay" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" text="OKAY">
                                        <graphic>
                                           <FontAwesomeIconView glyphName="CHECK" size="20" textAlignment="CENTER" />
                                        </graphic>
                                     </Button>
-                                    <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" text="CANCEL">
+                                    <Button fx:id="btnCancel" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" text="CANCEL">
                                        <graphic>
                                           <FontAwesomeIconView glyphName="CLOSE" size="20" textAlignment="CENTER" />
                                        </graphic>
@@ -91,17 +90,17 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Text>
-                                          <TextField styleClass="text-field" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6">
+                                          <TextField fx:id="personalinfo02" styleClass="text-field" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextField styleClass="text-field" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7">
+                                          <TextField fx:id="personalinfo03" styleClass="text-field" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextField styleClass="text-field" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8">
+                                          <TextField fx:id="personalinfo04" styleClass="text-field" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
@@ -122,7 +121,7 @@
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
                                           </Text>
-                                          <TextField styleClass="text-field" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="9">
+                                          <TextField fx:id="personalinfo05" styleClass="text-field" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="9">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
@@ -143,7 +142,7 @@
                                                 <Insets left="15.0" />
                                              </GridPane.margin>
                                           </Text>
-                                          <ComboBox prefWidth="139.0" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="6">
+                                          <ComboBox fx:id="personalinfo09" prefWidth="139.0" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="6">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
@@ -164,12 +163,12 @@
                                                 <Insets left="15.0" />
                                              </GridPane.margin>
                                           </Text>
-                                          <DatePicker prefHeight="28.0" prefWidth="227.0" GridPane.columnIndex="4" GridPane.rowIndex="7">
+                                          <DatePicker fx:id="personalinfo07" prefHeight="28.0" prefWidth="227.0" GridPane.columnIndex="4" GridPane.rowIndex="7">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
                                           </DatePicker>
-                                          <TextField styleClass="text-field" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="8">
+                                          <TextField fx:id="personalinfo08" styleClass="text-field" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="8">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
@@ -180,7 +179,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Text>
-                                          <TextField GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="9">
+                                          <TextField fx:id="txtMobile01" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="9">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
@@ -190,7 +189,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Text>
-                                          <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="12" GridPane.rowSpan="2">
+                                          <TextArea fx:id="AddressField02" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="12" GridPane.rowSpan="2">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
@@ -200,7 +199,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Text>
-                                          <TextField GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="14">
+                                          <TextField fx:id="AddressField03" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="14">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
@@ -210,17 +209,17 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Text>
-                                          <TextField styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2">
+                                          <TextField fx:id="txtField01" disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextArea GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3" GridPane.rowSpan="2">
+                                          <TextArea disable="true" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3" GridPane.rowSpan="2">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
                                           </TextArea>
-                                          <TextField styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="2">
+                                          <TextField fx:id="personalinfo01" disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="2">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
@@ -247,7 +246,7 @@
                                                 <Font size="14.0" />
                                              </font>
                                           </Text>
-                                          <TextField GridPane.columnIndex="1" GridPane.rowIndex="11">
+                                          <TextField fx:id="AddressField01" GridPane.columnIndex="1" GridPane.rowIndex="11">
                                              <opaqueInsets>
                                                 <Insets left="50.0" />
                                              </opaqueInsets>
