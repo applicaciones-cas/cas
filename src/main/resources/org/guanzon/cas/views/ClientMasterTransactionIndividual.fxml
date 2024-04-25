@@ -74,7 +74,7 @@
                                                                                 <RowConstraints minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
                                                                             </rowConstraints>
                                                                             <children>
-                                                                                <TextField styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="3">
+                                                                                <TextField disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="3">
                                                                                     <GridPane.margin>
                                                                                         <Insets left="5.0" />
                                                                                     </GridPane.margin>
@@ -100,7 +100,7 @@
                                                                                         <Font size="14.0" />
                                                                                     </font>
                                                                                 </Text>
-                                                                                <TextField fx:id="txtField01" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                                                <TextField fx:id="txtField01" disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                                                 <Label minWidth="225.0" style="-fx-background-color: FF8201;" text="New Customer / Existing Customer" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="1">
                                                                                     <font>
                                                                                         <Font name="System Bold" size="18.0" />
@@ -109,7 +109,7 @@
                                                                                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                                                                     </padding>
                                                                                 </Label>
-                                                                                <TextArea GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="4" GridPane.rowSpan="2">
+                                                                                <TextArea disable="true" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="4" GridPane.rowSpan="2">
                                                                                     <GridPane.margin>
                                                                                         <Insets left="5.0" />
                                                                                     </GridPane.margin>

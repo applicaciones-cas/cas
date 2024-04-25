@@ -214,11 +214,6 @@
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextArea disable="true" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3" GridPane.rowSpan="2">
-                                             <GridPane.margin>
-                                                <Insets left="5.0" />
-                                             </GridPane.margin>
-                                          </TextArea>
                                           <TextField fx:id="personalinfo01" disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="2">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
@@ -262,6 +257,11 @@
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                              </padding>
                                           </Label>
+                                          <TextField fx:id="AddressField04" alignment="TOP_LEFT" disable="true" prefHeight="60.0" prefWidth="459.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3" GridPane.rowSpan="2">
+                                             <GridPane.margin>
+                                                <Insets left="5.0" />
+                                             </GridPane.margin>
+                                          </TextField>
                                        </children>
                                        <padding>
                                           <Insets bottom="5.0" top="5.0" />

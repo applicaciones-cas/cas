@@ -447,6 +447,8 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         initAddressGrid();
         loadSocialMedia();
         initSocialMediaGrid();
+//        LocalDate currentDate = LocalDate.now();
+//        personalinfo07.setValue(currentDate);
         pbLoaded = true;
     
 }
@@ -607,6 +609,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         
     }
     private void InitPersonalInfo(){
+        
         /*PERSONAL INFO FOCUSED PROPERTY*/
         personalinfo01.focusedProperty().addListener(personalinfo_Focus);
         personalinfo02.focusedProperty().addListener(personalinfo_Focus);

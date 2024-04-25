@@ -89,7 +89,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
     private TextArea AddressField02;
     
     @FXML
-    private TextArea txtAreaAddress01;
+    private TextField AddressField04;
     
     @FXML
     private TextField AddressField03;
@@ -174,7 +174,8 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
                             System.out.println("Record not saved successfully.");
                             System.out.println((String) saveResult.get("message"));
                         }
-                    }
+                    }else
+                        
                     break;                    
                 /*button okay*/    
                 case "btnOkay":
@@ -314,14 +315,14 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
                     // Define the format of the input string
 //                    jsonObject = oTrans.setMaster( "dBirthDte", dateFormatter(lsValue));
                     break;
-                case 8:/*birth place */
-                    jsonObject = oTrans.setMaster( 13,lsValue);
-                    
-                    System.out.println(String.valueOf("birth place = " + lsValue));
-                    break;
+//                case 8:/*birth place */
+//                    jsonObject = oTrans.setMaster( 13,lsValue);
+//                    
+//                    System.out.println(String.valueOf("birth place = " + lsValue));
+//                    break;
             }
             personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
-//            txtAreaAddress01.setText(AddressField01.getText() + " " +  AddressField02.getText() + "" + AddressField03.getText());
+            
         } else
             personalinfo.selectAll();
         
@@ -352,6 +353,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
                     oTrans.setAddress(0, 6, lsValue);
                     break;
             }
+            AddressField04.setText(AddressField01.getText() + " " +  AddressField02.getText() + ", " + AddressField03.getText());
         }
     };
     
@@ -456,5 +458,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
             CommonUtils.SetPreviousFocus(AddressField);
         }
     }
+    
+    
 }    
 
