@@ -216,6 +216,8 @@ public class DashboardController implements Initializable {
                 return "Client Transactions Individual";
             case "/org/guanzon/cas/views/NewCustomer.fxml":
                 return "Client Transactions Individual";
+            case "/org/guanzon/cas/views/Size.fxml":
+                return "Size";
             default:
                 return null;
         }
@@ -486,17 +488,23 @@ public class DashboardController implements Initializable {
 //    }
     private ScreenInterface getController(String fsValue){
         switch (fsValue){
-            case "/org/guanzon/cas/views/ClientMasterParameter.fxml":
-                return new ClientMasterParameterController();
+//            case "/org/guanzon/cas/views/ClientMasterParameter.fxml":
+//                return new ClientMasterParameterController();
+//                
+//            case "/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml":
+//                return new ClientMasterTransactionCompanyController();
+//                
+//            case "/org/guanzon/cas/views/ClientMasterTransactionIndividual.fxml":
+//                return new ClientMasterTransactionIndividualController();
+//                
+//            case "/org/guanzon/cas/views/NewCustomer.fxml":
+//                return new NewCustomerController();
+//                
                 
-            case "/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml":
-                return new ClientMasterTransactionCompanyController();
-                
-            case "/org/guanzon/cas/views/ClientMasterTransactionIndividual.fxml":
-                return new ClientMasterTransactionIndividualController();
-                
-            case "/org/guanzon/cas/views/NewCustomer.fxml":
-                return new NewCustomerController();
+            //Parameter MenuControllers
+               
+            case "/org/guanzon/cas/views/Size.fxml":
+                return new SizeController();
             default:
                 return null;
         }
@@ -550,6 +558,14 @@ public class DashboardController implements Initializable {
     @FXML
     private void mnuNewCustomerClick(ActionEvent event) {
     String sformname = "/org/guanzon/cas/views/NewCustomer.fxml";
+    //check if oApp is not null before calling loadAnimate
+    if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+        setScene2(loadAnimate(sformname));
+    }
+    }
+    @FXML
+    private void mnuParameterSizeClick(ActionEvent event) {
+    String sformname = "/org/guanzon/cas/views/Size.fxml";
     //check if oApp is not null before calling loadAnimate
     if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
         setScene2(loadAnimate(sformname));
