@@ -97,6 +97,21 @@ public class SizeController implements Initializable, ScreenInterface {
                 break;
 
             case "btnSave":
+
+                poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                poJSON = oTrans.getModel().setModifiedDate(oApp.getServerDate());
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
                 poJSON = oTrans.saveRecord();
 
                 pnEditMode = oTrans.getModel().getEditMode();
@@ -106,6 +121,12 @@ public class SizeController implements Initializable, ScreenInterface {
                     pnEditMode = EditMode.UNKNOWN;
                     return;
 
+                }else{
+                oTrans = new Size(oApp, true);
+                    pbLoaded = true;
+                    pnEditMode = EditMode.UNKNOWN;
+                    clearFields();
+                    ShowMessageFX.Information(null, pxeModuleName, "Record successful Saved!");
                 }
                 break;
 
@@ -249,7 +270,7 @@ public class SizeController implements Initializable, ScreenInterface {
         btnClose.setVisible(!lbShow);
 
         txtField99.setDisable(lbShow);
-        txtField02.setEditable(!lbShow);
+        txtField02.setEditable(lbShow);
 
         txtField02.requestFocus();
     }
@@ -267,7 +288,7 @@ public class SizeController implements Initializable, ScreenInterface {
 
     private void txtField_KeyPressed(KeyEvent event) {
         TextField textField = (TextField) event.getSource();
-        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(12, 14));
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
         String lsValue = textField.getText();
         switch (event.getCode()) {
             case F3:

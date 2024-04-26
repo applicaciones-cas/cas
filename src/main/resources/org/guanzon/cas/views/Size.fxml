@@ -142,7 +142,7 @@
                                                                     <Insets left="10.0" />
                                                                 </GridPane.margin>
                                                             </Label>
-                                                            <CheckBox fx:id="cbActive" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+                                                            <CheckBox fx:id="cbActive" disable="true" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                                                                 <font>
                                                                     <Font size="14.0" />
                                                                 </font>
@@ -236,7 +236,7 @@
                                                 <Insets left="30.0" />
                                              </GridPane.margin>
                                           </Text>
-                                          <TextField fx:id="txtField99" editable="false" promptText="Press F3: Search" GridPane.columnIndex="1">
+                                          <TextField fx:id="txtField99" promptText="Press F3: Search" GridPane.columnIndex="1">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
