@@ -210,31 +210,11 @@
                      <children>
                         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <AnchorPane>
-                                 <children>
-                                            <GridPane prefHeight="45.0" style="-fx-background-color: A0A0A0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                <columnConstraints>
-                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                </columnConstraints>
-                                                <rowConstraints>
-                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                </rowConstraints>
-                                                <children>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SIZE ENTRY FORM" GridPane.halignment="CENTER">
-                                                        <font>
-                                                            <Font name="System Bold" size="15.0" />
-                                                        </font>
-                                                    </Text>
-                                                </children>
-                                            </GridPane>
-                                    <Separator style="-fx-background-color: FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                 </children>
-                              </AnchorPane>
-                              <AnchorPane layoutX="10.0" layoutY="10.0">
+                              <AnchorPane style="-fx-background-color: A0A0A0;">
                                  <children>
                                     <GridPane prefHeight="45.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <columnConstraints>
-                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                        </columnConstraints>
@@ -242,26 +222,29 @@
                                           <RowConstraints minHeight="10.0" prefHeight="26.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Size Name" GridPane.halignment="RIGHT">
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Size Name" GridPane.halignment="LEFT">
                                              <font>
-                                                <Font name="System Bold" size="12.0" />
+                                                <Font name="System Bold" size="15.0" />
                                              </font>
                                              <GridPane.margin>
-                                                <Insets right="15.0" />
+                                                <Insets left="30.0" />
                                              </GridPane.margin>
                                           </Text>
-                                          <TextField fx:id="txtSearch01" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2147483647">
+                                          <TextField fx:id="txtSearch01" editable="false" promptText="Press F3: Search" GridPane.columnIndex="1" GridPane.columnSpan="2147483647">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
+                                             <GridPane.margin>
+                                                <Insets right="20.0" />
+                                             </GridPane.margin>
+                                             <padding>
+                                                <Insets left="5.0" />
+                                             </padding>
                                           </TextField>
                                        </children>
                                     </GridPane>
                                     <Separator style="-fx-background-color: FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                  </children>
-                                 <padding>
-                                    <Insets left="15.0" right="15.0" />
-                                 </padding>
                               </AnchorPane>
                            </children>
                         </VBox>
