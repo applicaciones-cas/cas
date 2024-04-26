@@ -31,6 +31,11 @@
                             <children>
                                   <HBox fx:id="hbButtons" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                       <children>
+                              <Button fx:id="btnBrowse" contentDisplay="TOP" graphicTextGap="3.0" layoutX="10.0" layoutY="10.0" maxHeight="70.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Browse">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" styleClass="FontIcon" />
+                                 </graphic>
+                              </Button>
                                             <Button fx:id="btnNew" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="New">
                                                 <graphic>
                                                     <FontAwesomeIconView glyphName="PLUS" size="20" styleClass="FontIcon" />
@@ -95,7 +100,7 @@
                                           <RowConstraints minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                                            <TextField fx:id="txtField01" alignment="CENTER" GridPane.columnIndex="1">
+                                                            <TextField fx:id="txtField01" alignment="CENTER" editable="false" GridPane.columnIndex="1">
                                                                 <GridPane.margin>
                                                                     <Insets />
                                                                 </GridPane.margin>
@@ -203,22 +208,63 @@
                <top>
                   <AnchorPane BorderPane.alignment="CENTER">
                      <children>
-                                <GridPane prefHeight="45.0" style="-fx-background-color: A0A0A0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                    <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    </rowConstraints>
-                                    <children>
-                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SIZE ENTRY FORM" GridPane.halignment="CENTER">
-                                            <font>
-                                                <Font name="System Bold" size="15.0" />
-                                            </font>
-                                        </Text>
-                                    </children>
-                                </GridPane>
-                        <Separator style="-fx-background-color: FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <AnchorPane>
+                                 <children>
+                                            <GridPane prefHeight="45.0" style="-fx-background-color: A0A0A0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                </columnConstraints>
+                                                <rowConstraints>
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                </rowConstraints>
+                                                <children>
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SIZE ENTRY FORM" GridPane.halignment="CENTER">
+                                                        <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                        </font>
+                                                    </Text>
+                                                </children>
+                                            </GridPane>
+                                    <Separator style="-fx-background-color: FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutX="10.0" layoutY="10.0">
+                                 <children>
+                                    <GridPane prefHeight="45.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="15.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="26.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Size Name" GridPane.halignment="RIGHT">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                             <GridPane.margin>
+                                                <Insets right="15.0" />
+                                             </GridPane.margin>
+                                          </Text>
+                                          <TextField fx:id="txtSearch01" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2147483647">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </TextField>
+                                       </children>
+                                    </GridPane>
+                                    <Separator style="-fx-background-color: FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="15.0" right="15.0" />
+                                 </padding>
+                              </AnchorPane>
+                           </children>
+                        </VBox>
                      </children>
                   </AnchorPane>
                </top>
