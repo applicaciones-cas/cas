@@ -9,12 +9,14 @@ public class LetMeIn extends Application {
     public static void main(String[] args) {
         String path;
         if(System.getProperty("os.name").toLowerCase().contains("win")){
-            path = "D:/GGC_Java_Systems";
+            path = "D:/GGC_Maven_Systems";
         }
         else{
-            path = "/srv/GGC_Java_Systems";
+            path = "/srv/GGC_Maven_Systems";
         }
         System.setProperty("sys.default.path.config", path);
+         System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/");
+        
 
         GRider instance = new GRider("gRider");
 

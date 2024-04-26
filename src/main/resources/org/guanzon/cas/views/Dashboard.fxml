@@ -81,6 +81,12 @@
                                           <MenuItem fx:id="mnuClientTransactionCompany" mnemonicParsing="false" onAction="#mnuClientTransactionCompanyClick" text="Client Transactions Company" />
                                           <MenuItem fx:id="mnuClientTransactionIndividual" mnemonicParsing="false" onAction="#mnuClientTransactionIndividualClick" text="Client Transactions Individual" />
                                           <MenuItem fx:id="mnuNewCustomer" mnemonicParsing="false" onAction="#mnuNewCustomerClick" text="New Customer" />
+                                          <Menu mnemonicParsing="false" text="Parameter">
+                                            <items>
+                                              <MenuItem fx:id="mnuParameterSize" mnemonicParsing="false" onAction="#mnuParameterSizeClick" text="Size" />
+                                                <MenuItem mnemonicParsing="false" text="Banks" />
+                                            </items>
+                                          </Menu>
                                        </items>
                                     </Menu>
                                     <Menu mnemonicParsing="false" text="_Inventory">
