@@ -45,7 +45,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.clients.Client_Master;
+import org.guanzon.cas.clients.Client_Master;
 
 import org.json.simple.JSONObject;
 
@@ -408,25 +408,26 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         if (oTransnox == null || oTransnox.isEmpty()) { // Check if oTransnox is null or empty
-            pnEditMode = EditMode.ADDNEW;
+            pnEditMode = EditMode.UNKNOWN;
             initButton(pnEditMode);
         }
         ClickButton();
 
         // Initialize the Client_Master transaction
-        oTrans = new Client_Master(oApp, true, oApp.getBranchCode());
-
+        oTrans = new Client_Master(oApp, false, oApp.getBranchCode());
+        pnEditMode = EditMode.UNKNOWN;
+        initButton(pnEditMode);
         // Call newRecord to initialize a new record
-        oTrans.newRecord();
+//        oTrans.newRecord();
 
         // Access sClientID directly from the jsonResult and set it to txtField01
-        String sClientID = (String) oTrans.getMaster("sClientID");
-        if (txtField01 != null) { // Check if txtField01 is not null before setting its text
-            txtField01.setText(sClientID);
-        } else {
-            // Handle the case where txtField01 is null
-            System.out.println("txtField01 is null");
-        }
+//        String sClientID = (String) oTrans.getMaster("sClientID");
+//        if (txtField01 != null) { // Check if txtField01 is not null before setting its text
+//            txtField01.setText(sClientID);
+//        } else {
+//            // Handle the case where txtField01 is null
+//            System.out.println("txtField01 is null");
+//        }
 
         initTextFields();
         InitPersonalInfo();
@@ -436,22 +437,49 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         InitContctPersonInfo();
         InitSocMedInfo();
         initComboBoxes();
-        
-        loadAddress();
-        loadMobile();
-        loadEmail();
-        loadContctPerson();
-        initContctPersonGrid();
-        initMobileGrid();
-        initEmailGrid();
-        initAddressGrid();
-        loadSocialMedia();
-        initSocialMediaGrid();
+        loadDetail();
 //        LocalDate currentDate = LocalDate.now();
 //        personalinfo07.setValue(currentDate);
         pbLoaded = true;
     
 }
+    private void searchinfo_KeyPressed(KeyEvent event){
+        TextField personalinfo = (TextField)event.getSource();
+        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
+        String lsValue = personalinfo.getText();
+        JSONObject poJson;
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex){
+                    case 99: /*search branch*/
+                        poJson = oTrans.searchRecord(lsValue, false);
+                        if ("error".equals((String) poJson.get("result"))){
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks99.clear();
+                        }
+                        loadAddress();
+                        loadMobile();
+                        loadEmail();
+                        loadSocialMedia();
+                        loadContctPerson();
+                        
+//                        retrieveDetails();
+                        break;
+                }
+            case ENTER:
+                
+        }
+        
+        switch (event.getCode()){
+        case ENTER:
+            CommonUtils.SetNextFocus(personalinfo);
+        case DOWN:
+            CommonUtils.SetNextFocus(personalinfo);
+            break;
+        case UP:
+            CommonUtils.SetPreviousFocus(personalinfo);
+        }
+    }
     
     private void personalinfo_KeyPressed(KeyEvent event){
         TextField personalinfo = (TextField)event.getSource();
@@ -533,6 +561,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
             case ENTER:
                 
         }
+        loadAddress();
         
         switch (event.getCode()){
         case ENTER:
@@ -554,8 +583,10 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         cmbMobile02.setItems(mobileType);
         cmbMobile02.getSelectionModel().select(0);
         
-        oTrans.setMobile(pnMobile, "cOwnerxxx", cmbMobile01.getSelectionModel().getSelectedIndex());
-        oTrans.setMobile(pnMobile, "cMobileTp", cmbMobile02.getSelectionModel().getSelectedIndex());
+        if((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)){
+            oTrans.setMobile(pnMobile, "cOwnerxxx", cmbMobile01.getSelectionModel().getSelectedIndex());
+            oTrans.setMobile(pnMobile, "cMobileTp", cmbMobile02.getSelectionModel().getSelectedIndex());
+        }
         
         cmbMobile01.setOnAction(event -> {
             oTrans.setMobile(pnMobile, "cOwnerxxx", cmbMobile01.getSelectionModel().getSelectedIndex());
@@ -577,8 +608,9 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         cmbEmail01.setItems(EmailOwn);
         cmbEmail01.getSelectionModel().select(0);
         
-        oTrans.setEmail(pnEmail, "cOwnerxxx", cmbEmail01.getSelectionModel().getSelectedIndex());
-        
+        if((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)){
+            oTrans.setEmail(pnEmail, "cOwnerxxx", cmbEmail01.getSelectionModel().getSelectedIndex());
+        }
         cmbEmail01.setOnAction(event -> {
             oTrans.setEmail(pnEmail, "cOwnerxxx", cmbEmail01.getSelectionModel().getSelectedIndex());
             loadEmail();
@@ -598,8 +630,10 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         cmbSocMed01.setItems(socialTyp);
         cmbSocMed01.getSelectionModel().select(0);
         
+        if((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)){
+            oTrans.setSocialMed(pnSocMed, "cSocialTp", cmbSocMed01.getSelectionModel().getSelectedIndex());
+        }
         
-        oTrans.setSocialMed(pnSocMed, "cSocialTp", cmbSocMed01.getSelectionModel().getSelectedIndex());
         cmbSocMed01.setOnAction(event -> {
             oTrans.setSocialMed(pnSocMed, "cSocialTp", cmbSocMed01.getSelectionModel().getSelectedIndex());
             loadSocialMedia();
@@ -671,13 +705,14 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     private void initTextFields(){
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
-        txtSeeks99.focusedProperty().addListener(txtField_Focus);
+        txtSeeks99.setOnKeyPressed(this::searchinfo_KeyPressed);
+        
+//        txtSeeks99.focusedProperty().addListener(txtField_Focus);
     }
     
     private void initButton(int fnValue){
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        
-        btnCancel.setVisible(lbShow);
+         btnCancel.setVisible(lbShow);
         btnSearch.setVisible(lbShow);
         btnSave.setVisible(lbShow);
         
@@ -687,15 +722,15 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         btnUpdate.setVisible(!lbShow);
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
-//        
-//        txtSeeks21.setDisable(!lbShow);
-//        txtSeeks22.setDisable(!lbShow);
+        
+
+        txtSeeks99.setDisable(!lbShow);
+        cmbSearch.setDisable(!lbShow);
         
         if (lbShow){
-//            txtSeeks21.setDisable(lbShow);
-//            txtSeeks21.clear();
-//            txtSeeks22.setDisable(lbShow);
-//            txtSeeks22.clear();
+            txtSeeks99.setDisable(lbShow);
+            txtSeeks99.clear();
+            cmbSearch.setDisable(lbShow);
             
             btnCancel.setVisible(lbShow);
             btnSearch.setVisible(lbShow);
@@ -706,12 +741,48 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
             btnBrowse.setManaged(false);
             btnNew.setManaged(false);
             btnUpdate.setManaged(false);
+            btnClose.setManaged(false);
         }
         else{
-//            txtSeeks21.setDisable(lbShow);
-//            txtSeeks21.requestFocus();
-//            txtSeeks22.setDisable(lbShow);  
+            txtSeeks99.setDisable(lbShow);
+            txtSeeks99.requestFocus();
+            cmbSearch.setDisable(lbShow);  
         }
+        
+//        btnCancel.setVisible(lbShow);
+//        btnSearch.setVisible(lbShow);
+//        btnSave.setVisible(lbShow);
+//        
+//        btnSave.setManaged(lbShow);
+//        btnCancel.setManaged(lbShow);
+//        btnSearch.setManaged(lbShow);
+//        btnUpdate.setVisible(!lbShow);
+//        btnBrowse.setVisible(!lbShow);
+//        btnNew.setVisible(!lbShow);
+////        
+////        txtSeeks21.setDisable(!lbShow);
+////        txtSeeks22.setDisable(!lbShow);
+//        
+//        if (lbShow){
+//            txtSeeks99.setDisable(lbShow);
+//            txtSeeks99.clear();
+//            cmbSearch.setDisable(lbShow);
+//            
+//            btnCancel.setVisible(lbShow);
+//            btnSearch.setVisible(lbShow);
+//            btnSave.setVisible(lbShow);
+//            btnUpdate.setVisible(!lbShow);
+//            btnBrowse.setVisible(!lbShow);
+//            btnNew.setVisible(!lbShow);
+//            btnBrowse.setManaged(!lbShow);
+//            btnNew.setManaged(!lbShow);
+//            btnUpdate.setManaged(!lbShow);
+//        }
+//        else{
+////            txtSeeks21.setDisable(lbShow);
+////            txtSeeks21.requestFocus();
+////            txtSeeks22.setDisable(lbShow);  
+//        }
     }
     private void ClickButton() {
         btnCancel.setOnAction(this::handleButtonAction);
@@ -729,22 +800,24 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         if (source instanceof Button) {
             Button clickedButton = (Button) source;
             switch (clickedButton.getId()) {
-                case "btnCancel":
-                    if (ShowMessageFX.YesNo("Do you want to save transaction?", "Computerized Acounting System", pxeModuleName)){
-                         JSONObject saveResult = oTrans.saveRecord();
-                         if ("success".equals((String) saveResult.get("result"))){
-                            System.err.println((String) saveResult.get("message"));
-                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                            System.out.println("Record saved successfully.");
+                case "btnNew":
+                        JSONObject poJSON = oTrans.newRecord();
+                        if ("success".equals((String) poJSON.get("result"))){
+                            pnEditMode = EditMode.ADDNEW;
                             clearAllFields();
-                            pnEditMode = EditMode.READY;
-                            initButton(pnEditMode);
-                        } else {
-                            ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField01.setText((String) oTrans.getMaster("sClientID"));
+                            loadDetail();
+                        }else{
+                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                             System.out.println("Record not saved successfully.");
-                            System.out.println((String) saveResult.get("message"));
+                            System.out.println((String) poJSON.get("message"));
                         }
-                    }
+                    break;
+                case "btnCancel":
+                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
+                            clearAllFields();
+                            pnEditMode = EditMode.UNKNOWN;
+                        }
                     break;
                 case "btnSave":
                         JSONObject saveResult = oTrans.saveRecord();
@@ -847,6 +920,8 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                      
                 // Add more cases for other buttons if needed
             }
+            
+            initButton(pnEditMode);
         }
     }
     
@@ -881,19 +956,23 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                     jsonObject = oTrans.setMaster( 7,lsValue);
                     break;
                 case 7:/*birthday */
-                    // Define the format of the input string
-                    jsonObject = oTrans.setMaster( "dBirthDte", dateFormatter(lsValue));
-                    
+//                    // Define the format of the input string
+                    if(!lsValue.isEmpty()){
+                        jsonObject = oTrans.setMaster( "dBirthDte", dateFormatter(lsValue));
+                    }
                     break;
                 case 11:/*spouse */
-                    jsonObject = oTrans.setMaster( 12,lsValue);
+                    jsonObject = oTrans.setMaster( 15,lsValue);
                     break;
                 case 12:/*mothers maiden namex */
                     jsonObject = oTrans.setMaster( 7,lsValue);
+                    break;
                 case 13:/*mothers maiden namex */
                     jsonObject = oTrans.setMaster( "sTaxIDNox",lsValue);
+                    break;
                 case 14:/*mothers maiden namex */
                     jsonObject = oTrans.setMaster( "sLTOIDxxx",lsValue);
+                    break;
                 case 15 :/*mothers maiden namex */
                     jsonObject = oTrans.setMaster( "sPHBNIDxx",lsValue);
                     break;
@@ -1050,13 +1129,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                         System.exit(1);
                     }
                     break;
-                case 99:
-                    jsonObject = oTrans.searchRecord(lsValue, false);
-                    if ("error".equals((String) jsonObject.get("result"))){
-                        System.err.println((String) jsonObject.get("message"));
-                        System.exit(1);
-                    }
-                    break;
+                    
 //                case 35:
 //                    jsonObject = oTrans.setMaster(3, lsValue);
 //                    break;
@@ -1112,26 +1185,31 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     private void loadAddress(){
         int lnCtr;
         address_data.clear();
+//        oTrans.getAddress(pnAddress).list();
+        if(oTrans.getAddressList() != null){
             for (lnCtr = 0; lnCtr < oTrans.getAddressList().size(); lnCtr++){
+                String lsTown = (String)oTrans.getAddress(lnCtr, 12) + ", " + (String)oTrans.getAddress(lnCtr, 14);
                 address_data.add(new ModelAddress(String.valueOf(lnCtr + 1),
                     (String)oTrans.getAddress(lnCtr, "sHouseNox"), 
                     (String)oTrans.getAddress(lnCtr, "sAddressx"), 
+                    lsTown,
+                    (String)oTrans.getAddress(lnCtr,  13),
                     (String)oTrans.getAddress(lnCtr,  "sTownIDxx"),
                     (String)oTrans.getAddress(lnCtr,  "sBrgyIDxx"),
-                "",
-                "",
                 "",
                 "",
                 ""));  
 
             }
+        }
         
     }
     
     
     private void loadMobile(){
         data.clear();
-        for (int lnCtr = 0; lnCtr < oTrans.getMobileList().size(); lnCtr++){
+        if(oTrans.getMobileList() != null){
+            for (int lnCtr = 0; lnCtr < oTrans.getMobileList().size(); lnCtr++){
             data.add(new ModelMobile(String.valueOf(lnCtr + 1),
                 oTrans.getMobile(lnCtr, "sMobileNo").toString(),
                 oTrans.getMobile(lnCtr, "cOwnerxxx").toString(),
@@ -1155,36 +1233,42 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
             System.out.println("index = " + oTrans.getMobile(lnCtr, "cOwnerxxx").toString());
             System.out.println("value = " + mobileOwn.get(Integer.parseInt(oTrans.getMobile(lnCtr, "cOwnerxxx").toString())));
         }
+        }
+        
        
     }
     private void loadEmail(){
         email_data.clear();
-        for (int lnCtr = 0; lnCtr < oTrans.getEmailList().size(); lnCtr++){
-                email_data.add(new ModelEmail(String.valueOf(lnCtr + 1),
-                oTrans.getEmail(lnCtr, "cOwnerxxx").toString(),
-                oTrans.getEmail(lnCtr, "sEMailAdd").toString(),
-                oTrans.getEmail(lnCtr, "cRecdStat").toString(),
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""));
-//            System.out.println("index = " + oTrans.getMobile(lnCtr, "cOwnerxxx").toString());
-//            System.out.println("value = " + mobileOwn.get(Integer.parseInt(oTrans.getMobile(lnCtr, "cOwnerxxx").toString())));
+        if(oTrans.getEmailList() != null){
+            for (int lnCtr = 0; lnCtr < oTrans.getEmailList().size(); lnCtr++){
+                    email_data.add(new ModelEmail(String.valueOf(lnCtr + 1),
+                    oTrans.getEmail(lnCtr, "cOwnerxxx").toString(),
+                    oTrans.getEmail(lnCtr, "sEMailAdd").toString(),
+                    oTrans.getEmail(lnCtr, "cRecdStat").toString(),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""));
+    //            System.out.println("index = " + oTrans.getMobile(lnCtr, "cOwnerxxx").toString());
+    //            System.out.println("value = " + mobileOwn.get(Integer.parseInt(oTrans.getMobile(lnCtr, "cOwnerxxx").toString())));
+            }
         }
        
     }
     private void loadSocialMedia(){
         social_data.clear();
-        for (int lnCtr = 0; lnCtr < oTrans.getSocialMediaList().size(); lnCtr++){
-            social_data.add(new ModelSocialMedia(String.valueOf(lnCtr + 1),
-                oTrans.getSocialMed(lnCtr, "sAccountx").toString(),
-                oTrans.getSocialMed(lnCtr, "cSocialTp").toString(),
-                oTrans.getSocialMed(lnCtr, "sRemarksx").toString(),
-                oTrans.getSocialMed(lnCtr, "cRecdStat").toString()));
-            System.out.println("index = " + oTrans.getSocialMed(lnCtr, "cSocialTp").toString());
-//            System.out.println("value = " + oTrans.getSocialMed(lnCtr, "cSocialTp").toString());
+        if(oTrans.getSocialMediaList() != null){
+            for (int lnCtr = 0; lnCtr < oTrans.getSocialMediaList().size(); lnCtr++){
+                social_data.add(new ModelSocialMedia(String.valueOf(lnCtr + 1),
+                    oTrans.getSocialMed(lnCtr, "sAccountx").toString(),
+                    oTrans.getSocialMed(lnCtr, "cSocialTp").toString(),
+                    oTrans.getSocialMed(lnCtr, "sRemarksx").toString(),
+                    oTrans.getSocialMed(lnCtr, "cRecdStat").toString()));
+                System.out.println("index = " + oTrans.getSocialMed(lnCtr, "cSocialTp").toString());
+    //            System.out.println("value = " + oTrans.getSocialMed(lnCtr, "cSocialTp").toString());
+            }
         }
         
        
@@ -1318,20 +1402,22 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     
     private void loadContctPerson(){
         contact_data.clear();
-        for (int lnCtr = 0; lnCtr < oTrans.getInsContactList().size(); lnCtr++){
-            contact_data.add(new ModelInstitutionalContactPerson(String.valueOf(lnCtr + 1),
-                oTrans.getInsContact(lnCtr, "sCPerson1").toString(),
-                oTrans.getInsContact(lnCtr, "sCPPosit1").toString(),
-                oTrans.getInsContact(lnCtr, "sMobileNo").toString(),
-                oTrans.getInsContact(lnCtr, "sTelNoxxx").toString(),
-                oTrans.getInsContact(lnCtr, "sFaxNoxxx").toString(),
-                oTrans.getInsContact(lnCtr, "sEMailAdd").toString(),
-                oTrans.getInsContact(lnCtr, "sAccount1").toString(),
-                oTrans.getInsContact(lnCtr, "sAccount2").toString(),
-                oTrans.getInsContact(lnCtr, "sAccount3").toString(),
-                oTrans.getInsContact(lnCtr, "sRemarksx").toString(),
-                oTrans.getInsContact(lnCtr, 13).toString(),
-                oTrans.getInsContact(lnCtr, "cRecdStat").toString()));
+        if(oTrans.getInsContactList() != null){
+            for (int lnCtr = 0; lnCtr < oTrans.getInsContactList().size(); lnCtr++){
+                contact_data.add(new ModelInstitutionalContactPerson(String.valueOf(lnCtr + 1),
+                    oTrans.getInsContact(lnCtr, "sCPerson1").toString(),
+                    oTrans.getInsContact(lnCtr, "sCPPosit1").toString(),
+                    oTrans.getInsContact(lnCtr, "sMobileNo").toString(),
+                    oTrans.getInsContact(lnCtr, "sTelNoxxx").toString(),
+                    oTrans.getInsContact(lnCtr, "sFaxNoxxx").toString(),
+                    oTrans.getInsContact(lnCtr, "sEMailAdd").toString(),
+                    oTrans.getInsContact(lnCtr, "sAccount1").toString(),
+                    oTrans.getInsContact(lnCtr, "sAccount2").toString(),
+                    oTrans.getInsContact(lnCtr, "sAccount3").toString(),
+                    oTrans.getInsContact(lnCtr, "sRemarksx").toString(),
+                    oTrans.getInsContact(lnCtr, 13).toString(),
+                    oTrans.getInsContact(lnCtr, "cRecdStat").toString()));
+            }
         }
         
        
@@ -1430,7 +1516,15 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     @FXML
     private void CheckPrimary_Clicked(MouseEvent event) {
         boolean isChecked = cbMobileNo01.isSelected();
-        oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
+//        oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
+
+        for (int lnCtr = 0; lnCtr < oTrans.getMobileList().size(); lnCtr++){
+            if(isChecked){
+                oTrans.setMobile(pnMobile, "cPrimaryx", "1");
+            }else{
+                oTrans.setMobile(lnCtr, "cPrimaryx", "0");
+            }
+        }
         loadMobile();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
@@ -1441,7 +1535,15 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     @FXML
     private void CheckStatus_Clicked(MouseEvent event) {
         boolean isChecked = cbMobileNo02.isSelected();
-        oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
+//        oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
+
+        for (int lnCtr = 0; lnCtr < oTrans.getMobileList().size(); lnCtr++){
+            if(isChecked){
+                oTrans.setMobile(pnMobile, "cRecdStat", "1");
+            }else{
+                oTrans.setMobile(lnCtr, "cRecdStat", "0");
+            }
+        }
         loadMobile();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
@@ -1452,7 +1554,15 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     @FXML
     private void CheckSocMedtatus_Clicked(MouseEvent event) {
         boolean isChecked = cbSocMed01.isSelected();
-        oTrans.setMobile(pnSocMed, "cRecdStat", (isChecked)? "1":"0");
+//        oTrans.setMobile(pnSocMed, "cRecdStat", (isChecked)? "1":"0");
+
+        for (int lnCtr = 0; lnCtr < oTrans.getSocialMediaList().size(); lnCtr++){
+            if(isChecked){
+                oTrans.setSocialMed(pnSocMed, "cRecdStat", "1");
+            }else{
+                oTrans.setSocialMed(lnCtr, "cRecdStat", "0");
+            }
+        }
         loadSocialMedia();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
@@ -1463,7 +1573,15 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     @FXML
     private void CheckPrimaryEmail_Clicked(MouseEvent event) {
         boolean isChecked = cbEmail01.isSelected();
-        oTrans.setEmail(pnEmail, "cPrimaryx", (isChecked)? "1":"0");
+//        oTrans.setEmail(pnEmail, "cPrimaryx", (isChecked)? "1":"0");
+
+        for (int lnCtr = 0; lnCtr < oTrans.getEmailList().size(); lnCtr++){
+            if(isChecked){
+                oTrans.setEmail(pnEmail, "cPrimaryx", "1");
+            }else{
+                oTrans.setEmail(lnCtr, "cPrimaryx", "0");
+            }
+        }
         loadEmail();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
@@ -1474,18 +1592,34 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     @FXML
     private void CheckMailStatus_Clicked(MouseEvent event) {
         boolean isChecked = cbEmail02.isSelected();
-        oTrans.setEmail(pnEmail, "cPrimaryx", (isChecked)? "1":"0");
+//        oTrans.setEmail(pnEmail, "cPrimaryx", (isChecked)? "1":"0");
+
+        for (int lnCtr = 0; lnCtr < oTrans.getEmailList().size(); lnCtr++){
+            if(isChecked){
+                oTrans.setEmail(pnEmail, "cRecdStat", "1");
+            }else{
+                oTrans.setEmail(lnCtr, "cRecdStat", "0");
+            }
+        }
         loadEmail();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getEmail(pnMobile, "cPrimaryx"));
+        System.out.println("value = " + oTrans.getEmail(pnMobile, "cRecdStat"));
         
     }
     @FXML
     private void CheckContact01_Clicked(MouseEvent event) {
         boolean isChecked = cbContact01.isSelected();
-        oTrans.setInsContact(pnContact, "cPrimaryx", (isChecked)? "1":"0");
-        loadSocialMedia();
+//        oTrans.setInsContact(pnContact, "cPrimaryx", (isChecked)? "1":"0");
+        
+        for (int lnCtr = 0; lnCtr < oTrans.getInsContactList().size(); lnCtr++){
+            if(isChecked){
+                oTrans.setInsContact(pnContact, "cPrimaryx", "1");
+            }else{
+                oTrans.setInsContact(lnCtr, "cPrimaryx", "0");
+            }
+        }
+        loadContctPerson();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
         System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
@@ -1494,8 +1628,15 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     @FXML
     private void CheckContact02_Clicked(MouseEvent event) {
         boolean isChecked = cbContact02.isSelected();
-        oTrans.setInsContact(pnContact, "cRecdStat", (isChecked)? "1":"0");
-        loadSocialMedia();
+       
+        for (int lnCtr = 0; lnCtr < oTrans.getInsContactList().size(); lnCtr++){
+            if(isChecked){
+                oTrans.setInsContact(pnContact, "cRecdStat", "1");
+            }else{
+                oTrans.setInsContact(lnCtr, "cRecdStat", "0");
+            }
+        }
+        loadContctPerson();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
         System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
@@ -1530,6 +1671,12 @@ private void clearAllFields() {
             field.clear();
         }
     }
+    
+    data.clear();
+    email_data.clear();
+    social_data.clear();
+    address_data.clear();
+    contact_data.clear();
 }
 
     private void retrieveDetails(){
@@ -1548,6 +1695,17 @@ private void clearAllFields() {
          
     }
 
-    
+    private void loadDetail(){
+        loadAddress();
+        loadMobile();
+        loadEmail();
+        loadContctPerson();
+        initContctPersonGrid();
+        initMobileGrid();
+        initEmailGrid();
+        initAddressGrid();
+        loadSocialMedia();
+        initSocialMediaGrid();
+    }
     
 }   

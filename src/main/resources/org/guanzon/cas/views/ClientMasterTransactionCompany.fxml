@@ -513,29 +513,14 @@
                     <children>
                         <HBox layoutX="14.0" layoutY="-6.0" prefHeight="100.0" prefWidth="200.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
-                                <Button fx:id="btnNew" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="ADD">
+                                <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Okay">
                                     <graphic>
-                                        <FontAwesomeIconView glyphName="PLUS" size="20" textAlignment="CENTER" />
+                                        <FontAwesomeIconView glyphName="CHECK" size="20" textAlignment="CENTER" />
                                     </graphic>
                                 </Button>
-                                <Button fx:id="btnUpdate" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="UPDATE">
+                                <Button fx:id="btnClose" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Cancel">
                                     <graphic>
-                                        <FontAwesomeIconView glyphName="EDIT" size="20" textAlignment="CENTER" />
-                                    </graphic>
-                                </Button>
-                                <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="SAVE">
-                                    <graphic>
-                                        <FontAwesomeIconView glyphName="SAVE" size="20" textAlignment="CENTER" />
-                                    </graphic>
-                                </Button>
-                                <Button fx:id="btnDelete" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="DELETE ">
-                                    <graphic>
-                                        <FontAwesomeIconView glyphName="TRASH" size="20" textAlignment="CENTER" />
-                                    </graphic>
-                                </Button>
-                                <Button fx:id="btnClose" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="CLOSE">
-                                    <graphic>
-                                        <FontAwesomeIconView glyphName="POWER_OFF" size="20" textAlignment="CENTER" />
+                                        <FontAwesomeIconView glyphName="CLOSE" size="20" textAlignment="CENTER" />
                                     </graphic>
                                 </Button>
                             </children>
