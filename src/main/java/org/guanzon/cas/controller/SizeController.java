@@ -389,6 +389,7 @@ public class SizeController implements Initializable, ScreenInterface {
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField99.clear();
         
         psPrimary = "";
         btnActivate.setText("Activate");
