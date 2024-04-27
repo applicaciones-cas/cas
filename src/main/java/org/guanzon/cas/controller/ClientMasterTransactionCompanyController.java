@@ -35,11 +35,12 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.clients.Client_Master;
 import org.guanzon.cas.model.ModelAddress;
 import org.guanzon.cas.model.ModelEmail;
 import org.guanzon.cas.model.ModelMobile;
 import org.guanzon.cas.model.ModelSocialMedia;
-import org.guanzon.clients.Client_Master;
+import org.guanzon.cas.validators.ValidatorFactory;
 import org.json.simple.JSONObject;
 
 /**
@@ -203,13 +204,13 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
             // Handle the case where txtField01 is null
             System.out.println("txtField01 is null");
         }
-
+        initcompny();
         initTextFields();
         InitContctPersonInfo();
         loadContctPerson();
         initContctPersonGrid();
         initAddressInfo();
-        
+        oTrans.setType(ValidatorFactory.ClientTypes.COMPANY);
         pbLoaded = true;
     
 }
@@ -551,14 +552,52 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         cmpnyInfo01.focusedProperty().addListener(address_Focus);
         cmpnyInfo02.focusedProperty().addListener(address_Focus);
         cmpnyInfo03.focusedProperty().addListener(address_Focus);
-        cmpnyInfo05.focusedProperty().addListener(address_Focus);        
-        cmpnyInfo06.focusedProperty().addListener(address_Focus);
                 
         
         /*addressin key */
         cmpnyInfo05.setOnKeyPressed(this::companyinfo_KeyPressed);
         cmpnyInfo06.setOnKeyPressed(this::companyinfo_KeyPressed);
     }
+    
+    
+    private void initcompny(){
+        /*company FOCUSED PROPERTY*/
+        cmpnyInfo01.focusedProperty().addListener(cmpny_Focus);
+        cmpnyInfo07.focusedProperty().addListener(cmpny_Focus);
+        cmpnyInfo08.focusedProperty().addListener(cmpny_Focus);        
+        cmpnyInfo09.focusedProperty().addListener(cmpny_Focus);
+                
+
+    }
+    final ChangeListener<? super Boolean> cmpny_Focus = (o,ov,nv)->{ 
+        if (!pbLoaded) return;
+       
+        TextField cmpnyInfo = (TextField)((ReadOnlyBooleanPropertyBase)o).getBean();
+        int lnIndex = Integer.parseInt(cmpnyInfo.getId().substring(9, 11));
+        String lsValue = cmpnyInfo.getText();
+        JSONObject jsonObject = new JSONObject();
+        if (lsValue == null) return;         
+        if(!nv){ /*Lost Focus*/
+            switch (lnIndex){
+                case 1: /*company name*/
+                    oTrans.setMaster( 8, lsValue);
+                    break;
+                case 7:/*tin id*/
+                    oTrans.setMaster( 16, lsValue);
+                    break;
+                case 8:/*lto id*/
+                    oTrans.setMaster( 17, lsValue);
+                    break;
+                case 9:/*business id*/
+                    oTrans.setMaster( 18, lsValue);
+                    break;
+            }
+            oTrans.setMaster(12, "0000-00-00");
+//            loadAddress();
+        } else
+            cmpnyInfo.selectAll();
+    };
+    
     final ChangeListener<? super Boolean> address_Focus = (o,ov,nv)->{ 
         if (!pbLoaded) return;
        
@@ -569,17 +608,11 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         if (lsValue == null) return;         
         if(!nv){ /*Lost Focus*/
             switch (lnIndex){
-                case 1: /*houseno*/
+                case 2: /*houseno*/
                     oTrans.setAddress(pnAddress, 3, lsValue);
                     break;
-                case 2:/*address*/
+                case 3:/*address*/
                     oTrans.setAddress(pnAddress, 4, lsValue);
-                    break;
-                case 6:/*latitude*/
-                    oTrans.setAddress(pnAddress, 7, lsValue);
-                    break;
-                case 7:/*longitud*/
-                    oTrans.setAddress(pnAddress, 8, lsValue);
                     break;
             }
 //            loadAddress();

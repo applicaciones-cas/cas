@@ -31,8 +31,9 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.clients.Client_Master;
 import org.guanzon.cas.model.ModelMobile;
-import org.guanzon.clients.Client_Master;
+import org.guanzon.cas.validators.ValidatorFactory;
 import org.json.simple.JSONObject;
 
 /**
@@ -140,7 +141,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         ClickButton();
         InitPersonalInfo();
         initComboBoxes();
-        
+        oTrans.setType(ValidatorFactory.ClientTypes.STANDARD);
         pbLoaded = true;
     }
     
@@ -185,6 +186,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
                             System.err.println((String) saveResult.get("message"));
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                             System.out.println("Record saved successfully.");
+                            unloadform();
                         } else {
                             ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                             System.out.println("Record not saved successfully.");
@@ -457,6 +459,10 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         case UP:
             CommonUtils.SetPreviousFocus(AddressField);
         }
+    }
+
+    private void unloadform() {
+       
     }
     
     

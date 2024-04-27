@@ -35,11 +35,11 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.clients.Client_Master;
 import org.guanzon.cas.model.ModelAddress;
 import org.guanzon.cas.model.ModelEmail;
 import org.guanzon.cas.model.ModelMobile;
 import org.guanzon.cas.model.ModelSocialMedia;
-import org.guanzon.clients.Client_Master;
 import org.json.simple.JSONObject;
 
 /**
@@ -1004,21 +1004,26 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     private void loadAddress(){
         int lnCtr;
         address_data.clear();
+//        oTrans.getAddress(pnAddress).list();
+        if(oTrans.getAddressList() != null){
             for (lnCtr = 0; lnCtr < oTrans.getAddressList().size(); lnCtr++){
+                String lsTown = (String)oTrans.getAddress(lnCtr, 12) + ", " + (String)oTrans.getAddress(lnCtr, 14);
                 address_data.add(new ModelAddress(String.valueOf(lnCtr + 1),
-                    (String)oTrans.getAddress(lnCtr, 3), 
-                    (String)oTrans.getAddress(lnCtr, 4), 
+                    (String)oTrans.getAddress(lnCtr, "sHouseNox"), 
+                    (String)oTrans.getAddress(lnCtr, "sAddressx"), 
+                    lsTown,
+                    (String)oTrans.getAddress(lnCtr,  13),
                     (String)oTrans.getAddress(lnCtr,  6),
                     (String)oTrans.getAddress(lnCtr,  5),
-                "",
-                "",
                 "",
                 "",
                 ""));  
 
             }
+        }
         
     }
+    
     
     
     private void loadMobile(){

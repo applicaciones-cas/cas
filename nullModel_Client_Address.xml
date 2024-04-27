@@ -155,4 +155,46 @@
 		<THRU>null</THRU>
 		<LIST>null</LIST>
 	</column>
+	<column>
+		<COLUMN_NAME>sTownName</COLUMN_NAME>
+		<COLUMN_LABEL>xTownName</COLUMN_LABEL>
+		<DATA_TYPE>12</DATA_TYPE>
+		<NULLABLE>1</NULLABLE>
+		<LENGTH>30</LENGTH>
+		<PRECISION>30</PRECISION>
+		<SCALE>0</SCALE>
+		<FORMAT>null</FORMAT>
+		<REGTYPE>null</REGTYPE>
+		<FROM>null</FROM>
+		<THRU>null</THRU>
+		<LIST>null</LIST>
+	</column>
+	<column>
+		<COLUMN_NAME>sBrgyName</COLUMN_NAME>
+		<COLUMN_LABEL>xBrgyName</COLUMN_LABEL>
+		<DATA_TYPE>12</DATA_TYPE>
+		<NULLABLE>1</NULLABLE>
+		<LENGTH>30</LENGTH>
+		<PRECISION>30</PRECISION>
+		<SCALE>0</SCALE>
+		<FORMAT>null</FORMAT>
+		<REGTYPE>null</REGTYPE>
+		<FROM>null</FROM>
+		<THRU>null</THRU>
+		<LIST>null</LIST>
+	</column>
+	<column>
+		<COLUMN_NAME>sProvName</COLUMN_NAME>
+		<COLUMN_LABEL>xProvName</COLUMN_LABEL>
+		<DATA_TYPE>12</DATA_TYPE>
+		<NULLABLE>1</NULLABLE>
+		<LENGTH>32</LENGTH>
+		<PRECISION>32</PRECISION>
+		<SCALE>0</SCALE>
+		<FORMAT>null</FORMAT>
+		<REGTYPE>null</REGTYPE>
+		<FROM>null</FROM>
+		<THRU>null</THRU>
+		<LIST>null</LIST>
+	</column>
 </metadata>
