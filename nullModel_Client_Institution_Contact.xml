@@ -170,6 +170,20 @@
 		<LIST>null</LIST>
 	</column>
 	<column>
+		<COLUMN_NAME>cPrimaryx</COLUMN_NAME>
+		<COLUMN_LABEL>cPrimaryx</COLUMN_LABEL>
+		<DATA_TYPE>1</DATA_TYPE>
+		<NULLABLE>1</NULLABLE>
+		<LENGTH>1</LENGTH>
+		<PRECISION>1</PRECISION>
+		<SCALE>0</SCALE>
+		<FORMAT>null</FORMAT>
+		<REGTYPE>null</REGTYPE>
+		<FROM>null</FROM>
+		<THRU>null</THRU>
+		<LIST>null</LIST>
+	</column>
+	<column>
 		<COLUMN_NAME>cRecdStat</COLUMN_NAME>
 		<COLUMN_LABEL>cRecdStat</COLUMN_LABEL>
 		<DATA_TYPE>1</DATA_TYPE>
