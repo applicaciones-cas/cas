@@ -114,6 +114,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
     }
     private ObservableList<ModelMobile> data = FXCollections.observableArrayList();
 
+    private int pnAddress = 0;  
     /***********************************/
     /*Initializes the controller class.*/
     /***********************************/
@@ -344,15 +345,12 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         JSONObject jsonObject = new JSONObject();
         if (lsValue == null) return;         
         if(!nv){ /*Lost Focus*/
-            switch (lnIndex){
+            switch (lnIndex){   
                 case 1:/*house no*/
                     oTrans.setAddress(0, 3, lsValue);
                         break;
                 case 2:/*cutomer addresss*/
                     oTrans.setAddress(0, 4, lsValue);
-                    break;
-                case 3:/*town*/
-                    oTrans.setAddress(0, 6, lsValue);
                     break;
             }
             AddressField04.setText(AddressField01.getText() + " " +  AddressField02.getText() + ", " + AddressField03.getText());
@@ -435,15 +433,14 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
                     
                     case 3: /*search town*/
                         poJson = new JSONObject();
-                           poJson =  oTrans.searchBirthPlce(lsValue, false);
+                           poJson = oTrans.SearchTownAddress(pnAddress, lsValue, false);
                            System.out.println("poJson = " + poJson.toJSONString());
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                
                                 ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                                 AddressField03.clear();
                            }
-                           AddressField03.setText((String) poJson.get("xBrthPlce"));
-                           
+                           AddressField03.setText((String) poJson.get("sTownName") + ", " + (String) poJson.get("sProvName"));
                         break;
                 }
             case ENTER:

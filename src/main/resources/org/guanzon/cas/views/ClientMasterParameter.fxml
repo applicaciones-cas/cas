@@ -30,7 +30,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane style="-fx-border-color: black;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane style="-fx-border-color: black;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <bottom>
@@ -325,7 +325,7 @@
                                                             <Insets left="5.0" />
                                                          </GridPane.margin>
                                                       </TextField>
-                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Civil Status " GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Civil Status " GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
@@ -333,7 +333,7 @@
                                                             <Insets left="15.0" />
                                                          </GridPane.margin>
                                                       </Text>
-                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Gender " GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Gender " GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
@@ -341,12 +341,12 @@
                                                             <Insets left="15.0" />
                                                          </GridPane.margin>
                                                       </Text>
-                                                      <ComboBox fx:id="txtField12" disable="true" maxWidth="250.0" minWidth="110.0" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                                                      <ComboBox fx:id="txtField12" disable="true" maxWidth="250.0" minWidth="110.0" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="4">
                                                          <GridPane.margin>
                                                             <Insets left="5.0" />
                                                          </GridPane.margin>
                                                       </ComboBox>
-                                                      <ComboBox fx:id="txtField13" disable="true" maxWidth="250.0" minWidth="110.0" GridPane.columnIndex="4" GridPane.rowIndex="4">
+                                                      <ComboBox fx:id="txtField13" disable="true" maxWidth="250.0" minWidth="110.0" GridPane.columnIndex="4" GridPane.rowIndex="3">
                                                          <GridPane.margin>
                                                             <Insets left="5.0" />
                                                          </GridPane.margin>
@@ -402,7 +402,7 @@
                                        <tabs>
                                           <Tab text="Personal Info">
                                              <content>
-                                                <AnchorPane>
+                                                <AnchorPane fx:id="anchorPersonal">
                                                    <padding>
                                                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                    </padding>
@@ -599,13 +599,13 @@
                                           </Tab>
                                           <Tab text="Address">
                                              <content>
-                                                <AnchorPane>
+                                                <AnchorPane fx:id="anchorAddress">
                                                    <children>
                                                       <SplitPane dividerPositions="0.4" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <items>
                                                             <AnchorPane>
                                                                <children>
-                                                                  <TableView fx:id="tblAddress" prefHeight="300.0" prefWidth="200.0" stylesheets="@Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                  <TableView fx:id="tblAddress" onMouseClicked="#tblAddress_Clicked" prefHeight="300.0" prefWidth="200.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <columns>
                                                                         <TableColumn fx:id="indexAddress01" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="35.0" text="No." />
                                                                         <TableColumn fx:id="indexAddress02" prefWidth="75.0" text="House No." />
@@ -684,7 +684,7 @@
                                                                         </Text>
                                                                         <TextField fx:id="AddressField05" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                                                         <TextField fx:id="AddressField06" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                                        <CheckBox mnemonicParsing="false" text="Billing" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="5">
+                                                                        <CheckBox fx:id="cbAddress04" mnemonicParsing="false" onMouseClicked="#cbAddress04_Clicked" text="Billing" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="5">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
@@ -708,32 +708,32 @@
                                                                               <Insets left="40.0" />
                                                                            </GridPane.margin>
                                                                         </Button>
-                                                                        <CheckBox mnemonicParsing="false" text="Office" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="4">
+                                                                        <CheckBox fx:id="cbAddress03" mnemonicParsing="false" onMouseClicked="#cbAddress03_Clicked" text="Office" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="4">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
                                                                         </CheckBox>
-                                                                        <CheckBox mnemonicParsing="false" text="Province" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                                                                        <CheckBox fx:id="cbAddress06" mnemonicParsing="false" onMouseClicked="#cbAddress06_Clicked" text="Province" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
                                                                         </CheckBox>
-                                                                        <CheckBox mnemonicParsing="false" text="Current Address" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="5">
+                                                                        <CheckBox fx:id="cbAddress07" mnemonicParsing="false" onMouseClicked="#cbAddress07_Clicked" text="Current Address" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="5">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
                                                                         </CheckBox>
-                                                                        <CheckBox mnemonicParsing="false" text="LTMS Address" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="6">
+                                                                        <CheckBox fx:id="cbAddress08" mnemonicParsing="false" onMouseClicked="#cbAddress08_Clicked" text="LTMS Address" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="6">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
                                                                         </CheckBox>
-                                                                        <CheckBox mnemonicParsing="false" text="Primary Address" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6">
+                                                                        <CheckBox fx:id="cbAddress02" mnemonicParsing="false" onMouseClicked="#cbAddress02_Clicked" text="Primary Address" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
                                                                         </CheckBox>
-                                                                        <CheckBox mnemonicParsing="false" text="Shipping" GridPane.columnIndex="4" GridPane.rowIndex="6">
+                                                                        <CheckBox fx:id="cbAddress05" mnemonicParsing="false" onMouseClicked="#cbAddress05_Clicked" text="Shipping" GridPane.columnIndex="4" GridPane.rowIndex="6">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
@@ -743,7 +743,7 @@
                                                                               <Font size="14.0" />
                                                                            </font>
                                                                         </Text>
-                                                                        <CheckBox mnemonicParsing="false" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                                                        <CheckBox fx:id="cbAddress01" mnemonicParsing="false" onMouseClicked="#cbAddress01_Clicked" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="6">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
@@ -774,7 +774,7 @@
                                           </Tab>
                                           <Tab text="Mobile">
                                              <content>
-                                                <AnchorPane>
+                                                <AnchorPane fx:id="anchorMobile">
                                                    <children>
                                                       <SplitPane dividerPositions="0.4" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <items>
@@ -893,7 +893,7 @@
                                           </Tab>
                                           <Tab text="Email">
                                              <content>
-                                                <AnchorPane>
+                                                <AnchorPane fx:id="anchorEmail">
                                                    <children>
                                                       <SplitPane dividerPositions="0.4" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <items>
@@ -1013,7 +1013,7 @@
                                           </Tab>
                                           <Tab text="Social Media">
                                              <content>
-                                                <AnchorPane>
+                                                <AnchorPane fx:id="anchorSocial">
                                                    <children>
                                                       <SplitPane dividerPositions="0.45" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <items>
@@ -1144,7 +1144,7 @@
                                           </Tab>
                                           <Tab text="Contact Person">
                                              <content>
-                                                <AnchorPane>
+                                                <AnchorPane fx:id="anchorContctPerson">
                                                    <children>
                                                       <SplitPane dividerPositions="0.6" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <items>
@@ -1324,7 +1324,7 @@
                                           </Tab>
                                           <Tab text="Other Info">
                                              <content>
-                                                <AnchorPane>
+                                                <AnchorPane fx:id="anchorOtherInfo">
                                                    <padding>
                                                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                    </padding>
