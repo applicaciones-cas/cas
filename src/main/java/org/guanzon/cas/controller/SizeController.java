@@ -72,7 +72,7 @@ public class SizeController implements Initializable, ScreenInterface {
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
-     @FXML
+    @FXML
     private FontAwesomeIconView faActivate;
     @FXML
     private TableView<?> tblList;
@@ -173,7 +173,7 @@ public class SizeController implements Initializable, ScreenInterface {
                                 oTrans = new Size(oApp, false);
                                 oTrans.setRecordStatus("10");
                                 pbLoaded = true;
- 
+
                             }
                         } else {
                             return;
@@ -367,22 +367,20 @@ public class SizeController implements Initializable, ScreenInterface {
 
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
-        
+
         psPrimary = oTrans.getModel().getSizeID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getSizeName());
-        
+
         cbActive.setSelected(lbActive);
-        
-        
-        if(lbActive){
-        btnActivate.setText("Deactivate");
-        faActivate.setGlyphName("CLOSE");
-        }else {
-        btnActivate.setText("Activate");
-        faActivate.setGlyphName("CHECK");
+
+        if (lbActive) {
+            btnActivate.setText("Deactivate");
+            faActivate.setGlyphName("CLOSE");
+        } else {
+            btnActivate.setText("Activate");
+            faActivate.setGlyphName("CHECK");
         }
-        
 
     }
 
@@ -390,7 +388,7 @@ public class SizeController implements Initializable, ScreenInterface {
         txtField01.clear();
         txtField02.clear();
         txtField99.clear();
-        
+
         psPrimary = "";
         btnActivate.setText("Activate");
         cbActive.setSelected(false);
