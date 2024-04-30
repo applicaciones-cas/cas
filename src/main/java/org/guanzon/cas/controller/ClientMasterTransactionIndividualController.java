@@ -666,14 +666,21 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                            ShowMessageFX.Information((String) addObjAddress.get("message"), "Computerized Acounting System", pxeModuleName);
                            break;
                        } 
-                       AddressField01.clear();
-                       AddressField02.clear();
-                       AddressField03.clear();
-                       AddressField04.clear();
-                       AddressField05.clear();
-                       AddressField06.clear();
-
-                       loadAddress();
+                        AddressField01.clear();
+                        AddressField02.clear();
+                        AddressField03.clear();
+                        AddressField04.clear();
+                        AddressField05.clear();
+                        AddressField06.clear();
+                        cbAddress01.setSelected(false);
+                        cbAddress02.setSelected(false);
+                        cbAddress03.setSelected(false);
+                        cbAddress04.setSelected(false);
+                        cbAddress05.setSelected(false);
+                        cbAddress06.setSelected(false);
+                        cbAddress07.setSelected(false);
+                        cbAddress08.setSelected(false);
+                        loadAddress();
                        
                        pnAddress = oTrans.getAddressList().size()-1;
 
@@ -999,14 +1006,14 @@ public class ClientMasterTransactionIndividualController implements Initializabl
 //        oTrans.getAddress(pnAddress).list();
         if(oTrans.getAddressList() != null){
             for (lnCtr = 0; lnCtr < oTrans.getAddressList().size(); lnCtr++){
-                String lsTown = (String)oTrans.getAddress(lnCtr, 12) + ", " + (String)oTrans.getAddress(lnCtr, 14);
+                String lsTown = (String)oTrans.getAddress(lnCtr, 20) + ", " + (String)oTrans.getAddress(lnCtr, 22);
                 address_data.add(new ModelAddress(String.valueOf(lnCtr + 1),
                     (String)oTrans.getAddress(lnCtr, "sHouseNox"), 
                     (String)oTrans.getAddress(lnCtr, "sAddressx"), 
                     lsTown,
-                    (String)oTrans.getAddress(lnCtr,  13),
-                    (String)oTrans.getAddress(lnCtr,  6),
-                    (String)oTrans.getAddress(lnCtr,  5),
+                    (String)oTrans.getAddress(lnCtr,  21),
+                    (String)oTrans.getAddress(lnCtr,  "sTownIDxx"),
+                    (String)oTrans.getAddress(lnCtr,  "sBrgyIDxx"),
                 "",
                 "",
                 ""));  
@@ -1015,8 +1022,6 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         }
         
     }
-    
-    
     
     private void loadMobile(){
         data.clear();
@@ -1146,7 +1151,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             });
         });
         tblSocMed.setItems(social_data);
-//        tblMobile.getSelectionModel().select(pnMobile + 1);
+        tblMobile.getSelectionModel().select(pnMobile + 1);
         tblSocMed.autosize();
     }
     
@@ -1177,11 +1182,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         tblAddress.autosize();
        
     }
-    
-    @FXML
-    private void tblMobile_Clicked(MouseEvent event) {
-        pnMobile = tblMobile.getSelectionModel().getSelectedIndex(); 
-    }
+
     
     @FXML
     private void tblSocMed_Clicked(MouseEvent event) {
@@ -1271,93 +1272,192 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     private void cbAddress01_Clicked(MouseEvent event) {
         boolean isChecked = cbAddress01.isSelected();
        
-        for (int lnCtr = 0; lnCtr < oTrans.getAddressList().size(); lnCtr++){
-            if(isChecked){
-                oTrans.setAddress(pnAddress, "cRecdStat", "1");
-            }else{
-                oTrans.setAddress(lnCtr, "cRecdStat", "0");
-            }
-        }
+        oTrans.setAddress(pnAddress, "cRecdStat", (isChecked)? "1":"0");
+        
         loadAddress();
     }
     
     @FXML
     private void cbAddress02_Clicked(MouseEvent event) {
         boolean isChecked = cbAddress02.isSelected();
-       
+        
         for (int lnCtr = 0; lnCtr < oTrans.getAddressList().size(); lnCtr++){
-            if(isChecked){
-                oTrans.setAddress(pnAddress, "cPrimaryx", "1");
+            if(pnAddress == lnCtr){
+                if(isChecked){
+                    oTrans.setAddress(pnAddress, "cPrimaryx", "1");
+                }else{
+                    oTrans.setAddress(lnCtr, "cPrimaryx", "0");
+                }
             }else{
                 oTrans.setAddress(lnCtr, "cPrimaryx", "0");
             }
+            
         }
+       
+//        for (int lnCtr = 0; lnCtr < oTrans.getAddressList().size(); lnCtr++){
+//            if(isChecked){
+//                oTrans.setAddress(pnAddress, "cPrimaryx", "1");
+//            }else{
+//                oTrans.setAddress(lnCtr, "cPrimaryx", "0");
+//            }
+//        }
         loadAddress();
     }
     
     @FXML
     private void cbAddress03_Clicked(MouseEvent event) {
         boolean isChecked = cbAddress03.isSelected();
-        oTrans.setAddress(pnAddress, "cOfficexx", (isChecked)? "1":"0");;
+        oTrans.setAddress(pnAddress, 10, (isChecked)? "1":"0");;
     }
     @FXML
     private void cbAddress04_Clicked(MouseEvent event) {
         boolean isChecked = cbAddress04.isSelected();
-        oTrans.setAddress(pnAddress, "cBillingx", (isChecked)? "1":"0");;
+        oTrans.setAddress(pnAddress, 12, (isChecked)? "1":"0");;
     }
     
     @FXML
     private void cbAddress05_Clicked(MouseEvent event) {
         boolean isChecked = cbAddress05.isSelected();
-        oTrans.setAddress(pnAddress, "cShipping", (isChecked)? "1":"0");;
+        oTrans.setAddress(pnAddress, 13, (isChecked)? "1":"0");;
     }
     
     @FXML
     private void cbAddress06_Clicked(MouseEvent event) {
         boolean isChecked = cbAddress06.isSelected();
-        oTrans.setAddress(pnAddress, "cProvince", (isChecked)? "1":"0");;
+        oTrans.setAddress(pnAddress, 11, (isChecked)? "1":"0");;
     }
     
     @FXML
     private void cbAddress07_Clicked(MouseEvent event) {
         boolean isChecked = cbAddress07.isSelected();
-        oTrans.setAddress(pnAddress, "cCurrentx", (isChecked)? "1":"0");;
+        oTrans.setAddress(pnAddress, 14, (isChecked)? "1":"0");;
     }
     
     @FXML
     private void cbAddress08_Clicked(MouseEvent event) {
         boolean isChecked = cbAddress08.isSelected();
-        oTrans.setAddress(pnAddress, "cLTMSAddx", (isChecked)? "1":"0");;
+        oTrans.setAddress(pnAddress, 15, (isChecked)? "1":"0");;
     }
 
     
     @FXML
     private void tblAddress_Clicked (MouseEvent event) {
         pnAddress = tblAddress.getSelectionModel().getSelectedIndex();
-        getAddressSelectedItem();
+        loadAddress();
+        if (pnAddress >= 0){
+            getSelectedAddressItem();
+        }
     }
-    private void getAddressSelectedItem() {
-        /*txtfields*/
-        AddressField01.setText((String) oTrans.getAddress(pnAddress,3));
-        AddressField02.setText((String) oTrans.getAddress(pnAddress,4));
-        AddressField03.setText((String) oTrans.getAddress(pnAddress,"sTownName"));
-        AddressField04.setText((String) oTrans.getAddress(pnAddress,"sBrgyName"));
-        AddressField05.setText((String) oTrans.getAddress(pnAddress, 7));
-        AddressField06.setText((String) oTrans.getAddress(pnAddress, 8));
+//    private void getAddressSelectedItem() {
+//        
+//        System.out.print(pnAddress + "selected index");
+//        if(oTrans.getAddressList().size()>0){
+//        /*txtfields*/
+//        AddressField01.setText(String.valueOf(oTrans.getAddress(pnAddress,3)));
+//        AddressField02.setText(String.valueOf( oTrans.getAddress(pnAddress,4)));
+//        AddressField03.setText(String.valueOf(oTrans.getAddress(pnAddress,"sTownName")));
+//        AddressField04.setText(String.valueOf(oTrans.getAddress(pnAddress,"sBrgyName")));
+//        AddressField05.setText(String.valueOf(oTrans.getAddress(pnAddress, 7)));
+//        AddressField06.setText(String.valueOf(oTrans.getAddress(pnAddress, 8)));
+//        
+//        
+//            cbAddress01.setSelected((oTrans.getAddress(pnAddress, "cRecdStat") == "1")? true : false);
+//            cbAddress02.setSelected((oTrans.getAddress(pnAddress, "cPrimaryx")== "1")? true : false);
+//            cbAddress03.setSelected((oTrans.getAddress(pnAddress, 10) == "1")? true : false);
+//            cbAddress04.setSelected((oTrans.getAddress(pnAddress, 12) == "1")? true : false);
+//            cbAddress05.setSelected((oTrans.getAddress(pnAddress, 13) == "1")? true : false);
+//            cbAddress06.setSelected((oTrans.getAddress(pnAddress, 11) == "1")? true : false);
+//            cbAddress07.setSelected((oTrans.getAddress(pnAddress, 14) == "1")? true : false);
+//            cbAddress08.setSelected((oTrans.getAddress(pnAddress, 15) == "1")? true : false);
+//        }
+//
+//        AddressField01.requestFocus();
+//    }
+    private void getSelectedAddressItem(){
+        TextField[] fields = {AddressField01, AddressField02, AddressField03, AddressField04,
+             AddressField05, AddressField06};
         
-        /*checkbox*/        
-        cbAddress01.setSelected(oTrans.getAddress(pnAddress, "cRecdStat").equals("1"));
-        cbAddress02.setSelected(oTrans.getAddress(pnAddress, "cPrimaryx").equals("1"));
-        cbAddress03.setSelected(oTrans.getAddress(pnAddress, 10).equals("1")); 
-        cbAddress04.setSelected(oTrans.getAddress(pnAddress, "cBillingx").equals("1"));
-        cbAddress05.setSelected(oTrans.getAddress(pnAddress, "cShipping").equals("1"));
-        cbAddress06.setSelected(oTrans.getAddress(pnAddress, "cProvince").equals("1"));
-        cbAddress07.setSelected(oTrans.getAddress(pnAddress, "cCurrentx").equals("1"));
-        cbAddress08.setSelected(oTrans.getAddress(pnAddress, "cLTMSAddx").equals("1"));
+        // Loop through each array of TextFields and clear them
+        for (TextField field : fields) {
+            field.clear();
+        }
+        
+        CheckBox[] checkboxs = {cbAddress01,cbAddress02, cbAddress03,
+        cbAddress04, cbAddress05, cbAddress06, cbAddress07, cbAddress08};
 
+        // Loop through each array of TextFields and clear them
+        for (CheckBox checkbox : checkboxs) {
+            checkbox.setSelected(false);
+        }
         
-        /*focus txtfield*/
-        AddressField01.requestFocus();
+        if(oTrans.getAddressList().size()>0){    
+            AddressField01.setText((String) oTrans.getAddress(pnAddress, "sHouseNox"));
+            AddressField02.setText((String) oTrans.getAddress(pnAddress, "sAddressx"));
+            AddressField03.setText((String)  oTrans.getAddress(pnAddress, 20)+ ", " + (String)  oTrans.getAddress(pnAddress, 22));
+            AddressField04.setText((String) oTrans.getAddress(pnAddress, 21));
+            AddressField05.setText(oTrans.getAddress(pnAddress, "nLatitude").toString());
+            AddressField06.setText(oTrans.getAddress(pnAddress, "nLongitud").toString());
+            
+            cbAddress01.setSelected(((String) oTrans.getAddress(pnAddress, "cRecdStat") == "1")? true : false);
+            cbAddress02.setSelected(((String) oTrans.getAddress(pnAddress, "cPrimaryx")== "1")? true : false);
+            cbAddress03.setSelected(((String) oTrans.getAddress(pnAddress, "cOfficexx") == "1")? true : false);
+            cbAddress04.setSelected(((String) oTrans.getAddress(pnAddress, "cBillingx")== "1")? true : false);
+            cbAddress05.setSelected(((String) oTrans.getAddress(pnAddress, "cShipping") == "1")? true : false);
+            cbAddress06.setSelected(((String) oTrans.getAddress(pnAddress, "cProvince")== "1")? true : false);
+            cbAddress07.setSelected(((String) oTrans.getAddress(pnAddress, "cCurrentx") == "1")? true : false);
+            cbAddress08.setSelected(((String) oTrans.getAddress(pnAddress, "cLTMSAddx")== "1")? true : false);
+        }
     }
+        
+    @FXML
+    private void tblMobile_Clicked(MouseEvent event) {
+        pnMobile = tblMobile.getSelectionModel().getSelectedIndex();
+        loadMobile();
+        if (pnMobile >= 0){
+            getMobileSelectedItem();
+        }
+    }
+    private void getMobileSelectedItem() {
+    
+//        TextField[] fields = {AddressField01, AddressField02, AddressField03, AddressField04,
+//                 AddressField05, AddressField06};
+//
+//            // Loop through each array of TextFields and clear them
+//            for (TextField field : fields) {
+//                field.clear();
+//            }
+
+            CheckBox[] checkboxs = {cbMobileNo01,cbMobileNo01};
+
+            // Loop through each array of TextFields and clear them
+            for (CheckBox checkbox : checkboxs) {
+                checkbox.setSelected(false);
+            }
+
+            if(oTrans.getMobileList().size()>0){    
+                txtMobile01.setText((String) oTrans.getMobile(pnMobile, 3));
+                
+                cbMobileNo02.setSelected(((String) oTrans.getMobile(pnMobile, "cRecdStat") == "1")? true : false);
+                cbMobileNo01.setSelected(((String) oTrans.getMobile(pnMobile, "cPrimaryx")== "1")? true : false);
+                
+                cmbMobile01.getSelectionModel().select(Integer.parseInt((String)oTrans.getMobile(pnMobile, "cOwnerxxx")));
+                cmbMobile02.getSelectionModel().select(Integer.parseInt((String)oTrans.getMobile(pnMobile, "cMobileTp")));
+            }
+    }
+//        
+//        System.out.print(pnMobile + "selected index");
+//        if(oTrans.getMobileList().size()>0){
+//        /*txtfields*/
+//            txtMobile01.setText(String.valueOf(oTrans.getMobile(pnMobile,3)));
+//            
+//            cmbMobile02.getSelectionModel().select((String)oTrans.getMobile(pnMobile, 23));
+//            cmbMobile01.getSelectionModel().select(String.valueOf(oTrans.getMobile(pnMobile, 6)));
+//            
+//            cbMobileNo02.setSelected((oTrans.getMobile(pnMobile, "cRecdStat") == "1")? true : false);
+//            cbMobileNo01.setSelected((oTrans.getMobile(pnMobile, "cPrimaryx")== "1")? true : false);
+//        }
+//
+//        txtMobile01.requestFocus();
+//    }
     
 }   
