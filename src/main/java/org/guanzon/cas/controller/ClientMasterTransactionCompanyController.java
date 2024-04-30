@@ -698,6 +698,9 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         txtContact09.setText(oTrans.getInsContact(pnContact, 8) == null || oTrans.getInsContact(pnContact, 8).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 8));
         txtContact10.setText(oTrans.getInsContact(pnContact, 13) == null || oTrans.getInsContact(pnContact, 13).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 13));
         txtContact01.requestFocus();
+        
+        cbContact01.setSelected((boolean) oTrans.getInsContact(pnMobile, 14));
+        cbContact02.setSelected((boolean) oTrans.getInsContact(pnMobile, 13));
     }
 
     /**********************************/
