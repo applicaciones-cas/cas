@@ -6,10 +6,12 @@ package org.guanzon.cas.controller;
 
 import com.rmj.guanzongroup.cas.maven.model.ModelInstitutionalContactPerson;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import javafx.animation.FadeTransition;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -17,6 +19,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -27,9 +30,16 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -54,7 +64,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     private Client_Master oTrans;
 //    private JSONObject poJSON;
     private int pnEditMode;  
-    
+//    private unloadForm appUnload;
     private String oTransnox = "";
     
     private boolean state = false;
@@ -151,7 +161,8 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     private TextField personalinfo01;
     
     
-    
+    @FXML
+    private AnchorPane AnchorMain;
     
     @FXML
     private TextField AddressField01;
@@ -306,6 +317,19 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     ObservableList<String> mobileOwn = FXCollections.observableArrayList("Personal", "Office", "Others");
     ObservableList<String> EmailOwn = FXCollections.observableArrayList("Personal", "Office", "Others");
     ObservableList<String> socialTyp = FXCollections.observableArrayList("Facebook", "Instagram", "Twitter");
+    
+    ObservableList<String> genders = FXCollections.observableArrayList(
+            "Male",
+            "Female",
+            "Other"
+        );
+          // Create a list of civilStatuses    
+        ObservableList<String> civilStatuses = FXCollections.observableArrayList(
+            "Single",
+            "Married",
+            "Divorced",
+            "Widowed"
+        );
     private int pnMobile = 0;
     private int pnEmail = 0;
     private int pnSocMed = 0;
@@ -339,8 +363,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
 
         // Call newRecord to initialize a new record
         oTrans.newRecord();
-        
-        clearAllFields();
+
         // Access sClientID directly from the jsonResult and set it to txtField01
         String sClientID = (String) oTrans.getMaster("sClientID");
         if (txtField01 != null) { // Check if txtField01 is not null before setting its text
@@ -349,7 +372,6 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             // Handle the case where txtField01 is null
             System.out.println("txtField01 is null");
         }
-        
 
         initTextFields();
         InitPersonalInfo();
@@ -383,27 +405,25 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                 switch (lnIndex){
                     case 6: /*search branch*/
                         poJson = new JSONObject();
-                        poJson =  oTrans.searchCitizenship(lsValue, false);
-                        System.out.println("poJson = " + poJson.toJSONString());
-                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-
-                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                             personalinfo06.clear();
-                        }
-
-                        personalinfo06.setText((String) oTrans.getMaster(28));
+                           poJson =  oTrans.searchCitizenship(lsValue, false);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                personalinfo06.clear();
+                           }
+                           personalinfo06.setText((String) poJson.get("sNational"));
                         break;
                     case 8: /*search branch*/
                         poJson = new JSONObject();
-                        poJson =  oTrans.searchBirthPlce(lsValue, false);
-                        System.out.println("poJson = " + poJson.toJSONString());
-                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-
-                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                             personalinfo08.clear();
-                             txtField08.clear();
-                        }
-                        personalinfo08.setText((String) oTrans.getMaster(27));
+                           poJson =  oTrans.searchBirthPlce(lsValue, false);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                personalinfo08.clear();
+                           }
+                           personalinfo08.setText((String) poJson.get("xBrthPlce"));
                         break;
                 }
             case ENTER:
@@ -532,6 +552,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             }
         });
     }
+    
     private void initAddressInfo(){
         /*Address FOCUSED PROPERTY*/
         AddressField01.focusedProperty().addListener(address_Focus);
@@ -540,12 +561,12 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         AddressField04.focusedProperty().addListener(address_Focus);
         AddressField05.focusedProperty().addListener(address_Focus);        
         AddressField06.focusedProperty().addListener(address_Focus);
-                
         
-        /*addressin key */
         AddressField03.setOnKeyPressed(this::addressinfo_KeyPressed);
         AddressField04.setOnKeyPressed(this::addressinfo_KeyPressed);
+        
     }
+    
     private void addressinfo_KeyPressed(KeyEvent event){
         TextField personalinfo = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(12,14));
@@ -556,20 +577,27 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                 switch (lnIndex){
                     case 3: /*search barangay*/
                         poJson = new JSONObject();
-                        poJson = oTrans.SearchTownAddress(pnAddress, lsValue, false);
-                        System.out.println("poJson = " + poJson.toJSONString());
-                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                             AddressField03.clear();
-                        }
-    //                           AddressField03.setText((String) oTrans.getAddress(pnAddress,"sTownName") + ", " + (String) oTrans.getAddress(pnAddress,"sProvName"));
-    //                           AddressField03.setText(oTrans.getAddress(pnAddress).getTownName());
-
-                        AddressField03.setText((String)oTrans.getAddress(pnAddress, 20) + ", " + (String) oTrans.getAddress(pnAddress, 22));
-                        AddressField04.setText((String)oTrans.getAddress(pnAddress, 21));
+                           poJson = oTrans.SearchTownAddress(pnAddress, lsValue, false);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                AddressField03.clear();
+                           }
+                           AddressField03.setText((String) poJson.get("sTownName") + ", " + (String) poJson.get("sProvName"));
                         break;
                     case 4: /*search branch*/
                         poJson = new JSONObject();
+
+                           poJson =  oTrans.SearchBarangayAddress(pnAddress, lsValue, false);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                AddressField04.clear();
+                           }
+                           AddressField04.setText((String) poJson.get("sBrgyName"));
+
                         poJson =  oTrans.SearchBarangayAddress(pnAddress, lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if("error".equalsIgnoreCase(poJson.get("result").toString())){
@@ -577,12 +605,16 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                              ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                              AddressField04.clear();
                         }
+//                           AddressField04.setText((String) oTrans.getAddress(pnAddress,"sBrgyName"));
                         AddressField04.setText((String)oTrans.getAddress(pnAddress, 21));
+//                           AddressField04.setText(oTrans.getAddress(pnAddress).getBarangayName());
+
                         break;
                 }
             case ENTER:
                 
         }
+        loadAddress();
         
         switch (event.getCode()){
         case ENTER:
@@ -597,6 +629,9 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     private void initTextFields(){
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
+        txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
+        
     }
     
     private void initButton(int fnValue){
@@ -644,24 +679,24 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         Object source = event.getSource();
         if (source instanceof Button) {
             Button clickedButton = (Button) source;
+            unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
                 case "btnCancel":
                      if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
 //                            clearAllFields();
                             pnEditMode = EditMode.UNKNOWN;
+//                            unloadForm();
                             
+                            appUnload.unloadForm(AnchorMain, oApp, "Client Transactions Individual");
                         }
                     break;
                 case "btnSave":
-                    
-                        if(!personalinfo01.getText().toString().isEmpty()){
-                            oTrans.getModel().setFullName(personalinfo01.getText());
-                        }
                         JSONObject saveResult = oTrans.saveRecord();
                         if ("success".equals((String) saveResult.get("result"))){
                             System.err.println((String) saveResult.get("message"));
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                             System.out.println("Record saved successfully.");
+                            appUnload.unloadForm(AnchorMain, oApp, "Client Transactions Individual");
                         } else {
                             ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                             System.out.println("Record not saved successfully.");
@@ -677,10 +712,23 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                            ShowMessageFX.Information((String) addObjAddress.get("message"), "Computerized Acounting System", pxeModuleName);
                            break;
                        } 
-                         pnAddress = oTrans.getAddressList().size()-1;
-                       clearAddressFields();
-
-                       loadAddress();
+                        AddressField01.clear();
+                        AddressField02.clear();
+                        AddressField03.clear();
+                        AddressField04.clear();
+                        AddressField05.clear();
+                        AddressField06.clear();
+                        cbAddress01.setSelected(false);
+                        cbAddress02.setSelected(false);
+                        cbAddress03.setSelected(false);
+                        cbAddress04.setSelected(false);
+                        cbAddress05.setSelected(false);
+                        cbAddress06.setSelected(false);
+                        cbAddress07.setSelected(false);
+                        cbAddress08.setSelected(false);
+                        loadAddress();
+                       
+                       pnAddress = oTrans.getAddressList().size()-1;
 
                        tblAddress.getSelectionModel().select(pnAddress + 1);
 //                       initAddressGrid();
@@ -695,9 +743,9 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                             ShowMessageFX.Information((String) addObjMail.get("message"), "Computerized Acounting System", pxeModuleName);
                             break;
                         } 
-                        pnEmail = oTrans.getEmailList().size()-1;
-                        clearEmailFields();
+                        mailFields01.clear();
                         loadEmail();
+                        pnEmail = oTrans.getEmailList().size()-1;
                         tblEmail.getSelectionModel().select(pnEmail + 1);
                      break;
                 case "btnAddMobile":
@@ -708,9 +756,9 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                             ShowMessageFX.Information((String) addObj.get("message"), "Computerized Acounting System", pxeModuleName);
                             break;
                         } 
-                        pnMobile = oTrans.getMobileList().size()-1;
-                        clearMobileFields();
+                        txtMobile01.clear();
                         loadMobile();
+                        pnMobile = oTrans.getMobileList().size()-1;
                         
                         tblMobile.getSelectionModel().select(pnMobile + 1);
                      break;
@@ -722,8 +770,9 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                             ShowMessageFX.Information((String) addSocMed.get("message"), "Computerized Acounting System", pxeModuleName);
                             break;
                         } 
+                        txtSocial01.clear();
+                        txtSocial02.clear();
                         pnSocMed = oTrans.getSocialMediaList().size()-1;
-                        clearSocialFields();
                         
                         loadSocialMedia();
                         tblSocMed.getSelectionModel().select(pnSocMed + 1);
@@ -762,6 +811,11 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                 case 5:/*suffix name*/
                     jsonObject = oTrans.setMaster( 6,lsValue);
                     break;
+                case 6:/*citizenship */
+                    jsonObject = (JSONObject) oTrans.getMaster(13);
+                    
+                    System.out.println(String.valueOf("citizenship = " + oTrans.getMaster(13)));
+                    break;
 //                case 6:/*citizenship */
 //                    jsonObject = oTrans.setMaster( 11,lsValue);
 //                    break;
@@ -787,6 +841,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                     break;
             }
             personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
+            txtField02.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
         } else
             personalinfo.selectAll();
         
@@ -817,6 +872,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                     break;
             }
             loadAddress();
+            
         } else
             AddressField.selectAll();
     };
@@ -933,12 +989,16 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                     if("error".equalsIgnoreCase((String)jsonObject.get("result"))){
                     }
                     break;
+//                case 2:
+//                    jsonObject = oTrans.setMaster(2, "0");
+//                    if ("error".equals((String) jsonObject.get("result"))){
+//                        System.err.println((String) jsonObject.get("message"));
+//                        System.exit(1);
+//                    }
+//                    break;
                 case 2:
-                    jsonObject = oTrans.setMaster(2, "0");
-                    if ("error".equals((String) jsonObject.get("result"))){
-                        System.err.println((String) jsonObject.get("message"));
-                        System.exit(1);
-                    }
+                    break;
+                case 3:
                     break;
 //                case 35:
 //                    jsonObject = oTrans.setMaster(3, lsValue);
@@ -963,31 +1023,18 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     
     private void initComboBoxes(){
     // Create a list of genders
-        ObservableList<String> genders = FXCollections.observableArrayList(
-            "Male",
-            "Female",
-            "Other"
-        );
-
-        // Set the items of the ComboBox to the list of genders
         personalinfo09.setItems(genders);
-        personalinfo09.getSelectionModel().getSelectedIndex();
-        personalinfo09.setOnAction(event ->{
+        personalinfo09.getSelectionModel().select(0);
+        
+        personalinfo09.setOnAction(event -> {
             oTrans.setMaster(9, personalinfo09.getSelectionModel().getSelectedIndex());
         });
-        
-        
-    // Create a list of civilStatuses    
-        ObservableList<String> civilStatuses = FXCollections.observableArrayList(
-            "Single",
-            "Married",
-            "Divorced",
-            "Widowed"
-        );
+  
         // Set the items of the ComboBox to the list of genders
         personalinfo10.setItems(civilStatuses);
-        personalinfo10.getSelectionModel().getSelectedIndex();
-        personalinfo10.setOnAction(event ->{
+        personalinfo10.getSelectionModel().select(0);
+        
+        personalinfo10.setOnAction(event -> {
             oTrans.setMaster(10, personalinfo10.getSelectionModel().getSelectedIndex());
         });
 
@@ -1143,6 +1190,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             });
         });
         tblSocMed.setItems(social_data);
+        tblMobile.getSelectionModel().select(pnMobile + 1);
         tblSocMed.autosize();
     }
     
@@ -1174,9 +1222,17 @@ public class ClientMasterTransactionIndividualController implements Initializabl
        
     }
 
+    
+    @FXML
+    private void tblSocMed_Clicked(MouseEvent event) {
+        pnSocMed = tblSocMed.getSelectionModel().getSelectedIndex(); 
+    }
     @FXML
     private void CheckPrimary_Clicked(MouseEvent event) {
         boolean isChecked = cbMobileNo01.isSelected();
+
+        oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
+
 //        oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
         
         for (int lnCtr = 0; lnCtr < oTrans.getMobileList().size(); lnCtr++){
@@ -1191,6 +1247,8 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             }
             
         }
+        
+
         loadMobile();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
@@ -1201,11 +1259,11 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     @FXML
     private void CheckStatus_Clicked(MouseEvent event) {
         boolean isChecked = cbMobileNo02.isSelected();
-        oTrans.setMobile(pnMobile, "cRecdStat", (isChecked)? "1":"0");
+        oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
         loadMobile();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getMobile(pnMobile, "cRecdStat"));
+        System.out.println("value = " + oTrans.getMobile(pnMobile, "cPrimaryx"));
         
     }
     
@@ -1223,38 +1281,50 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     @FXML
     private void CheckPrimaryEmail_Clicked(MouseEvent event) {
         boolean isChecked = cbEmail01.isSelected();
-//        oTrans.setEmail(pnEmail, "cPrimaryx", (isChecked)? "1":"0");
-         
-        for (int lnCtr = 0; lnCtr < oTrans.getEmailList().size(); lnCtr++){
-            if(pnEmail == lnCtr){
-                if(isChecked){
-                    oTrans.setEmail(pnEmail, "cPrimaryx", "1");
-                }else{
-                    oTrans.setEmail(lnCtr, "cPrimaryx", "0");
-                }
-            }else{
-                oTrans.setEmail(lnCtr, "cPrimaryx", "0");
-            }
-            
-        }
+        oTrans.setEmail(pnEmail, "cPrimaryx", (isChecked)? "1":"0");
         loadEmail();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getEmail(pnEmail, "cPrimaryx"));
+        System.out.println("value = " + oTrans.getEmail(pnMobile, "cPrimaryx"));
         
     }
     
     @FXML
     private void CheckMailStatus_Clicked(MouseEvent event) {
         boolean isChecked = cbEmail02.isSelected();
-        oTrans.setEmail(pnEmail, "cRecdStat", (isChecked)? "1":"0");
+        oTrans.setEmail(pnEmail, "cPrimaryx", (isChecked)? "1":"0");
         loadEmail();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getEmail(pnEmail, "cRecdStat"));
+        System.out.println("value = " + oTrans.getEmail(pnMobile, "cPrimaryx"));
         
     }
     
+    private void clearAllFields() {
+    // Arrays of TextFields grouped by sections
+    TextField[][] allFields = {
+        // Text fields related to specific sections
+        { txtField01, txtField02, txtField03, txtField04,
+         txtField05, txtField06, txtField10, txtField08, txtField11, txtField09},
+
+        {personalinfo02, personalinfo03, personalinfo04, personalinfo05,
+         personalinfo12, personalinfo13, personalinfo14, personalinfo15,
+         personalinfo06, personalinfo08, personalinfo11, personalinfo01},
+
+        {AddressField01, AddressField02, AddressField03, AddressField04,
+         AddressField05, AddressField06},
+
+        // Other text fields
+        {txtMobile01, mailFields01, txtSocial01,}
+    };
+
+    // Loop through each array of TextFields and clear them
+    for (TextField[] fields : allFields) {
+        for (TextField field : fields) {
+            field.clear();
+        }
+    }
+    }
     @FXML
     private void cbAddress01_Clicked(MouseEvent event) {
         boolean isChecked = cbAddress01.isSelected();
@@ -1280,14 +1350,16 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             }
             
         }
-       
-//        for (int lnCtr = 0; lnCtr < oTrans.getAddressList().size(); lnCtr++){
-//            if(isChecked){
-//                oTrans.setAddress(pnAddress, "cPrimaryx", "1");
-//            }else{
-//                oTrans.setAddress(lnCtr, "cPrimaryx", "0");
-//            }
-//        }
+       if(address_data.size() > 0){
+                for(int lnctr = 0; lnctr < oTrans.getAddressList().size(); lnctr++){    
+                    if(oTrans.getAddress(lnctr, "cPrimaryx").equals("1")){
+                        String lsAddress = oTrans.getAddress(lnctr).getHouseNo() + " " + oTrans.getAddress(lnctr).getAddress() +
+                                " " + (String) oTrans.getAddress(lnctr, 21) + ", " + (String)  oTrans.getAddress(lnctr, 20)+ ", " + (String)  oTrans.getAddress(lnctr, 22);
+                        txtField03.setText(lsAddress);
+                    }
+                }
+                
+            }
         loadAddress();
     }
     
@@ -1333,167 +1405,34 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         loadAddress();
         if (pnAddress >= 0){
             getSelectedAddressItem();
-            tblMobile.getSelectionModel().clearAndSelect(pnMobile);
         }
     }
-    
+//    private void getAddressSelectedItem() {
+//        
+//        System.out.print(pnAddress + "selected index");
+//        if(oTrans.getAddressList().size()>0){
+//        /*txtfields*/
+//        AddressField01.setText(String.valueOf(oTrans.getAddress(pnAddress,3)));
+//        AddressField02.setText(String.valueOf( oTrans.getAddress(pnAddress,4)));
+//        AddressField03.setText(String.valueOf(oTrans.getAddress(pnAddress,"sTownName")));
+//        AddressField04.setText(String.valueOf(oTrans.getAddress(pnAddress,"sBrgyName")));
+//        AddressField05.setText(String.valueOf(oTrans.getAddress(pnAddress, 7)));
+//        AddressField06.setText(String.valueOf(oTrans.getAddress(pnAddress, 8)));
+//        
+//        
+//            cbAddress01.setSelected((oTrans.getAddress(pnAddress, "cRecdStat") == "1")? true : false);
+//            cbAddress02.setSelected((oTrans.getAddress(pnAddress, "cPrimaryx")== "1")? true : false);
+//            cbAddress03.setSelected((oTrans.getAddress(pnAddress, 10) == "1")? true : false);
+//            cbAddress04.setSelected((oTrans.getAddress(pnAddress, 12) == "1")? true : false);
+//            cbAddress05.setSelected((oTrans.getAddress(pnAddress, 13) == "1")? true : false);
+//            cbAddress06.setSelected((oTrans.getAddress(pnAddress, 11) == "1")? true : false);
+//            cbAddress07.setSelected((oTrans.getAddress(pnAddress, 14) == "1")? true : false);
+//            cbAddress08.setSelected((oTrans.getAddress(pnAddress, 15) == "1")? true : false);
+//        }
+//
+//        AddressField01.requestFocus();
+//    }
     private void getSelectedAddressItem(){
-        if(oTrans.getAddressList().size()>0){    
-            AddressField01.setText((String) oTrans.getAddress(pnAddress, "sHouseNox"));
-            AddressField02.setText((String) oTrans.getAddress(pnAddress, "sAddressx"));
-            AddressField03.setText((String)  oTrans.getAddress(pnAddress, 20)+ ", " + (String)  oTrans.getAddress(pnAddress, 22));
-            AddressField04.setText((String) oTrans.getAddress(pnAddress, 21));
-            AddressField05.setText(oTrans.getAddress(pnAddress, "nLatitude").toString());
-            AddressField06.setText(oTrans.getAddress(pnAddress, "nLongitud").toString());
-            
-            cbAddress01.setSelected(("1".equals((String) oTrans.getAddress(pnAddress, "cRecdStat"))));
-            cbAddress02.setSelected(("1".equals((String) oTrans.getAddress(pnAddress, "cPrimaryx"))));
-            cbAddress03.setSelected(("1".equals((String) oTrans.getAddress(pnAddress, "cOfficexx"))));
-            cbAddress04.setSelected(("1".equals((String) oTrans.getAddress(pnAddress, "cBillingx"))));
-            cbAddress05.setSelected(("1".equals((String) oTrans.getAddress(pnAddress, "cShipping"))));
-            cbAddress06.setSelected(("1".equals((String) oTrans.getAddress(pnAddress, "cProvince"))));
-            cbAddress07.setSelected(("1".equals((String) oTrans.getAddress(pnAddress, "cCurrentx"))));
-            cbAddress08.setSelected(("1".equals((String) oTrans.getAddress(pnAddress, "cLTMSAddx"))));
-        }
-    }
-        
-    @FXML
-    private void tblMobile_Clicked(MouseEvent event) {
-        pnMobile = tblMobile.getSelectionModel().getSelectedIndex();
-        loadMobile();
-        if (pnMobile >= 0){
-            getMobileSelectedItem();
-            tblMobile.getSelectionModel().clearAndSelect(pnMobile);
-        }
-    }
-    private void getMobileSelectedItem() {
-
-         if(oTrans.getMobileList().size()>0){    
-            txtMobile01.setText((String) oTrans.getMobile(pnMobile, "sMobileNo"));
-            
-            if(oTrans.getMobile(pnMobile, "cOwnerxxx") != null && !oTrans.getMobile(pnMobile, "cOwnerxxx").toString().trim().isEmpty()){
-                cmbMobile01.getSelectionModel().select(Integer.parseInt(oTrans.getMobile(pnMobile, "cOwnerxxx").toString()));
-            }
-            
-            if(oTrans.getMobile(pnMobile, "cMobileTp") != null && !oTrans.getMobile(pnMobile, "cMobileTp").toString().trim().isEmpty()){
-                System.out.println("cMobileTp = " + oTrans.getMobile(pnMobile, "cMobileTp"));
-                cmbMobile02.getSelectionModel().select(Integer.parseInt(oTrans.getMobile(pnMobile, "cMobileTp").toString()));
-            }     
-            cbMobileNo02.setSelected(("1".equals((String) oTrans.getMobile(pnMobile, "cRecdStat"))));
-            cbMobileNo01.setSelected(("1".equals((String) oTrans.getMobile(pnMobile, "cPrimaryx"))));
-        }
-    }
-    
-    
-    @FXML
-    private void tblEmail_Clicked(MouseEvent event) {
-        pnEmail = tblEmail.getSelectionModel().getSelectedIndex(); 
-        if(pnEmail >= 0){
-            getEmailSelectedItem();
-            tblEmail.getSelectionModel().clearAndSelect(pnEmail);
-        }
-    }
-    
-    private void getEmailSelectedItem(){
-        if(oTrans.getEmailList().size()>0){    
-            mailFields01.setText((String) oTrans.getEmail(pnEmail, "sEMailAdd"));
-            if(oTrans.getEmail(pnEmail, "cOwnerxxx") != null &&  !oTrans.getEmail(pnEmail, "cOwnerxxx").toString().isEmpty()){
-                cmbEmail01.getSelectionModel().select(Integer.parseInt(oTrans.getEmail(pnEmail, "cOwnerxxx").toString()));
-            }
-            cbEmail02.setSelected(("1".equals((String) oTrans.getEmail(pnEmail, "cRecdStat"))));
-            cbEmail01.setSelected(("1".equals((String) oTrans.getEmail(pnEmail, "cPrimaryx"))));
-        }
-    }
-    
-    
-    
-    @FXML
-    private void tblSocMed_Clicked(MouseEvent event) {
-        pnSocMed = tblSocMed.getSelectionModel().getSelectedIndex(); 
-        if(pnSocMed >= 0){
-            getSelectedSocMedItem();
-            tblSocMed.getSelectionModel().clearAndSelect(pnSocMed);
-        }
-    }
-    
-    private void getSelectedSocMedItem(){
-        if(oTrans.getSocialMediaList().size()>0){    
-            txtSocial01.setText((String) oTrans.getSocialMed(pnSocMed, "sAccountx"));
-            txtSocial02.setText((String) oTrans.getSocialMed(pnSocMed, "sRemarksx"));
-            if(oTrans.getSocialMed(pnSocMed, "cSocialTp") != null &&  !oTrans.getSocialMed(pnSocMed, "cSocialTp").toString().isEmpty()){
-                cmbSocMed01.getSelectionModel().select(Integer.parseInt(oTrans.getSocialMed(pnSocMed, "cSocialTp").toString()));
-            }
-            cbSocMed01.setSelected(("1".equals((String) oTrans.getSocialMed(pnSocMed, "cRecdStat"))));
-        }
-    }
-    
-    private void clearAllFields() {
-        // Arrays of TextFields grouped by sections
-        TextField[][] allFields = {
-
-            {personalinfo02, personalinfo03, personalinfo04, personalinfo05,
-             personalinfo12, personalinfo13, personalinfo14, personalinfo15,
-             personalinfo06, personalinfo08, personalinfo11, personalinfo01},
-            
-        };
-        txtField01.clear();
-        personalinfo07.setValue(null);
-        personalinfo09.getSelectionModel().select(0);
-        personalinfo10.getSelectionModel().select(0);
-
-        // Loop through each array of TextFields and clear them
-        for (TextField[] fields : allFields) {
-            for (TextField field : fields) {
-                field.clear();
-            }
-        }
-        
-        pnAddress = 0;
-        pnMobile = 0;
-        pnEmail = 0;
-        pnSocMed = 0;
-        clearAddressFields();
-        clearMobileFields();
-        clearEmailFields();
-        clearSocialFields();
-        data.clear();
-        email_data.clear();
-        social_data.clear();
-        address_data.clear();
-
-    }
-    
-    private void clearSocialFields(){
-        txtSocial01.clear();
-        txtSocial02.clear();
-        cmbSocMed01.getSelectionModel().select(0);
-        if(oTrans.getSocialMediaList().size()>0){
-            cbSocMed01.setSelected((oTrans.getSocialMed(pnSocMed, "cRecdStat") == "1")? true : false);
-        }
-    }
-    
-    private void clearMobileFields(){
-        cmbMobile01.getSelectionModel().select(0);
-        cmbMobile02.getSelectionModel().select(0);
-        txtMobile01.clear();    
-        
-        if(oTrans.getMobileList().size()>0){
-            cbMobileNo02.setSelected((oTrans.getMobile(pnMobile, "cRecdStat") == "1")? true : false);
-            cbMobileNo01.setSelected((oTrans.getMobile(pnMobile, "cPrimaryx")== "1")? true : false);
-        }
-    }
-    
-    private void clearEmailFields(){
-        cmbEmail01.getSelectionModel().select(0);
-        mailFields01.clear();    
-        
-        if(oTrans.getEmailList().size()>0){
-            cbEmail02.setSelected((oTrans.getEmail(pnEmail, "cRecdStat") == "1")? true : false);
-            cbEmail01.setSelected((oTrans.getEmail(pnEmail, "cPrimaryx")== "1")? true : false);
-        }
-    }
-    
-    private void clearAddressFields(){
         TextField[] fields = {AddressField01, AddressField02, AddressField03, AddressField04,
              AddressField05, AddressField06};
         
@@ -1510,10 +1449,59 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             checkbox.setSelected(false);
         }
         
-        if(oTrans.getAddressList().size()>0){
-            cbAddress01.setSelected(("1".equals((String) oTrans.getAddress(pnAddress, "cRecdStat"))));
-            cbAddress02.setSelected(("1".equals((String) oTrans.getAddress(pnAddress, "cPrimaryx"))));
+        if(oTrans.getAddressList().size()>0){    
+            AddressField01.setText((String) oTrans.getAddress(pnAddress, "sHouseNox"));
+            AddressField02.setText((String) oTrans.getAddress(pnAddress, "sAddressx"));
+            AddressField03.setText((String)  oTrans.getAddress(pnAddress, 20)+ ", " + (String)  oTrans.getAddress(pnAddress, 22));
+            AddressField04.setText((String) oTrans.getAddress(pnAddress, 21));
+            AddressField05.setText(oTrans.getAddress(pnAddress, "nLatitude").toString());
+            AddressField06.setText(oTrans.getAddress(pnAddress, "nLongitud").toString());
+            
+            cbAddress01.setSelected(((String) oTrans.getAddress(pnAddress, "cRecdStat") == "1")? true : false);
+            cbAddress02.setSelected(((String) oTrans.getAddress(pnAddress, "cPrimaryx")== "1")? true : false);
+            cbAddress03.setSelected(((String) oTrans.getAddress(pnAddress, "cOfficexx") == "1")? true : false);
+            cbAddress04.setSelected(((String) oTrans.getAddress(pnAddress, "cBillingx")== "1")? true : false);
+            cbAddress05.setSelected(((String) oTrans.getAddress(pnAddress, "cShipping") == "1")? true : false);
+            cbAddress06.setSelected(((String) oTrans.getAddress(pnAddress, "cProvince")== "1")? true : false);
+            cbAddress07.setSelected(((String) oTrans.getAddress(pnAddress, "cCurrentx") == "1")? true : false);
+            cbAddress08.setSelected(((String) oTrans.getAddress(pnAddress, "cLTMSAddx")== "1")? true : false);
         }
+    }
 
+        
+    @FXML
+    private void tblMobile_Clicked(MouseEvent event) {
+        pnMobile = tblMobile.getSelectionModel().getSelectedIndex();
+        loadMobile();
+        if (pnMobile >= 0){
+            getMobileSelectedItem();
+        }
+    }
+    private void getMobileSelectedItem() {
+    
+//        TextField[] fields = {AddressField01, AddressField02, AddressField03, AddressField04,
+//                 AddressField05, AddressField06};
+//
+//            // Loop through each array of TextFields and clear them
+//            for (TextField field : fields) {
+//                field.clear();
+//            }
+
+            CheckBox[] checkboxs = {cbMobileNo01,cbMobileNo01};
+
+            // Loop through each array of TextFields and clear them
+            for (CheckBox checkbox : checkboxs) {
+                checkbox.setSelected(false);
+            }
+
+            if(oTrans.getMobileList().size()>0){    
+                txtMobile01.setText((String) oTrans.getMobile(pnMobile, 3));
+                
+                cbMobileNo02.setSelected(((String) oTrans.getMobile(pnMobile, "cRecdStat") == "1")? true : false);
+                cbMobileNo01.setSelected(((String) oTrans.getMobile(pnMobile, "cPrimaryx")== "1")? true : false);
+                
+                cmbMobile01.getSelectionModel().select(Integer.parseInt((String)oTrans.getMobile(pnMobile, "cOwnerxxx")));
+                cmbMobile02.getSelectionModel().select(Integer.parseInt((String)oTrans.getMobile(pnMobile, "cMobileTp")));
+            }
     }
 }   

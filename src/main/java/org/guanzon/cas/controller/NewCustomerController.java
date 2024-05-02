@@ -19,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import static javafx.scene.input.KeyCode.DOWN;
@@ -26,6 +27,7 @@ import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -52,7 +54,8 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
     private int pnMobile = 0;
     private boolean state = false;
     private boolean pbLoaded = false;
-    
+    @FXML
+    private AnchorPane AnchorMain;
     @FXML
     private TextField txtField01;
     
@@ -161,24 +164,18 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         Object source = event.getSource();
         if (source instanceof Button) {
             Button clickedButton = (Button) source;
+            
+            unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
                 
                 /*button cancel*/
                 case "btnCancel":
-                    if (ShowMessageFX.YesNo("Do you want to save transaction?", "Computerized Acounting System", pxeModuleName)){
-                         JSONObject saveResult = oTrans.saveRecord();
-                         if ("success".equals((String) saveResult.get("result"))){
-                            System.err.println((String) saveResult.get("message"));
-                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                            System.out.println("Record saved successfully.");
-                        } else {
-                            ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                            System.out.println("Record not saved successfully.");
-                            System.out.println((String) saveResult.get("message"));
-                        }
-                    }else
-                        
-                    break;                    
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+//                            clearAllFields();
+                        pnEditMode = EditMode.UNKNOWN;
+                        appUnload.unloadForm(AnchorMain, oApp, "Client Transactions Standard");
+                    }
+                    break;               
                 /*button okay*/    
                 case "btnOkay":
                         oTrans.setMaster( 8,String.valueOf(personalinfo01.getText()));
@@ -187,7 +184,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
                             System.err.println((String) saveResult.get("message"));
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                             System.out.println("Record saved successfully.");
-                            unloadform();
+                            appUnload.unloadForm(AnchorMain, oApp, "Client Transactions Standard");
                         } else {
                             ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                             System.out.println("Record not saved successfully.");
