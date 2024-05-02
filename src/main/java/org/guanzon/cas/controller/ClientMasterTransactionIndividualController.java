@@ -6,10 +6,12 @@ package org.guanzon.cas.controller;
 
 import com.rmj.guanzongroup.cas.maven.model.ModelInstitutionalContactPerson;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import javafx.animation.FadeTransition;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -17,6 +19,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -27,9 +30,16 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -54,7 +64,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     private Client_Master oTrans;
 //    private JSONObject poJSON;
     private int pnEditMode;  
-    
+//    private unloadForm appUnload;
     private String oTransnox = "";
     
     private boolean state = false;
@@ -151,7 +161,8 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     private TextField personalinfo01;
     
     
-    
+    @FXML
+    private AnchorPane AnchorMain;
     
     @FXML
     private TextField AddressField01;
@@ -306,6 +317,19 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     ObservableList<String> mobileOwn = FXCollections.observableArrayList("Personal", "Office", "Others");
     ObservableList<String> EmailOwn = FXCollections.observableArrayList("Personal", "Office", "Others");
     ObservableList<String> socialTyp = FXCollections.observableArrayList("Facebook", "Instagram", "Twitter");
+    
+    ObservableList<String> genders = FXCollections.observableArrayList(
+            "Male",
+            "Female",
+            "Other"
+        );
+          // Create a list of civilStatuses    
+        ObservableList<String> civilStatuses = FXCollections.observableArrayList(
+            "Single",
+            "Married",
+            "Divorced",
+            "Widowed"
+        );
     private int pnMobile = 0;
     private int pnEmail = 0;
     private int pnSocMed = 0;
@@ -528,6 +552,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             }
         });
     }
+    
     private void initAddressInfo(){
         /*Address FOCUSED PROPERTY*/
         AddressField01.focusedProperty().addListener(address_Focus);
@@ -536,12 +561,12 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         AddressField04.focusedProperty().addListener(address_Focus);
         AddressField05.focusedProperty().addListener(address_Focus);        
         AddressField06.focusedProperty().addListener(address_Focus);
-                
         
-        /*addressin key */
         AddressField03.setOnKeyPressed(this::addressinfo_KeyPressed);
         AddressField04.setOnKeyPressed(this::addressinfo_KeyPressed);
+        
     }
+    
     private void addressinfo_KeyPressed(KeyEvent event){
         TextField personalinfo = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(12,14));
@@ -563,6 +588,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                         break;
                     case 4: /*search branch*/
                         poJson = new JSONObject();
+<<<<<<< Updated upstream
                            poJson =  oTrans.SearchBarangayAddress(pnAddress, lsValue, false);
                            System.out.println("poJson = " + poJson.toJSONString());
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
@@ -571,11 +597,24 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                                 AddressField04.clear();
                            }
                            AddressField04.setText((String) poJson.get("sBrgyName"));
+=======
+                        poJson =  oTrans.SearchBarangayAddress(pnAddress, lsValue, false);
+                        System.out.println("poJson = " + poJson.toJSONString());
+                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
+
+                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                             AddressField04.clear();
+                        }
+//                           AddressField04.setText((String) oTrans.getAddress(pnAddress,"sBrgyName"));
+                        AddressField04.setText((String)oTrans.getAddress(pnAddress, 21));
+//                           AddressField04.setText(oTrans.getAddress(pnAddress).getBarangayName());
+>>>>>>> Stashed changes
                         break;
                 }
             case ENTER:
                 
         }
+        loadAddress();
         
         switch (event.getCode()){
         case ENTER:
@@ -590,6 +629,9 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     private void initTextFields(){
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
+        txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
+        
     }
     
     private void initButton(int fnValue){
@@ -637,12 +679,15 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         Object source = event.getSource();
         if (source instanceof Button) {
             Button clickedButton = (Button) source;
+            unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
                 case "btnCancel":
                      if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
 //                            clearAllFields();
                             pnEditMode = EditMode.UNKNOWN;
+//                            unloadForm();
                             
+                            appUnload.unloadForm(AnchorMain, oApp, "Client Transactions Individual");
                         }
                     break;
                 case "btnSave":
@@ -651,6 +696,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                             System.err.println((String) saveResult.get("message"));
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                             System.out.println("Record saved successfully.");
+                            appUnload.unloadForm(AnchorMain, oApp, "Client Transactions Individual");
                         } else {
                             ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                             System.out.println("Record not saved successfully.");
@@ -795,6 +841,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                     break;
             }
             personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
+            txtField02.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
         } else
             personalinfo.selectAll();
         
@@ -825,6 +872,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                     break;
             }
             loadAddress();
+            
         } else
             AddressField.selectAll();
     };
@@ -941,12 +989,16 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                     if("error".equalsIgnoreCase((String)jsonObject.get("result"))){
                     }
                     break;
+//                case 2:
+//                    jsonObject = oTrans.setMaster(2, "0");
+//                    if ("error".equals((String) jsonObject.get("result"))){
+//                        System.err.println((String) jsonObject.get("message"));
+//                        System.exit(1);
+//                    }
+//                    break;
                 case 2:
-                    jsonObject = oTrans.setMaster(2, "0");
-                    if ("error".equals((String) jsonObject.get("result"))){
-                        System.err.println((String) jsonObject.get("message"));
-                        System.exit(1);
-                    }
+                    break;
+                case 3:
                     break;
 //                case 35:
 //                    jsonObject = oTrans.setMaster(3, lsValue);
@@ -971,31 +1023,18 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     
     private void initComboBoxes(){
     // Create a list of genders
-        ObservableList<String> genders = FXCollections.observableArrayList(
-            "Male",
-            "Female",
-            "Other"
-        );
-
-        // Set the items of the ComboBox to the list of genders
         personalinfo09.setItems(genders);
-        personalinfo09.getSelectionModel().getSelectedIndex();
-        personalinfo09.setOnAction(event ->{
+        personalinfo09.getSelectionModel().select(0);
+        
+        personalinfo09.setOnAction(event -> {
             oTrans.setMaster(9, personalinfo09.getSelectionModel().getSelectedIndex());
         });
-        
-        
-    // Create a list of civilStatuses    
-        ObservableList<String> civilStatuses = FXCollections.observableArrayList(
-            "Single",
-            "Married",
-            "Divorced",
-            "Widowed"
-        );
+  
         // Set the items of the ComboBox to the list of genders
         personalinfo10.setItems(civilStatuses);
-        personalinfo10.getSelectionModel().getSelectedIndex();
-        personalinfo10.setOnAction(event ->{
+        personalinfo10.getSelectionModel().select(0);
+        
+        personalinfo10.setOnAction(event -> {
             oTrans.setMaster(10, personalinfo10.getSelectionModel().getSelectedIndex());
         });
 
@@ -1191,7 +1230,25 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     @FXML
     private void CheckPrimary_Clicked(MouseEvent event) {
         boolean isChecked = cbMobileNo01.isSelected();
+<<<<<<< Updated upstream
         oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
+=======
+//        oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
+        
+        for (int lnCtr = 0; lnCtr < oTrans.getMobileList().size(); lnCtr++){
+            if(pnMobile == lnCtr){
+                if(isChecked){
+                    oTrans.setMobile(pnMobile, "cPrimaryx", "1");
+                }else{
+                    oTrans.setMobile(lnCtr, "cPrimaryx", "0");
+                }
+            }else{
+                oTrans.setMobile(lnCtr, "cPrimaryx", "0");
+            }
+            
+        }
+        
+>>>>>>> Stashed changes
         loadMobile();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
@@ -1293,14 +1350,16 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             }
             
         }
-       
-//        for (int lnCtr = 0; lnCtr < oTrans.getAddressList().size(); lnCtr++){
-//            if(isChecked){
-//                oTrans.setAddress(pnAddress, "cPrimaryx", "1");
-//            }else{
-//                oTrans.setAddress(lnCtr, "cPrimaryx", "0");
-//            }
-//        }
+       if(address_data.size() > 0){
+                for(int lnctr = 0; lnctr < oTrans.getAddressList().size(); lnctr++){    
+                    if(oTrans.getAddress(lnctr, "cPrimaryx").equals("1")){
+                        String lsAddress = oTrans.getAddress(lnctr).getHouseNo() + " " + oTrans.getAddress(lnctr).getAddress() +
+                                " " + (String) oTrans.getAddress(lnctr, 21) + ", " + (String)  oTrans.getAddress(lnctr, 20)+ ", " + (String)  oTrans.getAddress(lnctr, 22);
+                        txtField03.setText(lsAddress);
+                    }
+                }
+                
+            }
         loadAddress();
     }
     
@@ -1408,6 +1467,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             cbAddress08.setSelected(((String) oTrans.getAddress(pnAddress, "cLTMSAddx")== "1")? true : false);
         }
     }
+<<<<<<< Updated upstream
         
     @FXML
     private void tblMobile_Clicked(MouseEvent event) {
@@ -1460,4 +1520,10 @@ public class ClientMasterTransactionIndividualController implements Initializabl
 //        txtMobile01.requestFocus();
 //    }
     
+=======
+    
+
+    
+
+>>>>>>> Stashed changes
 }   

@@ -70,7 +70,8 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     
     private boolean state = false;
     private boolean pbLoaded = false;
-    
+    @FXML
+    private AnchorPane AnchorMain;
     @FXML
     private AnchorPane anchorPersonal, anchorAddress,
             anchorMobile, anchorEmail, anchorSocial,
@@ -850,6 +851,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         btnAddAddress.setOnAction(this::handleButtonAction);     
         btnAddEmail.setOnAction(this::handleButtonAction);        
         btnAddInsContact.setOnAction(this::handleButtonAction);
+        btnClose.setOnAction(this::handleButtonAction);
     }
     
     private void handleButtonAction(ActionEvent event) {
@@ -857,7 +859,17 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         JSONObject poJSON;
         if (source instanceof Button) {
             Button clickedButton = (Button) source;
+            unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
+                case"btnClose":
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
+//                            clearAllFields();
+                            pnEditMode = EditMode.UNKNOWN;
+//                            unloadForm();
+                            
+                            appUnload.unloadForm(AnchorMain, oApp, "Client Parameter");
+                        }
+                    break;
                 case "btnNew":
                         poJSON = oTrans.newRecord();
                         if ("success".equals((String) poJSON.get("result"))){

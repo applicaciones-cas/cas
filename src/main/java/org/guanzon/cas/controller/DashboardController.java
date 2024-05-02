@@ -215,7 +215,7 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/ClientMasterTransactionIndividual.fxml":
                 return "Client Transactions Individual";
             case "/org/guanzon/cas/views/NewCustomer.fxml":
-                return "Client Transactions Individual";
+                return "Client Transactions Standard";
             default:
                 return null;
         }
