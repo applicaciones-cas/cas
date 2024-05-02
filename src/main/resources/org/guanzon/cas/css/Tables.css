@@ -1,12 +1,15 @@
 .table-view{
    -fx-background-color: transparent;
+    -fx-opacity: 1.0;
 }
 
 .table-view:focused{
     -fx-background-color: transparent;
+    -fx-opacity: 1.0;
 }
 .table-row-cell:empty {
     -fx-background-color: white;
+    -fx-opacity: 1.0;
 }
  
 .table-row-cell:empty .table-cell {
@@ -15,22 +18,26 @@
 
 .table-view .column-header-background{
     -fx-background-color: #4d5656;
+    -fx-opacity: 1.0;
 }
 
 .table-view .column-header-background .label{
     -fx-background-color: transparent;
     -fx-text-fill: white;
+    -fx-opacity: 1.0;
 }
 
 .table-view .filler, .table-view .column-header {
     -fx-background-color: transparent;
     -fx-size: 20px;
+    -fx-opacity: 1.0;
 }
 
 .table-view .table-cell{
     -fx-text-fill: black;
     -fx-font-size: 11px;
     -fx-font-weight: 300;
+    -fx-opacity: 1.0;
     -fx-font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
 }
 .table-row-cell{
@@ -38,6 +45,7 @@
     -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em; /* 0 */
     -fx-cell-size: 20px;
+    -fx-opacity: 1.0;
 }
 .table-row-cell:selected {
     -fx-background-color: #B3B6B7;
@@ -60,10 +68,13 @@
 .table-view > .virtual-flow > .scroll-bar:horizontal > .track,
 .table-view > .virtual-flow > .scroll-bar:horizontal > .track-background {
     -fx-background-color: transparent;
+    -fx-opacity: 1.0;
 }
 .table-view{
     -fx-border-color: #000000;
     -fx-border-width: 1px 1px 1px 1px;
+    
+    -fx-opacity: 1.0;
 }
 
 .tree-row-cell :empty .tree-table-cell {
@@ -77,18 +88,26 @@
 .tree-table-view > .virtual-flow > .scroll-bar:horizontal > .track,
 .tree-table-view > .virtual-flow > .scroll-bar:horizontal > .track-background {
     -fx-background-color: transparent;
+    
+    -fx-opacity: 1.0;
 }
 
 #tblDetail{
     -fx-border-color: #000000;
     -fx-border-width: 1px 1px 1px 1px;
+    
+    -fx-opacity: 1.0;
 }
 .tree-table-view{
    -fx-background-color: transparent;
+   
+    -fx-opacity: 1.0;
 }
 
 .tree-table-view:focused{
     -fx-background-color: transparent;
+    
+    -fx-opacity: 1.0;
 }
 .tree-table-row-cell:empty {
     -fx-background-color: white;
