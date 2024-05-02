@@ -32,6 +32,7 @@ import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -62,7 +63,8 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 
     private boolean state = false;
     private boolean pbLoaded = false;
-
+    @FXML
+    private AnchorPane AnchorMain;
     @FXML
     private Button btnSave;
     @FXML
@@ -613,13 +615,14 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         Object source = event.getSource();
         if (source instanceof Button) {
             Button clickedButton = (Button) source;
+            unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
                 case "btnClose":
 
                     if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
 //                            clearAllFields();
                         pnEditMode = EditMode.UNKNOWN;
-
+                        appUnload.unloadForm(AnchorMain, oApp, "Client Transactions Company");
                     }
                     break;
                 case "btnSave":
@@ -628,6 +631,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                         System.err.println((String) saveResult.get("message"));
                         ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                         System.out.println("Record saved successfully.");
+                        appUnload.unloadForm(AnchorMain, oApp, "Client Transactions Company");
                     } else {
                         ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                         System.out.println("Record not saved successfully.");

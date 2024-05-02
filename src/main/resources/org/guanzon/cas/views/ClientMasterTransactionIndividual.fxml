@@ -31,7 +31,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="1000.0" maxWidth="2500.0" minHeight="700.0" minWidth="1100.0" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<<<<<<< Updated upstream
+<AnchorPane maxHeight="1000.0" maxWidth="2500.0" minHeight="700.0" minWidth="1100.0" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+=======
+<AnchorPane fx:id="AnchorMain" maxHeight="1000.0" maxWidth="2500.0" minHeight="700.0" minWidth="1100.0" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+>>>>>>> Stashed changes
     <children>
         <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <center>
@@ -74,7 +78,7 @@
                                                                                 <RowConstraints minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
                                                                             </rowConstraints>
                                                                             <children>
-                                                                                <TextField disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="3">
+                                                                                <TextField fx:id="txtField02" disable="true" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="3">
                                                                                     <GridPane.margin>
                                                                                         <Insets left="5.0" />
                                                                                     </GridPane.margin>
@@ -100,7 +104,7 @@
                                                                                         <Font size="14.0" />
                                                                                     </font>
                                                                                 </Text>
-                                                                                <TextField fx:id="txtField01" disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                                                <TextField fx:id="txtField01" disable="true" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                                                 <Label minWidth="225.0" style="-fx-background-color: FF8201;" text="New Customer / Existing Customer" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="1">
                                                                                     <font>
                                                                                         <Font name="System Bold" size="18.0" />
@@ -109,11 +113,11 @@
                                                                                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                                                                     </padding>
                                                                                 </Label>
-                                                                                <TextArea disable="true" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="4" GridPane.rowSpan="2">
-                                                                                    <GridPane.margin>
-                                                                                        <Insets left="5.0" />
-                                                                                    </GridPane.margin>
-                                                                                </TextArea>
+                                                            <TextField fx:id="txtField03" alignment="TOP_LEFT" disable="true" prefHeight="60.0" prefWidth="459.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="4" GridPane.rowSpan="2">
+                                                               <GridPane.margin>
+                                                                  <Insets left="5.0" />
+                                                               </GridPane.margin>
+                                                            </TextField>
                                                                             </children>
                                                                             <padding>
                                                                                 <Insets top="5.0" />
@@ -425,7 +429,7 @@
                                                                         </Text>
                                                                         <TextField fx:id="AddressField05" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                                                         <TextField fx:id="AddressField06" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                                        <CheckBox fx:id="cbAddress04" mnemonicParsing="false" text="Billing" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="5">
+                                                                        <CheckBox fx:id="cbAddress04" mnemonicParsing="false"  text="Billing" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="5">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
@@ -640,7 +644,7 @@
                                                                <items>
                                                                   <AnchorPane>
                                                                      <children>
-                                                                        <TableView fx:id="tblEmail" onMouseClicked="#tblEmail_Clicked" prefHeight="300.0" prefWidth="200.0" stylesheets="@Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                        <TableView fx:id="tblEmail" prefHeight="300.0" prefWidth="200.0" stylesheets="@Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                            <columns>
                                                                               <TableColumn fx:id="indexEmail01" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="35.0" text="No." />
                                                                               <TableColumn fx:id="indexEmail02" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="180.0" text="Owner" />
