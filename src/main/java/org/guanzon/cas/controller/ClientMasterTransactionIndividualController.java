@@ -653,6 +653,10 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                         }
                     break;
                 case "btnSave":
+                    
+                        if(!personalinfo01.getText().toString().isEmpty()){
+                            oTrans.getModel().setFullName(personalinfo01.getText());
+                        }
                         JSONObject saveResult = oTrans.saveRecord();
                         if ("success".equals((String) saveResult.get("result"))){
                             System.err.println((String) saveResult.get("message"));
@@ -1139,7 +1143,6 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             });
         });
         tblSocMed.setItems(social_data);
-        tblMobile.getSelectionModel().select(pnMobile + 1);
         tblSocMed.autosize();
     }
     
@@ -1174,7 +1177,20 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     @FXML
     private void CheckPrimary_Clicked(MouseEvent event) {
         boolean isChecked = cbMobileNo01.isSelected();
-        oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
+//        oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
+        
+        for (int lnCtr = 0; lnCtr < oTrans.getMobileList().size(); lnCtr++){
+            if(pnMobile == lnCtr){
+                if(isChecked){
+                    oTrans.setMobile(pnMobile, "cPrimaryx", "1");
+                }else{
+                    oTrans.setMobile(lnCtr, "cPrimaryx", "0");
+                }
+            }else{
+                oTrans.setMobile(lnCtr, "cPrimaryx", "0");
+            }
+            
+        }
         loadMobile();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
@@ -1185,11 +1201,11 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     @FXML
     private void CheckStatus_Clicked(MouseEvent event) {
         boolean isChecked = cbMobileNo02.isSelected();
-        oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
+        oTrans.setMobile(pnMobile, "cRecdStat", (isChecked)? "1":"0");
         loadMobile();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getMobile(pnMobile, "cPrimaryx"));
+        System.out.println("value = " + oTrans.getMobile(pnMobile, "cRecdStat"));
         
     }
     
@@ -1207,22 +1223,35 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     @FXML
     private void CheckPrimaryEmail_Clicked(MouseEvent event) {
         boolean isChecked = cbEmail01.isSelected();
-        oTrans.setEmail(pnEmail, "cPrimaryx", (isChecked)? "1":"0");
+//        oTrans.setEmail(pnEmail, "cPrimaryx", (isChecked)? "1":"0");
+         
+        for (int lnCtr = 0; lnCtr < oTrans.getEmailList().size(); lnCtr++){
+            if(pnEmail == lnCtr){
+                if(isChecked){
+                    oTrans.setEmail(pnEmail, "cPrimaryx", "1");
+                }else{
+                    oTrans.setEmail(lnCtr, "cPrimaryx", "0");
+                }
+            }else{
+                oTrans.setEmail(lnCtr, "cPrimaryx", "0");
+            }
+            
+        }
         loadEmail();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getEmail(pnMobile, "cPrimaryx"));
+        System.out.println("value = " + oTrans.getEmail(pnEmail, "cPrimaryx"));
         
     }
     
     @FXML
     private void CheckMailStatus_Clicked(MouseEvent event) {
         boolean isChecked = cbEmail02.isSelected();
-        oTrans.setEmail(pnEmail, "cPrimaryx", (isChecked)? "1":"0");
+        oTrans.setEmail(pnEmail, "cRecdStat", (isChecked)? "1":"0");
         loadEmail();
         String val = (isChecked)? "1":"0";
         System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getEmail(pnMobile, "cPrimaryx"));
+        System.out.println("value = " + oTrans.getEmail(pnEmail, "cRecdStat"));
         
     }
     
