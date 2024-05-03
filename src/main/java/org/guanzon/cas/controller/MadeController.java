@@ -330,7 +330,6 @@ public class MadeController implements Initializable, ScreenInterface {
             case UP:
                 CommonUtils.SetPreviousFocus(textField);
         }
-
         pnIndex = lnIndex;
     }
 
@@ -338,7 +337,6 @@ public class MadeController implements Initializable, ScreenInterface {
         if (!pbLoaded) {
             return;
         }
-
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
@@ -346,7 +344,6 @@ public class MadeController implements Initializable, ScreenInterface {
         if (lsValue == null) {
             return;
         }
-
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
@@ -357,7 +354,6 @@ public class MadeController implements Initializable, ScreenInterface {
                         return;
                     }
                     break;
-
             }
         } else {
             txtField.selectAll();
@@ -381,7 +377,6 @@ public class MadeController implements Initializable, ScreenInterface {
             btnActivate.setText("Activate");
             faActivate.setGlyphName("CHECK");
         }
-
     }
 
     private void clearFields() {
