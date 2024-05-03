@@ -1,6 +1,7 @@
 package org.guanzon.cas.controller;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -68,6 +69,14 @@ public class RegionController implements Initializable, ScreenInterface {
     private TextField txtField01;
     @FXML
     private TextField txtField02;
+    @FXML
+    private TextField txtField03;
+    @FXML
+    private TextField txtField04;
+    @FXML
+    private TextField txtField05;
+    @FXML
+    private TextField txtField06;
     @FXML
     private TextField txtField99;
     @FXML
@@ -282,6 +291,10 @@ public class RegionController implements Initializable, ScreenInterface {
 
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
+        txtField03.setEditable(lbShow);
+        txtField04.setEditable(lbShow);
+        txtField05.setEditable(lbShow);
+        txtField06.setEditable(lbShow);
 
         txtField02.requestFocus();
     }
@@ -290,6 +303,10 @@ public class RegionController implements Initializable, ScreenInterface {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
+        txtField04.focusedProperty().addListener(txtField_Focus);
+        txtField05.focusedProperty().addListener(txtField_Focus);
+        txtField06.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
@@ -358,6 +375,37 @@ public class RegionController implements Initializable, ScreenInterface {
                     }
                     break;
 
+                case 3:
+                    poJSON = oTrans.getModel().setMinimumWages(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 4:
+                    poJSON = oTrans.getModel().setColaAmount(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 5:
+                    poJSON = oTrans.getModel().setMinimumWage2(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 6:
+                    poJSON = oTrans.getModel().setColaAmount2(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
             }
         } else {
             txtField.selectAll();
@@ -371,6 +419,10 @@ public class RegionController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getRegionID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getRegionName());
+        txtField03.setText(oTrans.getModel().getMinimumWages());
+        txtField04.setText(oTrans.getModel().getColaAmount());
+        txtField05.setText(oTrans.getModel().getMinimumWage2());
+        txtField06.setText(oTrans.getModel().getColaAmount2());
 
         cbActive.setSelected(lbActive);
 
@@ -387,6 +439,10 @@ public class RegionController implements Initializable, ScreenInterface {
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
+        txtField04.clear();
+        txtField05.clear();
+        txtField06.clear();
         txtField99.clear();
 
         psPrimary = "";
