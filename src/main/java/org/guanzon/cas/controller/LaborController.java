@@ -1,6 +1,7 @@
 package org.guanzon.cas.controller;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -69,6 +70,12 @@ public class LaborController implements Initializable, ScreenInterface {
     @FXML
     private TextField txtField02;
     @FXML
+    private TextField txtField03;
+    @FXML
+    private TextField txtField04;
+    @FXML
+    private TextField txtField05;
+    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
@@ -100,7 +107,20 @@ public class LaborController implements Initializable, ScreenInterface {
                 break;
 
             case "btnSave":
+                poJSON = oTrans.getModel().setInHouse("1");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
 
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                poJSON = oTrans.getModel().setLaborType("1");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -282,6 +302,9 @@ public class LaborController implements Initializable, ScreenInterface {
 
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
+        txtField03.setEditable(lbShow);
+        txtField04.setEditable(lbShow);
+        txtField05.setEditable(lbShow);
 
         txtField02.requestFocus();
     }
@@ -290,6 +313,9 @@ public class LaborController implements Initializable, ScreenInterface {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
+        txtField04.focusedProperty().addListener(txtField_Focus);
+        txtField05.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
@@ -358,6 +384,29 @@ public class LaborController implements Initializable, ScreenInterface {
                     }
                     break;
 
+                case 3:
+                    poJSON = oTrans.getModel().setPriceLevel1(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 4:
+                    poJSON = oTrans.getModel().setPriceLevel2(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 5:
+                    poJSON = oTrans.getModel().setPriceLevel3(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
             }
         } else {
             txtField.selectAll();
@@ -371,6 +420,9 @@ public class LaborController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getLaborID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getLaborName());
+        txtField03.setText(oTrans.getModel().getPriceLevel1());
+        txtField04.setText(oTrans.getModel().getPriceLevel2());
+        txtField05.setText(oTrans.getModel().getPriceLevel3());
 
         cbActive.setSelected(lbActive);
 
@@ -387,6 +439,9 @@ public class LaborController implements Initializable, ScreenInterface {
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
+        txtField04.clear();
+        txtField05.clear();
         txtField99.clear();
 
         psPrimary = "";
