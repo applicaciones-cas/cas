@@ -69,6 +69,18 @@ public class DepartmentController implements Initializable, ScreenInterface {
     @FXML
     private TextField txtField02;
     @FXML
+    private TextField txtField03;
+    @FXML
+    private TextField txtField04;
+    @FXML
+    private TextField txtField05;
+    @FXML
+    private TextField txtField06;
+    @FXML
+    private TextField txtField07;
+    @FXML
+    private TextField txtField08;
+    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
@@ -100,7 +112,20 @@ public class DepartmentController implements Initializable, ScreenInterface {
                 break;
 
             case "btnSave":
+                poJSON = oTrans.getModel().setHeadAssignID("HelloWorld");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
 
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                poJSON = oTrans.getModel().setSupervisorAssignID("HelloWorld");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -282,6 +307,12 @@ public class DepartmentController implements Initializable, ScreenInterface {
 
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
+        txtField03.setEditable(lbShow);
+        txtField04.setEditable(lbShow);
+        txtField05.setEditable(lbShow);
+        txtField06.setEditable(lbShow);
+        txtField07.setDisable(lbShow);
+        txtField08.setDisable(lbShow);
 
         txtField02.requestFocus();
     }
@@ -290,9 +321,17 @@ public class DepartmentController implements Initializable, ScreenInterface {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
+        txtField04.focusedProperty().addListener(txtField_Focus);
+        txtField05.focusedProperty().addListener(txtField_Focus);
+        txtField06.focusedProperty().addListener(txtField_Focus);
+        txtField07.focusedProperty().addListener(txtField_Focus);
+        txtField08.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
+        txtField07.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField08.setOnKeyPressed(this::txtField_KeyPressed);
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
@@ -316,6 +355,30 @@ public class DepartmentController implements Initializable, ScreenInterface {
                             loadRecord();
                         }
                         break;
+
+                    case 7:
+                    /*Browse Primary*/
+//                        poJSON = oTrans.searchRecord(lsValue, false);
+//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+//
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtField07.requestFocus();
+//                        } else {
+//                            loadRecord();
+//                        }
+//                        break;
+
+                    case 8:
+                    /*Browse Primary*/
+//                        poJSON = oTrans.searchRecord(lsValue, false);
+//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+//
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtField08.requestFocus();
+//                        } else {
+//                            loadRecord();
+//                        }
+//                        break;
                 }
             case ENTER:
                 switch (lnIndex) {
@@ -358,6 +421,53 @@ public class DepartmentController implements Initializable, ScreenInterface {
                     }
                     break;
 
+                case 3:
+                    poJSON = oTrans.getModel().setDepartmentHead(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 4:
+                    poJSON = oTrans.getModel().setDepartmentCode(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 5:
+                    poJSON = oTrans.getModel().setMobileNumber(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 6:
+                    poJSON = oTrans.getModel().setEmailAddress(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 7:
+                    poJSON = oTrans.getModel().setHeadAssignID(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 8:
+                    poJSON = oTrans.getModel().setSupervisorAssignID(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
             }
         } else {
             txtField.selectAll();
@@ -371,6 +481,12 @@ public class DepartmentController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getDepartmentID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDepartmentName());
+        txtField03.setText(oTrans.getModel().getDepartmentHead());
+        txtField04.setText(oTrans.getModel().getDepartmentCode());
+        txtField05.setText(oTrans.getModel().getMobileNumber());
+        txtField06.setText(oTrans.getModel().getEmailAddress());
+        txtField07.setText(oTrans.getModel().getHeadAssign());
+        txtField08.setText(oTrans.getModel().getSupervisorAssign());
 
         cbActive.setSelected(lbActive);
 
@@ -387,6 +503,12 @@ public class DepartmentController implements Initializable, ScreenInterface {
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
+        txtField04.clear();
+        txtField05.clear();
+        txtField06.clear();
+        txtField07.clear();
+        txtField08.clear();
         txtField99.clear();
 
         psPrimary = "";
