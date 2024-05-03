@@ -69,6 +69,12 @@ public class ModelController implements Initializable, ScreenInterface {
     @FXML
     private TextField txtField02;
     @FXML
+    private TextField txtField03;
+    @FXML
+    private TextField txtField04;
+    @FXML
+    private TextField txtField05;
+    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
@@ -100,7 +106,27 @@ public class ModelController implements Initializable, ScreenInterface {
                 break;
 
             case "btnSave":
+                poJSON = oTrans.getModel().setCategoryCode("12345");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
 
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                poJSON = oTrans.getModel().setBrandCode("12345");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                poJSON = oTrans.getModel().setEndOfLife("1");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -281,7 +307,10 @@ public class ModelController implements Initializable, ScreenInterface {
         btnClose.setVisible(!lbShow);
 
         txtField99.setDisable(lbShow);
-        txtField02.setEditable(lbShow);
+        txtField02.setDisable(lbShow);
+        txtField03.setEditable(lbShow);
+        txtField04.setEditable(lbShow);
+        txtField05.setEditable(lbShow);
 
         txtField02.requestFocus();
     }
@@ -290,10 +319,14 @@ public class ModelController implements Initializable, ScreenInterface {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
+        txtField04.focusedProperty().addListener(txtField_Focus);
+        txtField05.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField02.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -316,6 +349,18 @@ public class ModelController implements Initializable, ScreenInterface {
                             loadRecord();
                         }
                         break;
+
+                    case 2:
+                    /*Browse Primary*/
+//                        poJSON = oTrans.searchRecord(lsValue, false);
+//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+//
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtField02.requestFocus();
+//                        } else {
+//                            loadRecord();
+//                        }
+//                        break;
                 }
             case ENTER:
                 switch (lnIndex) {
@@ -351,6 +396,14 @@ public class ModelController implements Initializable, ScreenInterface {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
+                    poJSON = oTrans.getModel().setCategoryCode(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 3:
                     poJSON = oTrans.getModel().setModelName(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -358,6 +411,21 @@ public class ModelController implements Initializable, ScreenInterface {
                     }
                     break;
 
+                case 4:
+                    poJSON = oTrans.getModel().setDescription(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 5:
+                    poJSON = oTrans.getModel().setBriefDescription(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
             }
         } else {
             txtField.selectAll();
@@ -370,7 +438,10 @@ public class ModelController implements Initializable, ScreenInterface {
 
         psPrimary = oTrans.getModel().getModelCode();
         txtField01.setText(psPrimary);
-        txtField02.setText(oTrans.getModel().getModelName());
+        txtField02.setText(oTrans.getModel().getBrandName());
+        txtField03.setText(oTrans.getModel().getModelName());
+        txtField04.setText(oTrans.getModel().getDescription());
+        txtField05.setText(oTrans.getModel().getBriefDescription());
 
         cbActive.setSelected(lbActive);
 
@@ -387,6 +458,9 @@ public class ModelController implements Initializable, ScreenInterface {
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
+        txtField04.clear();
+        txtField05.clear();
         txtField99.clear();
 
         psPrimary = "";
