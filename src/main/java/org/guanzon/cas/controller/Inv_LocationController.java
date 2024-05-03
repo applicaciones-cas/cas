@@ -69,6 +69,8 @@ public class Inv_LocationController implements Initializable, ScreenInterface {
     @FXML
     private TextField txtField02;
     @FXML
+    private TextField txtField03;
+    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
@@ -282,6 +284,7 @@ public class Inv_LocationController implements Initializable, ScreenInterface {
 
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
+        txtField03.setEditable(lbShow);
 
         txtField02.requestFocus();
     }
@@ -290,6 +293,7 @@ public class Inv_LocationController implements Initializable, ScreenInterface {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
@@ -358,6 +362,13 @@ public class Inv_LocationController implements Initializable, ScreenInterface {
                     }
                     break;
 
+                case 3:
+                    poJSON = oTrans.getModel().setBriefDescription(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
             }
         } else {
             txtField.selectAll();
@@ -371,6 +382,7 @@ public class Inv_LocationController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getLocationCode();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
+        txtField03.setText(oTrans.getModel().getBriefDescription());
 
         cbActive.setSelected(lbActive);
 
@@ -387,6 +399,7 @@ public class Inv_LocationController implements Initializable, ScreenInterface {
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
         txtField99.clear();
 
         psPrimary = "";
