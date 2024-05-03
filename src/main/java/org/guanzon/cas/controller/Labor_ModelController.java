@@ -1,6 +1,7 @@
 package org.guanzon.cas.controller;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -69,6 +70,8 @@ public class Labor_ModelController implements Initializable, ScreenInterface {
     @FXML
     private TextField txtField02;
     @FXML
+    private TextField txtField03;
+    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
@@ -100,7 +103,13 @@ public class Labor_ModelController implements Initializable, ScreenInterface {
                 break;
 
             case "btnSave":
+                poJSON = oTrans.getModel().setModelID("12345");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
 
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -281,7 +290,8 @@ public class Labor_ModelController implements Initializable, ScreenInterface {
         btnClose.setVisible(!lbShow);
 
         txtField99.setDisable(lbShow);
-        txtField02.setEditable(lbShow);
+        txtField02.setDisable(lbShow);
+        txtField03.setEditable(lbShow);
 
         txtField02.requestFocus();
     }
@@ -290,10 +300,12 @@ public class Labor_ModelController implements Initializable, ScreenInterface {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField02.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -316,6 +328,18 @@ public class Labor_ModelController implements Initializable, ScreenInterface {
                             loadRecord();
                         }
                         break;
+
+                    case 2:
+                        /*Browse Primary*/
+                        poJSON = oTrans.searchRecord(lsValue, false);
+//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+//
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtField02.requestFocus();
+//                        } else {
+//                            loadRecord();
+//                        }
+//                        break;
                 }
             case ENTER:
                 switch (lnIndex) {
@@ -358,6 +382,13 @@ public class Labor_ModelController implements Initializable, ScreenInterface {
                     }
                     break;
 
+                case 3:
+                    poJSON = oTrans.getModel().setAmount(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
             }
         } else {
             txtField.selectAll();
@@ -370,7 +401,8 @@ public class Labor_ModelController implements Initializable, ScreenInterface {
 
         psPrimary = oTrans.getModel().getLaborID();
         txtField01.setText(psPrimary);
-        txtField02.setText(oTrans.getModel().getModelID());
+        txtField02.setText(oTrans.getModel().getModelName());
+        txtField03.setText(oTrans.getModel().getAmount());
 
         cbActive.setSelected(lbActive);
 
@@ -387,6 +419,7 @@ public class Labor_ModelController implements Initializable, ScreenInterface {
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
         txtField99.clear();
 
         psPrimary = "";
