@@ -97,12 +97,13 @@
                                                     <rowConstraints>
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         <RowConstraints minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
                                                     </rowConstraints>
                                                     <children>
                                                         <TextField fx:id="txtField01" editable="false" GridPane.columnIndex="1">
                                                             <GridPane.margin>
-                                                                <Insets left="15.0" right="-15.0" />
+                                                                <Insets left="25.0" right="-50.0" />
                                                             </GridPane.margin>
                                                             <font>
                                                                 <Font size="14.0" />
@@ -111,9 +112,9 @@
                                                                 <Insets left="5.0" />
                                                             </padding>
                                                         </TextField>
-                                                        <TextField fx:id="txtField02" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                                        <TextField fx:id="txtField02" promptText="Press F3: Search" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
                                                             <GridPane.margin>
-                                                                <Insets left="15.0" right="-15.0" />
+                                                                <Insets left="25.0" right="-50.0" />
                                                             </GridPane.margin>
                                                             <font>
                                                                 <Font size="14.0" />
@@ -122,37 +123,56 @@
                                                                 <Insets left="5.0" />
                                                             </padding>
                                                         </TextField>
-                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Labor Model ID">
+                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Labor ID">
                                                             <GridPane.margin>
                                                                 <Insets left="10.0" />
                                                             </GridPane.margin>
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
                                                         </Text>
-                                                        <Label contentDisplay="RIGHT" text="Labor Model Name" GridPane.rowIndex="1">
+                                                        <Label contentDisplay="RIGHT" text="Model Name" GridPane.rowIndex="1">
                                                             <font>
                                                                 <Font size="14.0" />
                                                             </font>
-                                                            <graphic>
-                                                                <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
-                                                                    <font>
-                                                                        <Font name="Rockwell" size="14.0" />
-                                                                    </font>
-                                                                </Text>
-                                                            </graphic>
                                                             <GridPane.margin>
                                                                 <Insets left="10.0" />
                                                             </GridPane.margin>
                                                         </Label>
-                                                        <CheckBox fx:id="cbActive" disable="true" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+                                                        <CheckBox fx:id="cbActive" disable="true" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                             <font>
                                                                 <Font size="14.0" />
                                                             </font>
                                                             <GridPane.margin>
-                                                                <Insets />
+                                                                <Insets left="25.0" />
                                                             </GridPane.margin>
-                                                            <padding>
-                                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                            </padding>
                                                         </CheckBox>
+                                          <Label contentDisplay="RIGHT" layoutX="20.0" layoutY="45.0" text="Amount" GridPane.rowIndex="2">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                             <graphic>
+                                                <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
+                                                   <font>
+                                                      <Font name="Rockwell" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </graphic>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
+                                          </Label>
+                                          <TextField fx:id="txtField03" layoutX="167.0" layoutY="42.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                             <padding>
+                                                <Insets left="5.0" />
+                                             </padding>
+                                             <GridPane.margin>
+                                                <Insets left="25.0" right="-50.0" />
+                                             </GridPane.margin>
+                                          </TextField>
                                                     </children>
                                                 </GridPane>
                                             </children>
@@ -221,7 +241,7 @@
                                                 <GridPane prefHeight="45.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                     <columnConstraints>
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="165.0" minWidth="10.0" prefWidth="165.0" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="150.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="250.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                     </columnConstraints>
                                                     <rowConstraints>
@@ -230,7 +250,7 @@
                                                     <children>
                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Labor Model Name" GridPane.halignment="LEFT">
                                                             <font>
-                                                                <Font name="System Bold" size="15.0" />
+                                                                <Font name="System Bold" size="14.0" />
                                                             </font>
                                                             <GridPane.margin>
                                                                 <Insets left="30.0" />
@@ -241,7 +261,7 @@
                                                                 <Font size="14.0" />
                                                             </font>
                                                             <GridPane.margin>
-                                                                <Insets left="15.0" right="-15.0" />
+                                                                <Insets left="23.0" right="-32.0" />
                                                             </GridPane.margin>
                                                             <padding>
                                                                 <Insets left="5.0" />
