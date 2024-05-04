@@ -31,7 +31,7 @@ import org.json.simple.JSONObject;
  *
  * @author Maynard
  */
-public class ColorDetailController implements Initializable, ScreenInterface {
+public class Color_DetailController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Barangay";
     private GRider oApp;
