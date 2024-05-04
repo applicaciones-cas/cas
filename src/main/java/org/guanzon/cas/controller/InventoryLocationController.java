@@ -1,7 +1,6 @@
 package org.guanzon.cas.controller;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -25,7 +24,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.parameters.Labor_Category;
+import org.guanzon.cas.parameters.Inv_Location;
 import org.json.simple.JSONObject;
 
 /**
@@ -33,11 +32,11 @@ import org.json.simple.JSONObject;
  *
  * @author Maynard
  */
-public class Labor_CategoryController implements Initializable, ScreenInterface {
+public class InventoryLocationController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Labor_Category";
+    private final String pxeModuleName = "Inv_Location";
     private GRider oApp;
-    private Labor_Category oTrans;
+    private Inv_Location oTrans;
     private JSONObject poJSON;
     private int pnEditMode;
 
@@ -103,13 +102,7 @@ public class Labor_CategoryController implements Initializable, ScreenInterface 
                 break;
 
             case "btnSave":
-                poJSON = oTrans.getModel().setCategoryCode("12345");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
 
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -134,7 +127,7 @@ public class Labor_CategoryController implements Initializable, ScreenInterface 
                     return;
 
                 } else {
-                    oTrans = new Labor_Category(oApp, true);
+                    oTrans = new Inv_Location(oApp, true);
                     pbLoaded = true;
                     oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
@@ -157,7 +150,7 @@ public class Labor_CategoryController implements Initializable, ScreenInterface 
 
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                    oTrans = new Labor_Category(oApp, true);
+                    oTrans = new Inv_Location(oApp, true);
                     oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
@@ -179,7 +172,7 @@ public class Labor_CategoryController implements Initializable, ScreenInterface 
                                 clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
-                                oTrans = new Labor_Category(oApp, false);
+                                oTrans = new Inv_Location(oApp, false);
                                 oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
@@ -197,7 +190,7 @@ public class Labor_CategoryController implements Initializable, ScreenInterface 
                                 clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
-                                oTrans = new Labor_Category(oApp, false);
+                                oTrans = new Inv_Location(oApp, false);
                                 oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
@@ -251,7 +244,7 @@ public class Labor_CategoryController implements Initializable, ScreenInterface 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        oTrans = new Labor_Category(oApp, false);
+        oTrans = new Inv_Location(oApp, false);
         oTrans.setRecordStatus("10");
         pbLoaded = true;
 
@@ -290,9 +283,8 @@ public class Labor_CategoryController implements Initializable, ScreenInterface 
         btnClose.setVisible(!lbShow);
 
         txtField99.setDisable(lbShow);
-        txtField02.setDisable(lbShow);
-        txtField03.setEditable(lbShow);
 
+        txtField02.setEditable(lbShow);
         txtField02.requestFocus();
     }
 
@@ -304,7 +296,6 @@ public class Labor_CategoryController implements Initializable, ScreenInterface 
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
-        txtField02.setOnKeyPressed(this::txtField_KeyPressed);
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
@@ -328,18 +319,6 @@ public class Labor_CategoryController implements Initializable, ScreenInterface 
                             loadRecord();
                         }
                         break;
-
-                    case 2:
-                    /*Search Category*/
-//                        poJSON = oTrans.searchRecord(lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-//
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtField02.requestFocus();
-//                        } else {
-//                            loadRecord();
-//                        }
-//                        break;
                 }
             case ENTER:
                 switch (lnIndex) {
@@ -375,7 +354,7 @@ public class Labor_CategoryController implements Initializable, ScreenInterface 
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    poJSON = oTrans.getModel().setCategoryCode(lsValue);
+                    poJSON = oTrans.getModel().setDescription(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -383,7 +362,7 @@ public class Labor_CategoryController implements Initializable, ScreenInterface 
                     break;
 
                 case 3:
-                    poJSON = oTrans.getModel().setAmount(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    poJSON = oTrans.getModel().setBriefDescription(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -399,10 +378,10 @@ public class Labor_CategoryController implements Initializable, ScreenInterface 
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        psPrimary = oTrans.getModel().getLaborID();
+        psPrimary = oTrans.getModel().getLocationCode();
         txtField01.setText(psPrimary);
-        txtField02.setText(oTrans.getModel().getCategoryName());
-        txtField03.setText(oTrans.getModel().getAmount());
+        txtField02.setText(oTrans.getModel().getDescription());
+        txtField03.setText(oTrans.getModel().getBriefDescription());
 
         cbActive.setSelected(lbActive);
 

@@ -32,7 +32,7 @@ import org.json.simple.JSONObject;
  *
  * @author Maynard
  */
-public class Inv_TypeController implements Initializable, ScreenInterface {
+public class InventoryTypeController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Inv_Type";
     private GRider oApp;
@@ -282,7 +282,6 @@ public class Inv_TypeController implements Initializable, ScreenInterface {
 
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
-
         txtField02.requestFocus();
     }
 

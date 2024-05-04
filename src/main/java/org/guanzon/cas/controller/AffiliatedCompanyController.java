@@ -80,7 +80,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
     @FXML
     private TableColumn<?, ?> index02;
 
-    @FXML
+   @FXML
     void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
 
@@ -126,6 +126,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
                 } else {
                     oTrans = new Affiliated_Company(oApp, true);
                     pbLoaded = true;
+                    oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
                     ShowMessageFX.Information(null, pxeModuleName, "Record successful Saved!");
@@ -147,6 +148,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                     oTrans = new Affiliated_Company(oApp, true);
+                    oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
@@ -164,9 +166,11 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Affiliated_Company(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -180,9 +184,11 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Affiliated_Company(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -198,7 +204,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
             case "btnClose":
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
 //                        if (unload != null) {
-//                            unload.unloadForm(AnchorMain, oApp, "Size");
+//                            unload.unloadForm(AnchorMain, oApp, "Affiliated_Company");
 //                        } else {
 //                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
 //                        }
@@ -211,7 +217,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
 
             case "btnBrowse":
                 poJSON = oTrans.searchRecord(txtField99.getText(), false);
-                pnEditMode = oTrans.getModel().getEditMode();
+                pnEditMode = EditMode.READY;
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -231,7 +237,6 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
         initButton(pnEditMode);
 
     }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 

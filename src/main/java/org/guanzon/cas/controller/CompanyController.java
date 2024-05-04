@@ -1,5 +1,6 @@
 package org.guanzon.cas.controller;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -81,6 +82,8 @@ public class CompanyController implements Initializable, ScreenInterface {
     private TableColumn<?, ?> index01;
     @FXML
     private TableColumn<?, ?> index02;
+    @FXML
+    private FontAwesomeIconView faActivate;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -128,6 +131,7 @@ public class CompanyController implements Initializable, ScreenInterface {
                 } else {
                     oTrans = new Company(oApp, true);
                     pbLoaded = true;
+                    oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
                     ShowMessageFX.Information(null, pxeModuleName, "Record successful Saved!");
@@ -149,6 +153,7 @@ public class CompanyController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                     oTrans = new Company(oApp, true);
+                    oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
@@ -166,9 +171,11 @@ public class CompanyController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Company(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -182,9 +189,11 @@ public class CompanyController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Company(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -213,7 +222,7 @@ public class CompanyController implements Initializable, ScreenInterface {
 
             case "btnBrowse":
                 poJSON = oTrans.searchRecord(txtField99.getText(), false);
-                pnEditMode = oTrans.getModel().getEditMode();
+                pnEditMode = EditMode.READY;
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -280,8 +289,6 @@ public class CompanyController implements Initializable, ScreenInterface {
         txtField04.setEditable(lbShow);
 
         txtField02.requestFocus();
-        txtField03.requestFocus();
-        txtField04.requestFocus();
     }
 
     private void initTextFields() {
@@ -380,13 +387,22 @@ public class CompanyController implements Initializable, ScreenInterface {
     };
 
     private void loadRecord() {
+        boolean lbActive = oTrans.getModel().isActive();
 
-        txtField01.setText(oTrans.getModel().getCompanyID());
+        psPrimary = oTrans.getModel().getCompanyID();
+        txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getCompanyName());
         txtField03.setText(oTrans.getModel().getCompanyCode());
         txtField04.setText(oTrans.getModel().getEmployerNumber());
-        cbActive.setSelected(oTrans.getModel().isActive());
+        cbActive.setSelected(lbActive);
 
+        if (lbActive) {
+            btnActivate.setText("Deactivate");
+            faActivate.setGlyphName("CLOSE");
+        } else {
+            btnActivate.setText("Activate");
+            faActivate.setGlyphName("CHECK");
+        }
     }
 
     private void clearFields() {
@@ -394,6 +410,10 @@ public class CompanyController implements Initializable, ScreenInterface {
         txtField02.clear();
         txtField03.clear();
         txtField04.clear();
+        txtField99.clear();
 
+        psPrimary = "";
+        btnActivate.setText("Activate");
+        cbActive.setSelected(false);
     }
 }

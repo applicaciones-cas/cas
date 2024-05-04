@@ -33,7 +33,7 @@ import org.json.simple.JSONObject;
  *
  * @author Maynard
  */
-public class Labor_ModelController implements Initializable, ScreenInterface {
+public class LaborModelController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Labor_Model";
     private GRider oApp;
@@ -290,9 +290,8 @@ public class Labor_ModelController implements Initializable, ScreenInterface {
         btnClose.setVisible(!lbShow);
 
         txtField99.setDisable(lbShow);
-        txtField02.setDisable(lbShow);
+        txtField02.setEditable(lbShow);
         txtField03.setEditable(lbShow);
-
         txtField02.requestFocus();
     }
 
@@ -330,7 +329,7 @@ public class Labor_ModelController implements Initializable, ScreenInterface {
                         break;
 
                     case 2:
-                        /*Browse Primary*/
+                        /*search model name*/
                         poJSON = oTrans.searchRecord(lsValue, false);
 //                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 //

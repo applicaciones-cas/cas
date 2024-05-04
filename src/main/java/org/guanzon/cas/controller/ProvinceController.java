@@ -290,7 +290,7 @@ public class ProvinceController implements Initializable, ScreenInterface {
 
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
-        txtField03.setDisable(lbShow);
+        txtField03.setEditable(lbShow);
 
         txtField02.requestFocus();
     }
@@ -329,7 +329,7 @@ public class ProvinceController implements Initializable, ScreenInterface {
                         break;
 
                     case 3:
-                    /*Browse Primary*/
+                    /*search region*/
 //                        poJSON = oTrans.searchRecord(lsValue, false);
 //                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 //

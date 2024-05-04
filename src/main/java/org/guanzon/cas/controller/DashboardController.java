@@ -582,15 +582,15 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/Department.fxml":
                 return new DepartmentController();
             case "/org/guanzon/cas/views/InventoryLocation.fxml":
-                return new Inv_LocationController();
+                return new InventoryLocationController();
             case "/org/guanzon/cas/views/InventoryType.fxml":
-                return new Inv_TypeController();
+                return new InventoryTypeController();
             case "/org/guanzon/cas/views/Labor.fxml":
                 return new LaborController();
             case "/org/guanzon/cas/views/LaborCategory.fxml":
-                return new Labor_CategoryController();
+                return new LaborCategoryController();
             case "/org/guanzon/cas/views/LaborModel.fxml":
-                return new Labor_ModelController();
+                return new LaborModelController();
             case "/org/guanzon/cas/views/Made.fxml":
                 return new MadeController();
             case "/org/guanzon/cas/views/Model.fxml":

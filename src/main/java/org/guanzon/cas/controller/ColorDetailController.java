@@ -1,5 +1,6 @@
 package org.guanzon.cas.controller;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -83,6 +84,8 @@ public class ColorDetailController implements Initializable, ScreenInterface {
     private TableColumn<?, ?> index01;
     @FXML
     private TableColumn<?, ?> index02;
+    @FXML
+    private FontAwesomeIconView faActivate;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -103,20 +106,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
                 break;
 
             case "btnSave":
-                poJSON = oTrans.getModel().setDescript("dsd");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
 
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
-                poJSON = oTrans.getModel().setColorCode("4");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -143,6 +133,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
                 } else {
                     oTrans = new Color_Detail(oApp, true);
                     pbLoaded = true;
+                    oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
                     ShowMessageFX.Information(null, pxeModuleName, "Record successful Saved!");
@@ -164,6 +155,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                     oTrans = new Color_Detail(oApp, true);
+                    oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
@@ -181,9 +173,11 @@ public class ColorDetailController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Color_Detail(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -197,9 +191,11 @@ public class ColorDetailController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Color_Detail(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -228,7 +224,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
 
             case "btnBrowse":
                 poJSON = oTrans.searchRecord(txtField99.getText(), false);
-                pnEditMode = oTrans.getModel().getEditMode();
+                pnEditMode = EditMode.READY;
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -382,21 +378,31 @@ public class ColorDetailController implements Initializable, ScreenInterface {
     };
 
     private void loadRecord() {
+        boolean lbActive = oTrans.getModel().isActive();
 
-        txtField01.setText(oTrans.getModel().getColorID());
+        psPrimary = oTrans.getModel().getColorID();
+        txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
 
         cbActive.setSelected(oTrans.getModel().isActive());
+
+        if (lbActive) {
+            btnActivate.setText("Deactivate");
+            faActivate.setGlyphName("CLOSE");
+        } else {
+            btnActivate.setText("Activate");
+            faActivate.setGlyphName("CHECK");
+        }
 
     }
 
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField99.clear();
 
         psPrimary = "";
         btnActivate.setText("Activate");
         cbActive.setSelected(false);
-
     }
 }

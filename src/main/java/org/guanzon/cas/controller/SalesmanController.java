@@ -337,7 +337,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
                         break;
 
                     case 1:
-                    /*Browse Primary*/
+                    /*search employee*/
 //                        poJSON = oTrans.searchRecord(lsValue, false);
 //                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 //
@@ -423,8 +423,8 @@ public class SalesmanController implements Initializable, ScreenInterface {
         boolean lbActive = oTrans.getModel().isActive();
 
         psPrimary = oTrans.getModel().getEmployerID();
-        txtField02.setText(psPrimary);
         txtField01.setText(oTrans.getModel().getEmployeeName());
+        txtField02.setText(oTrans.getModel().getBranchName());
         txtField03.setText(oTrans.getModel().getLastName());
         txtField04.setText(oTrans.getModel().getFristName());
         txtField05.setText(oTrans.getModel().getMiddleName());

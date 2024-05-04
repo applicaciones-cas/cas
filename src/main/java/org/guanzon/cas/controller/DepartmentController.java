@@ -311,8 +311,8 @@ public class DepartmentController implements Initializable, ScreenInterface {
         txtField04.setEditable(lbShow);
         txtField05.setEditable(lbShow);
         txtField06.setEditable(lbShow);
-        txtField07.setDisable(lbShow);
-        txtField08.setDisable(lbShow);
+        txtField07.setEditable(lbShow);
+        txtField08.setEditable(lbShow);
 
         txtField02.requestFocus();
     }
@@ -357,7 +357,7 @@ public class DepartmentController implements Initializable, ScreenInterface {
                         break;
 
                     case 7:
-                    /*Browse Primary*/
+                    /*search assign head*/
 //                        poJSON = oTrans.searchRecord(lsValue, false);
 //                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 //
@@ -369,7 +369,7 @@ public class DepartmentController implements Initializable, ScreenInterface {
 //                        break;
 
                     case 8:
-                    /*Browse Primary*/
+                    /*search assign supervisor*/
 //                        poJSON = oTrans.searchRecord(lsValue, false);
 //                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 //

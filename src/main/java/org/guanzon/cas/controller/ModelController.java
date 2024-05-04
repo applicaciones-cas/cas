@@ -307,7 +307,7 @@ public class ModelController implements Initializable, ScreenInterface {
         btnClose.setVisible(!lbShow);
 
         txtField99.setDisable(lbShow);
-        txtField02.setDisable(lbShow);
+        txtField02.setEditable(lbShow);
         txtField03.setEditable(lbShow);
         txtField04.setEditable(lbShow);
         txtField05.setEditable(lbShow);
@@ -351,7 +351,7 @@ public class ModelController implements Initializable, ScreenInterface {
                         break;
 
                     case 2:
-                    /*Browse Primary*/
+                    /*search Model*/
 //                        poJSON = oTrans.searchRecord(lsValue, false);
 //                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 //

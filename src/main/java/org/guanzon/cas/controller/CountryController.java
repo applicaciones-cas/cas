@@ -1,5 +1,6 @@
 package org.guanzon.cas.controller;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -81,6 +82,9 @@ public class CountryController implements Initializable, ScreenInterface {
     private TableColumn<?, ?> index02;
 
     @FXML
+    private FontAwesomeIconView faActivate;
+
+    @FXML
     void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
 
@@ -126,6 +130,7 @@ public class CountryController implements Initializable, ScreenInterface {
                 } else {
                     oTrans = new Country(oApp, true);
                     pbLoaded = true;
+                    oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
                     ShowMessageFX.Information(null, pxeModuleName, "Record successful Saved!");
@@ -147,6 +152,7 @@ public class CountryController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                     oTrans = new Country(oApp, true);
+                    oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
@@ -164,9 +170,11 @@ public class CountryController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Country(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -180,9 +188,11 @@ public class CountryController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Country(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -198,7 +208,7 @@ public class CountryController implements Initializable, ScreenInterface {
             case "btnClose":
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
 //                        if (unload != null) {
-//                            unload.unloadForm(AnchorMain, oApp, "Size");
+//                            unload.unloadForm(AnchorMain, oApp, "Country");
 //                        } else {
 //                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
 //                        }
@@ -211,7 +221,7 @@ public class CountryController implements Initializable, ScreenInterface {
 
             case "btnBrowse":
                 poJSON = oTrans.searchRecord(txtField99.getText(), false);
-                pnEditMode = oTrans.getModel().getEditMode();
+                pnEditMode = EditMode.READY;
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -275,11 +285,9 @@ public class CountryController implements Initializable, ScreenInterface {
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
         txtField03.setEditable(lbShow);
-       
 
         txtField02.requestFocus();
-        txtField03.requestFocus();
-        
+
     }
 
     private void initTextFields() {
@@ -287,7 +295,7 @@ public class CountryController implements Initializable, ScreenInterface {
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
         txtField03.focusedProperty().addListener(txtField_Focus);
-       
+
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
@@ -371,19 +379,32 @@ public class CountryController implements Initializable, ScreenInterface {
     };
 
     private void loadRecord() {
+        boolean lbActive = oTrans.getModel().isActive();
 
-        txtField01.setText(oTrans.getModel().getCountryCode());
+        psPrimary = oTrans.getModel().getCountryCode();
+        txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getCounntryName());
         txtField03.setText(oTrans.getModel().getNational());
 
         cbActive.setSelected(oTrans.getModel().isActive());
+
+        if (lbActive) {
+            btnActivate.setText("Deactivate");
+            faActivate.setGlyphName("CLOSE");
+        } else {
+            btnActivate.setText("Activate");
+            faActivate.setGlyphName("CHECK");
+        }
 
     }
 
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
-        txtField03.clear();
+        txtField99.clear();
 
+        psPrimary = "";
+        btnActivate.setText("Activate");
+        cbActive.setSelected(false);
     }
 }
