@@ -84,23 +84,22 @@
                                                         <MenuItem fx:id="mnuNewCustomer" mnemonicParsing="false" onAction="#mnuNewCustomerClick" text="New Customer" />
                                                         <Menu mnemonicParsing="false" text="Parameter">
                                                             <items>
-                                                <MenuItem fx:id="mnuParameterAffiliated" mnemonicParsing="false" onAction="#mnuParameterAffiliatedClick" text="Affiliated" />
+                                                <MenuItem fx:id="mnuParameterAffiliated" mnemonicParsing="false" onAction="#mnuParameterAffiliatedClick" text="Affiliated Company" />
                                                 <MenuItem fx:id="mnuParameterBanks" mnemonicParsing="false" onAction="#mnuParameterBanksClick" text="Banks" />
-                                                <MenuItem fx:id="mnuParameterBanks_Branches" mnemonicParsing="false" onAction="#mnuParameterBanksBranchesClick" text="Banks_Branches" />
+                                                <MenuItem fx:id="mnuParameterBanks_Branches" mnemonicParsing="false" onAction="#mnuParameterBanksBranchesClick" text="Banks Branches" />
                                                 <MenuItem fx:id="mnuParameterBarangay" mnemonicParsing="false" onAction="#mnuParameterBarangayClick" text="Barangay" />
                                                 <MenuItem fx:id="mnuParameterBrand" mnemonicParsing="false" onAction="#mnuParameterBrandClick" text="Brand" />
                                                 <MenuItem fx:id="mnuParameterCategory" mnemonicParsing="false" onAction="#mnuParameterCategoryClick" text="Category" />
-                                                <MenuItem fx:id="mnuParameterCategoryLevel2" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel2Click" text="CategoryLevel2" />
-                                                <MenuItem fx:id="mnuParameterCategoryLevel3" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel3Click" text="CategoryLevel3" />
-                                                <MenuItem fx:id="mnuParameterCategoryLevel4" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel4Click" text="CategoryLevel4" />
+                                                <MenuItem fx:id="mnuParameterCategoryLevel2" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel2Click" text="Category Level 2" />
+                                                <MenuItem fx:id="mnuParameterCategoryLevel3" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel3Click" text="Category Level 3" />
+                                                <MenuItem fx:id="mnuParameterCategoryLevel4" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel4Click" text="Category Level 4" />
                                                 <MenuItem fx:id="mnuParameterColor" mnemonicParsing="false" onAction="#mnuParameterColorClick" text="Color" />
-                                                <MenuItem fx:id="mnuParameterColordetail" mnemonicParsing="false" onAction="#mnuParameterColordetailClick" text="Colordetail" />
+                                                <MenuItem fx:id="mnuParameterColordetail" mnemonicParsing="false" onAction="#mnuParameterColordetailClick" text="Color Detail" />
                                                 <MenuItem fx:id="mnuParameterCompany" mnemonicParsing="false" onAction="#mnuParameterCompanyClick" text="Company" />
                                                 <MenuItem fx:id="mnuParameterCountry" mnemonicParsing="false" onAction="#mnuParameterCountryClick" text="Country" />
-                                                                <MenuItem mnemonicParsing="false" text="Banks" />
                                                                 <MenuItem fx:id="mnuParameterDepartment" mnemonicParsing="false" onAction="#mnuParameterDepartmentClick" text="Department" />
-                                                                <MenuItem fx:id="mnuParameterInvLocation" mnemonicParsing="false" onAction="#mnuParameterInvLocationClick" text="Inv Location" />
-                                                                <MenuItem fx:id="mnuParameterInvType" mnemonicParsing="false" onAction="#mnuParameterInvTypeClick" text="Inv Type" />
+                                                                <MenuItem fx:id="mnuParameterInvLocation" mnemonicParsing="false" onAction="#mnuParameterInvLocationClick" text="Inventory Location" />
+                                                                <MenuItem fx:id="mnuParameterInvType" mnemonicParsing="false" onAction="#mnuParameterInvTypeClick" text="Inventory Type" />
                                                                 <MenuItem fx:id="mnuParameterLabor" mnemonicParsing="false" onAction="#mnuParameterLaborClick" text="Labor" />
                                                                 <MenuItem fx:id="mnuParameterLaborCategory" mnemonicParsing="false" onAction="#mnuParameterLaborCategoryClick" text="Labor Category" />
                                                                 <MenuItem fx:id="mnuParameterLaborModel" mnemonicParsing="false" onAction="#mnuParameterLaborModelClick" text="Labor Model" />
