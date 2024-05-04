@@ -214,12 +214,12 @@ public class DashboardController implements Initializable {
                 return "Client Transactions Individual";
             case "/org/guanzon/cas/views/NewCustomer.fxml":
                 return "Client Transactions Individual";
-            case "/org/guanzon/cas/views/Affiliated_Company.fxml":
-                return "Affiliated_Company";
+            case "/org/guanzon/cas/views/AffiliatedCompany.fxml":
+                return "Affiliated Company";
             case "/org/guanzon/cas/views/Banks.fxml":
                 return "Banks";
-            case "/org/guanzon/cas/views/Banks_Branches.fxml":
-                return "Banks_Branches";
+            case "/org/guanzon/cas/views/BanksBranches.fxml":
+                return "Banks Branches";
             case "/org/guanzon/cas/views/Barangay.fxml":
                 return "Barangay";
             case "/org/guanzon/cas/views/Brand.fxml":
@@ -227,31 +227,31 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/Category.fxml":
                 return "Category";
             case "/org/guanzon/cas/views/CategoryLevel2.fxml":
-                return "CategoryLevel2";
+                return "Category Level 2";
             case "/org/guanzon/cas/views/CategoryLevel3.fxml":
-                return "CategoryLevel3";
+                return "Category Level 3";
             case "/org/guanzon/cas/views/CategoryLevel4.fxml":
-                return "CategoryLevel4";
+                return "Category Level 4";
             case "/org/guanzon/cas/views/Color.fxml":
                 return "Color";
-            case "/org/guanzon/cas/views/Colordetail.fxml":
-                return "Colordetail";
+            case "/org/guanzon/cas/views/ColorDetail.fxml":
+                return "Color Detail";
             case "/org/guanzon/cas/views/Company.fxml":
                 return "Company";
             case "/org/guanzon/cas/views/Country.fxml":
                 return "Country";
             case "/org/guanzon/cas/views/Department.fxml":
                 return "Department";
-            case "/org/guanzon/cas/views/Inv_Location.fxml":
-                return "Inv_Location";
-            case "/org/guanzon/cas/views/Inv_Type.fxml":
-                return "Inv_Type";
+            case "/org/guanzon/cas/views/InventoryLocation.fxml":
+                return "Inventory Location";
+            case "/org/guanzon/cas/views/InventoryType.fxml":
+                return "Inventory Type";
             case "/org/guanzon/cas/views/Labor.fxml":
                 return "Labor";
-            case "/org/guanzon/cas/views/Labor_Category.fxml":
-                return "Labor_Category";
-            case "/org/guanzon/cas/views/Labor_Model.fxml":
-                return "Labor_Model";
+            case "/org/guanzon/cas/views/LaborCategory.fxml":
+                return "Labor Category";
+            case "/org/guanzon/cas/views/LaborModel.fxml":
+                return "Labor Model";
             case "/org/guanzon/cas/views/Made.fxml":
                 return "Made";
             case "/org/guanzon/cas/views/Model.fxml":
@@ -553,11 +553,11 @@ public class DashboardController implements Initializable {
 //                
 
             //Parameter MenuControllers
-            case "/org/guanzon/cas/views/Affiliated_Company.fxml":
+            case "/org/guanzon/cas/views/AffiliatedCompany.fxml":
                 return new AffiliatedCompanyController();
             case "/org/guanzon/cas/views/Banks.fxml":
                 return new BanksController();
-            case "/org/guanzon/cas/views/Banks_Branches.fxml":
+            case "/org/guanzon/cas/views/BanksBranches.fxml":
                 return new BankBranchesController();
             case "/org/guanzon/cas/views/Barangay.fxml":
                 return new BarangayController();
@@ -573,7 +573,7 @@ public class DashboardController implements Initializable {
                 return new CategoryLevel4Controller();
             case "/org/guanzon/cas/views/Color.fxml":
                 return new ColorController();
-            case "/org/guanzon/cas/views/Colordetail.fxml":
+            case "/org/guanzon/cas/views/ColorDetail.fxml":
                 return new ColorDetailController();
             case "/org/guanzon/cas/views/Company.fxml":
                 return new CompanyController();
@@ -581,15 +581,15 @@ public class DashboardController implements Initializable {
                 return new CountryController();
             case "/org/guanzon/cas/views/Department.fxml":
                 return new DepartmentController();
-            case "/org/guanzon/cas/views/Inv_Location.fxml":
+            case "/org/guanzon/cas/views/InventoryLocation.fxml":
                 return new Inv_LocationController();
-            case "/org/guanzon/cas/views/Inv_Type.fxml":
+            case "/org/guanzon/cas/views/InventoryType.fxml":
                 return new Inv_TypeController();
             case "/org/guanzon/cas/views/Labor.fxml":
                 return new LaborController();
-            case "/org/guanzon/cas/views/Labor_Category.fxml":
+            case "/org/guanzon/cas/views/LaborCategory.fxml":
                 return new Labor_CategoryController();
-            case "/org/guanzon/cas/views/Labor_Model.fxml":
+            case "/org/guanzon/cas/views/LaborModel.fxml":
                 return new Labor_ModelController();
             case "/org/guanzon/cas/views/Made.fxml":
                 return new MadeController();
@@ -671,7 +671,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void mnuParameterAffiliatedClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/Affiliated_Company.fxml";
+        String sformname = "/org/guanzon/cas/views/AffiliatedCompany.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -689,7 +689,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void mnuParameterBanksBranchesClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/Banks_Branches.fxml";
+        String sformname = "/org/guanzon/cas/views/BanksBranches.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -788,7 +788,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void mnuParameterInvLocationClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/Inv_Location.fxml";
+        String sformname = "/org/guanzon/cas/views/InventoryLocation.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -797,7 +797,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void mnuParameterInvTypeClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/Inv_Type.fxml";
+        String sformname = "/org/guanzon/cas/views/InventoryType.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -815,7 +815,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void mnuParameterLaborCategoryClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/Labor_Category.fxml";
+        String sformname = "/org/guanzon/cas/views/LaborCategory.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

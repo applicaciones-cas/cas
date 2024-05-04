@@ -100,7 +100,7 @@ public class BrandController implements Initializable, ScreenInterface {
 
             case "btnSave":
                 
-                poJSON = oTrans.getModel().setDescript("sd");
+                poJSON = oTrans.getModel().setCategoryCode("sd");
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
 
@@ -296,6 +296,7 @@ public class BrandController implements Initializable, ScreenInterface {
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField03.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -317,6 +318,17 @@ public class BrandController implements Initializable, ScreenInterface {
                         } else {
                             loadRecord();
                         }
+                        break;
+                        case 3:
+                        /*search Category*/
+//                        poJSON = oTrans.searchRecord(lsValue, false);
+//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+//
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtField99.requestFocus();
+//                        } else {
+//                            loadRecord();
+//                        }
                         break;
                 }
             case ENTER:
@@ -360,13 +372,7 @@ public class BrandController implements Initializable, ScreenInterface {
                         return;
                     }
                     break;
-                case 3:
-                    poJSON = oTrans.getModel().setDescript(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
+             
 
             }
         } else {
@@ -379,7 +385,7 @@ public class BrandController implements Initializable, ScreenInterface {
 
         txtField01.setText(oTrans.getModel().getBrandCode());
         txtField02.setText(oTrans.getModel().getDescription());
-        txtField03.setText(oTrans.getModel().getDescript());
+        txtField03.setText(oTrans.getModel().getCategoryName());
 
         cbActive.setSelected(oTrans.getModel().isActive());
         

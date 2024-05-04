@@ -70,6 +70,8 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
     @FXML
     private TextField txtField03;
     @FXML
+    private TextField txtField04;
+    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
@@ -99,7 +101,7 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
                 break;
 
             case "btnSave":
-                poJSON = oTrans.getModel().setInvenTorypCode("1");
+                poJSON = oTrans.getModel().setInventoryTypeCode("1");
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
 
@@ -298,10 +300,13 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
         txtField03.focusedProperty().addListener(txtField_Focus);
+        txtField04.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField03.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField04.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -315,6 +320,28 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
 
                     case 99:
                         /*Browse Primary*/
+                        poJSON = oTrans.searchRecord(lsValue, false);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField99.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+                        case 3:
+                        /*search Inventory Type*/
+                        poJSON = oTrans.searchRecord(lsValue, false);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField99.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+                        case 4:
+                        /*search Main Category*/
                         poJSON = oTrans.searchRecord(lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
@@ -366,14 +393,6 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
                         return;
                     }
                     break;
-                case 3:
-                    poJSON = oTrans.getModel().setInvenTorypCode(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-
             }
         } else {
             txtField.selectAll();
@@ -385,7 +404,8 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
 
         txtField01.setText(oTrans.getModel().getCategoryCode());
         txtField02.setText(oTrans.getModel().getDescription());
-        txtField03.setText(oTrans.getModel().getInvenTorypCode());
+        txtField03.setText(oTrans.getModel().getInvTypeName());
+        txtField04.setText(oTrans.getModel().getMainCategoryName());
 
         cbActive.setSelected(oTrans.getModel().isActive());
 

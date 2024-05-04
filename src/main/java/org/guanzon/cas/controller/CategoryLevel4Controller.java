@@ -68,6 +68,8 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
     @FXML
     private TextField txtField02;
     @FXML
+    private TextField txtField03;
+    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
@@ -290,10 +292,13 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        
+        txtField03.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -316,6 +321,19 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
                             loadRecord();
                         }
                         break;
+                        
+                        case 3:
+                        /*search Main Category*/
+//                        poJSON = oTrans.searchRecord(lsValue, false);
+//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+//
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtField99.requestFocus();
+//                        } else {
+//                            loadRecord();
+//                        }
+                        break;
+                                
                 }
             case ENTER:
                 switch (lnIndex) {
@@ -358,14 +376,7 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
                         return;
                     }
                     break;
-                case 3:
-                    poJSON = oTrans.getModel().setDescript(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-
+                
             }
         } else {
             txtField.selectAll();

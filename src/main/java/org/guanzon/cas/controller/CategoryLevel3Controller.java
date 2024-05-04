@@ -68,9 +68,15 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
     @FXML
     private TextField txtField02;
     @FXML
+    private TextField txtField03;
+    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
+    @FXML
+    private CheckBox cbHasRoute;
+    @FXML
+    private CheckBox cbBlacklist;
     @FXML
     private TableView<?> tblList;
     @FXML
@@ -97,7 +103,7 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
                 break;
 
             case "btnSave":
-                 poJSON = oTrans.getModel().setMainCategory("4");
+                poJSON = oTrans.getModel().setMainCategory("2");
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
 
@@ -277,7 +283,6 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
 
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
-        ;
 
         txtField02.requestFocus();
 
@@ -287,10 +292,13 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        
+        txtField03.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -313,6 +321,19 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
                             loadRecord();
                         }
                         break;
+                        
+                        case 3:
+                        /*search Main Category*/
+//                        poJSON = oTrans.searchRecord(lsValue, false);
+//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+//
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtField99.requestFocus();
+//                        } else {
+//                            loadRecord();
+//                        }
+                        break;
+                                
                 }
             case ENTER:
                 switch (lnIndex) {
@@ -355,7 +376,7 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
                         return;
                     }
                     break;
-
+                
             }
         } else {
             txtField.selectAll();
@@ -367,7 +388,6 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
 
         txtField01.setText(oTrans.getModel().getCategoryCode());
         txtField02.setText(oTrans.getModel().getDescription());
-        
 
         cbActive.setSelected(oTrans.getModel().isActive());
 
@@ -376,7 +396,6 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
-       
 
         psPrimary = "";
         btnActivate.setText("Activate");

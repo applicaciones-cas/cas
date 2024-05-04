@@ -485,7 +485,7 @@ public class DepartmentController implements Initializable, ScreenInterface {
         txtField04.setText(oTrans.getModel().getDepartmentCode());
         txtField05.setText(oTrans.getModel().getMobileNumber());
         txtField06.setText(oTrans.getModel().getEmailAddress());
-        txtField07.setText(oTrans.getModel().getHeadAssign());
+        txtField07.setText(oTrans.getModel().getDeptHeadAssign());
         txtField08.setText(oTrans.getModel().getSupervisorAssign());
 
         cbActive.setSelected(lbActive);
