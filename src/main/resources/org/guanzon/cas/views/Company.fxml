@@ -87,10 +87,10 @@
                            <children>
                               <AnchorPane>
                                  <children>
-                                    <GridPane layoutX="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="0.0">
+                                    <GridPane layoutX="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.0" minWidth="10.0" prefWidth="165.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="137.0" minWidth="10.0" prefWidth="119.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
                                       </columnConstraints>
@@ -128,11 +128,11 @@
                                                                 <GridPane.margin>
                                                                     <Insets left="10.0" />
                                                                 </GridPane.margin>
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
                                                             </Text>
                                                             <Label contentDisplay="RIGHT" text="Company Name" GridPane.rowIndex="1">
-                                                                <font>
-                                                                    <Font size="14.0" />
-                                                                </font>
                                                                 <graphic>
                                                                     <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
                                                                         <font>
@@ -156,9 +156,6 @@
                                              </padding>
                                                             </CheckBox>
                                           <Label contentDisplay="RIGHT" layoutX="20.0" layoutY="45.0" text="Company Code" GridPane.rowIndex="2">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
                                              <graphic>
                                                 <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
                                                    <font>
@@ -179,13 +176,10 @@
                                              </padding>
                                           </TextField>
                                           <Label contentDisplay="RIGHT" layoutX="20.0" layoutY="75.0" text="Employer No" GridPane.rowIndex="3">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
                                              <graphic>
                                                 <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
                                                    <font>
-                                                      <Font name="Rockwell" size="14.0" />
+                                                      <Font name="Rockwell" size="12.0" />
                                                    </font>
                                                 </Text>
                                              </graphic>
@@ -268,8 +262,8 @@
                                  <children>
                                     <GridPane prefHeight="45.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <columnConstraints>
-                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="182.0" minWidth="10.0" prefWidth="178.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="210.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.0" minWidth="10.0" prefWidth="165.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="250.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                        </columnConstraints>
                                        <rowConstraints>
@@ -278,7 +272,7 @@
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Company" GridPane.halignment="LEFT">
                                              <font>
-                                                <Font name="System Bold" size="15.0" />
+                                                <Font name="System Bold" size="14.0" />
                                              </font>
                                              <GridPane.margin>
                                                 <Insets left="30.0" />

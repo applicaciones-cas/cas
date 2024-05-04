@@ -89,7 +89,7 @@
                                             <children>
                                                 <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                     <columnConstraints>
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="150.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.0" minWidth="10.0" prefWidth="165.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
@@ -105,7 +105,7 @@
                                                     <children>
                                                         <TextField fx:id="txtField01" editable="false" GridPane.columnIndex="1">
                                                             <GridPane.margin>
-                                                                <Insets left="25.0" right="-50.0" />
+                                                                <Insets />
                                                             </GridPane.margin>
                                                             <font>
                                                                 <Font size="14.0" />
@@ -116,7 +116,7 @@
                                                         </TextField>
                                                         <TextField fx:id="txtField02" promptText="Press F3: Search" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
                                                             <GridPane.margin>
-                                                                <Insets left="25.0" right="-50.0" />
+                                                                <Insets />
                                                             </GridPane.margin>
                                                             <font>
                                                                 <Font size="14.0" />
@@ -129,14 +129,8 @@
                                                             <GridPane.margin>
                                                                 <Insets left="10.0" />
                                                             </GridPane.margin>
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
                                                         </Text>
                                                         <Label contentDisplay="RIGHT" text="Brand Name" GridPane.rowIndex="1">
-                                                            <font>
-                                                                <Font size="14.0" />
-                                                            </font>
                                                             <GridPane.margin>
                                                                 <Insets left="10.0" />
                                                             </GridPane.margin>
@@ -157,7 +151,7 @@
                                                 <Insets left="5.0" />
                                              </padding>
                                              <GridPane.margin>
-                                                <Insets left="25.0" right="-50.0" />
+                                                <Insets />
                                              </GridPane.margin>
                                           </TextField>
                                           <TextField fx:id="txtField04" layoutX="152.0" layoutY="72.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
@@ -168,7 +162,7 @@
                                                 <Insets left="5.0" />
                                              </padding>
                                              <GridPane.margin>
-                                                <Insets left="25.0" right="-50.0" />
+                                                <Insets />
                                              </GridPane.margin>
                                           </TextField>
                                           <TextField fx:id="txtField05" layoutX="152.0" layoutY="102.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4">
@@ -179,13 +173,10 @@
                                                 <Insets left="5.0" />
                                              </padding>
                                              <GridPane.margin>
-                                                <Insets left="25.0" right="-50.0" />
+                                                <Insets />
                                              </GridPane.margin>
                                           </TextField>
                                           <Label contentDisplay="RIGHT" layoutX="20.0" layoutY="45.0" text="Model Name" GridPane.rowIndex="2">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
                                              <graphic>
                                                 <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
                                                    <font>
@@ -198,9 +189,6 @@
                                              </GridPane.margin>
                                           </Label>
                                           <Label contentDisplay="RIGHT" layoutX="20.0" layoutY="45.0" text="Description" GridPane.rowIndex="3">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
                                              <graphic>
                                                 <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
                                                    <font>
@@ -213,9 +201,6 @@
                                              </GridPane.margin>
                                           </Label>
                                           <Label contentDisplay="RIGHT" layoutX="10.0" layoutY="105.0" text="Brief Description" GridPane.rowIndex="4">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
                                              <graphic>
                                                 <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
                                                    <font>
@@ -294,7 +279,7 @@
                                             <children>
                                                 <GridPane prefHeight="45.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                     <columnConstraints>
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="165.0" minWidth="10.0" prefWidth="165.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.0" minWidth="10.0" prefWidth="165.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="250.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                     </columnConstraints>
@@ -315,7 +300,7 @@
                                                                 <Font size="14.0" />
                                                             </font>
                                                             <GridPane.margin>
-                                                                <Insets left="23.0" right="-32.0" />
+                                                                <Insets />
                                                             </GridPane.margin>
                                                             <padding>
                                                                 <Insets left="5.0" />
