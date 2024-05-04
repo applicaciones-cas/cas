@@ -760,8 +760,8 @@ public class DashboardController implements Initializable {
     }
 
     @FXML
-    void mnuParameterColordetailClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/Colordetail.fxml";
+    void mnuParameterColorDetailClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/ColorDetail.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -771,6 +771,15 @@ public class DashboardController implements Initializable {
     @FXML
     private void mnuParameterCompanyClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/Company.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+        @FXML
+    private void mnuParameterCountryClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Country.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -824,7 +833,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void mnuParameterLaborModelClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/Labor_Model.fxml";
+        String sformname = "/org/guanzon/cas/views/LaborModel.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

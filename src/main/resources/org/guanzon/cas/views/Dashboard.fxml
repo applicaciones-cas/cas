@@ -94,7 +94,7 @@
                                                 <MenuItem fx:id="mnuParameterCategoryLevel3" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel3Click" text="Category Level 3" />
                                                 <MenuItem fx:id="mnuParameterCategoryLevel4" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel4Click" text="Category Level 4" />
                                                 <MenuItem fx:id="mnuParameterColor" mnemonicParsing="false" onAction="#mnuParameterColorClick" text="Color" />
-                                                <MenuItem fx:id="mnuParameterColordetail" mnemonicParsing="false" onAction="#mnuParameterColordetailClick" text="Color Detail" />
+                                                <MenuItem fx:id="mnuParameterColorDetail" mnemonicParsing="false" onAction="#mnuParameterColorDetailClick" text="Color Detail" />
                                                 <MenuItem fx:id="mnuParameterCompany" mnemonicParsing="false" onAction="#mnuParameterCompanyClick" text="Company" />
                                                 <MenuItem fx:id="mnuParameterCountry" mnemonicParsing="false" onAction="#mnuParameterCountryClick" text="Country" />
                                                                 <MenuItem fx:id="mnuParameterDepartment" mnemonicParsing="false" onAction="#mnuParameterDepartmentClick" text="Department" />
