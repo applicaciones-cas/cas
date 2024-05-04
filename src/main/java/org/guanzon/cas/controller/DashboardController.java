@@ -240,9 +240,32 @@ public class DashboardController implements Initializable {
                 return "Company";
             case "/org/guanzon/cas/views/Country.fxml":
                 return "Country";
+            case "/org/guanzon/cas/views/Department.fxml":
+                return "Department";
+            case "/org/guanzon/cas/views/Inv_Location.fxml":
+                return "Inv_Location";
+            case "/org/guanzon/cas/views/Inv_Type.fxml":
+                return "Inv_Type";
+            case "/org/guanzon/cas/views/Labor.fxml":
+                return "Labor";
+            case "/org/guanzon/cas/views/Labor_Category.fxml":
+                return "Labor_Category";
+            case "/org/guanzon/cas/views/Labor_Model.fxml":
+                return "Labor_Model";
+            case "/org/guanzon/cas/views/Made.fxml":
+                return "Made";
+            case "/org/guanzon/cas/views/Model.fxml":
+                return "Model";
+            case "/org/guanzon/cas/views/Province.fxml":
+                return "Province";
+            case "/org/guanzon/cas/views/Region.fxml":
+                return "Region";
+            case "/org/guanzon/cas/views/Relationship.fxml":
+                return "Relationship";
+            case "/org/guanzon/cas/views/Salesman.fxml":
+                return "Salesman";
             case "/org/guanzon/cas/views/Size.fxml":
                 return "Size";
-
             default:
                 return null;
         }
@@ -551,12 +574,38 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/Color.fxml":
                 return new ColorController();
             case "/org/guanzon/cas/views/Colordetail.fxml":
-                return new ColordetailController();
+                return new ColorDetailController();
             case "/org/guanzon/cas/views/Company.fxml":
                 return new CompanyController();
             case "/org/guanzon/cas/views/Country.fxml":
                 return new CountryController();
-
+            case "/org/guanzon/cas/views/Department.fxml":
+                return new DepartmentController();
+            case "/org/guanzon/cas/views/Inv_Location.fxml":
+                return new Inv_LocationController();
+            case "/org/guanzon/cas/views/Inv_Type.fxml":
+                return new Inv_TypeController();
+            case "/org/guanzon/cas/views/Labor.fxml":
+                return new LaborController();
+            case "/org/guanzon/cas/views/Labor_Category.fxml":
+                return new Labor_CategoryController();
+            case "/org/guanzon/cas/views/Labor_Model.fxml":
+                return new Labor_ModelController();
+            case "/org/guanzon/cas/views/Made.fxml":
+                return new MadeController();
+            case "/org/guanzon/cas/views/Model.fxml":
+                return new ModelController();
+            case "/org/guanzon/cas/views/Province.fxml":
+                return new ProvinceController();
+            case "/org/guanzon/cas/views/Region.fxml":
+                return new RegionController();
+            case "/org/guanzon/cas/views/Relationship.fxml":
+                return new RelationshipController();
+            case "/org/guanzon/cas/views/Salesman.fxml":
+                return new SalesmanController();
+            case "/org/guanzon/cas/views/Size.fxml":
+                return new SizeController();
+                
             default:
                 return null;
         }
@@ -621,15 +670,6 @@ public class DashboardController implements Initializable {
     }
 
     @FXML
-    void mnuParameterSizeClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/Size.fxml";
-        //check if oApp is not null before calling loadAnimate
-        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    @FXML
     private void mnuParameterAffiliatedClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/Affiliated_Company.fxml";
         //check if oApp is not null before calling loadAnimate
@@ -645,7 +685,6 @@ public class DashboardController implements Initializable {
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
-
     }
 
     @FXML
@@ -655,7 +694,6 @@ public class DashboardController implements Initializable {
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
-
     }
 
     @FXML
@@ -665,7 +703,6 @@ public class DashboardController implements Initializable {
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
-
     }
 
     @FXML
@@ -675,7 +712,6 @@ public class DashboardController implements Initializable {
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
-
     }
 
     @FXML
@@ -685,7 +721,6 @@ public class DashboardController implements Initializable {
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
-
     }
 
     @FXML
@@ -695,7 +730,6 @@ public class DashboardController implements Initializable {
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
-
     }
 
     @FXML
@@ -705,7 +739,6 @@ public class DashboardController implements Initializable {
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
-
     }
 
     @FXML
@@ -715,7 +748,6 @@ public class DashboardController implements Initializable {
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
-
     }
 
     @FXML
@@ -725,7 +757,6 @@ public class DashboardController implements Initializable {
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
-
     }
 
     @FXML
@@ -735,7 +766,6 @@ public class DashboardController implements Initializable {
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
-
     }
 
     @FXML
@@ -745,19 +775,124 @@ public class DashboardController implements Initializable {
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
-
     }
-
-    @FXML
-    private void mnuParameterCountryClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/Country.fxml";
+    
+        @FXML
+    private void mnuParameterDepartmentClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Department.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
-
     }
 
+    @FXML
+    private void mnuParameterInvLocationClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Inv_Location.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuParameterInvTypeClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Inv_Type.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuParameterLaborClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Labor.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuParameterLaborCategoryClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Labor_Category.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuParameterLaborModelClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Labor_Model.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuParameterMadeClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Made.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuParameterModelClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Model.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuParameterProvinceClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Province.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuParameterRegionClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Region.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuParameterRelationshipClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Relationship.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuParameterSalesmanClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Salesman.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuParameterSizeClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Size.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
 //    @FXML
 //    private void mnuClientParameterClick(ActionEvent event) {
 //        setScene(loadAnimate("/com/rmj/guanzongroup/cas/maven/views/ClientMasterParameter.fxml"));
@@ -770,6 +905,7 @@ public class DashboardController implements Initializable {
 //    private void mnuClientTransactionIndividualClick(ActionEvent event) {
 //        setScene(loadAnimate("/com/rmj/guanzongroup/cas/maven/views/ClientMasterTransactionCompany.fxml"));
 //    } 
+
     private boolean showMessage() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");

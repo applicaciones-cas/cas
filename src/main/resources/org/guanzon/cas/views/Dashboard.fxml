@@ -21,69 +21,70 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <top>
-            <AnchorPane prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <AnchorPane prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <ImageView fitHeight="40.0" fitWidth="550.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <image>
-                              <Image url="@../images/header.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
-                           <image>
-                              <Image url="@../images/guanzon_logo_white_small.png" />
-                           </image>
-                        </ImageView>
-                        <Label text="Computerized Accounting System V1.0.0a" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <font>
-                              <Font name="System Bold" size="18.0" />
-                           </font>
-                           <padding>
-                              <Insets left="40.0" />
-                           </padding>
-                        </Label>
-                        <Button fx:id="btnClose" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" styleClass="button_process" stylesheets="@../css/StyleSheet.css" textAlignment="CENTER" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="CLOSE" size="18" textAlignment="CENTER" />
-                           </graphic>
-                           <tooltip>
-                              <Tooltip text="Logout" />
-                           </tooltip>
-                        </Button>
-                        <Button fx:id="btnMinimize" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" styleClass="button_process" stylesheets="@../css/StyleSheet.css" textAlignment="CENTER" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="45.0" AnchorPane.topAnchor="5.0">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="MINUS" size="18" textAlignment="CENTER" />
-                           </graphic>
-                           <tooltip>
-                              <Tooltip text="Logout" />
-                           </tooltip>
-                        </Button>
-                     </children>
-                  </AnchorPane>
-               </children></AnchorPane>
-         </top>
-         <center>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <AnchorPane prefHeight="40.0" style="-fx-background-color: FF8201;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <MenuBar style="-fx-background-color: B8B8B8;" styleClass="menu-item" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                <menus>
-                                    <Menu mnemonicParsing="false" text="_Files">
-                                       <items>
-                                          <MenuItem fx:id="mnuClientParameter" mnemonicParsing="false" onAction="#mnuClientParameterClick" text="Client Parameters" />
-                                          <MenuItem fx:id="mnuClientTransactionCompany" mnemonicParsing="false" onAction="#mnuClientTransactionCompanyClick" text="Client Transactions Company" />
-                                          <MenuItem fx:id="mnuClientTransactionIndividual" mnemonicParsing="false" onAction="#mnuClientTransactionIndividualClick" text="Client Transactions Individual" />
-                                          <MenuItem fx:id="mnuNewCustomer" mnemonicParsing="false" onAction="#mnuNewCustomerClick" text="New Customer" />
-                                          <Menu mnemonicParsing="false" text="Parameter">
-                                            <items>
-                                              <MenuItem fx:id="mnuParameterAffiliated" mnemonicParsing="false" onAction="#mnuParameterAffiliatedClick" text="Affiliated" />
+    <children>
+        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <AnchorPane prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <AnchorPane prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <ImageView fitHeight="40.0" fitWidth="550.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <image>
+                                        <Image url="@../images/header.png" />
+                                    </image>
+                                </ImageView>
+                                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                    <image>
+                                        <Image url="@../images/guanzon_logo_white_small.png" />
+                                    </image>
+                                </ImageView>
+                                <Label text="Computerized Accounting System V1.0.0a" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <font>
+                                        <Font name="System Bold" size="18.0" />
+                                    </font>
+                                    <padding>
+                                        <Insets left="40.0" />
+                                    </padding>
+                                </Label>
+                                <Button fx:id="btnClose" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" styleClass="button_process" stylesheets="@../css/StyleSheet.css" textAlignment="CENTER" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="CLOSE" size="18" textAlignment="CENTER" />
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="Logout" />
+                                    </tooltip>
+                                </Button>
+                                <Button fx:id="btnMinimize" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" styleClass="button_process" stylesheets="@../css/StyleSheet.css" textAlignment="CENTER" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="45.0" AnchorPane.topAnchor="5.0">
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="MINUS" size="18" textAlignment="CENTER" />
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip text="Logout" />
+                                    </tooltip>
+                                </Button>
+                            </children>
+                        </AnchorPane>
+                    </children>
+                </AnchorPane>
+            </top>
+            <center>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <AnchorPane prefHeight="40.0" style="-fx-background-color: FF8201;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <MenuBar style="-fx-background-color: B8B8B8;" styleClass="menu-item" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <menus>
+                                                <Menu mnemonicParsing="false" text="_Files">
+                                                    <items>
+                                                        <MenuItem fx:id="mnuClientParameter" mnemonicParsing="false" onAction="#mnuClientParameterClick" text="Client Parameters" />
+                                                        <MenuItem fx:id="mnuClientTransactionCompany" mnemonicParsing="false" onAction="#mnuClientTransactionCompanyClick" text="Client Transactions Company" />
+                                                        <MenuItem fx:id="mnuClientTransactionIndividual" mnemonicParsing="false" onAction="#mnuClientTransactionIndividualClick" text="Client Transactions Individual" />
+                                                        <MenuItem fx:id="mnuNewCustomer" mnemonicParsing="false" onAction="#mnuNewCustomerClick" text="New Customer" />
+                                                        <Menu mnemonicParsing="false" text="Parameter">
+                                                            <items>
+                                                <MenuItem fx:id="mnuParameterAffiliated" mnemonicParsing="false" onAction="#mnuParameterAffiliatedClick" text="Affiliated" />
                                                 <MenuItem fx:id="mnuParameterBanks" mnemonicParsing="false" onAction="#mnuParameterBanksClick" text="Banks" />
                                                 <MenuItem fx:id="mnuParameterBanks_Branches" mnemonicParsing="false" onAction="#mnuParameterBanksBranchesClick" text="Banks_Branches" />
                                                 <MenuItem fx:id="mnuParameterBarangay" mnemonicParsing="false" onAction="#mnuParameterBarangayClick" text="Barangay" />
@@ -96,100 +97,115 @@
                                                 <MenuItem fx:id="mnuParameterColordetail" mnemonicParsing="false" onAction="#mnuParameterColordetailClick" text="Colordetail" />
                                                 <MenuItem fx:id="mnuParameterCompany" mnemonicParsing="false" onAction="#mnuParameterCompanyClick" text="Company" />
                                                 <MenuItem fx:id="mnuParameterCountry" mnemonicParsing="false" onAction="#mnuParameterCountryClick" text="Country" />
-                                                <MenuItem fx:id="mnuParameterSize" mnemonicParsing="false" onAction="#mnuParameterSizeClick" text="Size" />
-                                            </items>
-                                          </Menu>
-                                       </items>
-                                    </Menu>
-                                    <Menu mnemonicParsing="false" text="_Inventory">
-                                       <items>
-                                          <MenuItem mnemonicParsing="false" text="Delete" />
-                                       </items>
-                                    </Menu>
-                                    <Menu mnemonicParsing="false" text="_Purchasing">
-                                       <items>
-                                          <MenuItem mnemonicParsing="false" text="About" />
-                                       </items>
-                                    </Menu>
-                                    <Menu mnemonicParsing="false" text="_Others">
-                                       <items>
-                                          <MenuItem mnemonicParsing="false" text="About" />
-                                       </items>
-                                    </Menu>
-                                    <Menu mnemonicParsing="false" text="_Reports">
-                                       <items>
-                                          <MenuItem mnemonicParsing="false" text="About" />
-                                       </items>
-                                    </Menu>
-                                    <Menu mnemonicParsing="false" text="_History">
-                                       <items>
-                                          <MenuItem mnemonicParsing="false" text="About" />
-                                       </items>
-                                    </Menu>
-                                </menus>
-                              </MenuBar>
-                           </children>
+                                                                <MenuItem mnemonicParsing="false" text="Banks" />
+                                                                <MenuItem fx:id="mnuParameterDepartment" mnemonicParsing="false" onAction="#mnuParameterDepartmentClick" text="Department" />
+                                                                <MenuItem fx:id="mnuParameterInvLocation" mnemonicParsing="false" onAction="#mnuParameterInvLocationClick" text="Inv Location" />
+                                                                <MenuItem fx:id="mnuParameterInvType" mnemonicParsing="false" onAction="#mnuParameterInvTypeClick" text="Inv Type" />
+                                                                <MenuItem fx:id="mnuParameterLabor" mnemonicParsing="false" onAction="#mnuParameterLaborClick" text="Labor" />
+                                                                <MenuItem fx:id="mnuParameterLaborCategory" mnemonicParsing="false" onAction="#mnuParameterLaborCategoryClick" text="Labor Category" />
+                                                                <MenuItem fx:id="mnuParameterLaborModel" mnemonicParsing="false" onAction="#mnuParameterLaborModelClick" text="Labor Model" />
+                                                                <MenuItem fx:id="mnuParameterMade" mnemonicParsing="false" onAction="#mnuParameterMadeClick" text="Made" />
+                                                                <MenuItem fx:id="mnuParameterModel" mnemonicParsing="false" onAction="#mnuParameterModelClick" text="Model" />
+                                                                <MenuItem fx:id="mnuParameterProvince" mnemonicParsing="false" onAction="#mnuParameterProvinceClick" text="Province" />
+                                                                <MenuItem fx:id="mnuParameterRegion" mnemonicParsing="false" onAction="#mnuParameterRegionClick" text="Region" />
+                                                                <MenuItem fx:id="mnuParameterRelationship" mnemonicParsing="false" onAction="#mnuParameterRelationshipClick" text="Relationship" />
+                                                                <MenuItem fx:id="mnuParameterSalesman" mnemonicParsing="false" onAction="#mnuParameterSalesmanClick" text="Salesman" />
+                                                                <MenuItem fx:id="mnuParameterSize" mnemonicParsing="false" onAction="#mnuParameterSizeClick" text="Size" />
+                                                            </items>
+                                                        </Menu>
+                                                    </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="_Inventory">
+                                                    <items>
+                                                        <MenuItem mnemonicParsing="false" text="Delete" />
+                                                    </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="_Purchasing">
+                                                    <items>
+                                                        <MenuItem mnemonicParsing="false" text="About" />
+                                                    </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="_Others">
+                                                    <items>
+                                                        <MenuItem mnemonicParsing="false" text="About" />
+                                                    </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="_Reports">
+                                                    <items>
+                                                        <MenuItem mnemonicParsing="false" text="About" />
+                                                    </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="_History">
+                                                    <items>
+                                                        <MenuItem mnemonicParsing="false" text="About" />
+                                                    </items>
+                                                </Menu>
+                                            </menus>
+                                        </MenuBar>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="39.0">
+                                    <children>
+                                        <StackPane fx:id="workingSpace" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <children>
+                                                <Pane>
+                                                    <children>
+                                                        <TabPane fx:id="tabpane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" />
+                                                    </children>
+                                                </Pane>
+                                            </children>
+                                        </StackPane>
+                                    </children>
+                                </AnchorPane>
+                            </children>
                         </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="39.0">
-                           <children>
-                              <StackPane fx:id="workingSpace" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <Pane>
-                                       <children>
-                                          <TabPane fx:id="tabpane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" />
-                                       </children>
-                                    </Pane>
-                                 </children>
-                              </StackPane>
-                           </children></AnchorPane>
-                     </children>
-                  </AnchorPane>
-               </children>
-            </AnchorPane>
-         </center>
-         <bottom>
-            <AnchorPane prefWidth="200.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
-               <children>
-                  <ImageView fitHeight="40.0" fitWidth="441.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <image>
-                        <Image url="@../images/footer.png" />
-                     </image>
-                  </ImageView>
-                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <Label fx:id="AppBranch" text="GMC -Dagupan Honda  |  ONLINE" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                           <font>
-                              <Font name="Arial Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="AppUserInfo" text="Juan Ponce Enrile - MIS | Rank &amp; File" textAlignment="CENTER">
-                           <font>
-                              <Font name="Arial Bold" size="14.0" />
-                           </font>
-                           <GridPane.margin>
-                              <Insets left="15.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <Label fx:id="AppDateTime" text="February 23, 2024 2:38:40 PM" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
-                           <font>
-                              <Font name="Arial Bold" size="14.0" />
-                           </font>
-                           <GridPane.margin>
-                              <Insets right="15.0" />
-                           </GridPane.margin>
-                        </Label>
-                     </children>
-                  </GridPane>
-               </children></AnchorPane>
-         </bottom>
-      </BorderPane>
-   </children>
+                    </children>
+                </AnchorPane>
+            </center>
+            <bottom>
+                <AnchorPane prefWidth="200.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+                    <children>
+                        <ImageView fitHeight="40.0" fitWidth="441.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <image>
+                                <Image url="@../images/footer.png" />
+                            </image>
+                        </ImageView>
+                        <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            </rowConstraints>
+                            <children>
+                                <Label fx:id="AppBranch" text="GMC -Dagupan Honda  |  ONLINE" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                    <font>
+                                        <Font name="Arial Bold" size="14.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="AppUserInfo" text="Juan Ponce Enrile - MIS | Rank &amp; File" textAlignment="CENTER">
+                                    <font>
+                                        <Font name="Arial Bold" size="14.0" />
+                                    </font>
+                                    <GridPane.margin>
+                                        <Insets left="15.0" />
+                                    </GridPane.margin>
+                                </Label>
+                                <Label fx:id="AppDateTime" text="February 23, 2024 2:38:40 PM" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+                                    <font>
+                                        <Font name="Arial Bold" size="14.0" />
+                                    </font>
+                                    <GridPane.margin>
+                                        <Insets right="15.0" />
+                                    </GridPane.margin>
+                                </Label>
+                            </children>
+                        </GridPane>
+                    </children>
+                </AnchorPane>
+            </bottom>
+        </BorderPane>
+    </children>
 </AnchorPane>
