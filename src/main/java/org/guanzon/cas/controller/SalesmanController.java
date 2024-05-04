@@ -24,7 +24,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.parameters.Size;
+import org.guanzon.cas.parameters.Salesman;
 import org.json.simple.JSONObject;
 
 /**
@@ -32,11 +32,11 @@ import org.json.simple.JSONObject;
  *
  * @author Maynard
  */
-public class SizeController implements Initializable, ScreenInterface {
+public class SalesmanController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Size";
+    private final String pxeModuleName = "Salesman";
     private GRider oApp;
-    private Size oTrans;
+    private Salesman oTrans;
     private JSONObject poJSON;
     private int pnEditMode;
 
@@ -69,6 +69,12 @@ public class SizeController implements Initializable, ScreenInterface {
     @FXML
     private TextField txtField02;
     @FXML
+    private TextField txtField03;
+    @FXML
+    private TextField txtField04;
+    @FXML
+    private TextField txtField05;
+    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
@@ -100,7 +106,13 @@ public class SizeController implements Initializable, ScreenInterface {
                 break;
 
             case "btnSave":
+                poJSON = oTrans.getModel().setBranchCode("1");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
 
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -125,7 +137,7 @@ public class SizeController implements Initializable, ScreenInterface {
                     return;
 
                 } else {
-                    oTrans = new Size(oApp, true);
+                    oTrans = new Salesman(oApp, true);
                     pbLoaded = true;
                     oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
@@ -148,7 +160,7 @@ public class SizeController implements Initializable, ScreenInterface {
 
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                    oTrans = new Size(oApp, true);
+                    oTrans = new Salesman(oApp, true);
                     oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
@@ -170,7 +182,7 @@ public class SizeController implements Initializable, ScreenInterface {
                                 clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
-                                oTrans = new Size(oApp, false);
+                                oTrans = new Salesman(oApp, false);
                                 oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
@@ -188,7 +200,7 @@ public class SizeController implements Initializable, ScreenInterface {
                                 clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
-                                oTrans = new Size(oApp, false);
+                                oTrans = new Salesman(oApp, false);
                                 oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
@@ -242,7 +254,7 @@ public class SizeController implements Initializable, ScreenInterface {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        oTrans = new Size(oApp, false);
+        oTrans = new Salesman(oApp, false);
         oTrans.setRecordStatus("10");
         pbLoaded = true;
 
@@ -281,19 +293,26 @@ public class SizeController implements Initializable, ScreenInterface {
         btnClose.setVisible(!lbShow);
 
         txtField99.setDisable(lbShow);
-        txtField02.setEditable(lbShow);
+        txtField01.setDisable(lbShow);
+        txtField03.setEditable(lbShow);
+        txtField04.setEditable(lbShow);
+        txtField05.setEditable(lbShow);
 
-        txtField02.requestFocus();
+        txtField01.requestFocus();
     }
 
     private void initTextFields() {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
+        txtField04.focusedProperty().addListener(txtField_Focus);
+        txtField05.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField01.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -316,6 +335,18 @@ public class SizeController implements Initializable, ScreenInterface {
                             loadRecord();
                         }
                         break;
+
+                    case 1:
+                    /*Browse Primary*/
+//                        poJSON = oTrans.searchRecord(lsValue, false);
+//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+//
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtField01.requestFocus();
+//                        } else {
+//                            loadRecord();
+//                        }
+//                        break;
                 }
             case ENTER:
                 switch (lnIndex) {
@@ -330,6 +361,7 @@ public class SizeController implements Initializable, ScreenInterface {
             case UP:
                 CommonUtils.SetPreviousFocus(textField);
         }
+
         pnIndex = lnIndex;
     }
 
@@ -337,6 +369,7 @@ public class SizeController implements Initializable, ScreenInterface {
         if (!pbLoaded) {
             return;
         }
+
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
@@ -344,11 +377,36 @@ public class SizeController implements Initializable, ScreenInterface {
         if (lsValue == null) {
             return;
         }
+
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    poJSON = oTrans.getModel().setSizeName(lsValue);
+                    poJSON = oTrans.getModel().setBranchCode(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 3:
+                    poJSON = oTrans.getModel().setLastName(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 4:
+                    poJSON = oTrans.getModel().setFristName(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 5:
+                    poJSON = oTrans.getModel().setMiddleName(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -364,9 +422,12 @@ public class SizeController implements Initializable, ScreenInterface {
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        psPrimary = oTrans.getModel().getSizeID();
-        txtField01.setText(psPrimary);
-        txtField02.setText(oTrans.getModel().getSizeName());
+        psPrimary = oTrans.getModel().getEmployerID();
+        txtField02.setText(psPrimary);
+        txtField01.setText(oTrans.getModel().getEmployeeName());
+        txtField03.setText(oTrans.getModel().getLastName());
+        txtField04.setText(oTrans.getModel().getFristName());
+        txtField05.setText(oTrans.getModel().getMiddleName());
 
         cbActive.setSelected(lbActive);
 
@@ -377,11 +438,15 @@ public class SizeController implements Initializable, ScreenInterface {
             btnActivate.setText("Activate");
             faActivate.setGlyphName("CHECK");
         }
+
     }
 
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
+        txtField04.clear();
+        txtField05.clear();
         txtField99.clear();
 
         psPrimary = "";

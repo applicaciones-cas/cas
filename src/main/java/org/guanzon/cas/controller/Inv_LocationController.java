@@ -24,7 +24,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.parameters.Size;
+import org.guanzon.cas.parameters.Inv_Location;
 import org.json.simple.JSONObject;
 
 /**
@@ -32,11 +32,11 @@ import org.json.simple.JSONObject;
  *
  * @author Maynard
  */
-public class SizeController implements Initializable, ScreenInterface {
+public class Inv_LocationController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Size";
+    private final String pxeModuleName = "Inv_Location";
     private GRider oApp;
-    private Size oTrans;
+    private Inv_Location oTrans;
     private JSONObject poJSON;
     private int pnEditMode;
 
@@ -68,6 +68,8 @@ public class SizeController implements Initializable, ScreenInterface {
     private TextField txtField01;
     @FXML
     private TextField txtField02;
+    @FXML
+    private TextField txtField03;
     @FXML
     private TextField txtField99;
     @FXML
@@ -125,7 +127,7 @@ public class SizeController implements Initializable, ScreenInterface {
                     return;
 
                 } else {
-                    oTrans = new Size(oApp, true);
+                    oTrans = new Inv_Location(oApp, true);
                     pbLoaded = true;
                     oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
@@ -148,7 +150,7 @@ public class SizeController implements Initializable, ScreenInterface {
 
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                    oTrans = new Size(oApp, true);
+                    oTrans = new Inv_Location(oApp, true);
                     oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
@@ -170,7 +172,7 @@ public class SizeController implements Initializable, ScreenInterface {
                                 clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
-                                oTrans = new Size(oApp, false);
+                                oTrans = new Inv_Location(oApp, false);
                                 oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
@@ -188,7 +190,7 @@ public class SizeController implements Initializable, ScreenInterface {
                                 clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
-                                oTrans = new Size(oApp, false);
+                                oTrans = new Inv_Location(oApp, false);
                                 oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
@@ -242,7 +244,7 @@ public class SizeController implements Initializable, ScreenInterface {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        oTrans = new Size(oApp, false);
+        oTrans = new Inv_Location(oApp, false);
         oTrans.setRecordStatus("10");
         pbLoaded = true;
 
@@ -282,6 +284,7 @@ public class SizeController implements Initializable, ScreenInterface {
 
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
+        txtField03.setEditable(lbShow);
 
         txtField02.requestFocus();
     }
@@ -290,6 +293,7 @@ public class SizeController implements Initializable, ScreenInterface {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
@@ -330,6 +334,7 @@ public class SizeController implements Initializable, ScreenInterface {
             case UP:
                 CommonUtils.SetPreviousFocus(textField);
         }
+
         pnIndex = lnIndex;
     }
 
@@ -337,6 +342,7 @@ public class SizeController implements Initializable, ScreenInterface {
         if (!pbLoaded) {
             return;
         }
+
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
@@ -344,11 +350,20 @@ public class SizeController implements Initializable, ScreenInterface {
         if (lsValue == null) {
             return;
         }
+
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    poJSON = oTrans.getModel().setSizeName(lsValue);
+                    poJSON = oTrans.getModel().setDescription(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
+                case 3:
+                    poJSON = oTrans.getModel().setBriefDescription(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -364,9 +379,10 @@ public class SizeController implements Initializable, ScreenInterface {
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        psPrimary = oTrans.getModel().getSizeID();
+        psPrimary = oTrans.getModel().getLocationCode();
         txtField01.setText(psPrimary);
-        txtField02.setText(oTrans.getModel().getSizeName());
+        txtField02.setText(oTrans.getModel().getDescription());
+        txtField03.setText(oTrans.getModel().getBriefDescription());
 
         cbActive.setSelected(lbActive);
 
@@ -377,11 +393,13 @@ public class SizeController implements Initializable, ScreenInterface {
             btnActivate.setText("Activate");
             faActivate.setGlyphName("CHECK");
         }
+
     }
 
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
         txtField99.clear();
 
         psPrimary = "";

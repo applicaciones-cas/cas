@@ -24,7 +24,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.parameters.Size;
+import org.guanzon.cas.parameters.Inv_Type;
 import org.json.simple.JSONObject;
 
 /**
@@ -32,11 +32,11 @@ import org.json.simple.JSONObject;
  *
  * @author Maynard
  */
-public class SizeController implements Initializable, ScreenInterface {
+public class Inv_TypeController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Size";
+    private final String pxeModuleName = "Inv_Type";
     private GRider oApp;
-    private Size oTrans;
+    private Inv_Type oTrans;
     private JSONObject poJSON;
     private int pnEditMode;
 
@@ -125,7 +125,7 @@ public class SizeController implements Initializable, ScreenInterface {
                     return;
 
                 } else {
-                    oTrans = new Size(oApp, true);
+                    oTrans = new Inv_Type(oApp, true);
                     pbLoaded = true;
                     oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
@@ -148,7 +148,7 @@ public class SizeController implements Initializable, ScreenInterface {
 
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                    oTrans = new Size(oApp, true);
+                    oTrans = new Inv_Type(oApp, true);
                     oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
@@ -170,7 +170,7 @@ public class SizeController implements Initializable, ScreenInterface {
                                 clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
-                                oTrans = new Size(oApp, false);
+                                oTrans = new Inv_Type(oApp, false);
                                 oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
@@ -188,7 +188,7 @@ public class SizeController implements Initializable, ScreenInterface {
                                 clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
-                                oTrans = new Size(oApp, false);
+                                oTrans = new Inv_Type(oApp, false);
                                 oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
@@ -242,7 +242,7 @@ public class SizeController implements Initializable, ScreenInterface {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        oTrans = new Size(oApp, false);
+        oTrans = new Inv_Type(oApp, false);
         oTrans.setRecordStatus("10");
         pbLoaded = true;
 
@@ -344,11 +344,12 @@ public class SizeController implements Initializable, ScreenInterface {
         if (lsValue == null) {
             return;
         }
+
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    poJSON = oTrans.getModel().setSizeName(lsValue);
+                    poJSON = oTrans.getModel().setDescription(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -364,9 +365,9 @@ public class SizeController implements Initializable, ScreenInterface {
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        psPrimary = oTrans.getModel().getSizeID();
+        psPrimary = oTrans.getModel().getInventoryTypeCode();
         txtField01.setText(psPrimary);
-        txtField02.setText(oTrans.getModel().getSizeName());
+        txtField02.setText(oTrans.getModel().getDescription());
 
         cbActive.setSelected(lbActive);
 
