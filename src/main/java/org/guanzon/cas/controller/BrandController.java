@@ -1,5 +1,6 @@
 package org.guanzon.cas.controller;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -74,6 +75,8 @@ public class BrandController implements Initializable, ScreenInterface {
     @FXML
     private CheckBox cbActive;
     @FXML
+    private FontAwesomeIconView faActivate;
+    @FXML
     private TableView<?> tblList;
     @FXML
     private TableColumn<?, ?> index01;
@@ -99,7 +102,7 @@ public class BrandController implements Initializable, ScreenInterface {
                 break;
 
             case "btnSave":
-                
+
                 poJSON = oTrans.getModel().setCategoryCode("sd");
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -319,7 +322,7 @@ public class BrandController implements Initializable, ScreenInterface {
                             loadRecord();
                         }
                         break;
-                        case 3:
+                    case 3:
                         /*search Category*/
 //                        poJSON = oTrans.searchRecord(lsValue, false);
 //                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
@@ -372,7 +375,6 @@ public class BrandController implements Initializable, ScreenInterface {
                         return;
                     }
                     break;
-             
 
             }
         } else {
@@ -382,21 +384,29 @@ public class BrandController implements Initializable, ScreenInterface {
     };
 
     private void loadRecord() {
+        boolean lbActive = oTrans.getModel().isActive();
 
         txtField01.setText(oTrans.getModel().getBrandCode());
         txtField02.setText(oTrans.getModel().getDescription());
         txtField03.setText(oTrans.getModel().getCategoryName());
 
         cbActive.setSelected(oTrans.getModel().isActive());
-        
-      
+
+        if (lbActive) {
+            btnActivate.setText("Deactivate");
+            faActivate.setGlyphName("CLOSE");
+        } else {
+            btnActivate.setText("Activate");
+            faActivate.setGlyphName("CHECK");
+        }
+
     }
 
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
         txtField03.clear();
-        
+
         psPrimary = "";
         btnActivate.setText("Activate");
         cbActive.setSelected(false);
