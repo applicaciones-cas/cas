@@ -34,7 +34,7 @@ import org.json.simple.JSONObject;
  */
 public class InventoryTypeController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Inv_Type";
+    private final String pxeModuleName = "Inventory Type";
     private GRider oApp;
     private Inv_Type oTrans;
     private JSONObject poJSON;

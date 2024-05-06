@@ -35,7 +35,7 @@ import org.json.simple.JSONObject;
  */
 public class LaborModelController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Labor_Model";
+    private final String pxeModuleName = "Labor Model";
     private GRider oApp;
     private Labor_Model oTrans;
     private JSONObject poJSON;

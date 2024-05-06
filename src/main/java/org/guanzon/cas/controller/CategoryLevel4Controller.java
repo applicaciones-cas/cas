@@ -34,7 +34,7 @@ import org.json.simple.JSONObject;
  */
 public class CategoryLevel4Controller implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Category_Level4";
+    private final String pxeModuleName = "Category Level 4";
     private GRider oApp;
     private Category_Level4 oTrans;
     private JSONObject poJSON;
@@ -102,13 +102,7 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
                 break;
 
             case "btnSave":
-                poJSON = oTrans.getModel().setMainCategory("2");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
 
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -135,6 +129,7 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
                 } else {
                     oTrans = new Category_Level4(oApp, true);
                     pbLoaded = true;
+                    oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
                     ShowMessageFX.Information(null, pxeModuleName, "Record successful Saved!");
@@ -156,6 +151,7 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                     oTrans = new Category_Level4(oApp, true);
+                    oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
@@ -173,9 +169,11 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Category_Level4(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -189,9 +187,11 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Category_Level4(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -220,7 +220,7 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
 
             case "btnBrowse":
                 poJSON = oTrans.searchRecord(txtField99.getText(), false);
-                pnEditMode = oTrans.getModel().getEditMode();
+                pnEditMode = EditMode.READY;
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -245,6 +245,7 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
     public void initialize(URL location, ResourceBundle resources) {
 
         oTrans = new Category_Level4(oApp, false);
+        oTrans.setRecordStatus("10");
         pbLoaded = true;
 
         pnEditMode = EditMode.UNKNOWN;
@@ -282,6 +283,7 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
 
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
+        txtField03.setEditable(lbShow);
 
         txtField02.requestFocus();
 
@@ -296,7 +298,6 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
-
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
@@ -386,7 +387,8 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        txtField01.setText(oTrans.getModel().getCategoryCode());
+        psPrimary = oTrans.getModel().getCategoryCode();
+        txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
 
         cbActive.setSelected(oTrans.getModel().isActive());
@@ -404,6 +406,7 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
 
         psPrimary = "";
         btnActivate.setText("Activate");

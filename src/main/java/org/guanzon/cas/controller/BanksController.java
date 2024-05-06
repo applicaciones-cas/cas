@@ -129,6 +129,7 @@ public class BanksController implements Initializable, ScreenInterface {
                 } else {
                     oTrans = new Banks(oApp, true);
                     pbLoaded = true;
+                    oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
                     ShowMessageFX.Information(null, pxeModuleName, "Record successful Saved!");
@@ -150,6 +151,7 @@ public class BanksController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                     oTrans = new Banks(oApp, true);
+                    oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
@@ -167,9 +169,11 @@ public class BanksController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Banks(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -183,9 +187,11 @@ public class BanksController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Banks(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -201,7 +207,7 @@ public class BanksController implements Initializable, ScreenInterface {
             case "btnClose":
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
 //                        if (unload != null) {
-//                            unload.unloadForm(AnchorMain, oApp, "Banks");
+//                            unload.unloadForm(AnchorMain, oApp, "Size");
 //                        } else {
 //                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
 //                        }
@@ -214,7 +220,7 @@ public class BanksController implements Initializable, ScreenInterface {
 
             case "btnBrowse":
                 poJSON = oTrans.searchRecord(txtField99.getText(), false);
-                pnEditMode = oTrans.getModel().getEditMode();
+                pnEditMode = EditMode.READY;
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -239,6 +245,7 @@ public class BanksController implements Initializable, ScreenInterface {
     public void initialize(URL location, ResourceBundle resources) {
 
         oTrans = new Banks(oApp, false);
+        oTrans.setRecordStatus("10");
         pbLoaded = true;
 
         pnEditMode = EditMode.UNKNOWN;
@@ -279,7 +286,6 @@ public class BanksController implements Initializable, ScreenInterface {
         txtField03.setEditable(lbShow);
 
         txtField02.requestFocus();
-        txtField03.requestFocus();
     }
 
     private void initTextFields() {
@@ -372,7 +378,8 @@ public class BanksController implements Initializable, ScreenInterface {
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        txtField01.setText(oTrans.getModel().getBankID());
+        psPrimary = oTrans.getModel().getBankID();
+        txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getBankName());
         txtField03.setText(oTrans.getModel().getBankCode());
 

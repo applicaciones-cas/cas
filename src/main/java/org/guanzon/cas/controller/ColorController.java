@@ -34,7 +34,7 @@ import org.json.simple.JSONObject;
  */
 public class ColorController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Barangay";
+    private final String pxeModuleName = "Color";
     private GRider oApp;
     private Color oTrans;
     private JSONObject poJSON;
@@ -86,7 +86,7 @@ public class ColorController implements Initializable, ScreenInterface {
     @FXML
     private FontAwesomeIconView faActivate;
 
-   @FXML
+    @FXML
     void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
 
@@ -244,11 +244,11 @@ public class ColorController implements Initializable, ScreenInterface {
 
     }
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         oTrans = new Color(oApp, false);
+        oTrans.setRecordStatus("10");
         pbLoaded = true;
 
         pnEditMode = EditMode.UNKNOWN;
@@ -373,7 +373,7 @@ public class ColorController implements Initializable, ScreenInterface {
 
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
-        
+
         psPrimary = oTrans.getModel().getColorCode();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());

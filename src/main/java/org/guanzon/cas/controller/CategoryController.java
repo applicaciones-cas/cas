@@ -69,6 +69,8 @@ public class CategoryController implements Initializable, ScreenInterface {
     @FXML
     private TextField txtField02;
     @FXML
+    private TextField txtField03;
+    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
@@ -127,6 +129,7 @@ public class CategoryController implements Initializable, ScreenInterface {
                 } else {
                     oTrans = new Category(oApp, true);
                     pbLoaded = true;
+                    oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
                     ShowMessageFX.Information(null, pxeModuleName, "Record successful Saved!");
@@ -148,6 +151,7 @@ public class CategoryController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                     oTrans = new Category(oApp, true);
+                    oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
@@ -165,9 +169,11 @@ public class CategoryController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Category(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -181,9 +187,11 @@ public class CategoryController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Category(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -212,7 +220,7 @@ public class CategoryController implements Initializable, ScreenInterface {
 
             case "btnBrowse":
                 poJSON = oTrans.searchRecord(txtField99.getText(), false);
-                pnEditMode = oTrans.getModel().getEditMode();
+                pnEditMode = EditMode.READY;
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -237,6 +245,7 @@ public class CategoryController implements Initializable, ScreenInterface {
     public void initialize(URL location, ResourceBundle resources) {
 
         oTrans = new Category(oApp, false);
+        oTrans.setRecordStatus("10");
         pbLoaded = true;
 
         pnEditMode = EditMode.UNKNOWN;
@@ -274,6 +283,7 @@ public class CategoryController implements Initializable, ScreenInterface {
 
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
+        txtField03.setEditable(lbShow);
 
         txtField02.requestFocus();
 
@@ -283,10 +293,12 @@ public class CategoryController implements Initializable, ScreenInterface {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField03.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -308,6 +320,17 @@ public class CategoryController implements Initializable, ScreenInterface {
                         } else {
                             loadRecord();
                         }
+                        break;
+                    case 3:
+                        /*search inventory type */
+//                        poJSON = oTrans.searchRecord(lsValue, false);
+//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+//
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtField99.requestFocus();
+//                        } else {
+//                            loadRecord();
+//                        }
                         break;
                 }
             case ENTER:
@@ -351,13 +374,6 @@ public class CategoryController implements Initializable, ScreenInterface {
                         return;
                     }
                     break;
-                case 3:
-                    poJSON = oTrans.getModel().setInvTypeName(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
 
             }
         } else {
@@ -369,8 +385,10 @@ public class CategoryController implements Initializable, ScreenInterface {
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        txtField01.setText(oTrans.getModel().getCategoryCode());
+        psPrimary = oTrans.getModel().getCategoryCode();
+        txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
+        txtField03.setText(oTrans.getModel().getInvTypeName());
 
         cbActive.setSelected(oTrans.getModel().isActive());
 
@@ -387,6 +405,7 @@ public class CategoryController implements Initializable, ScreenInterface {
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
 
         psPrimary = "";
         btnActivate.setText("Activate");

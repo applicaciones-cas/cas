@@ -34,7 +34,7 @@ import org.json.simple.JSONObject;
  */
 public class BankBranchesController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Banks_Branches";
+    private final String pxeModuleName = "Banks Branches";
     private GRider oApp;
     private Banks_Branches oTrans;
     private JSONObject poJSON;
@@ -110,35 +110,8 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                     return;
                 }
                 break;
+
             case "btnSave":
-                poJSON = oTrans.getModel().setBranchesBanksCoDe("m05454");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
-                poJSON = oTrans.getModel().setBankName("lanbank");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
-                poJSON = oTrans.getModel().setBankCode("32");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
-                poJSON = oTrans.getModel().setTownName("dagupan");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
 
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
@@ -244,7 +217,7 @@ public class BankBranchesController implements Initializable, ScreenInterface {
             case "btnClose":
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
 //                        if (unload != null) {
-//                            unload.unloadForm(AnchorMain, oApp, "Banks_Branches");
+//                            unload.unloadForm(AnchorMain, oApp, "Size");
 //                        } else {
 //                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
 //                        }
@@ -328,12 +301,6 @@ public class BankBranchesController implements Initializable, ScreenInterface {
         txtField08.setEditable(lbShow);
 
         txtField02.requestFocus();
-        txtField03.requestFocus();
-        txtField04.requestFocus();
-        txtField05.requestFocus();
-        txtField06.requestFocus();
-        txtField07.requestFocus();
-        txtField08.requestFocus();
     }
 
     private void initTextFields() {
@@ -372,6 +339,28 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                             loadRecord();
                         }
                         break;
+                    case 3:
+                        /*search bank */
+//                        poJSON = oTrans.searchRecord(lsValue, false);
+//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+//
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtField99.requestFocus();
+//                        } else {
+//                            loadRecord();
+//                        }
+                        break;
+                    case 6:
+                        /*search town*/
+//                        poJSON = oTrans.searchRecord(lsValue, false);
+//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+//
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtField99.requestFocus();
+//                        } else {
+//                            loadRecord();
+//                        }
+                        break;
                 }
             case ENTER:
                 switch (lnIndex) {
@@ -408,14 +397,7 @@ public class BankBranchesController implements Initializable, ScreenInterface {
             switch (lnIndex) {
 
                 case 2:
-                    poJSON = oTrans.getModel().setBranchesBanksCoDe(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-                case 3:
-                    poJSON = oTrans.getModel().setBranchesBanksName(lsValue);
+                    poJSON = oTrans.getModel().setBranchesBanksCode(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -430,13 +412,6 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                     break;
                 case 5:
                     poJSON = oTrans.getModel().setAddress(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-                case 6:
-                    poJSON = oTrans.getModel().setTownID(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -488,7 +463,8 @@ public class BankBranchesController implements Initializable, ScreenInterface {
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        txtField01.setText(oTrans.getModel().getBranchesBanksID());
+        psPrimary = oTrans.getModel().getBranchesBanksID();
+        txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getBranchesBanksName());
         txtField04.setText(oTrans.getModel().getContactPerson());
         txtField05.setText(oTrans.getModel().getAddress());
@@ -511,6 +487,7 @@ public class BankBranchesController implements Initializable, ScreenInterface {
         txtField01.clear();
         txtField02.clear();
         txtField03.clear();
+        txtField04.clear();
         txtField05.clear();
         txtField06.clear();
         txtField07.clear();

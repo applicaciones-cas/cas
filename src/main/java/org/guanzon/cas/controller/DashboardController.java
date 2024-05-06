@@ -605,7 +605,7 @@ public class DashboardController implements Initializable {
                 return new SalesmanController();
             case "/org/guanzon/cas/views/Size.fxml":
                 return new SizeController();
-                
+
             default:
                 return null;
         }
@@ -776,8 +776,8 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
-    
-        @FXML
+
+    @FXML
     private void mnuParameterCountryClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/Country.fxml";
         //check if oApp is not null before calling loadAnimate
@@ -785,8 +785,8 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
-    
-        @FXML
+
+    @FXML
     private void mnuParameterDepartmentClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/Department.fxml";
         //check if oApp is not null before calling loadAnimate

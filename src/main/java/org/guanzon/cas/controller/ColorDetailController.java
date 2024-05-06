@@ -34,7 +34,7 @@ import org.json.simple.JSONObject;
  */
 public class ColorDetailController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Barangay";
+    private final String pxeModuleName = "Color Detail";
     private GRider oApp;
     private Color_Detail oTrans;
     private JSONObject poJSON;
@@ -249,6 +249,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
     public void initialize(URL location, ResourceBundle resources) {
 
         oTrans = new Color_Detail(oApp, false);
+        oTrans.setRecordStatus("10");
         pbLoaded = true;
 
         pnEditMode = EditMode.UNKNOWN;
@@ -286,6 +287,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
 
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
+        txtField03.setEditable(lbShow);
 
         txtField02.requestFocus();
 
@@ -399,6 +401,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
         txtField99.clear();
 
         psPrimary = "";

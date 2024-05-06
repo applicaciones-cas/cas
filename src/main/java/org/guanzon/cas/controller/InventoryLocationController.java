@@ -34,7 +34,7 @@ import org.json.simple.JSONObject;
  */
 public class InventoryLocationController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Inv_Location";
+    private final String pxeModuleName = "Inventory Location";
     private GRider oApp;
     private Inv_Location oTrans;
     private JSONObject poJSON;

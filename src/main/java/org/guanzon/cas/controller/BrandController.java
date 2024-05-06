@@ -103,14 +103,6 @@ public class BrandController implements Initializable, ScreenInterface {
 
             case "btnSave":
 
-                poJSON = oTrans.getModel().setCategoryCode("sd");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
-
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -137,6 +129,7 @@ public class BrandController implements Initializable, ScreenInterface {
                 } else {
                     oTrans = new Brand(oApp, true);
                     pbLoaded = true;
+                    oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
                     ShowMessageFX.Information(null, pxeModuleName, "Record successful Saved!");
@@ -158,6 +151,7 @@ public class BrandController implements Initializable, ScreenInterface {
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                     oTrans = new Brand(oApp, true);
+                    oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
@@ -175,9 +169,11 @@ public class BrandController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Brand(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -191,9 +187,11 @@ public class BrandController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Brand(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
                             }
@@ -222,7 +220,7 @@ public class BrandController implements Initializable, ScreenInterface {
 
             case "btnBrowse":
                 poJSON = oTrans.searchRecord(txtField99.getText(), false);
-                pnEditMode = oTrans.getModel().getEditMode();
+                pnEditMode = EditMode.READY;
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -247,6 +245,7 @@ public class BrandController implements Initializable, ScreenInterface {
     public void initialize(URL location, ResourceBundle resources) {
 
         oTrans = new Brand(oApp, false);
+        oTrans.setRecordStatus("10");
         pbLoaded = true;
 
         pnEditMode = EditMode.UNKNOWN;
@@ -287,7 +286,6 @@ public class BrandController implements Initializable, ScreenInterface {
         txtField03.setEditable(lbShow);
 
         txtField02.requestFocus();
-        txtField03.requestFocus();
     }
 
     private void initTextFields() {
@@ -323,7 +321,7 @@ public class BrandController implements Initializable, ScreenInterface {
                         }
                         break;
                     case 3:
-                        /*search Category*/
+                        /*search Brand*/
 //                        poJSON = oTrans.searchRecord(lsValue, false);
 //                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 //
@@ -386,7 +384,8 @@ public class BrandController implements Initializable, ScreenInterface {
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        txtField01.setText(oTrans.getModel().getBrandCode());
+        psPrimary = oTrans.getModel().getBrandCode();
+        txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
         txtField03.setText(oTrans.getModel().getCategoryName());
 

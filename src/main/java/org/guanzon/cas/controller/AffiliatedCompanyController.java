@@ -34,7 +34,7 @@ import org.json.simple.JSONObject;
  */
 public class AffiliatedCompanyController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Affiliated_Company";
+    private final String pxeModuleName = "Affiliated Company";
     private GRider oApp;
     private Affiliated_Company oTrans;
     private JSONObject poJSON;
@@ -83,7 +83,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
     @FXML
     private TableColumn<?, ?> index02;
 
-    @FXML
+@FXML
     void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
 
@@ -207,7 +207,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
             case "btnClose":
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
 //                        if (unload != null) {
-//                            unload.unloadForm(AnchorMain, oApp, "Affiliated_Company");
+//                            unload.unloadForm(AnchorMain, oApp, "Size");
 //                        } else {
 //                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
 //                        }
@@ -240,6 +240,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
         initButton(pnEditMode);
 
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -370,7 +371,8 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        txtField01.setText(oTrans.getModel().getCompanyCode());
+        psPrimary = oTrans.getModel().getCompanyCode();
+        txtField01.setText(psPrimary);
         txtField02.setText(CommonUtils.xsDateLong(oTrans.getModel().getDateAffiliate()));
         txtField03.setText(oTrans.getModel().getCompanyName());
         cbActive.setSelected(oTrans.getModel().isActive());

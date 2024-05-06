@@ -33,19 +33,19 @@ import org.json.simple.JSONObject;
  * @author Maynard
  */
 public class CategoryLevel3Controller implements Initializable, ScreenInterface {
-
-    private final String pxeModuleName = "Category_Level3";
+    
+    private final String pxeModuleName = "Category Level 3";
     private GRider oApp;
     private Category_Level3 oTrans;
     private JSONObject poJSON;
     private int pnEditMode;
-
+    
     private String psPrimary = "";
-
+    
     private boolean state = false;
     private boolean pbLoaded = false;
     private int pnIndex;
-
+    
     @FXML
     private AnchorPane ChildAnchorPane;
     @FXML
@@ -82,80 +82,76 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
     private TableColumn<?, ?> index01;
     @FXML
     private TableColumn<?, ?> index02;
-
+    
     @FXML
     void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
-
+        
         switch (lsButton) {
-
+            
             case "btnNew":
                 poJSON = oTrans.newRecord();
                 loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
+                    
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
                 break;
-
+            
             case "btnSave":
-                poJSON = oTrans.getModel().setMainCategory("1");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
+                
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
+                    
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
                 poJSON = oTrans.getModel().setModifiedDate(oApp.getServerDate());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
+                    
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
                 poJSON = oTrans.saveRecord();
-
+                
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
+                    
                     pnEditMode = EditMode.UNKNOWN;
                     return;
-
+                    
                 } else {
                     oTrans = new Category_Level3(oApp, true);
                     pbLoaded = true;
+                    oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
                     ShowMessageFX.Information(null, pxeModuleName, "Record successful Saved!");
                 }
                 break;
-
+            
             case "btnUpdate":
                 poJSON = oTrans.updateRecord();
-
+                
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
+                    
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
                 break;
-
+            
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                     oTrans = new Category_Level3(oApp, true);
+                    oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
@@ -163,7 +159,7 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
                 } else {
                     return;
                 }
-
+            
             case "btnActivate":
                 if (!psPrimary.isEmpty()) {
                     if (btnActivate.getText().equals("Activate")) {
@@ -173,11 +169,13 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Category_Level3(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
-
+                                
                             }
                         } else {
                             return;
@@ -189,11 +187,13 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
                                 System.err.println((String) poJSON.get("message"));
                                 return;
                             } else {
+                                clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new Category_Level3(oApp, false);
+                                oTrans.setRecordStatus("10");
                                 pbLoaded = true;
-
+                                
                             }
                         } else {
                             return;
@@ -203,7 +203,7 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
                     ShowMessageFX.Warning(null, pxeModuleName, "Please select a record to confirm!");
                 }
                 break;
-
+            
             case "btnClose":
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
 //                        if (unload != null) {
@@ -215,14 +215,14 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
                 } else {
                     return;
                 }
-
+                
                 break;
-
+            
             case "btnBrowse":
                 poJSON = oTrans.searchRecord(txtField99.getText(), false);
-                pnEditMode = oTrans.getModel().getEditMode();
+                pnEditMode = EditMode.READY;
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-
+                    
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                     txtField99.requestFocus();
                     pnEditMode = EditMode.UNKNOWN;
@@ -231,62 +231,64 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
                     loadRecord();
                 }
                 break;
-
+            
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                 return;
         }
-
+        
         initButton(pnEditMode);
-
+        
     }
-
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        
         oTrans = new Category_Level3(oApp, false);
+        oTrans.setRecordStatus("10");
         pbLoaded = true;
-
+        
         pnEditMode = EditMode.UNKNOWN;
-
+        
         initButton(pnEditMode);
         initTextFields();
-
+        
         pbLoaded = true;
-
+        
     }
-
+    
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
-
+    
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-
+        
         btnSave.setVisible(lbShow);
         btnCancel.setVisible(lbShow);
-
+        
         btnSave.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
-
+        
         btnNew.setManaged(!lbShow);
         btnUpdate.setManaged(!lbShow);
         btnBrowse.setManaged(!lbShow);
-
+        
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
         btnUpdate.setVisible(!lbShow);
         btnActivate.setVisible(!lbShow);
         btnClose.setVisible(!lbShow);
-
+        
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
-
+        txtField03.setEditable(lbShow);
+        
         txtField02.requestFocus();
-
+        
     }
-
+    
     private void initTextFields() {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
@@ -296,11 +298,11 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
-
+        
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
-
+        
     }
-
+    
     private void txtField_KeyPressed(KeyEvent event) {
         TextField textField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
@@ -308,19 +310,19 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
-
+                    
                     case 99:
                         /*Browse Primary*/
                         poJSON = oTrans.searchRecord(lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-
+                            
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                             txtField99.requestFocus();
                         } else {
                             loadRecord();
                         }
                         break;
-
+                    
                     case 3:
                         /*search Main Category*/
 //                        poJSON = oTrans.searchRecord(lsValue, false);
@@ -332,7 +334,7 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
 //                            loadRecord();
 //                        }
                         break;
-
+                    
                 }
             case ENTER:
                 switch (lnIndex) {
@@ -347,27 +349,27 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
             case UP:
                 CommonUtils.SetPreviousFocus(textField);
         }
-
+        
         pnIndex = lnIndex;
     }
-
+    
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         if (!pbLoaded) {
             return;
         }
-
+        
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
-
+        
         if (lsValue == null) {
             return;
         }
-
+        
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
-
+                
                 case 2:
                     poJSON = oTrans.getModel().setDescription(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -375,31 +377,24 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
                         return;
                     }
                     break;
-                case 3:
-                    poJSON = oTrans.getModel().setMainCategory(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-                  
-
+                
             }
         } else {
             txtField.selectAll();
         }
         pnIndex = lnIndex;
     };
-
+    
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
-
-        txtField01.setText(oTrans.getModel().getCategoryCode());
+        
+        psPrimary = oTrans.getModel().getCategoryCode();
+        txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
-        txtField03.setText(oTrans.getModel().getMainCategory());
-
+        txtField03.setText(oTrans.getModel().getMainCategoryName());
+        
         cbActive.setSelected(oTrans.getModel().isActive());
-
+        
         if (lbActive) {
             btnActivate.setText("Deactivate");
             faActivate.setGlyphName("CLOSE");
@@ -407,17 +402,17 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
             btnActivate.setText("Activate");
             faActivate.setGlyphName("CHECK");
         }
-
+        
     }
-
+    
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
         txtField03.clear();
-
+        
         psPrimary = "";
         btnActivate.setText("Activate");
         cbActive.setSelected(false);
-
+        
     }
 }
