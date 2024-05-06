@@ -1,5 +1,6 @@
 package org.guanzon.cas.controller;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -73,6 +74,8 @@ public class BanksController implements Initializable, ScreenInterface {
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
+    @FXML
+    private FontAwesomeIconView faActivate;
     @FXML
     private TableView<?> tblList;
     @FXML
@@ -351,7 +354,7 @@ public class BanksController implements Initializable, ScreenInterface {
                         return;
                     }
                     break;
-                    case 3:
+                case 3:
                     poJSON = oTrans.getModel().setBankCode(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -367,6 +370,7 @@ public class BanksController implements Initializable, ScreenInterface {
     };
 
     private void loadRecord() {
+        boolean lbActive = oTrans.getModel().isActive();
 
         txtField01.setText(oTrans.getModel().getBankID());
         txtField02.setText(oTrans.getModel().getBankName());
@@ -374,13 +378,21 @@ public class BanksController implements Initializable, ScreenInterface {
 
         cbActive.setSelected(oTrans.getModel().isActive());
 
+        if (lbActive) {
+            btnActivate.setText("Deactivate");
+            faActivate.setGlyphName("CLOSE");
+        } else {
+            btnActivate.setText("Activate");
+            faActivate.setGlyphName("CHECK");
+        }
+
     }
 
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
         txtField03.clear();
-        
+
         psPrimary = "";
         btnActivate.setText("Activate");
         cbActive.setSelected(false);
