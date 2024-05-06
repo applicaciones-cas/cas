@@ -1,5 +1,6 @@
 package org.guanzon.cas.controller;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -74,13 +75,15 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
     @FXML
     private CheckBox cbActive;
     @FXML
+    private FontAwesomeIconView faActivate;
+    @FXML
     private TableView<?> tblList;
     @FXML
     private TableColumn<?, ?> index01;
     @FXML
     private TableColumn<?, ?> index02;
 
-   @FXML
+    @FXML
     void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
 
@@ -237,6 +240,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
         initButton(pnEditMode);
 
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -364,11 +368,20 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
     };
 
     private void loadRecord() {
+        boolean lbActive = oTrans.getModel().isActive();
 
         txtField01.setText(oTrans.getModel().getCompanyCode());
         txtField02.setText(CommonUtils.xsDateLong(oTrans.getModel().getDateAffiliate()));
         txtField03.setText(oTrans.getModel().getCompanyName());
         cbActive.setSelected(oTrans.getModel().isActive());
+
+        if (lbActive) {
+            btnActivate.setText("Deactivate");
+            faActivate.setGlyphName("CLOSE");
+        } else {
+            btnActivate.setText("Activate");
+            faActivate.setGlyphName("CHECK");
+        }
 
     }
 
@@ -376,6 +389,10 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
         txtField01.clear();
         txtField02.clear();
         txtField03.clear();
+
+        psPrimary = "";
+        btnActivate.setText("Activate");
+        cbActive.setSelected(false);
 
     }
 }
