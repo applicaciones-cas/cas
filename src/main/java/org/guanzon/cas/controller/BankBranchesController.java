@@ -1,5 +1,6 @@
 package org.guanzon.cas.controller;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -60,6 +61,8 @@ public class BankBranchesController implements Initializable, ScreenInterface {
     @FXML
     private Button btnActivate;
     @FXML
+    private FontAwesomeIconView faActivate;
+    @FXML
     private Button btnClose;
     @FXML
     private Button btnBrowse;
@@ -90,7 +93,7 @@ public class BankBranchesController implements Initializable, ScreenInterface {
     @FXML
     private TableColumn<?, ?> index02;
 
-       @FXML
+    @FXML
     void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
 
@@ -107,8 +110,35 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                     return;
                 }
                 break;
-
             case "btnSave":
+                poJSON = oTrans.getModel().setBranchesBanksCoDe("m05454");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                poJSON = oTrans.getModel().setBankName("lanbank");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                poJSON = oTrans.getModel().setBankCode("32");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                poJSON = oTrans.getModel().setTownName("dagupan");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
 
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
@@ -426,6 +456,27 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                         return;
                     }
                     break;
+                case 9:
+                    poJSON = oTrans.getModel().setBankName(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+                case 10:
+                    poJSON = oTrans.getModel().setBankCode(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+                case 11:
+                    poJSON = oTrans.getModel().setTownName(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
 
             }
         } else {
@@ -435,16 +486,24 @@ public class BankBranchesController implements Initializable, ScreenInterface {
     };
 
     private void loadRecord() {
+        boolean lbActive = oTrans.getModel().isActive();
 
         txtField01.setText(oTrans.getModel().getBranchesBanksID());
-        txtField02.setText(oTrans.getModel().getBranchesBanksCoDe());
-        txtField03.setText(oTrans.getModel().getBranchesBanksName());
+        txtField02.setText(oTrans.getModel().getBranchesBanksName());
         txtField04.setText(oTrans.getModel().getContactPerson());
         txtField05.setText(oTrans.getModel().getAddress());
         txtField06.setText(oTrans.getModel().getTownName());
         txtField07.setText(oTrans.getModel().getTelephoneNumber());
         txtField08.setText(oTrans.getModel().getFaxNumber());
         cbActive.setSelected(oTrans.getModel().isActive());
+
+        if (lbActive) {
+            btnActivate.setText("Deactivate");
+            faActivate.setGlyphName("CLOSE");
+        } else {
+            btnActivate.setText("Activate");
+            faActivate.setGlyphName("CHECK");
+        }
 
     }
 
