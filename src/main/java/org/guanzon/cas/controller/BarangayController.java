@@ -1,5 +1,6 @@
 package org.guanzon.cas.controller;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -73,6 +74,8 @@ public class BarangayController implements Initializable, ScreenInterface {
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
+    @FXML
+    private FontAwesomeIconView faActivate;
     @FXML
     private CheckBox cbHasRoute;
     @FXML
@@ -380,6 +383,7 @@ public class BarangayController implements Initializable, ScreenInterface {
     };
 
     private void loadRecord() {
+        boolean lbActive = oTrans.getModel().isActive();
 
         txtField01.setText(oTrans.getModel().getBarangayID());
         txtField02.setText(oTrans.getModel().getBarangayName());
@@ -388,6 +392,13 @@ public class BarangayController implements Initializable, ScreenInterface {
         cbActive.setSelected(oTrans.getModel().isActive());
         cbHasRoute.setSelected(oTrans.getModel().isActive());
         cbBlacklist.setSelected(oTrans.getModel().isActive());
+        if (lbActive) {
+            btnActivate.setText("Deactivate");
+            faActivate.setGlyphName("CLOSE");
+        } else {
+            btnActivate.setText("Activate");
+            faActivate.setGlyphName("CHECK");
+        }
     }
 
     private void clearFields() {
