@@ -1,5 +1,6 @@
 package org.guanzon.cas.controller;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -74,9 +75,7 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
     @FXML
     private CheckBox cbActive;
     @FXML
-    private CheckBox cbHasRoute;
-    @FXML
-    private CheckBox cbBlacklist;
+    private FontAwesomeIconView faActivate;
     @FXML
     private TableView<?> tblList;
     @FXML
@@ -297,7 +296,7 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
-        
+
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
@@ -321,8 +320,8 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
                             loadRecord();
                         }
                         break;
-                        
-                        case 3:
+
+                    case 3:
                         /*search Main Category*/
 //                        poJSON = oTrans.searchRecord(lsValue, false);
 //                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
@@ -333,7 +332,7 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
 //                            loadRecord();
 //                        }
                         break;
-                                
+
                 }
             case ENTER:
                 switch (lnIndex) {
@@ -376,7 +375,7 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
                         return;
                     }
                     break;
-                
+
             }
         } else {
             txtField.selectAll();
@@ -385,11 +384,20 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
     };
 
     private void loadRecord() {
+        boolean lbActive = oTrans.getModel().isActive();
 
         txtField01.setText(oTrans.getModel().getCategoryCode());
         txtField02.setText(oTrans.getModel().getDescription());
 
         cbActive.setSelected(oTrans.getModel().isActive());
+
+        if (lbActive) {
+            btnActivate.setText("Deactivate");
+            faActivate.setGlyphName("CLOSE");
+        } else {
+            btnActivate.setText("Activate");
+            faActivate.setGlyphName("CHECK");
+        }
 
     }
 
