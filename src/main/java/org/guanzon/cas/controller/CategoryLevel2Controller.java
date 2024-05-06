@@ -1,5 +1,6 @@
 package org.guanzon.cas.controller;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -76,6 +77,8 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
     @FXML
     private CheckBox cbActive;
     @FXML
+    private FontAwesomeIconView faActivate;
+    @FXML
     private TableView<?> tblList;
     @FXML
     private TableColumn<?, ?> index01;
@@ -108,7 +111,7 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-                poJSON = oTrans.getModel().setMainCategory("1");
+                poJSON = oTrans.getModel().setMainCategory("4");
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
 
@@ -329,7 +332,7 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
                             loadRecord();
                         }
                         break;
-                        case 3:
+                    case 3:
                         /*search Inventory Type*/
                         poJSON = oTrans.searchRecord(lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
@@ -340,7 +343,7 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
                             loadRecord();
                         }
                         break;
-                        case 4:
+                    case 4:
                         /*search Main Category*/
                         poJSON = oTrans.searchRecord(lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
@@ -401,6 +404,7 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
     };
 
     private void loadRecord() {
+        boolean lbActive = oTrans.getModel().isActive();
 
         txtField01.setText(oTrans.getModel().getCategoryCode());
         txtField02.setText(oTrans.getModel().getDescription());
@@ -408,6 +412,14 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
         txtField04.setText(oTrans.getModel().getMainCategoryName());
 
         cbActive.setSelected(oTrans.getModel().isActive());
+
+        if (lbActive) {
+            btnActivate.setText("Deactivate");
+            faActivate.setGlyphName("CLOSE");
+        } else {
+            btnActivate.setText("Activate");
+            faActivate.setGlyphName("CHECK");
+        }
 
     }
 
