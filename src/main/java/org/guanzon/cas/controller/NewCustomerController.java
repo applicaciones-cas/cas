@@ -19,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import static javafx.scene.input.KeyCode.DOWN;
@@ -26,13 +27,15 @@ import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.clients.Client_Master;
 import org.guanzon.cas.model.ModelMobile;
-import org.guanzon.clients.Client_Master;
+import org.guanzon.cas.validators.ValidatorFactory;
 import org.json.simple.JSONObject;
 
 /**
@@ -51,7 +54,8 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
     private int pnMobile = 0;
     private boolean state = false;
     private boolean pbLoaded = false;
-    
+    @FXML
+    private AnchorPane AnchorMain;
     @FXML
     private TextField txtField01;
     
@@ -113,6 +117,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
     }
     private ObservableList<ModelMobile> data = FXCollections.observableArrayList();
 
+    private int pnAddress = 0;  
     /***********************************/
     /*Initializes the controller class.*/
     /***********************************/
@@ -140,7 +145,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         ClickButton();
         InitPersonalInfo();
         initComboBoxes();
-        
+        oTrans.setType(ValidatorFactory.ClientTypes.STANDARD);
         pbLoaded = true;
     }
     
@@ -159,24 +164,18 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         Object source = event.getSource();
         if (source instanceof Button) {
             Button clickedButton = (Button) source;
+            
+            unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
                 
                 /*button cancel*/
                 case "btnCancel":
-                    if (ShowMessageFX.YesNo("Do you want to save transaction?", "Computerized Acounting System", pxeModuleName)){
-                         JSONObject saveResult = oTrans.saveRecord();
-                         if ("success".equals((String) saveResult.get("result"))){
-                            System.err.println((String) saveResult.get("message"));
-                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                            System.out.println("Record saved successfully.");
-                        } else {
-                            ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                            System.out.println("Record not saved successfully.");
-                            System.out.println((String) saveResult.get("message"));
-                        }
-                    }else
-                        
-                    break;                    
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+//                            clearAllFields();
+                        pnEditMode = EditMode.UNKNOWN;
+                        appUnload.unloadForm(AnchorMain, oApp, "Client Transactions Standard");
+                    }
+                    break;               
                 /*button okay*/    
                 case "btnOkay":
                         oTrans.setMaster( 8,String.valueOf(personalinfo01.getText()));
@@ -185,6 +184,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
                             System.err.println((String) saveResult.get("message"));
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                             System.out.println("Record saved successfully.");
+                            appUnload.unloadForm(AnchorMain, oApp, "Client Transactions Standard");
                         } else {
                             ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                             System.out.println("Record not saved successfully.");
@@ -342,15 +342,12 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         JSONObject jsonObject = new JSONObject();
         if (lsValue == null) return;         
         if(!nv){ /*Lost Focus*/
-            switch (lnIndex){
+            switch (lnIndex){   
                 case 1:/*house no*/
                     oTrans.setAddress(0, 3, lsValue);
                         break;
                 case 2:/*cutomer addresss*/
                     oTrans.setAddress(0, 4, lsValue);
-                    break;
-                case 3:/*town*/
-                    oTrans.setAddress(0, 6, lsValue);
                     break;
             }
             AddressField04.setText(AddressField01.getText() + " " +  AddressField02.getText() + ", " + AddressField03.getText());
@@ -433,15 +430,14 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
                     
                     case 3: /*search town*/
                         poJson = new JSONObject();
-                           poJson =  oTrans.searchBirthPlce(lsValue, false);
+                           poJson = oTrans.SearchTownAddress(pnAddress, lsValue, false);
                            System.out.println("poJson = " + poJson.toJSONString());
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                
                                 ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                                 AddressField03.clear();
                            }
-                           AddressField03.setText((String) poJson.get("xBrthPlce"));
-                           
+                           AddressField03.setText((String) poJson.get("sTownName") + ", " + (String) poJson.get("sProvName"));
                         break;
                 }
             case ENTER:
@@ -457,6 +453,10 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         case UP:
             CommonUtils.SetPreviousFocus(AddressField);
         }
+    }
+
+    private void unloadform() {
+       
     }
     
     

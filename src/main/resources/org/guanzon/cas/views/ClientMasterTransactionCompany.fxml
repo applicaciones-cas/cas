@@ -27,7 +27,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="1000.0" maxWidth="2500.0" minHeight="700.0" minWidth="1100.0" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="1000.0" fx:id = "AnchorMain" maxWidth="2500.0" minHeight="700.0" minWidth="1100.0" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <center>
@@ -69,7 +69,7 @@
                                                                                 <RowConstraints minHeight="5.0" valignment="TOP" vgrow="SOMETIMES" />
                                                                             </rowConstraints>
                                                                             <children>
-                                                                                <TextField styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="3">
+                                                                                <TextField fx:id="txtField02" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="3">
                                                                                     <GridPane.margin>
                                                                                         <Insets left="5.0" />
                                                                                     </GridPane.margin>
@@ -108,11 +108,11 @@
                                                                                         <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                                                                     </padding>
                                                                                 </Label>
-                                                                                <TextArea GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="4" GridPane.rowSpan="2">
-                                                                                    <GridPane.margin>
-                                                                                        <Insets left="5.0" />
-                                                                                    </GridPane.margin>
-                                                                                </TextArea>
+                                                            <TextField fx:id="txtField03" alignment="TOP_LEFT" disable="true" prefHeight="60.0" prefWidth="459.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="4" GridPane.rowSpan="2">
+                                                               <GridPane.margin>
+                                                                  <Insets left="5.0" />
+                                                               </GridPane.margin>
+                                                            </TextField>
                                                                             </children>
                                                                             <padding>
                                                                                 <Insets top="5.0" />
@@ -192,25 +192,6 @@
                                                                                         <TextField fx:id="cmpnyInfo03" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3" />
                                                                                         <TextField fx:id="cmpnyInfo05" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" />
                                                                                         <TextField fx:id="cmpnyInfo06" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5" />
-                                                                                        <Button contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="5">
-                                                                                            <graphic>
-                                                                                                <FontAwesomeIconView glyphName="PLUS" size="20" textAlignment="CENTER" />
-                                                                                            </graphic>
-                                                                                            <tooltip>
-                                                                                                <Tooltip text="ADD ADDRESS" />
-                                                                                            </tooltip>
-                                                                                        </Button>
-                                                                                        <Button contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="5">
-                                                                                            <graphic>
-                                                                                                <FontAwesomeIconView glyphName="TRASH" size="20" textAlignment="CENTER" />
-                                                                                            </graphic>
-                                                                                            <tooltip>
-                                                                                                <Tooltip text="CLEAR" />
-                                                                                            </tooltip>
-                                                                                            <GridPane.margin>
-                                                                                                <Insets left="40.0" />
-                                                                                            </GridPane.margin>
-                                                                                        </Button>
                                                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Company Name ">
                                                                                             <font>
                                                                                                 <Font size="14.0" />
@@ -231,7 +212,7 @@
                                                                <items>
                                                                   <AnchorPane>
                                                                      <children>
-                                                                        <TableView fx:id="tblContact" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                        <TableView fx:id="tblContact" onMouseClicked="#tblContact_Clicked" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                            <columns>
                                                                               <TableColumn fx:id="indexContact01" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="35.0" text="No." />
                                                                               <TableColumn fx:id="indexContact02" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="160.0" text="Name" />
@@ -513,29 +494,14 @@
                     <children>
                         <HBox layoutX="14.0" layoutY="-6.0" prefHeight="100.0" prefWidth="200.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
-                                <Button fx:id="btnNew" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="ADD">
+                                <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Okay">
                                     <graphic>
-                                        <FontAwesomeIconView glyphName="PLUS" size="20" textAlignment="CENTER" />
+                                        <FontAwesomeIconView glyphName="CHECK" size="20" textAlignment="CENTER" />
                                     </graphic>
                                 </Button>
-                                <Button fx:id="btnUpdate" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="UPDATE">
+                                <Button fx:id="btnClose" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Cancel">
                                     <graphic>
-                                        <FontAwesomeIconView glyphName="EDIT" size="20" textAlignment="CENTER" />
-                                    </graphic>
-                                </Button>
-                                <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="SAVE">
-                                    <graphic>
-                                        <FontAwesomeIconView glyphName="SAVE" size="20" textAlignment="CENTER" />
-                                    </graphic>
-                                </Button>
-                                <Button fx:id="btnDelete" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="DELETE ">
-                                    <graphic>
-                                        <FontAwesomeIconView glyphName="TRASH" size="20" textAlignment="CENTER" />
-                                    </graphic>
-                                </Button>
-                                <Button fx:id="btnClose" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="CLOSE">
-                                    <graphic>
-                                        <FontAwesomeIconView glyphName="POWER_OFF" size="20" textAlignment="CENTER" />
+                                        <FontAwesomeIconView glyphName="CLOSE" size="20" textAlignment="CENTER" />
                                     </graphic>
                                 </Button>
                             </children>
