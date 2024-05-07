@@ -214,7 +214,6 @@ public class DashboardController implements Initializable {
                 return "Client Transactions Individual";
             case "/org/guanzon/cas/views/NewCustomer.fxml":
                 return "Client Transactions Standard";
-
             case "/org/guanzon/cas/views/AffiliatedCompany.fxml":
                 return "Affiliated Company";
             case "/org/guanzon/cas/views/Banks.fxml":
@@ -267,6 +266,10 @@ public class DashboardController implements Initializable {
                 return "Salesman";
             case "/org/guanzon/cas/views/Size.fxml":
                 return "Size";
+            case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
+                return "Accounts Payable Clients";
+            case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
+                return "Accounts Accreditation";
             default:
                 return null;
         }
@@ -474,7 +477,9 @@ public class DashboardController implements Initializable {
                     Platform.exit();
                     break;
                 case "btnMinimize":
-                    stage.setIconified(true); // Try to minimize the stage
+                    Stage stage = (Stage) btnMinimize.getScene().getWindow();
+                    stage.setIconified(true);
+//                    stage.setIconified(true); // Try to minimize the stage
 //                    stage.setIconified(true);
 //                    stage.initStyle(StageStyle.DECORATED);
                     break;
@@ -551,7 +556,6 @@ public class DashboardController implements Initializable {
 
             case "/org/guanzon/cas/views/NewCustomer.fxml":
                 return new NewCustomerController();
-
             //Parameter MenuControllers
             case "/org/guanzon/cas/views/AffiliatedCompany.fxml":
                 return new AffiliatedCompanyController();
@@ -605,6 +609,10 @@ public class DashboardController implements Initializable {
                 return new SalesmanController();
             case "/org/guanzon/cas/views/Size.fxml":
                 return new SizeController();
+            case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
+                return new FrmAccountsPayableController();
+            case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
+                return new FrmAccountsAccreditationController();
             default:
                 return null;
         }
@@ -898,6 +906,23 @@ public class DashboardController implements Initializable {
         String sformname = "/org/guanzon/cas/views/Size.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    @FXML
+    private void mnuAccountsPayable_Clicked(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/FrmAccountsPayable.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    @FXML
+    private void mnuAccountsAccreditation_Clicked(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
     }
