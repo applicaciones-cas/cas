@@ -120,10 +120,14 @@
             <version>0.1-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
+        
+        
+       
         <dependency>
-            <groupId>org.guanzon.clients</groupId>
-            <artifactId>cas-clients</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.guanzon</groupId>
+            <artifactId>cas-parameters</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     
