@@ -64,7 +64,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
     private boolean state = false;
     private boolean pbLoaded = false;
     @FXML
-    private AnchorPane AnchorMain;
+     AnchorPane AnchorMain;
     @FXML
     private Button btnSave;
     @FXML

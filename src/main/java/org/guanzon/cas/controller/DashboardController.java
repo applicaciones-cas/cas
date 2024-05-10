@@ -72,7 +72,7 @@ public class DashboardController implements Initializable {
     @FXML
     private TabPane tabpane;
     @FXML
-    private StackPane workingSpace;
+     StackPane workingSpace;
 
     @FXML
     private Label AppBranch;

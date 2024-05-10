@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -45,6 +46,9 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
     private Button btnNew;
 
     @FXML
+    private Button btnApproved;
+
+    @FXML
     private Button btnSave;
 
     @FXML
@@ -60,39 +64,62 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
     private Button btnClose;
 
     @FXML
-    private TextField txtSeeks99;
-
-    @FXML
-    private TextField txtSeeks98;
-
-    @FXML
-    private TableView tblAccreditation;
-
-    @FXML
-    private TableColumn indexAddress01;
-
-    @FXML
-    private TableColumn indexAddress021;
-
-    @FXML
-    private TableColumn indexAddress02;
-
-    @FXML
-    private TableColumn indexAddress03;
-
-    @FXML
-    private TableColumn indexAddress04;
-
-    @FXML
     private ComboBox cmbField01;
+
+    @FXML
+    private DatePicker cpField01;
+
+    @FXML
+    private TextField txtSeek01;
+
+    @FXML
+    private ComboBox cmbField02;
+
+    @FXML
+    private TextField txtField02;
+
+    @FXML
+    private DatePicker cpField02;
+
+    @FXML
+    private TextField txtField03;
+
+    @FXML
+    private TextField txtField04;
+
+    @FXML
+    private Button btnAdd;
+
+    @FXML
+    private Button btnDelete;
 
     @FXML
     private TextField txtField01;
 
     @FXML
-    private Button btnAddSearch;
+    private TableView tblAccreditation;
+
     @FXML
-    private void tblAccreditation_Clicked(MouseEvent event) {
+    private TableColumn indexCompany01;
+
+    @FXML
+    private TableColumn indexCompany02;
+
+    @FXML
+    private TableColumn indexCompany03;
+
+    @FXML
+    private TableColumn indexCompany04;
+
+    @FXML
+    private TableColumn indexCompany05;
+
+    @FXML
+    private TableColumn indexCompany06;
+
+    @FXML
+    void tblAccreditation_Clicked(MouseEvent event) {
+
     }
     /**
      * Initializes the controller class.
