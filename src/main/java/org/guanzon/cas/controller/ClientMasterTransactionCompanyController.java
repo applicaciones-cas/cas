@@ -7,9 +7,6 @@ package org.guanzon.cas.controller;
 import com.rmj.guanzongroup.cas.maven.model.ModelInstitutionalContactPerson;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -21,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -37,11 +35,14 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.appdriver.constant.Logical;
 import org.guanzon.cas.clients.Client_Master;
+import org.guanzon.cas.clients.account.GlobalVariables;
 import org.guanzon.cas.model.ModelAddress;
 import org.guanzon.cas.model.ModelEmail;
 import org.guanzon.cas.model.ModelMobile;
 import org.guanzon.cas.model.ModelSocialMedia;
+import org.guanzon.cas.model.SharedModel;
 import org.guanzon.cas.validators.ValidatorFactory;
 import org.json.simple.JSONObject;
 
@@ -52,7 +53,7 @@ import org.json.simple.JSONObject;
  */
 public class ClientMasterTransactionCompanyController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Client Master Parameter";
+    private final String pxeModuleName = "Client Transactions Company";
     private GRider oApp;
     private Client_Master oTrans;
 //    private JSONObject poJSON;
@@ -63,8 +64,14 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 
     private boolean state = false;
     private boolean pbLoaded = false;
+    private SharedModel sharedModel;
+    public void initModel(SharedModel sharedModel) {
+        this.sharedModel = sharedModel;
+    }
     @FXML
      AnchorPane AnchorMain;
+    @FXML
+    private Label lblStatus;
     @FXML
     private Button btnSave;
     @FXML
@@ -134,7 +141,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
     private TextArea txtContact10;
 
     @FXML
-    private Button btnAddInsContact;
+    private Button btnAddInsContact, btnDelInsContact;
 
     @FXML
     private CheckBox cbContact01;
@@ -192,11 +199,20 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
     public void setTransaction(String fsValue) {
         oTransnox = fsValue;
     }
+     private Object parentController;
+     private unloadForm loadform;
+    // Method to set the parent controller
+    public void setParentController(Object parentController) {
+        System.out.println("parentController = " + parentController);
+        loadform = new unloadForm();
+        loadform.setParentController(parentController);
+        this.parentController = parentController;
+    }
 
     public void setState(boolean fsValue) {
         state = fsValue;
     }
-
+    
     
     /***********************************/
     /*Initializes the controller class.*/
@@ -268,6 +284,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                     case 1:
                         /*company name*/
                         oTrans.setMaster(8, lsValue);
+                        
                         break;
                     case 7:/*tin id*/
                         oTrans.setMaster(16, lsValue);
@@ -607,6 +624,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         btnSave.setOnAction(this::handleButtonAction);
         btnClose.setOnAction(this::handleButtonAction);
         btnAddInsContact.setOnAction(this::handleButtonAction);
+        btnDelInsContact.setOnAction(this::handleButtonAction);
     }
     /*************************************/
     /*initialize handlebuttonaction event*/
@@ -626,12 +644,19 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                     }
                     break;
                 case "btnSave":
+                    oTrans.setAddress(pnAddress, "cPrimaryx", Logical.YES);
                     JSONObject saveResult = oTrans.saveRecord();
                     if ("success".equals((String) saveResult.get("result"))) {
                         System.err.println((String) saveResult.get("message"));
                         ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                        String dataToSend = cmpnyInfo01.getText();
+                        
                         System.out.println("Record saved successfully.");
-                        appUnload.unloadForm(AnchorMain, oApp, "Client Transactions Company");
+                        if(parentController != null){
+                            loadform.useParentController(GlobalVariables.sClientID);
+                            appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
+                        }
+                        
                     } else {
                         ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                         System.out.println("Record not saved successfully.");
@@ -654,7 +679,20 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                     loadContctPerson();
                     tblContact.getSelectionModel().select(pnContact + 1);
                     break;
-
+                case "btnDelInsContact":
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove ?") == true){  
+                        oTrans.getInsContactList().remove(pnContact);
+                        if(oTrans.getInsContactList().size() <= 0){
+                            oTrans.addInsContact();
+                            
+                        }
+                        
+                        pnContact = oTrans.getInsContactList().size()-1;
+                        loadContctPerson();
+                        clearContactperson();
+                        txtContact01.requestFocus();
+                    }
+                    break;
                 // Add more cases for other buttons if needed
             }
         }
@@ -702,7 +740,11 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         txtContact09.setText(oTrans.getInsContact(pnContact, 8) == null || oTrans.getInsContact(pnContact, 8).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 8));
         txtContact10.setText(oTrans.getInsContact(pnContact, 13) == null || oTrans.getInsContact(pnContact, 13).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 13));
         txtContact01.requestFocus();
-        
+        if (cbContact01.isSelected()){
+            lblStatus.setText("ACTIVE");
+        }else{
+            lblStatus.setText("INACTIVE");
+        }
         cbContact01.setSelected((boolean) oTrans.getInsContact(pnMobile, 14));
         cbContact02.setSelected((boolean) oTrans.getInsContact(pnMobile, 13));
     }
@@ -735,10 +777,9 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 
     private void clearallFields() {
 
+    }    
+
+    void loadReturn(String lsValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
-    
-    
-
-    
 }

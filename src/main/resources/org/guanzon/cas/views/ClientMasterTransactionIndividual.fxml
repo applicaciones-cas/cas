@@ -31,7 +31,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane fx:id="AnchorMain" maxHeight="1000.0" maxWidth="2500.0" minHeight="700.0" minWidth="1100.0" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
 
     <children>
@@ -385,6 +384,52 @@
                                                                         <RowConstraints minHeight="28.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                      </rowConstraints>
                                                                      <children>
+                                                                        <TextField fx:id="AddressField01" minWidth="89.0" prefHeight="25.0" prefWidth="89.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                        <TextField fx:id="AddressField02" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                                        <TextField fx:id="AddressField03" maxWidth="200.0" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                                        <TextField fx:id="AddressField04" maxWidth="200.0" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                                                        <TextField fx:id="AddressField05" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                                        <TextField fx:id="AddressField06" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                                        <CheckBox fx:id="cbAddress03" mnemonicParsing="false" onMouseClicked="#cbAddress03_Clicked" text="Office" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="4">
+                                                                           <font>
+                                                                              <Font size="14.0" />
+                                                                           </font>
+                                                                        </CheckBox>
+                                                                        <CheckBox fx:id="cbAddress04" mnemonicParsing="false" text="Billing" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="5">
+                                                                           <font>
+                                                                              <Font size="14.0" />
+                                                                           </font>
+                                                                        </CheckBox>
+                                                                        <CheckBox fx:id="cbAddress05" mnemonicParsing="false" onMouseClicked="#cbAddress05_Clicked" text="Shipping" GridPane.columnIndex="4" GridPane.rowIndex="6">
+                                                                           <font>
+                                                                              <Font size="14.0" />
+                                                                           </font>
+                                                                        </CheckBox>
+                                                                        <CheckBox fx:id="cbAddress06" mnemonicParsing="false" onMouseClicked="#cbAddress06_Clicked" text="Province" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                                                                           <font>
+                                                                              <Font size="14.0" />
+                                                                           </font>
+                                                                        </CheckBox>
+                                                                        <CheckBox fx:id="cbAddress07" mnemonicParsing="false" onMouseClicked="#cbAddress07_Clicked" text="Current Address" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="5">
+                                                                           <font>
+                                                                              <Font size="14.0" />
+                                                                           </font>
+                                                                        </CheckBox>
+                                                                        <CheckBox fx:id="cbAddress08" mnemonicParsing="false" onMouseClicked="#cbAddress08_Clicked" text="LTMS Address" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="6">
+                                                                           <font>
+                                                                              <Font size="14.0" />
+                                                                           </font>
+                                                                        </CheckBox>
+                                                                        <CheckBox fx:id="cbAddress01" mnemonicParsing="false" onMouseClicked="#cbAddress01_Clicked" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                                                           <font>
+                                                                              <Font size="14.0" />
+                                                                           </font>
+                                                                        </CheckBox>
+                                                                        <CheckBox fx:id="cbAddress02" mnemonicParsing="false" onMouseClicked="#cbAddress02_Clicked" text="Primary Address" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6">
+                                                                           <font>
+                                                                              <Font size="14.0" />
+                                                                           </font>
+                                                                        </CheckBox>
                                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="House No. " GridPane.rowIndex="2">
                                                                            <font>
                                                                               <Font size="14.0" />
@@ -405,10 +450,6 @@
                                                                               <Font size="14.0" />
                                                                            </font>
                                                                         </Text>
-                                                                        <TextField fx:id="AddressField01" minWidth="89.0" prefHeight="25.0" prefWidth="89.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                        <TextField fx:id="AddressField02" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                                        <TextField fx:id="AddressField03" maxWidth="200.0" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                                        <TextField fx:id="AddressField04" maxWidth="200.0" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Latitude " GridPane.columnIndex="3" GridPane.rowIndex="2">
                                                                            <font>
                                                                               <Font size="14.0" />
@@ -425,13 +466,6 @@
                                                                               <Insets left="15.0" />
                                                                            </GridPane.margin>
                                                                         </Text>
-                                                                        <TextField fx:id="AddressField05" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                                        <TextField fx:id="AddressField06" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                                        <CheckBox fx:id="cbAddress04" mnemonicParsing="false"  text="Billing" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="5">
-                                                                           <font>
-                                                                              <Font size="14.0" />
-                                                                           </font>
-                                                                        </CheckBox>
                                                                         <Button fx:id="btnAddAddress" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="10">
                                                                            <graphic>
                                                                               <FontAwesomeIconView glyphName="PLUS" size="20" textAlignment="CENTER" />
@@ -440,7 +474,7 @@
                                                                               <Tooltip text="ADD ADDRESS" />
                                                                            </tooltip>
                                                                         </Button>
-                                                                        <Button contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="10">
+                                                                        <Button fx:id="btnDelAddress" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="10">
                                                                            <graphic>
                                                                               <FontAwesomeIconView glyphName="TRASH" size="20" textAlignment="CENTER" />
                                                                            </graphic>
@@ -451,47 +485,12 @@
                                                                               <Insets left="40.0" />
                                                                            </GridPane.margin>
                                                                         </Button>
-                                                                        <CheckBox fx:id="cbAddress03" mnemonicParsing="false" onMouseClicked="#cbAddress03_Clicked" text="Office" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="4">
-                                                                           <font>
-                                                                              <Font size="14.0" />
-                                                                           </font>
-                                                                        </CheckBox>
-                                                                        <CheckBox fx:id="cbAddress06" mnemonicParsing="false" onMouseClicked="#cbAddress06_Clicked" text="Province" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4">
-                                                                           <font>
-                                                                              <Font size="14.0" />
-                                                                           </font>
-                                                                        </CheckBox>
-                                                                        <CheckBox fx:id="cbAddress07" mnemonicParsing="false" onMouseClicked="#cbAddress07_Clicked" text="Current Address" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="5">
-                                                                           <font>
-                                                                              <Font size="14.0" />
-                                                                           </font>
-                                                                        </CheckBox>
-                                                                        <CheckBox fx:id="cbAddress08" mnemonicParsing="false" onMouseClicked="#cbAddress08_Clicked" text="LTMS Address" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="6">
-                                                                           <font>
-                                                                              <Font size="14.0" />
-                                                                           </font>
-                                                                        </CheckBox>
-                                                                        <CheckBox fx:id="cbAddress02" mnemonicParsing="false" onMouseClicked="#cbAddress02_Clicked" text="Primary Address" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6">
-                                                                           <font>
-                                                                              <Font size="14.0" />
-                                                                           </font>
-                                                                        </CheckBox>
-                                                                        <CheckBox fx:id="cbAddress05" mnemonicParsing="false" onMouseClicked="#cbAddress05_Clicked" text="Shipping" GridPane.columnIndex="4" GridPane.rowIndex="6">
-                                                                           <font>
-                                                                              <Font size="14.0" />
-                                                                           </font>
-                                                                        </CheckBox>
                                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Address Type " GridPane.columnIndex="3" GridPane.rowIndex="4">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
                                                                         </Text>
-                                                                        <CheckBox fx:id="cbAddress01" mnemonicParsing="false" onMouseClicked="#cbAddress01_Clicked" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="6">
-                                                                           <font>
-                                                                              <Font size="14.0" />
-                                                                           </font>
-                                                                        </CheckBox>
-                                                                        <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="200.0" minWidth="150.0" style="-fx-background-color: FF8201;" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="4" GridPane.columnSpan="2">
+                                                                        <Label fx:id="lblAddressStat" alignment="CENTER" contentDisplay="CENTER" maxWidth="200.0" minWidth="150.0" style="-fx-background-color: FF8201;" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="4" GridPane.columnSpan="2">
                                                                            <font>
                                                                               <Font name="System Bold" size="18.0" />
                                                                            </font>
@@ -560,6 +559,22 @@
                                                                               <RowConstraints minHeight="28.0" vgrow="SOMETIMES" />
                                                                            </rowConstraints>
                                                                            <children>
+                                                                              <ComboBox fx:id="cmbMobile01" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                                              <ComboBox fx:id="cmbMobile02" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                                              <TextField fx:id="txtMobile01" maxWidth="200.0" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                                              <CheckBox fx:id="cbMobileNo02" mnemonicParsing="false" onMouseClicked="#CheckStatus_Clicked" selected="true" text="Active" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5">
+                                                                                 <GridPane.margin>
+                                                                                    <Insets left="15.0" />
+                                                                                 </GridPane.margin>
+                                                                                 <font>
+                                                                                    <Font size="14.0" />
+                                                                                 </font>
+                                                                              </CheckBox>
+                                                                              <CheckBox fx:id="cbMobileNo01" mnemonicParsing="false" onMouseClicked="#CheckPrimary_Clicked" text="Primary Number" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                                                                                 <GridPane.margin>
+                                                                                    <Insets left="15.0" />
+                                                                                 </GridPane.margin>
+                                                                              </CheckBox>
                                                                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mobile No. " GridPane.rowIndex="4">
                                                                                  <font>
                                                                                     <Font size="14.0" />
@@ -568,27 +583,11 @@
                                                                                     <Insets left="10.0" />
                                                                                  </GridPane.margin>
                                                                               </Text>
-                                                                              <TextField fx:id="txtMobile01" maxWidth="200.0" minWidth="150.0" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Owner " GridPane.rowIndex="2">
                                                                                  <font>
                                                                                     <Font size="14.0" />
                                                                                  </font>
                                                                               </Text>
-                                                                              <ComboBox fx:id="cmbMobile02" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                                              <ComboBox fx:id="cmbMobile01" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                                              <CheckBox fx:id="cbMobileNo01" mnemonicParsing="false" onMouseClicked="#CheckPrimary_Clicked" text="Primary Number" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="4">
-                                                                                 <GridPane.margin>
-                                                                                    <Insets left="15.0" />
-                                                                                 </GridPane.margin>
-                                                                              </CheckBox>
-                                                                              <CheckBox fx:id="cbMobileNo02" mnemonicParsing="false" onMouseClicked="#CheckStatus_Clicked" text="Active" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5">
-                                                                                 <GridPane.margin>
-                                                                                    <Insets left="15.0" />
-                                                                                 </GridPane.margin>
-                                                                                 <font>
-                                                                                    <Font size="14.0" />
-                                                                                 </font>
-                                                                              </CheckBox>
                                                                               <Button fx:id="btnAddMobile" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="8">
                                                                                  <graphic>
                                                                                     <FontAwesomeIconView glyphName="PLUS" size="20" textAlignment="CENTER" />
@@ -597,7 +596,7 @@
                                                                                     <Tooltip text="ADD ADDRESS" />
                                                                                  </tooltip>
                                                                               </Button>
-                                                                              <Button contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="8">
+                                                                              <Button fx:id="btnDelMobile" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="8">
                                                                                  <graphic>
                                                                                     <FontAwesomeIconView glyphName="TRASH" size="20" textAlignment="CENTER" />
                                                                                  </graphic>
@@ -613,7 +612,7 @@
                                                                                     <Font size="14.0" />
                                                                                  </font>
                                                                               </Text>
-                                                                              <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="200.0" minWidth="150.0" style="-fx-background-color: FF8201;" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="4" GridPane.columnSpan="2">
+                                                                              <Label fx:id="lblMobileStat" alignment="CENTER" contentDisplay="CENTER" maxWidth="200.0" minWidth="150.0" style="-fx-background-color: FF8201;" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="4" GridPane.columnSpan="2">
                                                                                  <font>
                                                                                     <Font name="System Bold" size="18.0" />
                                                                                  </font>
@@ -675,6 +674,29 @@
                                                                               <RowConstraints minHeight="28.0" vgrow="SOMETIMES" />
                                                                            </rowConstraints>
                                                                            <children>
+                                                                              <ComboBox fx:id="cmbEmail01" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                                                                 <GridPane.margin>
+                                                                                    <Insets left="5.0" />
+                                                                                 </GridPane.margin>
+                                                                              </ComboBox>
+                                                                              <TextField fx:id="mailFields01" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                                                                                 <GridPane.margin>
+                                                                                    <Insets left="5.0" />
+                                                                                 </GridPane.margin>
+                                                                              </TextField>
+                                                                              <CheckBox fx:id="cbEmail02" mnemonicParsing="false" onMouseClicked="#CheckMailStatus_Clicked" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                                                 <font>
+                                                                                    <Font size="14.0" />
+                                                                                 </font>
+                                                                                 <GridPane.margin>
+                                                                                    <Insets left="5.0" />
+                                                                                 </GridPane.margin>
+                                                                              </CheckBox>
+                                                                              <CheckBox fx:id="cbEmail01" mnemonicParsing="false" onMouseClicked="#CheckPrimaryEmail_Clicked" text="Primary Address" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                                                                 <font>
+                                                                                    <Font size="14.0" />
+                                                                                 </font>
+                                                                              </CheckBox>
                                                                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email " GridPane.rowIndex="3">
                                                                                  <font>
                                                                                     <Font size="14.0" />
@@ -691,16 +713,6 @@
                                                                                     <Insets left="10.0" />
                                                                                  </GridPane.margin>
                                                                               </Text>
-                                                                              <TextField fx:id="mailFields01" maxWidth="200.0" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
-                                                                                 <GridPane.margin>
-                                                                                    <Insets left="5.0" />
-                                                                                 </GridPane.margin>
-                                                                              </TextField>
-                                                                              <ComboBox fx:id="cmbEmail01" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
-                                                                                 <GridPane.margin>
-                                                                                    <Insets left="5.0" />
-                                                                                 </GridPane.margin>
-                                                                              </ComboBox>
                                                                               <Button fx:id="btnAddEmail" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="5">
                                                                                  <graphic>
                                                                                     <FontAwesomeIconView glyphName="PLUS" size="20" textAlignment="CENTER" />
@@ -709,7 +721,7 @@
                                                                                     <Tooltip text="ADD ADDRESS" />
                                                                                  </tooltip>
                                                                               </Button>
-                                                                              <Button contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="5">
+                                                                              <Button fx:id="btnDelEmail" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="5">
                                                                                  <graphic>
                                                                                     <FontAwesomeIconView glyphName="TRASH" size="20" textAlignment="CENTER" />
                                                                                  </graphic>
@@ -720,7 +732,7 @@
                                                                                     <Insets left="40.0" />
                                                                                  </GridPane.margin>
                                                                               </Button>
-                                                                              <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="200.0" minWidth="150.0" style="-fx-background-color: FF8201;" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="4" GridPane.columnSpan="2">
+                                                                              <Label fx:id="lblEmailStat" alignment="CENTER" contentDisplay="CENTER" maxWidth="200.0" minWidth="150.0" style="-fx-background-color: FF8201;" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="4" GridPane.columnSpan="2">
                                                                                  <font>
                                                                                     <Font name="System Bold" size="18.0" />
                                                                                  </font>
@@ -728,19 +740,6 @@
                                                                                     <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                                                                  </padding>
                                                                               </Label>
-                                                                              <CheckBox fx:id="cbEmail02" mnemonicParsing="false" onMouseClicked="#CheckMailStatus_Clicked" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                                                                                 <font>
-                                                                                    <Font size="14.0" />
-                                                                                 </font>
-                                                                                 <GridPane.margin>
-                                                                                    <Insets left="5.0" />
-                                                                                 </GridPane.margin>
-                                                                              </CheckBox>
-                                                                              <CheckBox fx:id="cbEmail01" mnemonicParsing="false" onMouseClicked="#CheckPrimaryEmail_Clicked" text="Primary Address" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2">
-                                                                                 <font>
-                                                                                    <Font size="14.0" />
-                                                                                 </font>
-                                                                              </CheckBox>
                                                                            </children>
                                                                         </GridPane>
                                                                      </children>
@@ -798,6 +797,24 @@
                                                                               <RowConstraints minHeight="40.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                            </rowConstraints>
                                                                            <children>
+                                                                              <ComboBox fx:id="cmbSocMed01" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                                                                 <opaqueInsets>
+                                                                                    <Insets left="5.0" />
+                                                                                 </opaqueInsets>
+                                                                                 <GridPane.margin>
+                                                                                    <Insets left="5.0" />
+                                                                                 </GridPane.margin>
+                                                                              </ComboBox>
+                                                                              <TextField fx:id="txtSocial01" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3">
+                                                                                 <GridPane.margin>
+                                                                                    <Insets left="5.0" />
+                                                                                 </GridPane.margin>
+                                                                              </TextField>
+                                                                              <TextArea fx:id="txtSocial02" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" GridPane.rowSpan="2">
+                                                                                 <GridPane.margin>
+                                                                                    <Insets left="5.0" />
+                                                                                 </GridPane.margin>
+                                                                              </TextArea>
                                                                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Account " GridPane.rowIndex="3">
                                                                                  <font>
                                                                                     <Font size="14.0" />
@@ -806,11 +823,6 @@
                                                                                     <Insets left="10.0" />
                                                                                  </GridPane.margin>
                                                                               </Text>
-                                                                              <TextField fx:id="txtSocial01" minWidth="150.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3">
-                                                                                 <GridPane.margin>
-                                                                                    <Insets left="5.0" />
-                                                                                 </GridPane.margin>
-                                                                              </TextField>
                                                                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Remarks " GridPane.rowIndex="4">
                                                                                  <font>
                                                                                     <Font size="14.0" />
@@ -824,19 +836,14 @@
                                                                                     <Insets left="15.0" />
                                                                                  </GridPane.margin>
                                                                               </Text>
-                                                                              <ComboBox fx:id="cmbSocMed01" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
-                                                                                 <opaqueInsets>
-                                                                                    <Insets left="5.0" />
-                                                                                 </opaqueInsets>
+                                                                              <CheckBox fx:id="cbSocMed01" mnemonicParsing="false" onMouseClicked="#CheckSocMedtatus_Clicked" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                                                                 <font>
+                                                                                    <Font size="14.0" />
+                                                                                 </font>
                                                                                  <GridPane.margin>
                                                                                     <Insets left="5.0" />
                                                                                  </GridPane.margin>
-                                                                              </ComboBox>
-                                                                              <TextArea fx:id="txtSocial02" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" GridPane.rowSpan="2">
-                                                                                 <GridPane.margin>
-                                                                                    <Insets left="5.0" />
-                                                                                 </GridPane.margin>
-                                                                              </TextArea>
+                                                                              </CheckBox>
                                                                               <Button fx:id="btnAddSocMed" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="7">
                                                                                  <graphic>
                                                                                     <FontAwesomeIconView glyphName="PLUS" size="20" textAlignment="CENTER" />
@@ -845,7 +852,7 @@
                                                                                     <Tooltip text="ADD ADDRESS" />
                                                                                  </tooltip>
                                                                               </Button>
-                                                                              <Button contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="7">
+                                                                              <Button fx:id="btnDelSocMed" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="7">
                                                                                  <graphic>
                                                                                     <FontAwesomeIconView glyphName="TRASH" size="20" textAlignment="CENTER" />
                                                                                  </graphic>
@@ -856,15 +863,7 @@
                                                                                     <Insets left="40.0" />
                                                                                  </GridPane.margin>
                                                                               </Button>
-                                                                              <CheckBox fx:id="cbSocMed01" mnemonicParsing="false" onMouseClicked="#CheckSocMedtatus_Clicked" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="6">
-                                                                                 <font>
-                                                                                    <Font size="14.0" />
-                                                                                 </font>
-                                                                                 <GridPane.margin>
-                                                                                    <Insets left="5.0" />
-                                                                                 </GridPane.margin>
-                                                                              </CheckBox>
-                                                                              <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="200.0" minWidth="150.0" style="-fx-background-color: FF8201;" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="4" GridPane.columnSpan="2">
+                                                                              <Label fx:id="lblSocMedStat" alignment="CENTER" contentDisplay="CENTER" maxWidth="200.0" minWidth="150.0" style="-fx-background-color: FF8201;" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="4" GridPane.columnSpan="2">
                                                                                  <font>
                                                                                     <Font name="System Bold" size="18.0" />
                                                                                  </font>
@@ -915,16 +914,6 @@
                                                                                                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                                                                                     </rowConstraints>
                                                                                                     <children>
-                                                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="TIN No ">
-                                                                                                            <font>
-                                                                                                                <Font size="14.0" />
-                                                                                                            </font>
-                                                                                                        </Text>
-                                                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="LTO ID " GridPane.rowIndex="1">
-                                                                                                            <font>
-                                                                                                                <Font size="14.0" />
-                                                                                                            </font>
-                                                                                                        </Text>
                                                                                                         <TextField fx:id="personalinfo13" minWidth="89.0" prefHeight="25.0" prefWidth="89.0" promptText="XXX-XX-XXXX" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2">
                                                                                                             <GridPane.margin>
                                                                                                                 <Insets left="5.0" />
@@ -935,16 +924,26 @@
                                                                                                                 <Insets left="5.0" />
                                                                                                             </GridPane.margin>
                                                                                                         </TextField>
-                                                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="National ID " GridPane.rowIndex="2">
-                                                                                                            <font>
-                                                                                                                <Font size="14.0" />
-                                                                                                            </font>
-                                                                                                        </Text>
                                                                                                         <TextField fx:id="personalinfo15" maxWidth="200.0" minWidth="150.0" promptText="XXX-XX-XXXXXX" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
                                                                                                             <GridPane.margin>
                                                                                                                 <Insets left="5.0" />
                                                                                                             </GridPane.margin>
                                                                                                         </TextField>
+                                                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="TIN No ">
+                                                                                                            <font>
+                                                                                                                <Font size="14.0" />
+                                                                                                            </font>
+                                                                                                        </Text>
+                                                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="LTO ID " GridPane.rowIndex="1">
+                                                                                                            <font>
+                                                                                                                <Font size="14.0" />
+                                                                                                            </font>
+                                                                                                        </Text>
+                                                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="National ID " GridPane.rowIndex="2">
+                                                                                                            <font>
+                                                                                                                <Font size="14.0" />
+                                                                                                            </font>
+                                                                                                        </Text>
                                                                                                     </children>
                                                                                                 </GridPane>
                                                                                             </children>

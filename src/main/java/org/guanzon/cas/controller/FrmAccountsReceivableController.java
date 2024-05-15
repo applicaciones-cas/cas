@@ -53,16 +53,62 @@ import org.guanzon.cas.clients.account.GlobalVariables;
 import org.guanzon.cas.model.SharedModel;
 import org.json.simple.JSONObject;
 
+import java.io.IOException;
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+import javafx.beans.property.ReadOnlyBooleanPropertyBase;
+import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.UP;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.util.StringConverter;
+import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.appdriver.base.CommonUtils;
+import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.clients.account.AP_Client_Master;
+import org.guanzon.cas.clients.account.AR_Client_Master;
+import org.guanzon.cas.clients.account.GlobalVariables;
+import org.guanzon.cas.controller.ClientMasterTransactionCompanyController;
+import org.guanzon.cas.controller.DashboardController;
+import org.guanzon.cas.controller.ScreenInterface;
+import org.guanzon.cas.controller.unloadForm;
+import org.guanzon.cas.model.SharedModel;
+import org.json.simple.JSONObject;
+
 /**
  * FXML Controller class
  *
  * @author User
  */
-public class FrmAccountsPayableController implements Initializable,ScreenInterface {
-    private final String pxeModuleName = "Accounts Payable Clients";
+public class FrmAccountsReceivableController implements Initializable,ScreenInterface {
+    private final String pxeModuleName = "Accounts Receivable Clients";
     private GRider oApp;
     private int pnEditMode;  
-    private AP_Client_Master oTrans;
+    private AR_Client_Master oTrans;
     private boolean state = false;
     private boolean pbLoaded = false;
     private String oTransnox = "";
@@ -75,7 +121,7 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
     }
     
     @FXML
-    private AnchorPane AnchorMain,AnchorCompany;
+    private AnchorPane AnchorMain,AnchorCompany;    
 
     @FXML
     private HBox hbButtons;
@@ -187,7 +233,7 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        oTrans = new AP_Client_Master(oApp, true);
+        oTrans = new AR_Client_Master(oApp, true);
         if (oTransnox == null || oTransnox.isEmpty()) { // Check if oTransnox is null or empty
             pnEditMode = EditMode.UNKNOWN;
             initButton(pnEditMode);
@@ -707,7 +753,7 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
     private void clearAllFields(){
     }
 
- 
+    
     public void loadReturn(String lsValue) {
         System.out.println("loadReturn lsValue = " + lsValue);
         JSONObject poJson = new JSONObject();

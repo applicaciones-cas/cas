@@ -29,5 +29,7 @@ public class MainScreenBGController implements Initializable, ScreenInterface {
     public void setGRider(GRider foValue) {
   
     }
+
+
     
 }

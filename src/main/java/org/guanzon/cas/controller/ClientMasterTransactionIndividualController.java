@@ -4,14 +4,11 @@
  */
 package org.guanzon.cas.controller;
 
-import com.rmj.guanzongroup.cas.maven.model.ModelInstitutionalContactPerson;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
-import javafx.animation.FadeTransition;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -19,12 +16,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -38,8 +35,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -71,52 +66,16 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     private boolean pbLoaded = false;
     
     @FXML
-    private HBox hbButtons;
-
-    @FXML
-    private Button btnSave;
-
-    @FXML
-    private Button btnCancel;
-    
-    @FXML
-    private TextField txtField01;
+    private AnchorPane AnchorMain;
 
     @FXML
     private TextField txtField02;
 
     @FXML
+    private TextField txtField01;
+
+    @FXML
     private TextField txtField03;
-
-    @FXML
-    private TextField txtField04;
-
-    @FXML
-    private TextField txtField05;
-
-    @FXML
-    private TextField txtField06;
-
-    @FXML
-    private TextField txtField10;
-
-    @FXML
-    private ComboBox<?> txtField12;
-
-    @FXML
-    private ComboBox<?> txtField13;
-
-    @FXML
-    private DatePicker txtField07;
-
-    @FXML
-    private TextField txtField08;
-
-    @FXML
-    private TextField txtField11;
-
-    @FXML
-    private TextField txtField09;
 
     @FXML
     private TextField personalinfo02;
@@ -132,18 +91,12 @@ public class ClientMasterTransactionIndividualController implements Initializabl
 
     @FXML
     private TextField personalinfo12;
-    @FXML
-    private TextField personalinfo13;
-    @FXML
-    private TextField personalinfo14;
-    @FXML
-    private TextField personalinfo15;
 
     @FXML
-    private ComboBox<String> personalinfo09;
+    private ComboBox personalinfo09;
 
     @FXML
-    private ComboBox<String> personalinfo10;
+    private ComboBox personalinfo10;
 
     @FXML
     private TextField personalinfo06;
@@ -159,36 +112,13 @@ public class ClientMasterTransactionIndividualController implements Initializabl
 
     @FXML
     private TextField personalinfo01;
-    
-    
-    @FXML
-    private AnchorPane AnchorMain;
-    
-    @FXML
-    private TextField AddressField01;
 
     @FXML
-    private TextField AddressField02;
-    
-    @FXML
-    private TextField AddressField03;
+    private AnchorPane anchorAddress;
 
-    @FXML
-    private TextField AddressField04;
-
-    @FXML
-    private TextField AddressField05;
-
-    @FXML
-    private TextField AddressField06;
-    @FXML
-    private CheckBox cbAddress01, cbAddress02,cbAddress03,
-            cbAddress04, cbAddress05, cbAddress06,
-            cbAddress07, cbAddress08;
-    
     @FXML
     private TableView tblAddress;
-    
+
     @FXML
     private TableColumn indexAddress01;
 
@@ -204,12 +134,59 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     @FXML
     private TableColumn indexAddress05;
 
+    @FXML
+    private TextField AddressField01;
+
+    @FXML
+    private TextField AddressField02;
+
+    @FXML
+    private TextField AddressField03;
+
+    @FXML
+    private TextField AddressField04;
+
+    @FXML
+    private TextField AddressField05;
+
+    @FXML
+    private TextField AddressField06;
+
+    @FXML
+    private CheckBox cbAddress03;
+
+    @FXML
+    private CheckBox cbAddress04;
+
+    @FXML
+    private CheckBox cbAddress05;
+
+    @FXML
+    private CheckBox cbAddress06;
+
+    @FXML
+    private CheckBox cbAddress07;
+
+    @FXML
+    private CheckBox cbAddress08;
+
+    @FXML
+    private CheckBox cbAddress01;
+
+    @FXML
+    private CheckBox cbAddress02;
+
+    @FXML
+    private Button btnAddAddress;
+
+    @FXML
+    private Button btnDelAddress; 
     
     @FXML
-    private Button btnAddAddress;   
-    
-    
-    
+    private Button btnDelMobile;
+
+    @FXML
+    private Label lblAddressStat;
 
     @FXML
     private TableView tblMobile;
@@ -227,27 +204,29 @@ public class ClientMasterTransactionIndividualController implements Initializabl
     private TableColumn indexMobileNo04;
 
     @FXML
-    private TableColumn indexMobileNo05;
-    
-    @FXML
-    private TextField txtMobile01;
-    
-    @FXML
     private ComboBox cmbMobile01;
-    
+
     @FXML
     private ComboBox cmbMobile02;
-    
+
     @FXML
-    private CheckBox cbMobileNo01;
+    private TextField txtMobile01;
+
     @FXML
     private CheckBox cbMobileNo02;
-    
+
+    @FXML
+    private CheckBox cbMobileNo01;
+
     @FXML
     private Button btnAddMobile;
-    
-    
-    
+
+    @FXML
+    private Button btnDelEmail;
+
+    @FXML
+    private Label lblMobileStat;
+
     @FXML
     private TableView tblEmail;
 
@@ -262,33 +241,22 @@ public class ClientMasterTransactionIndividualController implements Initializabl
 
     @FXML
     private ComboBox cmbEmail01;
-    
-    @FXML
-    private CheckBox cbEmail01;
-    
-    @FXML
-    private CheckBox cbEmail02;
 
     @FXML
     private TextField mailFields01;
 
+    @FXML
+    private CheckBox cbEmail02;
+
+    @FXML
+    private CheckBox cbEmail01;
 
     @FXML
     private Button btnAddEmail;
 
-    
-    
     @FXML
-    private TextField txtSocial01;
-    
-    @FXML
-    private TextArea txtSocial02;
-    
-    @FXML
-    private CheckBox cbSocMed01;
-    @FXML
-    private ComboBox cmbSocMed01;
-    
+    private Label lblEmailStat;
+
     @FXML
     private TableView tblSocMed;
 
@@ -303,10 +271,45 @@ public class ClientMasterTransactionIndividualController implements Initializabl
 
     @FXML
     private TableColumn indexSocMed04;
-    
-    
+
+    @FXML
+    private ComboBox cmbSocMed01;
+
+    @FXML
+    private TextField txtSocial01;
+
+    @FXML
+    private TextArea txtSocial02;
+
+    @FXML
+    private CheckBox cbSocMed01;
+
     @FXML
     private Button btnAddSocMed;
+
+    @FXML
+    private Button btnDelSocMed;
+
+    @FXML
+    private Label lblSocMedStat;
+
+    @FXML
+    private TextField personalinfo13;
+
+    @FXML
+    private TextField personalinfo14;
+
+    @FXML
+    private TextField personalinfo15;
+
+    @FXML
+    private HBox hbButtons;
+
+    @FXML
+    private Button btnSave;
+
+    @FXML
+    private Button btnCancel;
     
     private ObservableList<ModelMobile> data = FXCollections.observableArrayList();
     private ObservableList<ModelEmail> email_data = FXCollections.observableArrayList();
@@ -534,7 +537,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             @Override
             public String toString(LocalDate date) {
                 if (date != null) {
-                    oTrans.setMaster("dBirthDte", dateFormatter.format(date).toString());
+                    oTrans.setMaster("dBirthDte", dateFormatter.format(date));
                     return dateFormatter.format(date);
                 } else {
                     return "";
@@ -672,7 +675,11 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         btnAddMobile.setOnAction(this::handleButtonAction);
         btnAddSocMed.setOnAction(this::handleButtonAction);      
         btnAddAddress.setOnAction(this::handleButtonAction);     
-        btnAddEmail.setOnAction(this::handleButtonAction);        
+        btnAddEmail.setOnAction(this::handleButtonAction);   
+        btnDelAddress.setOnAction(this::handleButtonAction);   
+        btnDelMobile.setOnAction(this::handleButtonAction);      
+        btnDelEmail.setOnAction(this::handleButtonAction);     
+        btnDelSocMed.setOnAction(this::handleButtonAction);      
     }
     
     private void handleButtonAction(ActionEvent event) {
@@ -778,8 +785,57 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                         tblSocMed.getSelectionModel().select(pnSocMed + 1);
                      break;
                      
+                case "btnDelAddress":
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove these details? ") == true){  
+                        oTrans.getAddressList().remove(pnAddress);
+                        if(oTrans.getAddressList().size() <= 0){
+                            oTrans.addAddress();
+                        }
+                        
+                        pnAddress = oTrans.getAddressList().size()-1;
+                        loadAddress();
+                        clearAddress();
+                        AddressField01.requestFocus();
+                    }
+                    break;
+                case "btnDelMobile":
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove these details? ") == true){  
+                        oTrans.getMobileList().remove(pnMobile);
+                        if(oTrans.getMobileList().size() <= 0){
+                            oTrans.addContact();
+                        }
+                        
+                        pnMobile = oTrans.getMobileList().size()-1;
+                        loadMobile();
+                        clearMobile();
+                    }
+                    break;
+                case "btnDelEmail":
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove these details? ") == true){  
+                        oTrans.getEmailList().remove(pnEmail);
+                        if(oTrans.getEmailList().size() <= 0){
+                            oTrans.addMail();
+                        }
+                        
+                        pnEmail = oTrans.getEmailList().size()-1;
+                        loadEmail();
+                        clearEmail();
+                    }
+                    break;
+                case "btnDelSocMed":
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove these details? ") == true){  
+                        oTrans.getSocialMediaList().remove(pnSocMed);
+                        if(oTrans.getSocialMediaList().size() <= 0){
+                            oTrans.addSocialMedia();
+                        }
+                        
+                        pnSocMed = oTrans.getSocialMediaList().size()-1;
+                        loadSocialMedia();
+                        clearSocMed();
+                    }
+                    break;     
                      
-                // Add more cases for other buttons if needed
+               
             }
         }
     }
@@ -932,6 +988,8 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         if(!nv){ /*Lost Focus*/
             switch (lnIndex){
                 case 1: /*company name*/
+                                       
+                     
                     
                     System.out.println(pnMobile);
                     oTrans.setMobile(pnMobile, "sMobileNo", lsValue);
@@ -1300,22 +1358,11 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         
     }
     
-    private void clearAllFields() {
+    private void clearAddress() {
     // Arrays of TextFields grouped by sections
     TextField[][] allFields = {
-        // Text fields related to specific sections
-        { txtField01, txtField02, txtField03, txtField04,
-         txtField05, txtField06, txtField10, txtField08, txtField11, txtField09},
-
-        {personalinfo02, personalinfo03, personalinfo04, personalinfo05,
-         personalinfo12, personalinfo13, personalinfo14, personalinfo15,
-         personalinfo06, personalinfo08, personalinfo11, personalinfo01},
-
         {AddressField01, AddressField02, AddressField03, AddressField04,
-         AddressField05, AddressField06},
-
-        // Other text fields
-        {txtMobile01, mailFields01, txtSocial01,}
+         AddressField05, AddressField06}
     };
 
     // Loop through each array of TextFields and clear them
@@ -1324,6 +1371,30 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             field.clear();
         }
     }
+    }
+    private void clearMobile(){
+        txtMobile01.clear();
+        cmbMobile01.setItems(mobileOwn);
+        cmbMobile01.getSelectionModel().select(0);
+        
+        cmbMobile02.setItems(mobileType);
+        cmbMobile02.getSelectionModel().select(0);
+    }
+    private void clearEmail(){
+        mailFields01.clear();
+        cmbEmail01.setItems(EmailOwn);
+        cmbEmail01.getSelectionModel().select(0);
+        cbEmail02.setSelected(true);
+        cbEmail01.setSelected(false);
+        
+    }
+    private void clearSocMed(){
+        txtSocial01.clear();
+        txtSocial02.clear();
+        cmbSocMed01.setItems(socialTyp);
+        cmbSocMed01.getSelectionModel().select(0);
+        cbSocMed01.setSelected(true);
+        
     }
     @FXML
     private void cbAddress01_Clicked(MouseEvent event) {
@@ -1504,4 +1575,6 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                 cmbMobile02.getSelectionModel().select(Integer.parseInt((String)oTrans.getMobile(pnMobile, "cMobileTp")));
             }
     }
+
+
 }   
