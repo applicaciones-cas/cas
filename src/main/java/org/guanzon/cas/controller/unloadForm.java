@@ -27,6 +27,52 @@ import org.guanzon.appdriver.base.GRider;
  * 
  */
 public class unloadForm {
+    
+    public enum TYPE{
+        ClientMasterParameter,
+        ClientMasterTransactionCompany,
+        ClientMasterTransactionIndividual,
+        NewCustomer,
+        FrmAccountsPayable,
+        FrmAccountsAccreditation
+    }
+    
+    private Object parentController;
+    public String SetTabTitle(String menuaction) {
+        switch (menuaction) {
+            /*DIRECTORY*/
+            case "/org/guanzon/cas/views/ClientMasterParameter.fxml":
+                return "Client Parameter";
+            case "/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml":
+                return "Client Transactions Company";
+            case "/org/guanzon/cas/views/ClientMasterTransactionIndividual.fxml":
+                return "Client Transactions Individual";
+            case "/org/guanzon/cas/views/NewCustomer.fxml":
+                return "Client Transactions Standard";
+            case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
+                return "Accounts Payable Clients";
+            case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
+                return "Accounts Accreditation";
+            default:
+                return null;
+        }
+    }
+    
+    // Method to set the parent controller
+    public void setParentController(Object parentController) {
+        this.parentController = parentController;
+    }
+
+    
+     public void useParentController(String lsValue) {
+        if (parentController instanceof ClientMasterParameterController) {
+            ((ClientMasterParameterController) parentController).loadReturn(lsValue);
+        } else if (parentController instanceof ClientMasterTransactionCompanyController) {
+            ((ClientMasterTransactionCompanyController) parentController).loadReturn(lsValue);
+        }else if (parentController instanceof FrmAccountsPayableController) {
+            ((FrmAccountsPayableController) parentController).loadReturn(lsValue);
+        }
+    }
      
     public void unloadForm(AnchorPane AnchorMain, GRider oApp, String sTabTitle){
         // Get the parent of the TabContent node

@@ -218,6 +218,8 @@ public class DashboardController implements Initializable {
                 return "Client Transactions Standard";
             case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
                 return "Accounts Payable Clients";
+            case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
+                return "Accounts Receivable Clients";
             case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
                 return "Accounts Accreditation";
             default:
@@ -506,6 +508,10 @@ public class DashboardController implements Initializable {
                 
             case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
                 return new FrmAccountsPayableController();
+                
+            case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
+                return new FrmAccountsReceivableController();
+                
             case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
                 return new FrmAccountsAccreditationController();
             default:
@@ -569,6 +575,14 @@ public class DashboardController implements Initializable {
     @FXML
     private void mnuAccountsPayable_Clicked(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/FrmAccountsPayable.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    @FXML
+    private void mnuAccountsReceivable_Clicked(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/FrmAccountsReceivable.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

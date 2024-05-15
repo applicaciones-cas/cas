@@ -179,6 +179,10 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
                 /*button okay*/    
                 case "btnOkay":
                         oTrans.setMaster( 8,String.valueOf(personalinfo01.getText()));
+                        if(personalinfo07.getValue() == null){
+                            
+                            oTrans.setMaster("dBirthDte", "1990-01-01");
+                        }
                         JSONObject saveResult = oTrans.saveRecord();
                         if ("success".equals((String) saveResult.get("result"))){
                             System.err.println((String) saveResult.get("message"));
@@ -206,7 +210,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         personalinfo04.focusedProperty().addListener(personalinfo_Focus);
         personalinfo05.focusedProperty().addListener(personalinfo_Focus);
         personalinfo08.focusedProperty().addListener(personalinfo_Focus);
-        personalinfo09.focusedProperty().addListener(personalinfo_Focus);
+//        personalinfo09.focusedProperty().addListener(personalinfo_Focus);
         
         /*MOBILE INFO FOCUSED PROPERTY*/
         txtMobile01.focusedProperty().addListener(mobileinfo_Focus);
@@ -458,6 +462,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
     private void unloadform() {
        
     }
+
     
     
 }    
