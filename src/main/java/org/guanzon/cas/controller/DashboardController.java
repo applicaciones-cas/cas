@@ -214,6 +214,12 @@ public class DashboardController implements Initializable {
                 return "Client Transactions Individual";
             case "/org/guanzon/cas/views/NewCustomer.fxml":
                 return "Client Transactions Standard";
+            case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
+                return "Accounts Payable Clients";
+            case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
+                return "Accounts Receivable Clients";
+            case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
+                return "Accounts Accreditation";
             case "/org/guanzon/cas/views/AffiliatedCompany.fxml":
                 return "Affiliated Company";
             case "/org/guanzon/cas/views/Banks.fxml":
@@ -266,12 +272,7 @@ public class DashboardController implements Initializable {
                 return "Salesman";
             case "/org/guanzon/cas/views/Size.fxml":
                 return "Size";
-            case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
-                return "Accounts Payable Clients";
-            case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
-                return "Accounts Receivable Clients";
-            case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
-                return "Accounts Accreditation";
+            
             default:
                 return null;
         }
@@ -558,6 +559,16 @@ public class DashboardController implements Initializable {
 
             case "/org/guanzon/cas/views/NewCustomer.fxml":
                 return new NewCustomerController();
+            
+            case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
+                return new FrmAccountsPayableController();
+                
+            case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
+                return new FrmAccountsReceivableController();
+                
+            case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
+                return new FrmAccountsAccreditationController();
+                
             //Parameter MenuControllers
             case "/org/guanzon/cas/views/AffiliatedCompany.fxml":
                 return new AffiliatedCompanyController();
@@ -611,14 +622,7 @@ public class DashboardController implements Initializable {
                 return new SalesmanController();
             case "/org/guanzon/cas/views/Size.fxml":
                 return new SizeController();
-            case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
-                return new FrmAccountsPayableController();
-                
-            case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
-                return new FrmAccountsReceivableController();
-                
-            case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
-                return new FrmAccountsAccreditationController();
+            
             default:
                 return null;
         }
@@ -681,6 +685,8 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
+    
+    
 
     @FXML
     private void mnuParameterAffiliatedClick(ActionEvent event) {

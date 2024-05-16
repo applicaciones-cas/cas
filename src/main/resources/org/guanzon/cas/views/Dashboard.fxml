@@ -117,7 +117,9 @@
                         </AnchorPane>
                     </children>
                 </AnchorPane>
-            </top>
+                </children>
+            </AnchorPane>
+            </center>
             <center>
                 <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <children>
@@ -163,6 +165,9 @@
                                                                 <MenuItem fx:id="mnuParameterSize" mnemonicParsing="false" onAction="#mnuParameterSizeClick" text="Size" />
                                                             </items>
                                                         </Menu>
+                                          <MenuItem fx:id="mnuAccountsPayable" mnemonicParsing="false" onAction="#mnuAccountsPayable_Clicked" text="Accounts Payable" />
+                                          <MenuItem fx:id="mnuAccountsReceivable" mnemonicParsing="false" onAction="#mnuAccountsReceivable_Clicked" text="Accounts Receivable" />
+                                          <MenuItem fx:id="mnuAccountsAccreditation" mnemonicParsing="false" onAction="#mnuAccountsAccreditation_Clicked" text="Accounts Accreditations" />
                                                     </items>
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="_Inventory">
