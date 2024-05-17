@@ -2107,7 +2107,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
             field.clear();
         }
         txtContact10.clear();
-        if(!oTrans.getInsContactList().isEmpty()){
+        if(oTrans.getInsContactList() != null && !oTrans.getInsContactList().isEmpty()){
             cbContact01.setSelected(("1".equals((String) oTrans.getInsContact(pnContact, "cRecdStat"))));
             cbContact02.setSelected(("1".equals((String) oTrans.getInsContact(pnContact, "cPrimaryx"))));
         }
@@ -2117,7 +2117,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         txtSocial01.clear();
         txtSocial02.clear();
         cmbSocMed01.getSelectionModel().select(0);
-        if(!oTrans.getSocialMediaList().isEmpty()){
+        if(oTrans.getSocialMediaList() != null && !oTrans.getSocialMediaList().isEmpty()){
             cbSocMed01.setSelected(("1".equals((String) oTrans.getSocialMed(pnSocMed, "cRecdStat"))));
         }
     }
@@ -2127,7 +2127,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         cmbMobile02.getSelectionModel().select(0);
         txtMobile01.clear();    
         
-        if(!oTrans.getMobileList().isEmpty()){
+        if(oTrans.getMobileList() != null &&!oTrans.getMobileList().isEmpty()){
             cbMobileNo02.setSelected(("1".equals((String) oTrans.getMobile(pnMobile, "cRecdStat"))));
             cbMobileNo01.setSelected(("1".equals((String) oTrans.getMobile(pnMobile, "cPrimaryx"))));
         }
@@ -2137,7 +2137,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         cmbEmail01.getSelectionModel().select(0);
         mailFields01.clear();    
         
-        if(!oTrans.getEmailList().isEmpty()){
+        if(oTrans.getEmailList() != null &&!oTrans.getEmailList().isEmpty()){
             cbEmail02.setSelected(("1".equals((String) oTrans.getEmail(pnEmail, "cRecdStat"))));
             cbEmail01.setSelected(("1".equals((String) oTrans.getEmail(pnEmail, "cPrimaryx"))));
         }
@@ -2160,7 +2160,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
             checkbox.setSelected(false);
         }
         
-        if(!oTrans.getAddressList().isEmpty()){
+        if(oTrans.getAddressList() != null && !oTrans.getAddressList().isEmpty()){
             cbAddress01.setSelected(("1".equals((String) oTrans.getAddress(pnAddress, "cRecdStat"))));
             cbAddress02.setSelected(("1".equals((String) oTrans.getAddress(pnAddress, "cPrimaryx"))));
         }

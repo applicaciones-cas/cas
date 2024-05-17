@@ -502,8 +502,8 @@ TAB PANE CSS                                                                    
 
 .combo-box {
     
-    -fx-max-height: 28px;
-    -fx-min-height: 28px;
+    -fx-max-height: 30px;
+    -fx-min-height: 30px;
     -fx-background-color: transparent;
     -fx-border-width: .5px;
     -fx-border-radius: 5px;
@@ -597,6 +597,10 @@ TAB PANE CSS                                                                    
 .tab-label{
   -fx-padding: 0 15 0 15;
 }
+
+.tab:disabled {
+    -fx-opacity: 1;
+}
 .tab:hover {
     -fx-text-fill: white;
     -fx-font-weight: bold;
@@ -621,6 +625,7 @@ TAB PANE CSS                                                                    
 .tab:selected .tab-label {
     -fx-text-fill: black;
 }
+
 
 * {
 	-fx-primary-color: #F88222;
