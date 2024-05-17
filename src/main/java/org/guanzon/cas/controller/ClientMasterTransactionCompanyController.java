@@ -6,6 +6,7 @@ package org.guanzon.cas.controller;
 
 import com.rmj.guanzongroup.cas.maven.model.ModelInstitutionalContactPerson;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -645,6 +646,8 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                     break;
                 case "btnSave":
                     oTrans.setAddress(pnAddress, "cPrimaryx", Logical.YES);
+                    
+                    oTrans.getModel().setClientType("1");
                     JSONObject saveResult = oTrans.saveRecord();
                     if ("success".equals((String) saveResult.get("result"))) {
                         System.err.println((String) saveResult.get("message"));
@@ -654,8 +657,8 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                         System.out.println("Record saved successfully.");
                         if(parentController != null){
                             loadform.useParentController(GlobalVariables.sClientID);
-                            appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
                         }
+                        appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
                         
                     } else {
                         ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -768,11 +771,11 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
     @FXML
     private void CheckContact02_Clicked(MouseEvent event) {
         boolean isChecked = cbContact02.isSelected();
-        oTrans.setInsContact(pnContact, "cRecdStat", (isChecked) ? "1" : "0");
+        oTrans.setInsContact(pnContact, "cPrimaryx", (isChecked) ? "1" : "0");
         loadContctPerson();
         String val = (isChecked) ? "1" : "0";
         System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
+        System.out.println("value = " + oTrans.getInsContact(pnContact, "cPrimaryx"));
     }
 
     private void clearallFields() {

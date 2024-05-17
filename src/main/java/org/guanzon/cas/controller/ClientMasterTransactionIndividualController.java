@@ -698,6 +698,11 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                         }
                     break;
                 case "btnSave":
+                    
+                        if(!personalinfo01.getText().toString().isEmpty()){
+                            oTrans.getModel().setFullName(personalinfo01.getText());
+                        }
+                        oTrans.getModel().setClientType("1");
                         JSONObject saveResult = oTrans.saveRecord();
                         if ("success".equals((String) saveResult.get("result"))){
                             System.err.println((String) saveResult.get("message"));
@@ -896,8 +901,9 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                     jsonObject = oTrans.setMaster( 18,lsValue);
                     break;
             }
-            personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
-            txtField02.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
+            personalinfo01.setText(personalinfo02.getText() + ", " + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
+            
+            txtField02.setText(personalinfo02.getText() + ", " + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
         } else
             personalinfo.selectAll();
         

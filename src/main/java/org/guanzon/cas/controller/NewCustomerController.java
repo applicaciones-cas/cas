@@ -33,6 +33,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.appdriver.constant.RecordStatus;
 import org.guanzon.cas.clients.Client_Master;
 import org.guanzon.cas.model.ModelMobile;
 import org.guanzon.cas.validators.ValidatorFactory;
@@ -180,7 +181,6 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
                 case "btnOkay":
                         oTrans.setMaster( 8,String.valueOf(personalinfo01.getText()));
                         if(personalinfo07.getValue() == null){
-                            
                             oTrans.setMaster("dBirthDte", "1990-01-01");
                         }
                         JSONObject saveResult = oTrans.saveRecord();
@@ -217,7 +217,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
         
         /*ADDRESS INFO FOCUSED PROPERTY*/
         AddressField01.focusedProperty().addListener(address_Focus);
-        AddressField02.focusedProperty().addListener(address_Focus);
+        AddressField02.focusedProperty().addListener(addressTextArea_Focus);
         AddressField03.focusedProperty().addListener(address_Focus);
         
         /*PERSONAL INFO KEYPRESSED*/
@@ -325,7 +325,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
 //                    System.out.println(String.valueOf("birth place = " + lsValue));
 //                    break;
             }
-            personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
+            personalinfo01.setText(personalinfo02.getText() + ", " + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
             
         } else
             personalinfo.selectAll();
@@ -349,7 +349,21 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
             switch (lnIndex){   
                 case 1:/*house no*/
                     oTrans.setAddress(0, 3, lsValue);
-                        break;
+                    break;
+            }
+            AddressField04.setText(AddressField01.getText() + " " +  AddressField02.getText() + ", " + AddressField03.getText());
+        }
+    };
+    final ChangeListener<? super Boolean> addressTextArea_Focus = (o,ov,nv)->{ 
+        if (!pbLoaded) return;
+       
+        TextArea AddressField = (TextArea)((ReadOnlyBooleanPropertyBase)o).getBean();
+        int lnIndex = Integer.parseInt(AddressField.getId().substring(12, 14));
+        String lsValue = AddressField.getText();
+        JSONObject jsonObject = new JSONObject();
+        if (lsValue == null) return;         
+        if(!nv){ /*Lost Focus*/
+            switch (lnIndex){   
                 case 2:/*cutomer addresss*/
                     oTrans.setAddress(0, 4, lsValue);
                     break;
@@ -357,7 +371,6 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
             AddressField04.setText(AddressField01.getText() + " " +  AddressField02.getText() + ", " + AddressField03.getText());
         }
     };
-    
     /*********************/
     /*initialize combobox*/
     /*********************/
