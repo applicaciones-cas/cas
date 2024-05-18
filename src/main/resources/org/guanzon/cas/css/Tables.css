@@ -146,3 +146,6 @@
 .tree-table-row-cell:empty .tree-table-cell {
     -fx-border-width: 0px;
 }
+.table-view,.table-cell,.table-row-cell:disabled {
+    -fx-opacity: 1;
+}
