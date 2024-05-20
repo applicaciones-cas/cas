@@ -48,54 +48,12 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.clients.account.AP_Client_Master;
-import org.guanzon.cas.clients.account.GlobalVariables;
-import org.guanzon.cas.model.SharedModel;
-import org.json.simple.JSONObject;
-
-import java.io.IOException;
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import javafx.beans.property.ReadOnlyBooleanPropertyBase;
-import javafx.beans.value.ChangeListener;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import static javafx.scene.input.KeyCode.DOWN;
-import static javafx.scene.input.KeyCode.ENTER;
-import static javafx.scene.input.KeyCode.F3;
-import static javafx.scene.input.KeyCode.UP;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.util.StringConverter;
-import org.guanzon.appdriver.agent.ShowMessageFX;
-import org.guanzon.appdriver.base.CommonUtils;
-import org.guanzon.appdriver.base.GRider;
-import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.clients.account.AP_Client_Master;
 import org.guanzon.cas.clients.account.AR_Client_Master;
 import org.guanzon.cas.clients.account.GlobalVariables;
-import org.guanzon.cas.controller.ClientMasterTransactionCompanyController;
-import org.guanzon.cas.controller.DashboardController;
-import org.guanzon.cas.controller.ScreenInterface;
-import org.guanzon.cas.controller.unloadForm;
+import org.guanzon.cas.model.ModelAPClientLedger;
+import org.guanzon.cas.model.ModelAPClientLedgers;
+import org.guanzon.cas.model.ModelAddress;
+import org.guanzon.cas.model.ModelMobile;
 import org.guanzon.cas.model.SharedModel;
 import org.json.simple.JSONObject;
 
@@ -105,7 +63,7 @@ import org.json.simple.JSONObject;
  * @author User
  */
 public class FrmAccountsReceivableController implements Initializable,ScreenInterface {
-    private final String pxeModuleName = "Accounts Receivable Clients";
+    private final String pxeModuleName = "Accounts Payable Clients";
     private GRider oApp;
     private int pnEditMode;  
     private AR_Client_Master oTrans;
@@ -121,7 +79,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
     }
     
     @FXML
-    private AnchorPane AnchorMain,AnchorCompany;    
+    private AnchorPane AnchorMain,AnchorCompany;
 
     @FXML
     private HBox hbButtons;
@@ -179,6 +137,8 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
 
     @FXML
     private TextField txtField12;
+    @FXML
+    private TextField txtField13;
 
     @FXML
     private CheckBox chkfield01;
@@ -227,6 +187,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         lsSearchRes = (message);
     }
 
+    private ObservableList<ModelAPClientLedgers> data = FXCollections.observableArrayList();
     /**
      * Initializes the controller class.
      */
@@ -234,6 +195,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         oTrans = new AR_Client_Master(oApp, true);
+        oTrans.setRecordStatus("0123");
         if (oTransnox == null || oTransnox.isEmpty()) { // Check if oTransnox is null or empty
             pnEditMode = EditMode.UNKNOWN;
             initButton(pnEditMode);
@@ -287,16 +249,16 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
             case F3:
                 switch (lnIndex){
                     case 02: /*search branch*/
-//                        poJson = oTrans.searchRecord(lsValue, false);
-//                        if ("error".equals((String) poJson.get("result"))){
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtSearch02.clear();
-//                            break;
-//                        }
-//                        pnEditMode = oTrans.getEditMode();
+                        poJson = oTrans.searchRecord(lsValue, false);
+                        if ("error".equals((String) poJson.get("result"))){
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSearch02.clear();
+                            break;
+                        }
+                        pnEditMode = oTrans.getEditMode();
 //                        loadDetail();
                         
-//                        retrieveDetails();
+                        retrieveDetails();
                     break;
                     case 01: /*search branch*/
 //                        poJson = oTrans.searchRecord(lsValue, false);
@@ -340,8 +302,11 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                 case "btnNew":
                     poJSON = oTrans.newRecord();
                     if ("success".equals((String) poJSON.get("result"))){
+                        
+                            clearAllFields();
                             pnEditMode = EditMode.ADDNEW;
                             initButton(pnEditMode);
+                            
                             System.out.println("ADDNEW = " + EditMode.ADDNEW);
                             System.out.println("EDITMODE = " + pnEditMode);
 //                            clearAllFields();
@@ -358,13 +323,21 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                         }
                     break;
                 case "btnUpdate":
+                         poJSON = oTrans.updateRecord();
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+                        pnEditMode =  oTrans.getEditMode();
                         
+                        initButton(pnEditMode);
+                        initTabAnchor();
                     break;
                 case "btnCancel":
                         if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
-//                            clearAllFields();
-                            appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
-//                            pnEditMode = EditMode.UNKNOWN;
+                            clearAllFields();
+//                            appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
+                            pnEditMode = EditMode.UNKNOWN;
+                            initButton(pnEditMode);
                             initTabAnchor();
                         }
                     break;
@@ -373,7 +346,8 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                         if ("success".equals((String) saveResult.get("result"))){
                             System.err.println((String) saveResult.get("message"));
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                            pnEditMode = EditMode.READY;
+                            clearAllFields();
+                            pnEditMode = EditMode.UNKNOWN;
                             initButton(pnEditMode);
                             initTabAnchor();
                             System.out.println("Record saved successfully.");
@@ -405,12 +379,14 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         txtField06.focusedProperty().addListener(txtField_Focus);
         txtField07.focusedProperty().addListener(txtField_Focus);
         txtField08.focusedProperty().addListener(txtField_Focus);
-        txtField09.focusedProperty().addListener(txtField_Focus);
+//        txtField09.focusedProperty().addListener(txtField_Focus);
         txtField10.focusedProperty().addListener(txtField_Focus);
         txtField11.focusedProperty().addListener(txtField_Focus);
         txtField12.focusedProperty().addListener(txtField_Focus);
         
         txtField02.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField09.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField13.setOnKeyPressed(this::txtField_KeyPressed);
         
         // Set a custom StringConverter to format date
           DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -483,11 +459,9 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex){
-                    case 02: /*search branch*/
+                    case 02: /*search company name*/
 //                        receivedDataLabel.setText(receivedData);
                         poJson = new JSONObject();
-                        String input = "";
-                        input = lsValue;
                             poJson =  oTrans.SearchClient(lsValue, false);
                            System.out.println("poJson = " + poJson.toJSONString());
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
@@ -504,6 +478,29 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                            txtField04.setText((String) poJson.get("sCPerson1"));                         
                            txtField05.setText((String) poJson.get("sMobileNo"));
                            txtField06.setText((String) poJson.get("sTaxIDNox"));
+                        break;
+                        
+                    case 9: /*search branch*/
+//                        receivedDataLabel.setText(receivedData);
+                        poJson = new JSONObject();
+                        poJson =  oTrans.SearchTerm(lsValue, false);
+                       System.out.println("poJson = " + poJson.toJSONString());
+                       if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField09.clear();
+                       }
+                       txtField09.setText((String) poJson.get("sDescript"));        
+                        break;
+                    case 13: /*search branch*/
+//                        receivedDataLabel.setText(receivedData);
+                        poJson = new JSONObject();
+                        poJson =  oTrans.SearchCategory(lsValue, false);
+                       System.out.println("poJson = " + poJson.toJSONString());
+                       if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField13.clear();
+                       }
+                       txtField13.setText((String) poJson.get("sDescript"));        
                         break;
                 }
             case ENTER:
@@ -555,7 +552,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                     break;
                 case 9:/*term */
 //                    jsonObject = oTrans.getMasterModel().setTerm(lsValue);                    
-                    jsonObject = oTrans.setMaster(8,lsValue);
+//                    jsonObject = oTrans.setMaster(8,lsValue);
                     break;
                 case 10 :/*beginning balance*/
                     
@@ -569,6 +566,8 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                 case 12 :/*outstanding balance*/
 //                      jsonObject = oTrans.getMasterModel().setOBalance(lsValue);                                     
                     jsonObject = oTrans.setMaster(12,lsValue);
+                    break;
+                case 13:/*category */
                     break;
             }                    
         } else
@@ -718,23 +717,31 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex){
+                    
+                    case 01: /*search company id*/
+                        poJson = oTrans.searchRecord(lsValue, true);
+                        if ("error".equals((String) poJson.get("result"))){
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSearch02.clear();
+                            break;
+                        }
+                        pnEditMode = oTrans.getEditMode();
+//                        loadDetail();
+                        
+                        retrieveDetails();
+                    break;
                     case 02: /*search company*/
                         poJson = new JSONObject();
                         String input = "";
                         input = lsValue;
-                            poJson =  oTrans.SearchClient(lsValue, false);
+                            poJson =  oTrans.searchRecord(lsValue, false);
                            System.out.println("poJson = " + poJson.toJSONString());
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
-                               loadCompanyTransaction();
-//                               poJson = oTrans.SearchClient(GlobalVariables.sClientID, false);
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                            }
-                           txtField01.setText((String) poJson.get("sClientID"));                    
-                           txtField02.setText((String) poJson.get("sCompnyNm"));                           
-                           txtField03.setText((String) poJson.get("xAddressx"));
-                           txtField04.setText((String) poJson.get("sCPerson1"));                         
-                           txtField05.setText((String) poJson.get("sMobileNo"));
-                           txtField06.setText((String) poJson.get("sTaxIDNox"));
-                            System.out.println("globalvariable = " + GlobalVariables.sClientID);
+                           pnEditMode = oTrans.getEditMode();
+                           txtSearch02.setText(oTrans.getModel().getClientName());
+                           
                         break;
                 }
             case ENTER:
@@ -749,11 +756,104 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         case UP:
             CommonUtils.SetPreviousFocus(txtSearch);
         }
+        
+        retrieveDetails();
     }
-    private void clearAllFields(){
-    }
+    private void retrieveDetails(){
+        if(pnEditMode == EditMode.READY || 
+                pnEditMode == EditMode.ADDNEW || 
+                pnEditMode == EditMode.UPDATE){
+            txtField01.setText((String) oTrans.getModel().getClientID());
+            txtField02.setText((String) oTrans.getModel().getClientName());
+            txtField03.setText((String) oTrans.getModel().getAddress());
+            txtField04.setText((String) oTrans.getModel().getContactPerson());
+            txtField05.setText((String) oTrans.getModel().getContactNo());
+            txtField06.setText((String) oTrans.getModel().getTaxIDNumber());
+            txtField07.setText(oTrans.getModel().getCreditLimit().toString());
+            txtField08.setText(oTrans.getModel().getDiscount().toString());
+            txtField09.setText((String) oTrans.getModel().getTermName());
+            txtField10.setText(oTrans.getModel().getBeginBal().toString());
+            txtField11.setText(oTrans.getModel().getABalance().toString());
+            txtField12.setText(oTrans.getModel().getOBalance().toString());
+            txtField13.setText((String) oTrans.getModel().getCategoryName());
+            
+           
 
+            
+            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            // Parse the formatted date string into a LocalDate object
+            if(oTrans.getMaster(5) != null && !oTrans.getMaster(5).toString().trim().isEmpty()){
+                LocalDate localbdate = LocalDate.parse(oTrans.getMaster(5).toString(), formatter);
+
+                // Set the value of the DatePicker to the parsed LocalDate
+                cpField01.setValue(localbdate);
+            }
+            // Parse the formatted date string into a LocalDate object
+            if(oTrans.getMaster(6) != null && !oTrans.getMaster(6).toString().trim().isEmpty()){
+                LocalDate localbdate = LocalDate.parse(oTrans.getMaster(6).toString(), formatter);
+
+                // Set the value of the DatePicker to the parsed LocalDate
+                cpField02.setValue(localbdate);
+            }
+            
+            chkfield01.setSelected(("1".equals((String) oTrans.getMaster("cVatablex"))));
+//            txtField01.setText((String) oTrans.getModel().getClientID());
+//            txtField02.setText((String) oTrans.getModel().getFullName());
+//            txtField06.setText((oTrans.getMaster(29) == null)? "" : (String) oTrans.getMaster(29));
+//            txtField05.setText((String) oTrans.getModel().getMaidenName());
+//            txtField09.setText((String) oTrans.getMaster(28));
+//            txtField08.setText((String) oTrans.getMaster(27));
+//            if(!oTrans.getModel().getClientType().trim().isEmpty() && oTrans.getModel().getClientType()!= null){
+//                cmbField01.getSelectionModel().select(Integer.parseInt((String) oTrans.getModel().getClientType()));
+//            }
+              loadLedger();
+            
+        }
     
+    }
+    private void loadLedger(){
+        int lnCtr;
+        data.clear();
+//        oTrans.getAddress(pnAddress).list();
+        if(oTrans.getLedger()!= null){
+            for (lnCtr = 0; lnCtr < oTrans.getLedger().getMaster().size(); lnCtr++){
+                data.add(new ModelAPClientLedgers(String.valueOf(lnCtr + 1),
+                    (String)oTrans.getLedger(lnCtr, "dTransact"), 
+                    (String)oTrans.getLedger(lnCtr, "sSourceCd"), 
+                    (String)oTrans.getLedger(lnCtr, "sSourceNo"), 
+                    (String)oTrans.getLedger(lnCtr,  "nAmountIn"),
+                    (String)oTrans.getLedger(lnCtr,  "nAmountOt")));  
+
+            }
+        }
+        
+         
+    }
+    private void clearAllFields() {
+        // Arrays of TextFields grouped by sections
+        TextField[][] allFields = {
+            // Text fields related to specific sections
+            {txtSearch01, txtSearch02, txtField01, txtField02, txtField03, txtField04,
+             txtField05, txtField06, txtField07, txtField08, txtField09,
+             txtField10, txtField11, txtField12, txtField13},
+
+            
+        };
+        cpField01.setValue(null);
+        cpField02.setValue(null);
+        chkfield01.setDisable(true);
+        
+
+        // Loop through each array of TextFields and clear them
+        for (TextField[] fields : allFields) {
+            for (TextField field : fields) {
+                field.clear();
+            }
+        }
+    }
+ 
     public void loadReturn(String lsValue) {
         System.out.println("loadReturn lsValue = " + lsValue);
         JSONObject poJson = new JSONObject();

@@ -36,7 +36,7 @@ public class ModelAccredetations {
     
     
     ObservableList<String> AccountType = FXCollections.observableArrayList("Accounts Payable", "Accounts Receivable");
-    ObservableList<String> AccountStatus = FXCollections.observableArrayList("Approved", "Disapproved", "Blocklist");
+    ObservableList<String> AccountStatus = FXCollections.observableArrayList("Open","Approved", "Disapproved", "Blocklist");
     public ModelAccredetations(String index01,
                String index02,
                String index03,
