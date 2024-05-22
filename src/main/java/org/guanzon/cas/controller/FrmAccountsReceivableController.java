@@ -49,6 +49,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.clients.account.AR_Client_Master;
+import org.guanzon.cas.clients.account.AR_Client_Master;
 import org.guanzon.cas.clients.account.GlobalVariables;
 import org.guanzon.cas.model.ModelAPClientLedger;
 import org.guanzon.cas.model.ModelAPClientLedgers;
@@ -63,7 +64,7 @@ import org.json.simple.JSONObject;
  * @author User
  */
 public class FrmAccountsReceivableController implements Initializable,ScreenInterface {
-    private final String pxeModuleName = "Accounts Payable Clients";
+    private final String pxeModuleName = "Accounts Receivable Clients";
     private GRider oApp;
     private int pnEditMode;  
     private AR_Client_Master oTrans;
@@ -137,6 +138,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
 
     @FXML
     private TextField txtField12;
+
     @FXML
     private TextField txtField13;
 
@@ -187,7 +189,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         lsSearchRes = (message);
     }
 
-    private ObservableList<ModelAPClientLedgers> data = FXCollections.observableArrayList();
+    private ObservableList<ModelAPClientLedger> data = FXCollections.observableArrayList();
     /**
      * Initializes the controller class.
      */
@@ -248,8 +250,8 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex){
-                    case 02: /*search branch*/
-                        poJson = oTrans.searchRecord(lsValue, false);
+                    case 01: /*search company id*/
+                        poJson = oTrans.searchRecord(lsValue, true);
                         if ("error".equals((String) poJson.get("result"))){
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                             txtSearch02.clear();
@@ -260,17 +262,17 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                         
                         retrieveDetails();
                     break;
-                    case 01: /*search branch*/
-//                        poJson = oTrans.searchRecord(lsValue, false);
-//                        if ("error".equals((String) poJson.get("result"))){
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtSearch01.clear();
-//                            break;
-//                        }
-//                        pnEditMode = oTrans.getEditMode();
+                    case 02: /*search company name*/
+                        poJson = oTrans.searchRecord(lsValue, false);
+                        if ("error".equals((String) poJson.get("result"))){
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSearch02.clear();
+                            break;
+                        }
+                        pnEditMode = oTrans.getEditMode();
 //                        loadDetail();
                         
-//                        retrieveDetails();
+                        retrieveDetails();
                     break;
                 }
             case ENTER:
@@ -313,6 +315,11 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
 //                            txtField01.setText((String) oTrans.getMaster("sClientID"));
 //                            loadDetail();
                             txtField02.requestFocus();
+                            txtField07.setText((String) oTrans.getModel().getCreditLimit());
+                            txtField10.setText((String) oTrans.getModel().getBeginBal());
+                            txtField08.setText((String) oTrans.getModel().getDiscount());
+                            txtField11.setText((String) oTrans.getModel().getABalance());
+                            txtField12.setText((String) oTrans.getModel().getOBalance());
                             initTabAnchor();
                         }else{
                             ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -336,6 +343,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                         if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
                             clearAllFields();
 //                            appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
+//                            pnEditMode = EditMode.UNKNOWN;
                             pnEditMode = EditMode.UNKNOWN;
                             initButton(pnEditMode);
                             initTabAnchor();
@@ -390,58 +398,107 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         
         // Set a custom StringConverter to format date
           DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        cpField01.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(LocalDate date) {
-                if (date != null) {
-                    oTrans.setMaster(5, dateFormatter.format(date).toString());
-                    System.out.println("dCltSince = " + date);
-                    
-                    cpField01.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
-                    return dateFormatter.format(date);
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    oTrans.setMaster(5,LocalDate.parse(string, dateFormatter).toString());
-                    
-//                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
-                    return LocalDate.parse(string, dateFormatter);
-                } else {
-                    return null;
-                }
-            }
-        });
-        cpField02.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(LocalDate date) {
-                if (date != null) {
-                    oTrans.setMaster(6, dateFormatter.format(date).toString());
-                    System.out.println("dBegDatex = " + date);
-                    
-                    cpField02.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
-                    return dateFormatter.format(date);
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    oTrans.setMaster(6,LocalDate.parse(string, dateFormatter).toString());
-                    
-//                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
-                    return LocalDate.parse(string, dateFormatter);
-                } else {
-                    return null;
-                }
-            }
-        });
+          
+//         cpField01.setOnAction(event -> {
+//            // Handle the event when a date is selected
+//            System.out.println("Selected date: " + cpField01.getValue());
+//            oTrans.setMaster(6,  SQLUtil.toDate(CommonUtils.toDate(cpField0)));
+//        });  
+//          
+        
+//        cpField01.setConverter(new StringConverter<LocalDate>() {
+//            @Override
+//            public String toString(LocalDate date) {
+//                if (date != null) {
+////                    SQLUtil.toDate("2025-01-01", SQLUtil.FORMAT_SHORT_DATE)
+//                    
+////                     oTrans.setMaster(6, dateFormatter.format(date).toString());
+////                    
+//                    System.out.println("dCltSince = " + date);
+//                    
+//                    cpField01.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+//                    oTrans.setMaster("dCltSince", (CommonUtils.toDate(cpField01.getValue().toString())));
+//                    return dateFormatter.format(date);
+//                } else {
+//                    return "";
+//                }
+//            }
+//
+//            @Override
+//            public LocalDate fromString(String string) {
+//                if (string != null && !string.isEmpty()) {
+//                    oTrans.setMaster("dCltSince", (CommonUtils.toDate(cpField01.getValue().toString())));
+//                    
+////                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
+//                    return LocalDate.parse(string, dateFormatter);
+//                } else {
+//                    return null;
+//                }
+//            }
+//        });
+//        
+//        
+//        cpField02.setConverter(new StringConverter<LocalDate>() {
+//            @Override
+//            public String toString(LocalDate date) {
+//                if (date != null) {
+////                    SQLUtil.toDate("2025-01-01", SQLUtil.FORMAT_SHORT_DATE)
+//                    
+////                     oTrans.setMaster(6, dateFormatter.format(date).toString());
+////                    
+//                    
+//                    
+//                    cpField02.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+//                    Date x = (CommonUtils.toDate(date.toString()));
+//                    System.out.println("dBegDatex1 = " + x);
+//                    
+//                    oTrans.setMaster("dBegDatex", (CommonUtils.toDate(date.toString())));
+//                    return dateFormatter.format(date);
+//                } else {
+//                    return "";
+//                }
+//            }
+//
+//            @Override
+//            public LocalDate fromString(String string) {
+//                if (string != null && !string.isEmpty()) {
+//                    oTrans.setMaster("dBegDatex", (CommonUtils.toDate(cpField02.getValue().toString())));
+//                    
+////                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
+//                    return LocalDate.parse(string, dateFormatter);
+//                } else {
+//                    return null;
+//                }
+//            }
+//        });
+        initdatepicker();
+//        cpField02.setConverter(new StringConverter<LocalDate>() {
+//            @Override
+//            public String toString(LocalDate date) {
+//                if (date != null) {
+//                    oTrans.setMaster("dBegDatex", (CommonUtils.toDate(cpField02.getValue().toString())));
+////                    oTrans.setMaster(6, dateFormatter.format(date).toString());
+//                    System.out.println("dBegDatex = " + CommonUtils.toDate(cpField02.getValue().toString()));
+//                    
+//                    cpField02.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+//                    return dateFormatter.format(date);
+//                } else {
+//                    return "";
+//                }
+//            }
+//
+//            @Override
+//            public LocalDate fromString(String string) {
+//                if (string != null && !string.isEmpty()) {
+////                    oTrans.setMaster(6,LocalDate.parse(string, dateFormatter).toString());
+//                    oTrans.setMaster("dBegDatex", (CommonUtils.toDate(cpField02.getValue().toString())));
+////                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
+//                    return LocalDate.parse(string, dateFormatter);
+//                } else {
+//                    return null;
+//                }
+//            }
+//        });
         
     }
     private void initTabAnchor(){
@@ -459,9 +516,11 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex){
-                    case 02: /*search company name*/
+                    case 02: /*search branch*/
 //                        receivedDataLabel.setText(receivedData);
                         poJson = new JSONObject();
+                        String input = "";
+                        input = lsValue;
                             poJson =  oTrans.SearchClient(lsValue, false);
                            System.out.println("poJson = " + poJson.toJSONString());
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
@@ -517,6 +576,80 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         }
     }
     
+    public void initdatepicker(){
+        // Set a custom StringConverter to format date
+          DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        cpField01.setConverter(new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    oTrans.setMaster(5, dateFormatter.format(date).toString());
+                    System.out.println("dCltSince = " + date);
+                    
+                    cpField01.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+                    return dateFormatter.format(date);
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    oTrans.setMaster(5,LocalDate.parse(string, dateFormatter).toString());
+                    
+//                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
+                    return LocalDate.parse(string, dateFormatter);
+                } else {
+                    return null;
+                }
+            }
+        });
+        cpField02.setConverter(new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    oTrans.setMaster(6, dateFormatter.format(date).toString());
+                    System.out.println("dBegDatex = " + date);
+                    
+                    cpField02.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+                    return dateFormatter.format(date);
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    oTrans.setMaster(6,LocalDate.parse(string, dateFormatter).toString());
+                    
+//                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
+                    return LocalDate.parse(string, dateFormatter);
+                } else {
+                    return null;
+                }
+            }
+        });
+
+//         cpField01.setOnAction(event -> {
+//            // Handle the event when a date is selected
+//            System.out.println("dCltSince date: " + cpField01.getValue());
+//            
+//            oTrans.setMaster("dCltSince", (CommonUtils.toDate(cpField01.getValue().toString())));
+////            oTrans.setLedger(5, pnEditMode, oApp);
+//        });
+//         
+//         cpField02.setOnAction((ActionEvent event) -> {
+//            // Handle the event when a date is selected
+//            System.out.println("dBegDatex date: " + cpField02.getValue());
+//            
+//            oTrans.setMaster("dBegDatex", (CommonUtils.toDate(cpField02.getValue().toString())));
+////            oTrans.setLedger(5, pnEditMode, oApp);
+//        });
+    
+    }
+    
     final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{ 
         if (!pbLoaded) return;
        
@@ -566,8 +699,6 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                 case 12 :/*outstanding balance*/
 //                      jsonObject = oTrans.getMasterModel().setOBalance(lsValue);                                     
                     jsonObject = oTrans.setMaster(12,lsValue);
-                    break;
-                case 13:/*category */
                     break;
             }                    
         } else
@@ -717,19 +848,6 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex){
-                    
-                    case 01: /*search company id*/
-                        poJson = oTrans.searchRecord(lsValue, true);
-                        if ("error".equals((String) poJson.get("result"))){
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtSearch02.clear();
-                            break;
-                        }
-                        pnEditMode = oTrans.getEditMode();
-//                        loadDetail();
-                        
-                        retrieveDetails();
-                    break;
                     case 02: /*search company*/
                         poJson = new JSONObject();
                         String input = "";
@@ -819,7 +937,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
 //        oTrans.getAddress(pnAddress).list();
         if(oTrans.getLedger()!= null){
             for (lnCtr = 0; lnCtr < oTrans.getLedger().getMaster().size(); lnCtr++){
-                data.add(new ModelAPClientLedgers(String.valueOf(lnCtr + 1),
+                data.add(new ModelAPClientLedger(String.valueOf(lnCtr + 1),
                     (String)oTrans.getLedger(lnCtr, "dTransact"), 
                     (String)oTrans.getLedger(lnCtr, "sSourceCd"), 
                     (String)oTrans.getLedger(lnCtr, "sSourceNo"), 
@@ -836,14 +954,13 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         TextField[][] allFields = {
             // Text fields related to specific sections
             {txtSearch01, txtSearch02, txtField01, txtField02, txtField03, txtField04,
-             txtField05, txtField06, txtField07, txtField08, txtField09,
-             txtField10, txtField11, txtField12, txtField13},
+             txtField05, txtField06, txtField07, txtField08, txtField09,txtField10, txtField11, txtField12, txtField13},
 
             
         };
         cpField01.setValue(null);
         cpField02.setValue(null);
-        chkfield01.setDisable(true);
+        chkfield01.setSelected(false);
         
 
         // Loop through each array of TextFields and clear them

@@ -227,9 +227,10 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                     if ("success".equals((String) poJSON.get("result"))){
                             pnEditMode = EditMode.ADDNEW;
                             initButton(pnEditMode);
-//                            txtField01.setText((String) oTrans.getTransNox());
+                            txtField01.setText(oTrans.getTransNox());
+                            System.out.print("(transnox === " + (String) oTrans.getTransNox());
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-                            System.out.println("dTransact = " + oTrans.getAccount(pnCompany, "dTransact"));
+//                            System.out.println("dTransact = " + oTrans.getAccount(pnCompany, "dTransact"));
                             String dateStr = oTrans.getAccount(pnCompany, "dTransact").toString();
                             if (!dateStr.isEmpty()) {
                                 // Parse the date string
@@ -334,8 +335,10 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                         clearCompanyFields();
                         txtField02.requestFocus();
                     }
-                    
-                break;
+                    break;
+                case "btnBrowse": 
+                       
+                    break;
         }
     }
 }

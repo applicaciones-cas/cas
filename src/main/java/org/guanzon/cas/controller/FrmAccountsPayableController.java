@@ -312,7 +312,13 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
 //                            clearAllFields();
 //                            txtField01.setText((String) oTrans.getMaster("sClientID"));
 //                            loadDetail();
+
                             txtField02.requestFocus();
+                            txtField07.setText((String) oTrans.getModel().getCreditLimit());
+                            txtField10.setText((String) oTrans.getModel().getBeginBal());
+                            txtField08.setText((String) oTrans.getModel().getDiscount());
+                            txtField11.setText((String) oTrans.getModel().getABalance());
+                            txtField12.setText((String) oTrans.getModel().getOBalance());
                             initTabAnchor();
                         }else{
                             ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -391,58 +397,107 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
         
         // Set a custom StringConverter to format date
           DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        cpField01.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(LocalDate date) {
-                if (date != null) {
-                    oTrans.setMaster(5, dateFormatter.format(date).toString());
-                    System.out.println("dCltSince = " + date);
-                    
-                    cpField01.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
-                    return dateFormatter.format(date);
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    oTrans.setMaster(5,LocalDate.parse(string, dateFormatter).toString());
-                    
-//                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
-                    return LocalDate.parse(string, dateFormatter);
-                } else {
-                    return null;
-                }
-            }
-        });
-        cpField02.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(LocalDate date) {
-                if (date != null) {
-                    oTrans.setMaster(6, dateFormatter.format(date).toString());
-                    System.out.println("dBegDatex = " + date);
-                    
-                    cpField02.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
-                    return dateFormatter.format(date);
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    oTrans.setMaster(6,LocalDate.parse(string, dateFormatter).toString());
-                    
-//                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
-                    return LocalDate.parse(string, dateFormatter);
-                } else {
-                    return null;
-                }
-            }
-        });
+          
+//         cpField01.setOnAction(event -> {
+//            // Handle the event when a date is selected
+//            System.out.println("Selected date: " + cpField01.getValue());
+//            oTrans.setMaster(6,  SQLUtil.toDate(CommonUtils.toDate(cpField0)));
+//        });  
+//          
+        
+//        cpField01.setConverter(new StringConverter<LocalDate>() {
+//            @Override
+//            public String toString(LocalDate date) {
+//                if (date != null) {
+////                    SQLUtil.toDate("2025-01-01", SQLUtil.FORMAT_SHORT_DATE)
+//                    
+////                     oTrans.setMaster(6, dateFormatter.format(date).toString());
+////                    
+//                    System.out.println("dCltSince = " + date);
+//                    
+//                    cpField01.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+//                    oTrans.setMaster("dCltSince", (CommonUtils.toDate(cpField01.getValue().toString())));
+//                    return dateFormatter.format(date);
+//                } else {
+//                    return "";
+//                }
+//            }
+//
+//            @Override
+//            public LocalDate fromString(String string) {
+//                if (string != null && !string.isEmpty()) {
+//                    oTrans.setMaster("dCltSince", (CommonUtils.toDate(cpField01.getValue().toString())));
+//                    
+////                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
+//                    return LocalDate.parse(string, dateFormatter);
+//                } else {
+//                    return null;
+//                }
+//            }
+//        });
+//        
+//        
+//        cpField02.setConverter(new StringConverter<LocalDate>() {
+//            @Override
+//            public String toString(LocalDate date) {
+//                if (date != null) {
+////                    SQLUtil.toDate("2025-01-01", SQLUtil.FORMAT_SHORT_DATE)
+//                    
+////                     oTrans.setMaster(6, dateFormatter.format(date).toString());
+////                    
+//                    
+//                    
+//                    cpField02.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+//                    Date x = (CommonUtils.toDate(date.toString()));
+//                    System.out.println("dBegDatex1 = " + x);
+//                    
+//                    oTrans.setMaster("dBegDatex", (CommonUtils.toDate(date.toString())));
+//                    return dateFormatter.format(date);
+//                } else {
+//                    return "";
+//                }
+//            }
+//
+//            @Override
+//            public LocalDate fromString(String string) {
+//                if (string != null && !string.isEmpty()) {
+//                    oTrans.setMaster("dBegDatex", (CommonUtils.toDate(cpField02.getValue().toString())));
+//                    
+////                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
+//                    return LocalDate.parse(string, dateFormatter);
+//                } else {
+//                    return null;
+//                }
+//            }
+//        });
+        initdatepicker();
+//        cpField02.setConverter(new StringConverter<LocalDate>() {
+//            @Override
+//            public String toString(LocalDate date) {
+//                if (date != null) {
+//                    oTrans.setMaster("dBegDatex", (CommonUtils.toDate(cpField02.getValue().toString())));
+////                    oTrans.setMaster(6, dateFormatter.format(date).toString());
+//                    System.out.println("dBegDatex = " + CommonUtils.toDate(cpField02.getValue().toString()));
+//                    
+//                    cpField02.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+//                    return dateFormatter.format(date);
+//                } else {
+//                    return "";
+//                }
+//            }
+//
+//            @Override
+//            public LocalDate fromString(String string) {
+//                if (string != null && !string.isEmpty()) {
+////                    oTrans.setMaster(6,LocalDate.parse(string, dateFormatter).toString());
+//                    oTrans.setMaster("dBegDatex", (CommonUtils.toDate(cpField02.getValue().toString())));
+////                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
+//                    return LocalDate.parse(string, dateFormatter);
+//                } else {
+//                    return null;
+//                }
+//            }
+//        });
         
     }
     private void initTabAnchor(){
@@ -518,6 +573,80 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
         case UP:
             CommonUtils.SetPreviousFocus(txtField);
         }
+    }
+    
+    public void initdatepicker(){
+        // Set a custom StringConverter to format date
+          DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        cpField01.setConverter(new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    oTrans.setMaster(5, dateFormatter.format(date).toString());
+                    System.out.println("dCltSince = " + date);
+                    
+                    cpField01.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+                    return dateFormatter.format(date);
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    oTrans.setMaster(5,LocalDate.parse(string, dateFormatter).toString());
+                    
+//                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
+                    return LocalDate.parse(string, dateFormatter);
+                } else {
+                    return null;
+                }
+            }
+        });
+        cpField02.setConverter(new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    oTrans.setMaster(6, dateFormatter.format(date).toString());
+                    System.out.println("dBegDatex = " + date);
+                    
+                    cpField02.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+                    return dateFormatter.format(date);
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    oTrans.setMaster(6,LocalDate.parse(string, dateFormatter).toString());
+                    
+//                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
+                    return LocalDate.parse(string, dateFormatter);
+                } else {
+                    return null;
+                }
+            }
+        });
+
+//         cpField01.setOnAction(event -> {
+//            // Handle the event when a date is selected
+//            System.out.println("dCltSince date: " + cpField01.getValue());
+//            
+//            oTrans.setMaster("dCltSince", (CommonUtils.toDate(cpField01.getValue().toString())));
+////            oTrans.setLedger(5, pnEditMode, oApp);
+//        });
+//         
+//         cpField02.setOnAction((ActionEvent event) -> {
+//            // Handle the event when a date is selected
+//            System.out.println("dBegDatex date: " + cpField02.getValue());
+//            
+//            oTrans.setMaster("dBegDatex", (CommonUtils.toDate(cpField02.getValue().toString())));
+////            oTrans.setLedger(5, pnEditMode, oApp);
+//        });
+    
     }
     
     final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{ 
@@ -830,7 +959,7 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
         };
         cpField01.setValue(null);
         cpField02.setValue(null);
-        chkfield01.setDisable(true);
+        chkfield01.setSelected(false);
         
 
         // Loop through each array of TextFields and clear them
