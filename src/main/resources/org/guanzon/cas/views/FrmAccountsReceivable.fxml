@@ -21,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="AnchorMain" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="AnchorMain" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <bottom>
@@ -311,7 +311,7 @@
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextField fx:id="txtField09" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="13">
+                                          <TextField fx:id="txtField09" promptText="Press F3: Search" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="13">
                                              <GridPane.margin>
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
