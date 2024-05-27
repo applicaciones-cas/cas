@@ -548,26 +548,26 @@ public class DashboardController implements Initializable {
 //    }
     private ScreenInterface getController(String fsValue) {
         switch (fsValue) {
-            case "/org/guanzon/cas/views/ClientMasterParameter.fxml":
-                return new ClientMasterParameterController();
-
-            case "/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml":
-                return new ClientMasterTransactionCompanyController();
-
-            case "/org/guanzon/cas/views/ClientMasterTransactionIndividual.fxml":
-                return new ClientMasterTransactionIndividualController();
-
-            case "/org/guanzon/cas/views/NewCustomer.fxml":
-                return new NewCustomerController();
-            
-            case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
-                return new FrmAccountsPayableController();
-                
-            case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
-                return new FrmAccountsReceivableController();
-                
-            case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
-                return new FrmAccountsAccreditationController();
+//            case "/org/guanzon/cas/views/ClientMasterParameter.fxml":
+//                return new ClientMasterParameterController();
+//
+//            case "/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml":
+//                return new ClientMasterTransactionCompanyController();
+//
+//            case "/org/guanzon/cas/views/ClientMasterTransactionIndividual.fxml":
+//                return new ClientMasterTransactionIndividualController();
+//
+//            case "/org/guanzon/cas/views/NewCustomer.fxml":
+//                return new NewCustomerController();
+//            
+//            case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
+//                return new FrmAccountsPayableController();
+//                
+//            case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
+//                return new FrmAccountsReceivableController();
+//                
+//            case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
+//                return new FrmAccountsAccreditationController();
                 
             //Parameter MenuControllers
             case "/org/guanzon/cas/views/AffiliatedCompany.fxml":

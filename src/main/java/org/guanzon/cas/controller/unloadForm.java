@@ -65,13 +65,13 @@ public class unloadForm {
 
     
      public void useParentController(String lsValue) {
-        if (parentController instanceof ClientMasterParameterController) {
-            ((ClientMasterParameterController) parentController).loadReturn(lsValue);
-        } else if (parentController instanceof ClientMasterTransactionCompanyController) {
-            ((ClientMasterTransactionCompanyController) parentController).loadReturn(lsValue);
-        }else if (parentController instanceof FrmAccountsPayableController) {
-            ((FrmAccountsPayableController) parentController).loadReturn(lsValue);
-        }
+//        if (parentController instanceof ClientMasterParameterController) {
+//            ((ClientMasterParameterController) parentController).loadReturn(lsValue);
+//        } else if (parentController instanceof ClientMasterTransactionCompanyController) {
+//            ((ClientMasterTransactionCompanyController) parentController).loadReturn(lsValue);
+//        }else if (parentController instanceof FrmAccountsPayableController) {
+//            ((FrmAccountsPayableController) parentController).loadReturn(lsValue);
+//        }
     }
      
     public void unloadForm(AnchorPane AnchorMain, GRider oApp, String sTabTitle){
