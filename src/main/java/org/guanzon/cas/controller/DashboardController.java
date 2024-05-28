@@ -626,8 +626,8 @@ public class DashboardController implements Initializable {
                 return new SalesmanController();
             case "/org/guanzon/cas/views/Size.fxml":
                 return new SizeController();
-//            case "/org/guanzon/cas/views/Term.fxml":
-//                return new TermController();
+            case "/org/guanzon/cas/views/Term.fxml":
+                return new TermController();
             case "/org/guanzon/cas/views/Warehouse.fxml":
                 return new WarehouseController();
                 

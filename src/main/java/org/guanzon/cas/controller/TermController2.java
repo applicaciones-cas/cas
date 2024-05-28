@@ -24,18 +24,18 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.parameters.Size;
 import org.guanzon.cas.parameters.Term;
 import org.json.simple.JSONObject;
+
 
 /**
  * FXML Controller class
  *
- * @author Maynard
+ * @author user
  */
-public class TermController implements Initializable, ScreenInterface {
+public class TermController2 implements Initializable {
 
-    private final String pxeModuleName = "Size";
+    private final String pxeModuleName = "Term";
     private GRider oApp;
     private Term oTrans;
     private JSONObject poJSON;
@@ -206,7 +206,7 @@ public class TermController implements Initializable, ScreenInterface {
             case "btnClose":
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
 //                        if (unload != null) {
-//                            unload.unloadForm(AnchorMain, oApp, "Size");
+//                            unload.unloadForm(AnchorMain, oApp, "Term");
 //                        } else {
 //                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
 //                        }
@@ -257,7 +257,6 @@ public class TermController implements Initializable, ScreenInterface {
 
     }
 
-    @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
@@ -389,4 +388,6 @@ public class TermController implements Initializable, ScreenInterface {
         btnActivate.setText("Activate");
         cbActive.setSelected(false);
     }
+    
 }
+
