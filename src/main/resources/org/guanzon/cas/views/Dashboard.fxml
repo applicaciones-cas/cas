@@ -164,6 +164,7 @@
                                                                 <MenuItem fx:id="mnuParameterSalesman" mnemonicParsing="false" onAction="#mnuParameterSalesmanClick" text="Salesman" />
                                                                 <MenuItem fx:id="mnuParameterSize" mnemonicParsing="false" onAction="#mnuParameterSizeClick" text="Size" />
                                                 <MenuItem fx:id="mnuParameterSize1" mnemonicParsing="false" onAction="#mnuParameterSizeClick" text="Term" />
+                                                <MenuItem fx:id="mnuParameterWarehouse" mnemonicParsing="false" onAction="#mnuParameterWarehouseClick" text="Warehouse" />
                                                             </items>
                                                         </Menu>
                                           <MenuItem fx:id="mnuAccountsPayable" mnemonicParsing="false" onAction="#mnuAccountsPayable_Clicked" text="Accounts Payable" />
