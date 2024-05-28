@@ -272,6 +272,8 @@ public class DashboardController implements Initializable {
                 return "Salesman";
             case "/org/guanzon/cas/views/Size.fxml":
                 return "Size";
+            case "/org/guanzon/cas/views/Term.fxml":
+                return "Term";
             
             default:
                 return null;
@@ -622,7 +624,8 @@ public class DashboardController implements Initializable {
                 return new SalesmanController();
             case "/org/guanzon/cas/views/Size.fxml":
                 return new SizeController();
-            
+//            case "/org/guanzon/cas/views/Term.fxml":
+//                return new TermController();
             default:
                 return null;
         }
@@ -916,6 +919,14 @@ public class DashboardController implements Initializable {
     @FXML
     private void mnuParameterSizeClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/Size.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+        @FXML
+    private void mnuParameterTermClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Term.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

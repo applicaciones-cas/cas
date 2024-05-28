@@ -35,7 +35,7 @@ import org.json.simple.JSONObject;
  */
 public class TermController implements Initializable {
 
-    private final String pxeModuleName = "Size";
+    private final String pxeModuleName = "Term";
     private GRider oApp;
     private Size oTrans;
     private JSONObject poJSON;
