@@ -80,6 +80,10 @@ public class TermController implements Initializable, ScreenInterface {
     private TableColumn<?, ?> index01;
     @FXML
     private TableColumn<?, ?> index02;
+    @FXML
+    private TextField txtField03;
+    @FXML
+    private CheckBox cbCoverage;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -363,7 +367,7 @@ public class TermController implements Initializable, ScreenInterface {
 
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
-        
+
         psPrimary = oTrans.getModel().getTermCode();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());

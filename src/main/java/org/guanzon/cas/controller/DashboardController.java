@@ -123,7 +123,7 @@ public class DashboardController implements Initializable {
             if (name != null && name.next()) {
                 AppUserInfo.setText(name.getString("sCompnyNm") + " || " + oApp.getDepartment());
                 System.out.println(oApp.getEmployeeLevel() + "  " + oApp.getDepartment());
-                System.setProperty("user.name", name.getString("sCompnyNm"));
+//                System.setProperty("user.name", name.getString("sCompnyNm"));
             }
         } catch (SQLException ex) {
             // Handle SQL exception
