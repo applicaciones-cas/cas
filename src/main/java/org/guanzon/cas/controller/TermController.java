@@ -363,7 +363,7 @@ public class TermController implements Initializable, ScreenInterface {
 
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
-
+        
         psPrimary = oTrans.getModel().getTermCode();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
