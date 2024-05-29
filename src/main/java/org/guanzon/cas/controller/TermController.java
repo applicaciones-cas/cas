@@ -24,7 +24,6 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.parameters.Size;
 import org.guanzon.cas.parameters.Term;
 import org.json.simple.JSONObject;
 
@@ -35,7 +34,7 @@ import org.json.simple.JSONObject;
  */
 public class TermController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Size";
+    private final String pxeModuleName = "Term";
     private GRider oApp;
     private Term oTrans;
     private JSONObject poJSON;
@@ -206,7 +205,7 @@ public class TermController implements Initializable, ScreenInterface {
             case "btnClose":
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
 //                        if (unload != null) {
-//                            unload.unloadForm(AnchorMain, oApp, "Size");
+//                            unload.unloadForm(AnchorMain, oApp, "Term");
 //                        } else {
 //                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
 //                        }
