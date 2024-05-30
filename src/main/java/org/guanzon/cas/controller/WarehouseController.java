@@ -24,7 +24,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.parameters.Size;
+import org.guanzon.cas.parameters.Warehouse;
 import org.json.simple.JSONObject;
 
 /**
@@ -36,7 +36,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Warehouse";
     private GRider oApp;
-    private Size oTrans;
+    private Warehouse oTrans;
     private JSONObject poJSON;
     private int pnEditMode;
 
@@ -71,6 +71,8 @@ public class WarehouseController implements Initializable, ScreenInterface {
     @FXML
     private TextField txtField99;
     @FXML
+    private TextField txtField100;
+    @FXML
     private CheckBox cbActive;
     @FXML
     private FontAwesomeIconView faActivate;
@@ -101,7 +103,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
 
             case "btnSave":
 
-                poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
+                poJSON = oTrans.getModel().setModified(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
 
@@ -125,7 +127,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
                     return;
 
                 } else {
-                    oTrans = new Size(oApp, true);
+                    oTrans = new Warehouse(oApp, true);
                     pbLoaded = true;
                     oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
@@ -148,7 +150,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
 
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                    oTrans = new Size(oApp, true);
+                    oTrans = new Warehouse(oApp, true);
                     oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
@@ -170,7 +172,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
                                 clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
-                                oTrans = new Size(oApp, false);
+                                oTrans = new Warehouse(oApp, false);
                                 oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
@@ -188,7 +190,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
                                 clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
-                                oTrans = new Size(oApp, false);
+                                oTrans = new Warehouse(oApp, false);
                                 oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
@@ -217,12 +219,12 @@ public class WarehouseController implements Initializable, ScreenInterface {
                 break;
 
             case "btnBrowse":
-                poJSON = oTrans.searchRecord(txtField99.getText(), false);
+                poJSON = oTrans.searchRecord(txtField100.getText(), false);
                 pnEditMode = EditMode.READY;
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                    txtField99.requestFocus();
+                    txtField100.requestFocus();
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 } else {
@@ -242,7 +244,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        oTrans = new Size(oApp, false);
+        oTrans = new Warehouse(oApp, false);
         oTrans.setRecordStatus("10");
         pbLoaded = true;
 
@@ -280,7 +282,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
         btnActivate.setVisible(!lbShow);
         btnClose.setVisible(!lbShow);
 
-        txtField99.setDisable(lbShow);
+        txtField100.setDisable(lbShow);
         txtField02.setEditable(lbShow);
 
         txtField02.requestFocus();
@@ -290,10 +292,10 @@ public class WarehouseController implements Initializable, ScreenInterface {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
-        txtField99.focusedProperty().addListener(txtField_Focus);
+        txtField100.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
-        txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField100.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -311,7 +313,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtField99.requestFocus();
+                            txtField100.requestFocus();
                         } else {
                             loadRecord();
                         }
@@ -348,7 +350,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
             /*Lost Focus*/
             switch (lnIndex) {
                 case 2:
-                    poJSON = oTrans.getModel().setSizeName(lsValue);
+                    poJSON = oTrans.getModel().setsWHouseNm(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -364,9 +366,9 @@ public class WarehouseController implements Initializable, ScreenInterface {
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        psPrimary = oTrans.getModel().getSizeID();
+        psPrimary = oTrans.getModel().getsWHouseID();
         txtField01.setText(psPrimary);
-        txtField02.setText(oTrans.getModel().getSizeName());
+        txtField02.setText(oTrans.getModel().getsWHouseNm());
 
         cbActive.setSelected(lbActive);
 
@@ -382,7 +384,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
-        txtField99.clear();
+        txtField100.clear();
 
         psPrimary = "";
         btnActivate.setText("Activate");
