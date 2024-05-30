@@ -760,6 +760,7 @@ public class DashboardController implements Initializable {
     }
 
     @FXML
+ 
     private void mnuParameterCategoryLevel3Click(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/CategoryLevel3.fxml";
         //check if oApp is not null before calling loadAnimate
