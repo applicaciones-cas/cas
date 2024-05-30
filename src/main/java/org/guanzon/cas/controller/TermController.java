@@ -344,7 +344,7 @@ public class TermController implements Initializable, ScreenInterface {
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField02.getText();
-        BigDecimal lsValue2 = new BigDecimal(txtField03.getText().toString());
+        BigDecimal lsValue2 = new BigDecimal(txtField03.getText());
         String coverage="0";
            if(cbCoverage.isSelected())
             {
@@ -357,11 +357,7 @@ public class TermController implements Initializable, ScreenInterface {
         if (lsValue == null) {
             return;
         }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lnIndex) {
-                case 3:
-                    poJSON = oTrans.getModel().setDescription(lsValue);
+                            poJSON = oTrans.getModel().setDescription(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -376,8 +372,27 @@ public class TermController implements Initializable, ScreenInterface {
                         System.err.println((String) poJSON.get("message"));
                         return;
                     }
-                    break;
-            }
+        if (!nv) {
+            /*Lost Focus*/
+//            switch (lnIndex) {
+//                case 3:
+//                    poJSON = oTrans.getModel().setDescription(lsValue);
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        System.err.println((String) poJSON.get("message"));
+//                        return;
+//                    }
+//                    poJSON = oTrans.getModel().setTermValue(lsValue2);
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        System.err.println((String) poJSON.get("message"));
+//                        return;
+//                    }
+//                    poJSON = oTrans.getModel().setCoverage(coverage);
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        System.err.println((String) poJSON.get("message"));
+//                        return;
+//                    }
+//                    break;
+//            }
         } else {
             txtField.selectAll();
         }
