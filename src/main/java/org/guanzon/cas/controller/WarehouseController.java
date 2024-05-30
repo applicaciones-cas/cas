@@ -24,6 +24,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.parameters.Size;
 import org.guanzon.cas.parameters.Warehouse;
 import org.json.simple.JSONObject;
 
@@ -70,8 +71,6 @@ public class WarehouseController implements Initializable, ScreenInterface {
     private TextField txtField02;
     @FXML
     private TextField txtField99;
-    @FXML
-    private TextField txtField100;
     @FXML
     private CheckBox cbActive;
     @FXML
@@ -219,12 +218,12 @@ public class WarehouseController implements Initializable, ScreenInterface {
                 break;
 
             case "btnBrowse":
-                poJSON = oTrans.searchRecord(txtField100.getText(), false);
+                poJSON = oTrans.searchRecord(txtField99.getText(), false);
                 pnEditMode = EditMode.READY;
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                    txtField100.requestFocus();
+                    txtField99.requestFocus();
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 } else {
@@ -282,7 +281,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
         btnActivate.setVisible(!lbShow);
         btnClose.setVisible(!lbShow);
 
-        txtField100.setDisable(lbShow);
+        txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
 
         txtField02.requestFocus();
@@ -292,10 +291,10 @@ public class WarehouseController implements Initializable, ScreenInterface {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
-        txtField100.focusedProperty().addListener(txtField_Focus);
+        txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
-        txtField100.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField99.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -313,7 +312,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtField100.requestFocus();
+                            txtField99.requestFocus();
                         } else {
                             loadRecord();
                         }
@@ -384,7 +383,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
-        txtField100.clear();
+        txtField99.clear();
 
         psPrimary = "";
         btnActivate.setText("Activate");
