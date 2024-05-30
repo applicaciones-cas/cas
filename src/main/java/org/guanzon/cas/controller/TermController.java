@@ -1,6 +1,7 @@
 package org.guanzon.cas.controller;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -69,6 +70,8 @@ public class TermController implements Initializable, ScreenInterface {
     @FXML
     private TextField txtField02;
     @FXML
+    private TextField txtField03;
+    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
@@ -80,8 +83,7 @@ public class TermController implements Initializable, ScreenInterface {
     private TableColumn<?, ?> index01;
     @FXML
     private TableColumn<?, ?> index02;
-    @FXML
-    private TextField txtField03;
+
     @FXML
     private CheckBox cbCoverage;
 
@@ -124,10 +126,8 @@ public class TermController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
                     pnEditMode = EditMode.UNKNOWN;
-                    return;
-
+                    return;          
                 } else {
                     oTrans = new Term(oApp, true);
                     pbLoaded = true;
@@ -144,7 +144,6 @@ public class TermController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
@@ -286,14 +285,15 @@ public class TermController implements Initializable, ScreenInterface {
 
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
-
         txtField02.requestFocus();
+        txtField03.setEditable(lbShow);
     }
 
     private void initTextFields() {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
@@ -343,16 +343,35 @@ public class TermController implements Initializable, ScreenInterface {
         }
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
-        String lsValue = txtField.getText();
-
+        String lsValue = txtField02.getText();
+        BigDecimal lsValue2 = new BigDecimal(txtField03.getText().toString());
+        String coverage="0";
+           if(cbCoverage.isSelected())
+            {
+                coverage="1";
+            }else
+            {
+                coverage="0";
+            }
+        
         if (lsValue == null) {
             return;
         }
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
-                case 2:
+                case 3:
                     poJSON = oTrans.getModel().setDescription(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    poJSON = oTrans.getModel().setTermValue(lsValue2);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    poJSON = oTrans.getModel().setCoverage(coverage);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -371,7 +390,12 @@ public class TermController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getTermCode();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
+        try{
+         txtField03.setText(oTrans.getModel().getTermValue().toString());
 
+        }catch(Exception e){
+            System.out.println("This is error "+e);
+        }
         cbActive.setSelected(lbActive);
 
         if (lbActive) {
@@ -381,15 +405,20 @@ public class TermController implements Initializable, ScreenInterface {
             btnActivate.setText("Activate");
             faActivate.setGlyphName("CHECK");
         }
+        
+        
+        
     }
 
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
         txtField99.clear();
 
         psPrimary = "";
         btnActivate.setText("Activate");
         cbActive.setSelected(false);
     }
+    
 }
