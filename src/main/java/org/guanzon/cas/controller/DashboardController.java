@@ -274,7 +274,7 @@ public class DashboardController implements Initializable {
                 return "Size";
             case "/org/guanzon/cas/views/Term.fxml":
                 return "Term";
-                 case "/org/guanzon/cas/views/Warehouse.fxml":
+            case "/org/guanzon/cas/views/Warehouse.fxml":
                 return "Warehouse";
         
             
@@ -629,7 +629,7 @@ public class DashboardController implements Initializable {
                 return new SizeController();
             case "/org/guanzon/cas/views/Term.fxml":
                 return new TermController();
-                   case "/org/guanzon/cas/views/Warehouse.fxml":
+            case "/org/guanzon/cas/views/Warehouse.fxml":
                 return new WarehouseController();
         
                 
