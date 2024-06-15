@@ -1,0 +1,11 @@
+org\guanzon\cas\inventory\resultSet2XML\ModelInventory.class
+org\guanzon\cas\inventory\resultSet2XML\ModelInvSerial.class
+org\guanzon\cas\inventory\resultSet2XML\ModelInvHistLedger.class
+org\guanzon\cas\inventory\resultSet2XML\ModelInvLedger.class
+org\guanzon\cas\inventory\CasInventory.class
+org\guanzon\cas\inventory\resultSet2XML\ModelInvMaster.class
+org\guanzon\cas\inventory\base\InvLedger.class
+org\guanzon\cas\inventory\base\InvMaster.class
+org\guanzon\cas\inventory\base\InvHistLedger.class
+org\guanzon\cas\inventory\base\InvSerial.class
+org\guanzon\cas\inventory\base\Inventory.class
