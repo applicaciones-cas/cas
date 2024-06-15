@@ -168,11 +168,12 @@
                                           <MenuItem fx:id="mnuAccountsPayable" mnemonicParsing="false" onAction="#mnuAccountsPayable_Clicked" text="Accounts Payable" />
                                           <MenuItem fx:id="mnuAccountsReceivable" mnemonicParsing="false" onAction="#mnuAccountsReceivable_Clicked" text="Accounts Receivable" />
                                           <MenuItem fx:id="mnuAccountsAccreditation" mnemonicParsing="false" onAction="#mnuAccountsAccreditation_Clicked" text="Accounts Accreditations" />
+                                          <MenuItem fx:id="mnuInventoryParam" mnemonicParsing="false" onAction="#mnuInventoryParamClick" text="Inventory Param" />
                                                     </items>
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="_Inventory">
                                                     <items>
-                                                        <MenuItem mnemonicParsing="false" text="Delete" />
+                                                        <MenuItem fx:id="mnuInventory" mnemonicParsing="false" onAction="#mnuInventoryClick" text="Inventory Details" />
                                                     </items>
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="_Purchasing">

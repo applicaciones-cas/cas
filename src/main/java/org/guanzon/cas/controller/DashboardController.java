@@ -123,7 +123,7 @@ public class DashboardController implements Initializable {
             if (name != null && name.next()) {
                 AppUserInfo.setText(name.getString("sCompnyNm") + " || " + oApp.getDepartment());
                 System.out.println(oApp.getEmployeeLevel() + "  " + oApp.getDepartment());
-                System.setProperty("user.name", name.getString("sCompnyNm"));
+//                System.setProperty("user.name", name.getString("sCompnyNm"));
             }
         } catch (SQLException ex) {
             // Handle SQL exception
@@ -205,7 +205,7 @@ public class DashboardController implements Initializable {
 
     public String SetTabTitle(String menuaction) {
         switch (menuaction) {
-            /*DIRECTORY*/
+            /*Files Menu*/
             case "/org/guanzon/cas/views/ClientMasterParameter.fxml":
                 return "Client Parameter";
             case "/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml":
@@ -272,6 +272,13 @@ public class DashboardController implements Initializable {
                 return "Salesman";
             case "/org/guanzon/cas/views/Size.fxml":
                 return "Size";
+            case "/org/guanzon/cas/views/InventoryParam.fxml":
+                return "Inventory Parameter"; 
+            
+            /*INVENTORY MENU*/    
+            case "/org/guanzon/cas/views/InventoryDetail.fxml":
+                return "Inventory Details";    
+                
             
             default:
                 return null;
@@ -348,7 +355,7 @@ public class DashboardController implements Initializable {
             }
             tabPane.getTabs().clear();
 //            unloadForm unload = new unloadForm();
-            StackPane myBox = (StackPane) tabpane.getParent();
+            StackPane myBox = (StackPane) tabpane.getParent(); 
             myBox.getChildren().clear();
 //            myBox.getChildren().add(unload.getScene("FXMLMainScreen.fxml", oApp));
         }
@@ -622,7 +629,14 @@ public class DashboardController implements Initializable {
                 return new SalesmanController();
             case "/org/guanzon/cas/views/Size.fxml":
                 return new SizeController();
+            case "/org/guanzon/cas/views/InventoryParam.fxml":
+                return new InventoryParamController();
             
+                /*Inventory menu*/
+                 case "/org/guanzon/cas/views/InventoryDetail.fxml":
+                return new InventoryDetailController();
+                
+                 
             default:
                 return null;
         }
@@ -946,6 +960,27 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
+    
+    
+    @FXML
+    private void mnuInventoryParamClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryParam.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    @FXML
+    private void mnuInventoryClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryDetail.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+   
 //    @FXML
 //    private void mnuClientParameterClick(ActionEvent event) {
 //        setScene(loadAnimate("/com/rmj/guanzongroup/cas/maven/views/ClientMasterParameter.fxml"));

@@ -20,7 +20,7 @@ public class LetMeIn extends Application {
 
         GRider instance = new GRider("gRider");
 
-        if (!instance.logUser("gRider", "M001000001")){
+        if (!instance.logUser("gRider", "M001000001")){ 
             System.err.println(instance.getErrMsg());
             System.exit(1);
         }
