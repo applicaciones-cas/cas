@@ -34,7 +34,9 @@ public class unloadForm {
         ClientMasterTransactionIndividual,
         NewCustomer,
         FrmAccountsPayable,
-        FrmAccountsAccreditation
+        FrmAccountsAccreditation,
+        InventoryParam,
+        InventoryDetail
     }
     
     private Object parentController;
@@ -53,6 +55,10 @@ public class unloadForm {
                 return "Accounts Payable Clients";
             case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
                 return "Accounts Accreditation";
+            case "/org/guanzon/cas/views/InventoryParam.fxml":
+                return "Inventory Parameter";
+            case "/org/guanzon/cas/views/InventoryDetail.fxml":
+                return "Inventory Details";
             default:
                 return null;
         }
