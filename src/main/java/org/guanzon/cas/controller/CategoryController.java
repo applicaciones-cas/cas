@@ -388,7 +388,7 @@ public class CategoryController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getCategoryCode();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
-        txtField03.setText(oTrans.getModel().getInvTypeName());
+//        txtField03.setText(oTrans.getModel().getInvTypeName());
 
         cbActive.setSelected(oTrans.getModel().isActive());
 

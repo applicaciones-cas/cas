@@ -189,6 +189,7 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -325,7 +326,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Discount 3" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="14" GridPane.valignment="CENTER">
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Discount 3" GridPane.halignment="RIGHT" GridPane.rowIndex="16" GridPane.valignment="CENTER">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -333,7 +334,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="COST" GridPane.halignment="RIGHT" GridPane.rowIndex="16" GridPane.valignment="CENTER">
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="COST" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="16" GridPane.valignment="CENTER">
                                                    <font>
                                                       <Font name="System Bold" size="15.0" />
                                                    </font>
@@ -341,7 +342,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SRP" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="16" GridPane.valignment="CENTER">
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SRP" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="17" GridPane.valignment="CENTER">
                                                    <font>
                                                       <Font name="System Bold" size="15.0" />
                                                    </font>
@@ -349,7 +350,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Unit Type" GridPane.halignment="RIGHT" GridPane.rowIndex="18" GridPane.valignment="CENTER">
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Unit Type" GridPane.halignment="RIGHT" GridPane.rowIndex="19" GridPane.valignment="CENTER">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -357,7 +358,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Superseded" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="18" GridPane.valignment="CENTER">
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Superseded" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="19" GridPane.valignment="CENTER">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -365,7 +366,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Shelf Life" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="19">
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Shelf Life" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="20">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -378,7 +379,7 @@
                                                 <TextField fx:id="txtField03" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                 <TextField fx:id="txtField04" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="5" />
                                                 <TextField fx:id="txtField05" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="6" />
-                                                <ComboBox fx:id="cmbField01" disable="true" prefWidth="203.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                                                <ComboBox fx:id="cmbField01" disable="true" prefWidth="203.0" visibleRowCount="0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
                                                 <TextField fx:id="txtField06" promptText="PRESS F3 : Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="9" />
                                                 <TextField fx:id="txtField07" promptText="PRESS F3 : Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="10" />
                                                 <TextField fx:id="txtField08" promptText="PRESS F3 : Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="11" />
@@ -389,17 +390,19 @@
                                                 <TextField fx:id="txtField13" promptText="PRESS F3 : Search" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="12" />
                                                 <TextField fx:id="txtField14" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="14" />
                                                 <TextField fx:id="txtField15" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="15" />
-                                                <TextField fx:id="txtField16" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="14" />
-                                                <TextField fx:id="txtField17" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="15" />
-                                                <TextField fx:id="txtField18" prefHeight="46.0" prefWidth="203.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="16" />
-                                                <TextField fx:id="txtField19" prefHeight="43.0" prefWidth="203.0" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="16" />
-                                                <ComboBox fx:id="cmbField02" prefWidth="203.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="18" />
-                                                <CheckBox fx:id="chkField01" mnemonicParsing="false" text="Serialize" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="19" />
-                                                <CheckBox fx:id="chkField02" mnemonicParsing="false" text="Combo" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="20" />
-                                                <CheckBox fx:id="chkField03" mnemonicParsing="false" text="with Promo" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="21" />
-                                                <TextField fx:id="txtField20" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="18" />
-                                                <TextField fx:id="txtField21" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="19" />
-                                                <Label fx:id="lblAddressStat" alignment="CENTER" contentDisplay="CENTER" maxWidth="264.0" minWidth="150.0" prefHeight="37.0" prefWidth="264.0" style="-fx-background-color: FF8201;" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                                <TextField fx:id="txtField16" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="16" />
+                                                <TextField fx:id="txtField17" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="17" />
+                                                <TextField fx:id="txtField26" prefHeight="46.0" prefWidth="203.0" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="14" />
+                                                <TextField fx:id="txtField27" prefHeight="46.0" prefWidth="203.0" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="15" />
+                                                <TextField fx:id="txtField18" prefHeight="46.0" prefWidth="203.0" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="16" />
+                                                <TextField fx:id="txtField19" prefHeight="43.0" prefWidth="203.0" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="17" />
+                                                <ComboBox fx:id="cmbField02" prefWidth="203.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="19" />
+                                                <CheckBox fx:id="chkField01" mnemonicParsing="false" onMouseClicked="#chkFiled01_Clicked" text="Serialize" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="20" />
+                                                <CheckBox fx:id="chkField02" mnemonicParsing="false" onMouseClicked="#chkFiled02_Clicked" text="Combo" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="21" />
+                                                <CheckBox fx:id="chkField03" mnemonicParsing="false" onMouseClicked="#chkFiled03_Clicked" text="with Promo" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="22" />
+                                                <TextField fx:id="txtField20" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="19" />
+                                                <TextField fx:id="txtField21" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="20" />
+                                                <Label fx:id="lblStatus" alignment="CENTER" contentDisplay="CENTER" maxWidth="264.0" minWidth="150.0" prefHeight="37.0" prefWidth="264.0" style="-fx-background-color: FF8201;" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                                                    <font>
                                                       <Font name="System Bold" size="18.0" />
                                                    </font>
@@ -407,12 +410,28 @@
                                                       <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                                    </padding>
                                                 </Label>
-                                                <CheckBox fx:id="chkField04" mnemonicParsing="false" text="Active" GridPane.columnIndex="5" GridPane.rowIndex="21" />
-                                                <Separator prefWidth="200.0" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="20" />
+                                                <CheckBox fx:id="chkField04" mnemonicParsing="false" onMouseClicked="#chkFiled04_Clicked" text="Active" GridPane.columnIndex="5" GridPane.rowIndex="22" />
+                                                <Separator prefWidth="200.0" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="21" />
                                                 <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="7" />
                                                 <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="13" />
-                                                <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="17" />
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Discount 4" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="15">
+                                                <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="18" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Discount 4" GridPane.halignment="RIGHT" GridPane.rowIndex="17">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                </Text>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Min Level" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="14">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                </Text>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max Level" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="15">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -486,7 +505,7 @@
                                                       </Text>
                                                       <TextField fx:id="txtField22" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                       <TextField fx:id="txtField23" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="4" />
-                                                      <TextField fx:id="txtField24" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="txtField24" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Quantity" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
                                                          <font>
                                                             <Font size="14.0" />
@@ -500,6 +519,7 @@
                                                     <TableColumn prefWidth="30.0" text="No." />
                                                     <TableColumn prefWidth="150.0" text="Barrcode" />
                                                       <TableColumn prefWidth="250.0" text="Description" />
+                                                      <TableColumn minWidth="40.0" prefWidth="40.0" text="Qty" />
                                                       <TableColumn prefWidth="150.0" text="Measurement" />
                                                   </columns>
                                                 </TableView>
