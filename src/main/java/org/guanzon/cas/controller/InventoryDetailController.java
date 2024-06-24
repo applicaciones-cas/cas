@@ -15,11 +15,15 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.inventory.base.InvMaster;
+import org.guanzon.cas.inventory.base.Inventory;
 import org.json.simple.JSONObject;
 
 /**
@@ -37,6 +41,9 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     private boolean state = false;
     private boolean pbLoaded = false;
     private int pnInventory = 0; 
+    
+    private InvMaster oTrans;
+    
     @FXML
     private AnchorPane AnchorMain,AnchorTable,AnchorInput;
 
@@ -59,12 +66,6 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     private Button btnSave;
 
     @FXML
-    private Button btnLedger;
-
-    @FXML
-    private Button btnSerial;
-
-    @FXML
     private Button btnUpdate;
 
     @FXML
@@ -74,7 +75,14 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     private Button btnCancel;
 
     @FXML
+    private Button btnLedger;
+
+    @FXML
+    private Button btnSerial;
+
+    @FXML
     private Button btnClose;
+
 
     @FXML
     private TextField txtField01;
@@ -131,6 +139,12 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     private TextField txtField17;
 
     @FXML
+    private TextField txtField261;
+
+    @FXML
+    private TextField txtField271;
+
+    @FXML
     private TextField txtField18;
 
     @FXML
@@ -155,10 +169,12 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     private TextField txtField21;
 
     @FXML
-    private CheckBox chkField04;
+    private Label lblStatus;
 
     @FXML
-    private Label lblAddressStat;
+    private CheckBox chkField04;
+
+    
 
     @FXML
     private TextField txtField22;
@@ -195,6 +211,32 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
     @FXML
     private TextField txtField32;
+    
+    @FXML
+    private TextField txtField33;
+
+    @FXML
+    private TextField txtField34;
+
+    @FXML
+    void chkFiled01_Clicked(MouseEvent event) {
+
+    }
+
+    @FXML
+    void chkFiled02_Clicked(MouseEvent event) {
+
+    }
+
+    @FXML
+    void chkFiled03_Clicked(MouseEvent event) {
+
+    }
+
+    @FXML
+    void chkFiled04_Clicked(MouseEvent event) {
+
+    }
 
 
     /**
@@ -208,11 +250,19 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        oTrans = new InvMaster(oApp, true);
+        if (oTransnox == null || oTransnox.isEmpty()) { // Check if oTransnox is null or empty
+            pnEditMode = EditMode.UNKNOWN;
+        initButton(pnEditMode);
+        }
+        oTrans.setRecordStatus("0123");
+        
         pnEditMode = EditMode.UNKNOWN;        
         initButton(pnEditMode);
         initTabAnchor();
         ClickButton();
         pbLoaded = true;
+
         // TODO
     }    
     
@@ -225,6 +275,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         btnLedger.setOnAction(this::handleButtonAction);        
         btnSerial.setOnAction(this::handleButtonAction);
         btnClose.setOnAction(this::handleButtonAction);
+        btnBrowse.setOnAction(this::handleButtonAction);
     }
     
     private void handleButtonAction(ActionEvent event) {
@@ -237,7 +288,6 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                 case"btnClose":
                     if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
                             appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
-                            
                         }
                     break;
                 case "btnNew":
@@ -330,36 +380,20 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                         
                      break;
 
-                case "btnAdd":
-//                    JSONObject addDetails = oTrans.addDetail();
-//                         System.out.println((String) addDetails.get("message"));
-//                        if ("error".equals((String) addDetails.get("result"))){
-//                            ShowMessageFX.Information((String) addDetails.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            break;
-//                        } 
-////                        clearMobileFields();
-//                        loadComapany();
-//                        pnCompany = oTrans.getAccount().size()-1;
-//                        tblAccreditation.getSelectionModel().select(pnCompany + 1);
-//                        clearCompanyFields();
-                break;
-                case "btnDelete":
-//                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove ?") == true){  
-//                     
-//                        oTrans.getAccount().remove(pnCompany);
-//                        if(oTrans.getAccount().size() <= 0){
-//                            oTrans.addDetail();
-//                            
-//                        }
-//                        
-//                        pnCompany = oTrans.getAccount().size()-1;
-//                        loadComapany();
-//                        clearCompanyFields();
-//                        txtField02.requestFocus();
-//                    }
-                    break;
+                
                 case "btnBrowse": 
-                       
+                       poJSON = oTrans.SearchInventory(txtSeeks01.getText().toString(), false);
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                           
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        pnEditMode = oTrans.getEditMode();
+                        
+                        initButton(pnEditMode);
+                        System.out.print("\neditmode on browse == " +poJSON);
+                        loadInventory();
                     break;
         }
     }
@@ -422,5 +456,54 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         }
 //        initClientType();
 
+    }
+    
+    private void loadInventory(){
+     if(pnEditMode == EditMode.READY || 
+                pnEditMode == EditMode.ADDNEW || 
+                pnEditMode == EditMode.UPDATE){
+            txtField01.setText((String) oTrans.getInvModel().getStockID());
+            txtField02.setText((String) oTrans.getInvModel().getBarcode());
+            txtField03.setText((String) oTrans.getInvModel().getAltBarcode());
+            txtField04.setText((String) oTrans.getInvModel().getBriefDescription());
+            txtField05.setText((String) oTrans.getInvModel().getDescription());
+            
+            txtField06.setText((String) oTrans.getInvModel().getCategName1());
+            txtField07.setText((String) oTrans.getInvModel().getCategName2());
+            txtField08.setText((String) oTrans.getInvModel().getCategName3());
+            txtField09.setText((String) oTrans.getInvModel().getCategName4());
+            
+            txtField10.setText((String) oTrans.getInvModel().getBrandName());
+            txtField11.setText((String) oTrans.getInvModel().getModelName());
+            txtField12.setText((String) oTrans.getInvModel().getColorName());
+            txtField13.setText((String) oTrans.getInvModel().getMeasureName());
+            
+            txtField14.setText(CommonUtils.NumberFormat(oTrans.getInvModel().getDiscountLevel1(), "#,##0.00"));
+            txtField15.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getDiscountLevel2(), "#,##0.00"));
+            txtField16.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getDiscountLevel3(), "#,##0.00"));
+            txtField17.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getDealerDiscount(), "#,##0.00"));
+            
+            txtField26.setText(String.valueOf(oTrans.getInvModel().getMinLevel()));
+            txtField27.setText(String.valueOf(oTrans.getInvModel().getMaxLevel()));
+            txtField29.setText(String.valueOf(oTrans.getInvModel().getMinLevel()));
+            txtField30.setText(String.valueOf(oTrans.getInvModel().getMaxLevel()));
+            
+            txtField18.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getUnitPrice(), "#,##0.00"));
+            txtField19.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getSelPrice(), "#,##0.00"));
+            
+            txtField20.setText((String) oTrans.getInvModel().getSupersed());
+            txtField21.setText(String.valueOf(oTrans.getInvModel().getShlfLife()));
+            
+            chkField01.setSelected("1".equals(oTrans.getInvModel().getSerialze()));
+            chkField02.setSelected("1".equals(oTrans.getInvModel().getComboInv()));
+            chkField03.setSelected("1".equals(oTrans.getInvModel().getWthPromo()));
+            chkField04.setSelected((oTrans.getInvModel().isActive()));
+            
+            if (chkField04.isSelected()){
+                lblStatus.setText("ACTIVE");
+            }else{
+                lblStatus.setText("INACTIVE");
+            }
+     }
     }
 }
