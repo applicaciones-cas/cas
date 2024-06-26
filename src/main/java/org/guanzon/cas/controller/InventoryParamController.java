@@ -224,7 +224,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
         }
-        oTrans = new Inventory(oApp, true);
         oTrans.setRecordStatus("0123");
         
         pnEditMode = EditMode.UNKNOWN;        
@@ -323,34 +322,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                         
                      break;
 
-                case "btnAdd":
-//                    JSONObject addDetails = oTrans.addDetail();
-//                         System.out.println((String) addDetails.get("message"));
-//                        if ("error".equals((String) addDetails.get("result"))){
-//                            ShowMessageFX.Information((String) addDetails.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            break;
-//                        } 
-////                        clearMobileFields();
-//                        loadComapany();
-//                        pnCompany = oTrans.getAccount().size()-1;
-//                        tblAccreditation.getSelectionModel().select(pnCompany + 1);
-//                        clearCompanyFields();
-                break;
-                case "btnDelete":
-//                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove ?") == true){  
-//                     
-//                        oTrans.getAccount().remove(pnCompany);
-//                        if(oTrans.getAccount().size() <= 0){
-//                            oTrans.addDetail();
-//                            
-//                        }
-//                        
-//                        pnCompany = oTrans.getAccount().size()-1;
-//                        loadComapany();
-//                        clearCompanyFields();
-//                        txtField02.requestFocus();
-//                    }
-                    break;
                 case "btnBrowse": 
 //                    
                         poJSON = oTrans.searchRecord(txtSeeks01.getText().toString(), false);
@@ -511,20 +482,20 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                    System.out.print( "CATEGORY 4 == " + oTrans.getModel().setCategCd4(lsValue));
                     break;
                 case 10:/*Brand*/
-                   oTrans.getModel().setBrandCode(lsValue);
-                   System.out.print( "BRAND == " + oTrans.getModel().setBrandCode(lsValue));
+//                   oTrans.getModel().setBrandCode(lsValue);
+//                   System.out.print( "BRAND == " + oTrans.getModel().setBrandCode(lsValue));
                     break;
                 case 11:/*Model*/
-                   oTrans.getModel().setModelCode(lsValue);
-                   System.out.print( "Model == " + oTrans.getModel().setModelCode(lsValue));
+//                   oTrans.getModel().setModelCode(lsValue);
+//                   System.out.print( "Model == " + oTrans.getModel().setModelCode(lsValue));
                     break;
                 case 12:/*Color*/
-                   oTrans.getModel().setColorCode(lsValue);
-                   System.out.print( "color == " + oTrans.getModel().setColorCode(lsValue));
+//                   oTrans.getModel().setColorCode(lsValue);
+//                   System.out.print( "color == " + oTrans.getModel().setColorCode(lsValue));
                     break;
                 case 13:/*Measure*/
-                   oTrans.getModel().setMeasureID(lsValue);
-                   System.out.print( "Measure == " + oTrans.getModel().setMeasureID(lsValue));
+//                   oTrans.getModel().setMeasureID(lsValue);
+//                   System.out.print( "Measure == " + oTrans.getModel().setMeasureID(lsValue));
                     break;
                 case 14:/*discount 1*/
                    oTrans.getModel().setDiscountLvl1((Double.parseDouble(lsValue)));
@@ -595,12 +566,13 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                     break;
                 case 20:/*superseded*/
                    oTrans.getModel().setSupersed(lsValue);
-                   System.out.print( "Model == " + oTrans.getModel().setSupersed(lsValue));
+                   System.out.print( "supersed == " + oTrans.getModel().setSupersed(lsValue));
                     break;
+                    
                 case 21: /*shelf life*/
                    if(lsValue.isEmpty()) lsValue = "0";
                    oTrans.getModel().setShlfLife((Integer.parseInt(lsValue)));
-                   System.out.print( "MINIMUM LEVEL == " + oTrans.getModel().setShlfLife((Integer.parseInt(lsValue))));
+                   System.out.print( "shelflife == " + oTrans.getModel().setShlfLife((Integer.parseInt(lsValue))));
                    if ("error".equals((String) jsonObject.get("result"))) {
                         System.err.println((String) jsonObject.get("message"));
                         return;
@@ -615,7 +587,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
     private void txtField_KeyPressed(KeyEvent event){
         TextField txtField = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
-        String lsValue = txtField.getText();
+        String lsValue = (txtField.getText() == null ?"": txtField.getText());
         JSONObject poJson;
         switch (event.getCode()) {
             case F3:
