@@ -531,7 +531,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         personalinfo08.setOnKeyPressed(this::personalinfo_KeyPressed);
         personalinfo06.setOnKeyPressed(this::personalinfo_KeyPressed);
          // Set a custom StringConverter to format date
-          DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         personalinfo07.setConverter(new StringConverter<LocalDate>() {
             @Override

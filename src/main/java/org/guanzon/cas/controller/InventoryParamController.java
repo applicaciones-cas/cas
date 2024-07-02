@@ -599,9 +599,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "category 1 == " + oTrans.getMaster(32));
+                            System.out.print( "category 1 == " + oTrans.getMaster(33));
                            txtField06.setText((String) oTrans.getModel().getCategName1()); 
-                           cmbField01.setValue((String) oTrans.getMaster(32));
                         break;
                     case 7: /*search category 2*/
                         poJson = new JSONObject();
@@ -610,8 +609,9 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "category 2 == " + oTrans.getMaster(33));
-                           txtField07.setText((String) oTrans.getMaster(33));      
+                            System.out.print( "category 2 == " + oTrans.getMaster(34));
+                           txtField07.setText((String) oTrans.getMaster(34));    
+                           cmbField01.setValue((String) oTrans.getMaster(34));  
                         break;
                     case 8: /*search category 3*/
                         poJson = new JSONObject();
@@ -620,8 +620,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "category 3 == " + oTrans.getMaster(34));
-                           txtField08.setText((String) oTrans.getMaster(34));      
+                            System.out.print( "category 3 == " + oTrans.getMaster(35));
+                           txtField08.setText((String) oTrans.getMaster(35));      
                         break;
                     case 9: /*search category 4*/
                         poJson = new JSONObject();
@@ -630,8 +630,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "category 4 == " + oTrans.getMaster(35));
-                           txtField09.setText((String) oTrans.getMaster(35));      
+                            System.out.print( "category 4 == " + oTrans.getMaster(36));
+                           txtField09.setText((String) oTrans.getMaster(36));      
                         break;
                     case 10: /*search Brand*/
                         poJson = new JSONObject();
@@ -640,8 +640,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "brand == " + oTrans.getMaster(36));
-                           txtField10.setText((String) oTrans.getMaster(36));      
+                            System.out.print( "brand == " + oTrans.getMaster(37));
+                           txtField10.setText((String) oTrans.getMaster(37));      
                         break;  
                     case 11: /*search Model*/
                         poJson = new JSONObject();
@@ -650,8 +650,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "Model == " + oTrans.getMaster(37));
-                           txtField11.setText((String) oTrans.getMaster(37));      
+                            System.out.print( "Model == " + oTrans.getMaster(38));
+                           txtField11.setText((String) oTrans.getMaster(38));      
                         break;
                     case 12: /*search color*/
                         poJson = new JSONObject();
@@ -660,8 +660,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "Color == " + oTrans.getMaster(39));
-                           txtField12.setText((String) oTrans.getMaster(39));      
+                            System.out.print( "Color == " + oTrans.getMaster(40));
+                           txtField12.setText((String) oTrans.getMaster(40));      
                         break;
                 }
             case ENTER:
@@ -735,7 +735,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             
             txtField20.setText((String) oTrans.getModel().getSupersed());
             txtField21.setText(String.valueOf(oTrans.getModel().getShlfLife()));
-            
+             cmbField01.setValue(String.valueOf(oTrans.getModel().getCategName2()));
             chkField01.setSelected("1".equals(oTrans.getModel().getSerialze()));
             chkField02.setSelected("1".equals(oTrans.getModel().getComboInv()));
             chkField03.setSelected("1".equals(oTrans.getModel().getWthPromo()));

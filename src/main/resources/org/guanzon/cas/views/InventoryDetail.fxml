@@ -505,10 +505,10 @@
                                                             <Insets right="10.0" />
                                                          </GridPane.margin>
                                                       </Text>
-                                                      <TextField fx:id="txtField22" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                                                      <TextField fx:id="txtField23" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                      <TextField fx:id="txtField24" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                                                      <TextField fx:id="txtField25" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                      <TextField fx:id="txtField22" promptText="PRESS F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                      <TextField fx:id="txtField23" promptText="PRESS F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                      <TextField fx:id="txtField24" promptText="PRESS F3: Search" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                      <TextField fx:id="txtField25" promptText="PRESS F3: Search" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                                       <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="3" />
                                                    </children>
                                                 </GridPane>

@@ -4,13 +4,22 @@
  */
 package org.guanzon.cas.controller;
 
+import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -26,12 +35,17 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inventory.base.InvMaster;
-import org.guanzon.cas.inventory.base.Inventory;
 import org.json.simple.JSONObject;
 
 /**
@@ -42,9 +56,12 @@ import org.json.simple.JSONObject;
 public class InventoryDetailController implements  Initializable,ScreenInterface {
     
     private final String pxeModuleName = "Inventory Details";
-    private GRider oApp;
+  private GRider oApp;
     private String oTransnox = "";
     private int pnEditMode;  
+    
+    private double xOffset = 0;
+    private double yOffset = 0;
     
     private boolean state = false;
     private boolean pbLoaded = false;
@@ -268,7 +285,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         initButton(pnEditMode);
         }
         oTrans.setRecordStatus("0123");
-        
+        dpField01.setValue(LocalDate.now());
         pnEditMode = EditMode.UNKNOWN;        
         initButton(pnEditMode);
         initTabAnchor();
@@ -303,65 +320,16 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                             appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
                         }
                     break;
-                case "btnNew":
-                     pnEditMode = EditMode.ADDNEW;
-                     initButton(pnEditMode);
-                     initTabAnchor();
-                     txtField02.requestFocus();
-//                    poJSON = oTrans.newTransaction();
-//                    if ("success".equals((String) poJSON.get("result"))){
-//                            pnEditMode = EditMode.ADDNEW;
-//                            initButton(pnEditMode);
-//                            txtField01.setText(oTrans.getTransNox());
-//                            System.out.print("(transnox === " + (String) oTrans.getTransNox());
-//                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-////                            System.out.println("dTransact = " + oTrans.getAccount(pnCompany, "dTransact"));
-//                            String dateStr = oTrans.getAccount(pnCompany, "dTransact").toString();
-//                            if (!dateStr.isEmpty()) {
-//                                // Parse the date string
-//                                LocalDateTime dateTime = LocalDateTime.parse(dateStr, formatter);
-//                                LocalDate localbdate = dateTime.toLocalDate();
-//
-//                                // Set the value of the DatePicker to the parsed LocalDate
-//                                cpField02.setValue(localbdate);
-//                            } else {
-//                                // Handle empty or null date string
-//                                // For example, set the DatePicker value to null or display an error message
-//                                cpField02.setValue(null); // Set to null or handle appropriately
-//                            }
-//                            System.out.println("ADDNEW = " + EditMode.ADDNEW);
-//                            System.out.println("EDITMODE = " + pnEditMode);
-//                            loadComapany();
-//                            initTabAnchor();
-//                        }else{
-//                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            System.out.println("Record not saved successfully.");
-//                            System.out.println((String) poJSON.get("message"));
-//                            
-//                            initTabAnchor();
-//                        }
-                        
-                    break;
+                
                 case "btnUpdate":
-//                     poJSON = oTrans.updateTransaction();
-//                        if ("error".equals((String) poJSON.get("result"))){
-//                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        }
-//                        pnEditMode =  oTrans.getEditMode();
-//                        
-//                        initButton(pnEditMode);
-//                        initTabAnchor();
-//                    
-//                    
-//                        poJSON = oTrans.updateTransaction();
-//                        if ("error".equals((String) poJSON.get("result"))){
-//                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        }
-//                        pnEditMode =  oTrans.getEditMode();
-//                        
-//                        initButton(pnEditMode);
-//                        initTabAnchor();
-//                        
+                    poJSON = oTrans.updateRecord();
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+                        pnEditMode =  oTrans.getEditMode();
+                        
+                        initButton(pnEditMode);
+                        initTabAnchor();
                     break;
                 case "btnCancel":
                         if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
@@ -377,12 +345,10 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                         if ("success".equals((String) saveResult.get("result"))){
                             System.err.println((String) saveResult.get("message"));
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            clearAllFields();
+                            clearAllFields();
                             pnEditMode = EditMode.UNKNOWN;
                             initButton(pnEditMode);
                             initTabAnchor();
-//                            clearCompanyFields();
-//                            data.clear();
                             System.out.println("Record saved successfully.");
                         } else {
                             ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -409,11 +375,143 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                         initTabAnchor();
                         loadInventory();
                     break;
+                case "btnLedger":
+                        {
+                            try {
+                                loadLedger(oTrans.getInvModel().getStockID());
+                            } catch (SQLException ex) {
+                                Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }  
+                    break;
+                case "btnSerial":
+                    if (!txtField01.getText().isEmpty()){
+                        if (chkField01.isSelected()){
+                            {
+                                try {
+                                    loadSerial(oTrans.getInvModel().getStockID());
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            } 
+                        } else {
+                            ShowMessageFX.Information("This Inventory is not serialize!", "Computerized Acounting System", pxeModuleName);
+                        }
+                    }
+                    break;
+
         }
     }
     
     }
-    
+    private void loadSerial(String fsCode) throws SQLException {
+        try {
+            Stage stage = new Stage();
+
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventorySerial.fxml"));
+
+            InventorySerialController loControl = new InventorySerialController();
+            loControl.setGRider(oApp);
+            // loControl.setIncentiveObject(oTrans);
+            // loControl.setIncentiveCode(fsCode);
+            // loControl.setTableRow(fnRow);
+            loControl.setFsCode(oTrans);
+
+            fxmlLoader.setController(loControl);
+
+            // Load the main interface
+            Parent parent = fxmlLoader.load();
+            parent.setStyle("-fx-background-color: rgba(0, 0, 0, 1);");
+
+            // Set up dragging
+            parent.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    xOffset = event.getSceneX();
+                    yOffset = event.getSceneY();
+                }
+            });
+            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    stage.setX(event.getScreenX() - xOffset);
+                    stage.setY(event.getScreenY() - yOffset);
+                }
+            });
+
+            // Set the main interface as the scene
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Inventory Ledger");
+            stage.showAndWait();
+
+            // loadDetail();
+            // loadIncentives();
+        } catch (IOException e) {
+            e.printStackTrace();
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
+    }
+    private void loadLedger(String fsCode) throws SQLException {
+        try {
+            Stage stage = new Stage();
+
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventoryLedger.fxml"));
+
+            InventoryLedgerController loControl = new InventoryLedgerController();
+            loControl.setGRider(oApp);
+            loControl.setFsCode(oTrans);
+            // loControl.setIncentiveObject(oTrans);
+            // loControl.setIncentiveCode(fsCode);
+            // loControl.setTableRow(fnRow);
+
+            fxmlLoader.setController(loControl);
+
+            // Load the main interface
+            Parent parent = fxmlLoader.load();
+            parent.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        //        parent.getChildrenUnmodifiable().add(parent);
+            // Set up dragging
+            parent.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    xOffset = event.getSceneX();
+                    yOffset = event.getSceneY();
+                }
+            });
+            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    stage.setX(event.getScreenX() - xOffset);
+                    stage.setY(event.getScreenY() - yOffset);
+                }
+            });
+
+
+            // Set the main interface as the scene  
+            Scene scene = new Scene(parent);
+
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            stage.setTitle("Inventory Ledger");
+            stage.showAndWait();
+
+            // loadDetail();
+            // loadIncentives();
+        } catch (IOException e) {
+            e.printStackTrace();
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
+    }
+
     /*USE TO DISABLE ANCHOR BASE ON INITMODE*/
     private void initTabAnchor(){
         
@@ -517,6 +615,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             txtField12.setText((String) oTrans.getInvModel().getColorName());
             txtField13.setText((String) oTrans.getInvModel().getMeasureName());
             
+            
             txtField14.setText(CommonUtils.NumberFormat(oTrans.getInvModel().getDiscountLevel1(), "#,##0.00"));
             txtField15.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getDiscountLevel2(), "#,##0.00"));
             txtField16.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getDiscountLevel3(), "#,##0.00"));
@@ -532,7 +631,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             
             txtField20.setText((String) oTrans.getInvModel().getSupersed());
             txtField21.setText(String.valueOf(oTrans.getInvModel().getShlfLife()));
-            
+            cmbField01.setValue(String.valueOf(oTrans.getInvModel().getCategName2()));
             chkField01.setSelected("1".equals(oTrans.getInvModel().getSerialze()));
             chkField02.setSelected("1".equals(oTrans.getInvModel().getComboInv()));
             chkField03.setSelected("1".equals(oTrans.getInvModel().getWthPromo()));
@@ -599,8 +698,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         if(!nv){ /*Lost Focus*/
             switch (lnIndex){
                 case 1: /*Stock ID*/
-                    oTrans.getModel().setStockID(lsValue);
-                   System.out.print( "STOCK ID == " + oTrans.getModel().setStockID(lsValue));
+//                    oTrans.getModel().setStockID(lsValue);
+//                   System.out.print( "STOCK ID == " + oTrans.getModel().setStockID(lsValue));
                     break;
 //                case 2:/*barrcode*/
 //                   oTrans.getModel().setBarcode(lsValue);
@@ -877,5 +976,9 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                 field.clear();
             }
         }
+    }
+
+    private Stage getStage(){
+	return (Stage) txtField01.getScene().getWindow();
     }
 }
