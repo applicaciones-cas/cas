@@ -353,6 +353,8 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
         pnIndex = lnIndex;
     }
     
+    
+    
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         if (!pbLoaded) {
             return;
@@ -391,7 +393,7 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
         psPrimary = oTrans.getModel().getCategoryCode();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
-        txtField03.setText(oTrans.getModel().getMainCategoryName());
+//        txtField03.setText(oTrans.getModel().getMainCategoryName());
         
         cbActive.setSelected(oTrans.getModel().isActive());
         

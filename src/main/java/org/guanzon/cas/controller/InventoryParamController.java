@@ -4,10 +4,14 @@
  */
 package org.guanzon.cas.controller;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,8 +19,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -24,12 +30,15 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inventory.base.Inventory;
+import org.guanzon.cas.model.ModelInvLedger;
+import org.guanzon.cas.model.ModelInvSubUnit;
 import org.json.simple.JSONObject;
 
 /**
@@ -47,11 +56,15 @@ public class InventoryParamController implements Initializable,ScreenInterface {
     private boolean state = false;
     private boolean pbLoaded = false;
     private int pnInventory = 0; 
+    private int pnRow = 0;
     
-    
+    private ObservableList<ModelInvSubUnit> data = FXCollections.observableArrayList();
     @FXML
     private AnchorPane AnchorMain,AnchorInput,AnchorTable;
 
+    @FXML
+    private GridPane subItemFields;
+    
     @FXML
     private TextField txtSeeks02;
 
@@ -67,6 +80,12 @@ public class InventoryParamController implements Initializable,ScreenInterface {
     @FXML
     private Button btnNew;
 
+    @FXML
+    private Button btnAddSubItem;
+    
+    @FXML
+    private Button btnDelSubUnit;
+    
     @FXML
     private Button btnSave;
 
@@ -186,7 +205,32 @@ public class InventoryParamController implements Initializable,ScreenInterface {
     
     @FXML
     private TableView tblSubItems;
+    
 
+    @FXML
+    private TableColumn index01;
+
+    @FXML
+    private TableColumn index02;
+
+    @FXML
+    private TableColumn index03;
+
+    @FXML
+    private TableColumn index04;
+
+    @FXML
+    private TableColumn index05;
+    
+    ObservableList<String> unitType = FXCollections.observableArrayList(
+                "LDU",
+                "Regular",
+                "Free",
+                "Live",
+                "Service",
+                "RDU",
+                "Others"
+        );
 
     /**
      * Initializes the controller class.
@@ -225,8 +269,9 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         initButton(pnEditMode);
         }
         oTrans.setRecordStatus("0123");
-        
-        pnEditMode = EditMode.UNKNOWN;        
+        oTrans.getModel().setUnitType("0");
+        pnEditMode = EditMode.UNKNOWN;    
+        InitTextFields();
         initButton(pnEditMode);
         initTabAnchor();
         ClickButton();
@@ -241,7 +286,9 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         btnSave.setOnAction(this::handleButtonAction);
         btnUpdate.setOnAction(this::handleButtonAction);
         btnClose.setOnAction(this::handleButtonAction);
-        btnBrowse.setOnAction(this::handleButtonAction);
+        btnBrowse.setOnAction(this::handleButtonAction);        
+        btnAddSubItem.setOnAction(this::handleButtonAction);       
+        btnDelSubUnit.setOnAction(this::handleButtonAction);
     }
     
     private void handleButtonAction(ActionEvent event) {
@@ -258,29 +305,23 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                         }
                     break;
                 case "btnNew":
-//                     pnEditMode = EditMode.ADDNEW;
-//                     initButton(pnEditMode);
-//                     initTabAnchor();
-//                     txtField02.requestFocus();
+                    clearAllFields();
+                    txtField02.requestFocus();
                     poJSON = oTrans.newRecord();
                     if ("success".equals((String) poJSON.get("result"))){
                             pnEditMode = EditMode.ADDNEW;
                             initButton(pnEditMode);
                             txtField01.setText(oTrans.getModel().getStockID());
                             System.out.print("(Stock ID === " + (String) oTrans.getModel().getStockID() + "\n");
-                            
-                            System.out.println("ADDNEW = " + EditMode.ADDNEW);
-                            System.out.println("EDITMODE = " + pnEditMode);
 //                            loadComapany();
                             initTabAnchor();
-                            InitTextFields();
                         }else{
                             ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 //                            System.out.println("Record not saved successfully.");
                             System.out.println((String) poJSON.get("message"));
                             initTabAnchor();
                         }
-                        
+                        System.out.println("EDITMODE sa new= " + pnEditMode);
                     break;
                 case "btnUpdate":
                     
@@ -288,9 +329,10 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
-                        pnEditMode =  oTrans.getEditMode();
-                        
+                        pnEditMode =  EditMode.UPDATE;
+                        System.out.println("EDITMODE sa update= " + pnEditMode);
                         initButton(pnEditMode);
+                        initTable();
                         initTabAnchor();
                     break;
                 case "btnCancel":
@@ -300,9 +342,11 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                              initButton(pnEditMode);
                              initTabAnchor();
                         }
+                        System.out.println("EDITMODE sa cancel= " + pnEditMode);
                     break;
                 case "btnSave":
                         JSONObject saveResult = oTrans.saveRecord();
+                        System.out.println(saveResult.toJSONString());
                         if ("success".equals((String) saveResult.get("result"))){
                             System.err.println((String) saveResult.get("message"));
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -311,8 +355,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                             initButton(pnEditMode);
                             clearAllFields();
                             initTabAnchor();
-//                            clearCompanyFields();
-//                            data.clear();
+                            
                             System.out.println("Record saved successfully.");
                         } else {
                             ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -324,7 +367,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
 
                 case "btnBrowse": 
 //                    
-                        poJSON = oTrans.searchRecord(txtSeeks01.getText().toString(), false);
+                        poJSON = oTrans.searchRecord(txtSeeks01.getText().toString(), true);
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                            
@@ -335,9 +378,37 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                         
                         System.out.print("\neditmode on browse == " +pnEditMode);
                         loadInventory();
-                        
-                       
+                        loadSubUnitData();
+                        loadSubUnit();
+                        initTable();
+                        System.out.println("EDITMODE sa cancel= " + pnEditMode);
                     break;
+                case "btnAddSubItem":
+                        poJSON = oTrans.addSubUnit();
+                        System.out.println(poJSON.toJSONString());
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                           
+//                            txtSeeks01.clear();
+                            break;
+                        }
+                        pnRow = oTrans.getSubUnit().getMaster().size() - 1;
+                        loadSubUnitData();
+                    break;
+                case "btnDelSubUnit":
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this sub item?") == true){  
+                        oTrans.getSubUnit().getMaster().remove(pnRow);
+                        if(oTrans.getSubUnit().getMaster().size() <= 0){
+                            oTrans.getSubUnit().addSubUnit();
+                        }
+                        
+                        pnRow = oTrans.getSubUnit().getMaster().size()-1;
+                        loadSubUnitData();
+                        clearSubItemTxtField();
+                        txtField22.requestFocus();
+                    }
+                    break;
+                    
         }
     }
     
@@ -348,6 +419,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         boolean pbValue = pnEditMode == EditMode.ADDNEW || 
                 pnEditMode == EditMode.UPDATE;
         AnchorInput.setDisable(!pbValue);
+        subItemFields.setDisable(!pbValue);
         AnchorTable.setDisable(!pbValue);
     }
     
@@ -432,6 +504,25 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         txtField10.setOnKeyPressed(this::txtField_KeyPressed);
         txtField11.setOnKeyPressed(this::txtField_KeyPressed);
         txtField12.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField22.setOnKeyPressed(this::txtField_KeyPressed);
+        
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
+        txtSeeks02.setOnKeyPressed(this::txtSeeks_KeyPressed);
+        
+//        cmbField02.setItems(unitType);
+//        cmbField02.getSelectionModel().select(0);
+//        cmbField02.setOnAction(event -> {
+//            oTrans.getModel().setUnitType(String.valueOf(cmbField02.getSelectionModel().getSelectedIndex()));
+//            
+//        });
+        
+        System.out.println("Connected - " + oApp.getLogName());
+        System.out.println("Connected - " + oApp.getDivisionCode());
+        System.out.println("Connected - " + oApp.getDivisionName());
+        
+//        if (!oApp.getDivisionCode().equals(3)  || !oApp.getDivisionCode() .equals(4) ){
+//            forHospitality();
+//        }
 
     }
     /*textfield lost focus*/
@@ -570,7 +661,9 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                     break;
                     
                 case 21: /*shelf life*/
-                   if(lsValue.isEmpty()) lsValue = "0";
+                    if(lsValue == "") lsValue = "0";
+                    System.out.print( "shelflife == " + lsValue);
+//                   if(lsValue.isEmpty()) lsValue = "0";
                    oTrans.getModel().setShlfLife((Integer.parseInt(lsValue)));
                    System.out.print( "shelflife == " + oTrans.getModel().setShlfLife((Integer.parseInt(lsValue))));
                    if ("error".equals((String) jsonObject.get("result"))) {
@@ -578,6 +671,12 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                         return;
                     }
                     break;
+                    
+                case 25: /*Quantity*/
+                    oTrans.getSubUnit().getMaster().get(pnRow).setQuantity(Integer.parseInt(lsValue));
+                    loadSubUnitData();
+//                            pnContact, "sRemarksx", lsValue);
+                    
             }                  
         } else
             txtField.selectAll();
@@ -599,9 +698,11 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "category 1 == " + oTrans.getMaster(32));
+                            System.out.print( "category 1 == " + oTrans.getMaster(33));
+                           if(!oTrans.getModel().getCategCd1().equals(oTrans.getModel().getMainCategoryCode())){
+                               txtField07.clear();
+                           }
                            txtField06.setText((String) oTrans.getModel().getCategName1()); 
-                           cmbField01.setValue((String) oTrans.getMaster(32));
                         break;
                     case 7: /*search category 2*/
                         poJson = new JSONObject();
@@ -610,8 +711,10 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "category 2 == " + oTrans.getMaster(33));
-                           txtField07.setText((String) oTrans.getMaster(33));      
+                            System.out.print( "category 2 == " + oTrans.getMaster(34));
+                           txtField06.setText((String) oTrans.getModel().getCategName1()); 
+                           txtField07.setText((String) oTrans.getMaster(34));    
+                           cmbField01.setValue((String) oTrans.getMaster(42));  
                         break;
                     case 8: /*search category 3*/
                         poJson = new JSONObject();
@@ -620,8 +723,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "category 3 == " + oTrans.getMaster(34));
-                           txtField08.setText((String) oTrans.getMaster(34));      
+                            System.out.print( "category 3 == " + oTrans.getMaster(35));
+                           txtField08.setText((String) oTrans.getMaster(35));      
                         break;
                     case 9: /*search category 4*/
                         poJson = new JSONObject();
@@ -630,8 +733,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "category 4 == " + oTrans.getMaster(35));
-                           txtField09.setText((String) oTrans.getMaster(35));      
+                            System.out.print( "category 4 == " + oTrans.getMaster(36));
+                           txtField09.setText((String) oTrans.getMaster(36));      
                         break;
                     case 10: /*search Brand*/
                         poJson = new JSONObject();
@@ -640,8 +743,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "brand == " + oTrans.getMaster(36));
-                           txtField10.setText((String) oTrans.getMaster(36));      
+                            System.out.print( "brand == " + oTrans.getMaster(37));
+                           txtField10.setText((String) oTrans.getMaster(37));      
                         break;  
                     case 11: /*search Model*/
                         poJson = new JSONObject();
@@ -650,8 +753,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "Model == " + oTrans.getMaster(37));
-                           txtField11.setText((String) oTrans.getMaster(37));      
+                            System.out.print( "Model == " + oTrans.getMaster(38));
+                           txtField11.setText((String) oTrans.getMaster(38));      
                         break;
                     case 12: /*search color*/
                         poJson = new JSONObject();
@@ -660,8 +763,24 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                            System.out.print( "Color == " + oTrans.getMaster(39));
-                           txtField12.setText((String) oTrans.getMaster(39));      
+                            System.out.print( "Color == " + oTrans.getMaster(40));
+                           txtField12.setText((String) oTrans.getMaster(40));      
+                        break;
+                    case 22: /*search Barrcode for sub unit*/
+                        
+                        poJson = new JSONObject();
+                        poJson = oTrans.SearchSubUnit(pnRow, 3, lsValue, true);
+                            if ("error".equals((String) poJson.get("result"))){
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+
+                                txtField22.clear();
+                                break;
+                            }
+                        
+                        System.out.print("\neditmode on browse == " +pnEditMode);
+                        loadSubUnit();
+                        loadSubUnitData();
+                        txtField25.requestFocus();
                         break;
                 }
             case ENTER:
@@ -675,6 +794,64 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             break;
         case UP:
             CommonUtils.SetPreviousFocus(txtField);
+        }
+    }
+    /*Text seek/search*/
+    private void txtSeeks_KeyPressed(KeyEvent event){
+        TextField txtSeeks = (TextField)event.getSource();
+        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
+        String lsValue = (txtSeeks.getText() == null ?"": txtSeeks.getText());
+        JSONObject poJSON;
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex){
+                    
+                    case 1: /*search Barrcode*/
+                        poJSON = oTrans.searchRecord(txtSeeks01.getText().toString(), true);
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                           
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        pnEditMode = oTrans.getEditMode();
+                        
+                        System.out.print("\neditmode on browse == " +pnEditMode);
+                        loadInventory();
+                        loadSubUnitData();
+                        loadSubUnit();
+                        initTable();
+                        System.out.println("EDITMODE sa cancel= " + pnEditMode);
+                        break;
+                    case 2 :
+                         poJSON = oTrans.searchRecord(txtSeeks02.getText().toString(), false);
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                           
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        pnEditMode = oTrans.getEditMode();
+                        
+                        System.out.print("\neditmode on browse == " +pnEditMode);
+                        loadInventory();
+                        loadSubUnitData();
+                        loadSubUnit();
+                        initTable();
+                        System.out.println("EDITMODE sa cancel= " + pnEditMode);
+                        break;
+                }
+            case ENTER:
+                
+        }
+        switch (event.getCode()){
+        case ENTER:
+            CommonUtils.SetNextFocus(txtSeeks);
+        case DOWN:
+            CommonUtils.SetNextFocus(txtSeeks);
+            break;
+        case UP:
+            CommonUtils.SetPreviousFocus(txtSeeks);
         }
     }
     private void clearAllFields() {
@@ -699,6 +876,32 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         for (TextField[] fields : allFields) {
             for (TextField field : fields) {
                 field.clear();
+            }
+        }
+        data.clear();
+    }
+    private void loadSubUnit(){
+        if(oTrans.getSubUnit()!= null){
+            txtField22.setText((String) oTrans.getSubUnit().getMaster(pnRow, "xBarCodeU"));
+            txtField23.setText((String) oTrans.getSubUnit().getMaster(pnRow, "xDescripU"));        
+            txtField25.setText(oTrans.getSubUnit().getMaster(pnRow, "nQuantity").toString());
+            txtField24.setText((String) oTrans.getSubUnit().getMaster(pnRow, "xMeasurNm"));
+            System.out.println("sub stock id = " + oTrans.getSubUnit().getMaster(pnRow, "sStockIDx"));
+        }
+    
+    }
+    
+    private void loadSubUnitData(){
+        int lnCtr;
+        data.clear();
+        if(oTrans.getSubUnit()!= null){
+            for (lnCtr = 0; lnCtr < oTrans.getSubUnit().getMaster().size(); lnCtr++){
+                data.add(new ModelInvSubUnit(String.valueOf(lnCtr + 1),
+                     oTrans.getSubUnit(lnCtr, "xBarCodeU").toString(), 
+                    (String)oTrans.getSubUnit(lnCtr, "xDescripU"),
+                    oTrans.getSubUnit(lnCtr, "nQuantity").toString(), 
+                    (String)oTrans.getSubUnit(lnCtr, "xMeasurNm")));  
+
             }
         }
     }
@@ -735,12 +938,15 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             
             txtField20.setText((String) oTrans.getModel().getSupersed());
             txtField21.setText(String.valueOf(oTrans.getModel().getShlfLife()));
-            
+            cmbField01.setValue(String.valueOf(oTrans.getModel().getCategName2()));
             chkField01.setSelected("1".equals(oTrans.getModel().getSerialze()));
             chkField02.setSelected("1".equals(oTrans.getModel().getComboInv()));
             chkField03.setSelected("1".equals(oTrans.getModel().getWthPromo()));
             chkField04.setSelected((oTrans.getModel().isActive()));
             
+            
+//            cmbField02.setValue(unitType.get(Integer.parseInt((oTrans.getModel().getUnitType().isEmpty())?"0":oTrans.getModel().getUnitType())));
+//            System.out.println("unitType = " + unitType.get(Integer.parseInt(oTrans.getModel().getUnitType())));
             if (chkField04.isSelected()){
                 lblStatus.setText("ACTIVE");
             }else{
@@ -758,4 +964,50 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                 lblStatus.setText("INACTIVE");
         }
     }
+    
+    private void initTable() {
+        index01.setStyle("-fx-alignment: CENTER;");
+        index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        
+//        index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+//        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+//        index08.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+//        
+        index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
+        index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
+        index03.setCellValueFactory(new PropertyValueFactory<>("index03"));
+        index04.setCellValueFactory(new PropertyValueFactory<>("index04"));
+        index05.setCellValueFactory(new PropertyValueFactory<>("index05"));
+        
+        tblSubItems.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblSubItems.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+        tblSubItems.setItems(data);
+//        tblMobile.getSelectionModel().select(pnMobile + 1);
+        tblSubItems.autosize();
+    }
+    
+    @FXML
+    private void tblSubUnit_Clicked (MouseEvent event) {
+        pnRow = tblSubItems.getSelectionModel().getSelectedIndex();
+        loadSubUnitData();
+        if (pnRow >= 0){
+            loadSubUnit();
+            txtField22.requestFocus();
+        }
+    }
+    
+    private void clearSubItemTxtField(){
+        txtField22.clear();
+        txtField23.clear();
+        txtField24.clear();
+        txtField25.clear();
+    }
+
 }

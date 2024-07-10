@@ -170,12 +170,12 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <TextField fx:id="txtField01" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                                                <TextField fx:id="txtField02" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="2" />
-                                                <TextField fx:id="txtField03" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                <TextField fx:id="txtField04" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                <TextField fx:id="txtField05" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                <TextField fx:id="txtField06" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                <TextField fx:id="txtField01" disable="true" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtField02" disable="true" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtField03" disable="true" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtField04" disable="true" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                <TextField fx:id="txtField05" disable="true" editable="false" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtField06" disable="true" editable="false" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                 <ComboBox fx:id="cmbField01" prefHeight="30.0" prefWidth="203.0" GridPane.columnIndex="9" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                                                 <Button fx:id="btnLoadSerial" mnemonicParsing="false" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Load Serial" GridPane.columnIndex="10" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                                                    <GridPane.margin>
@@ -195,11 +195,13 @@
                                           </GridPane>
                                           <TableView fx:id="tblSerialLedger" stylesheets="@../css/Tables.css">
                                              <columns>
-                                                <TableColumn prefWidth="30.0" text="No" />
-                                                <TableColumn prefWidth="200.0" text="Serail No." />
-                                                <TableColumn prefWidth="280.0" text="Supplier" />
-                                                <TableColumn prefWidth="200.0" text="ReferNo" />
-                                                <TableColumn prefWidth="250.0" text="Unit Type" />
+                                                <TableColumn fx:id="index01" prefWidth="30.0" text="No" />
+                                                <TableColumn fx:id="index02" prefWidth="200.0" text="Serial ID" />
+                                                <TableColumn fx:id="index03" prefWidth="200.0" text="Serial 01" />
+                                                <TableColumn fx:id="index04" prefWidth="200.0" text="Serial 02" />
+                                                <TableColumn fx:id="index05" prefWidth="250.0" text="Location" />
+                                                <TableColumn fx:id="index06" prefWidth="100.0" text="Sold" />
+                                                <TableColumn fx:id="index07" prefWidth="150.0" text="Unit Type" />
                                              </columns>
                                           </TableView>
                                        </children>

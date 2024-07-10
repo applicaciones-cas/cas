@@ -12,6 +12,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -350,14 +351,6 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Unit Type" GridPane.halignment="RIGHT" GridPane.rowIndex="19" GridPane.valignment="CENTER">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Superseded" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="19" GridPane.valignment="CENTER">
                                                    <font>
                                                       <Font size="14.0" />
@@ -396,10 +389,9 @@
                                                 <TextField fx:id="txtField27" prefHeight="46.0" prefWidth="203.0" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="15" />
                                                 <TextField fx:id="txtField18" prefHeight="46.0" prefWidth="203.0" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="16" />
                                                 <TextField fx:id="txtField19" prefHeight="43.0" prefWidth="203.0" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="17" />
-                                                <ComboBox fx:id="cmbField02" prefWidth="203.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="19" />
-                                                <CheckBox fx:id="chkField01" mnemonicParsing="false" onMouseClicked="#chkFiled01_Clicked" text="Serialize" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="20" />
-                                                <CheckBox fx:id="chkField02" mnemonicParsing="false" onMouseClicked="#chkFiled02_Clicked" text="Combo" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="21" />
-                                                <CheckBox fx:id="chkField03" mnemonicParsing="false" onMouseClicked="#chkFiled03_Clicked" text="with Promo" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="22" />
+                                                <CheckBox fx:id="chkField01" mnemonicParsing="false" onMouseClicked="#chkFiled01_Clicked" text="Serialize" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="19" />
+                                                <CheckBox fx:id="chkField02" mnemonicParsing="false" onMouseClicked="#chkFiled02_Clicked" text="Combo" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="20" />
+                                                <CheckBox fx:id="chkField03" mnemonicParsing="false" onMouseClicked="#chkFiled03_Clicked" text="with Promo" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="21" />
                                                 <TextField fx:id="txtField20" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="19" />
                                                 <TextField fx:id="txtField21" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="20" />
                                                 <Label fx:id="lblStatus" alignment="CENTER" contentDisplay="CENTER" maxWidth="264.0" minWidth="150.0" prefHeight="37.0" prefWidth="264.0" style="-fx-background-color: FF8201;" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
@@ -450,7 +442,7 @@
                                        <children>
                                           <VBox layoutX="6.0" layoutY="6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <children>
-                                                <GridPane hgap="3.0" vgap="3.0">
+                                                <GridPane fx:id="subItemFields" hgap="3.0" vgap="3.0">
                                                    <columnConstraints>
                                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="110.0" prefWidth="120.0" />
                                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
@@ -512,15 +504,34 @@
                                                          </font>
                                                       </Text>
                                                       <TextField fx:id="txtField25" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                                      <Button fx:id="btnAddSubItem" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="6">
+                                                         <graphic>
+                                                            <FontAwesomeIconView glyphName="PLUS" size="20" textAlignment="CENTER" />
+                                                         </graphic>
+                                                         <tooltip>
+                                                            <Tooltip text="ADD ADDRESS" />
+                                                         </tooltip>
+                                                      </Button>
+                                                      <Button fx:id="btnDelSubUnit" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="6">
+                                                         <graphic>
+                                                            <FontAwesomeIconView glyphName="TRASH" size="20" textAlignment="CENTER" />
+                                                         </graphic>
+                                                         <tooltip>
+                                                            <Tooltip text="CLEAR" />
+                                                         </tooltip>
+                                                         <GridPane.margin>
+                                                            <Insets left="40.0" />
+                                                         </GridPane.margin>
+                                                      </Button>
                                                    </children>
                                                 </GridPane>
-                                                <TableView fx:id="tblSubItems" stylesheets="@../css/Tables.css" VBox.vgrow="ALWAYS">
+                                                <TableView fx:id="tblSubItems" onMouseClicked="#tblSubUnit_Clicked" stylesheets="@../css/Tables.css" VBox.vgrow="ALWAYS">
                                                   <columns>
-                                                    <TableColumn prefWidth="30.0" text="No." />
-                                                    <TableColumn prefWidth="150.0" text="Barrcode" />
-                                                      <TableColumn prefWidth="250.0" text="Description" />
-                                                      <TableColumn minWidth="40.0" prefWidth="40.0" text="Qty" />
-                                                      <TableColumn prefWidth="150.0" text="Measurement" />
+                                                    <TableColumn fx:id="index01" prefWidth="30.0" text="No." />
+                                                    <TableColumn fx:id="index02" prefWidth="150.0" text="Barrcode" />
+                                                      <TableColumn fx:id="index03" prefWidth="250.0" text="Description" />
+                                                      <TableColumn fx:id="index04" minWidth="40.0" prefWidth="40.0" text="Qty" />
+                                                      <TableColumn fx:id="index05" prefWidth="150.0" text="Measurement" />
                                                   </columns>
                                                 </TableView>
                                              </children>
