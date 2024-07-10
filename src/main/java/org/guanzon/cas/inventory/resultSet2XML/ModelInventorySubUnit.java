@@ -13,14 +13,14 @@ import org.guanzon.appdriver.base.MiscUtil;
  *
  * @author User
  */
-public class ModelInvLedger {
+public class ModelInventorySubUnit {
     public static void main (String [] args){
         String path;
         if(System.getProperty("os.name").toLowerCase().contains("win")){
-            path = "D:/GGC_Java_Systems";
+            path = "D:/GGC_Maven_Systems";
         }
         else{
-            path = "/srv/GGC_Java_Systems";
+            path = "/srv/GGC_Maven_Systems";
         }
         System.setProperty("sys.default.path.config", path);
 
@@ -32,35 +32,25 @@ public class ModelInvLedger {
         }
 
         System.out.println("Connected");
-        System.setProperty("sys.table", "Inv_Ledger");
+        System.setProperty("sys.table", "Inventory_Sub_Unit");
         System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/Model_" + System.getProperty("sys.table") + ".xml");
 //        System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/Model_Inventory.xml");
         
         
         String lsSQL = "SELECT" +
-                        "   a.sStockIDx" +
-                        " , a.sBranchCd" +
-                        " , a.sWHouseID" +
-                        " , a.nLedgerNo" +
-                        " , a.dTransact" +
-                        " , a.sSourceCd" +
-                        " , a.sSourceNo" +
-                        " , a.nQtyInxxx" +
-                        " , a.nQtyOutxx" +
-                        " , a.nQtyOrder" +
-                        " , a.nQtyIssue" +
-                        " , a.nPurPrice" +
-                        " , a.nUnitPrce" +
-                        " , a.nQtyOnHnd" +
-                        " , a.dExpiryxx" +
-                        " , a.sModified" +
-                        " , a.dModified" +
-                        " , b.sBarCodex xBarCodex" +
-                        " , b.sDescript xDescript" +
-                        " , c.sWHouseNm xWHouseNm" +
+                            "  a.sStockIDx" +
+                            ", a.nEntryNox" +
+                            ", a.sItmSubID" +
+                            ", a.nQuantity" +
+                            ", a.dModified" +
+                            ", b.sBarCodex xBarCodex" +
+                            ", b.sDescript xDescript" +
+                            ", c.sBarCodex xBarCodeU" +
+                            ", c.sDescript xDescripU" +
                         " FROM " + System.getProperty("sys.table") + " a" +
-                        "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID";
+                            " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
+                            " LEFT JOIN Inventory c ON a.sItmSubID = c.sStockIDx" +
+                        " WHERE 0=1";
         
         
         ResultSet loRS = instance.executeQuery(lsSQL);

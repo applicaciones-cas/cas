@@ -13,6 +13,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
+import org.guanzon.cas.inventory.models.Model_Inv_Ledger;
 import org.guanzon.cas.inventory.models.Model_Inventory;
 import org.guanzon.cas.parameters.Brand;
 import org.guanzon.cas.parameters.Category;
@@ -22,6 +23,8 @@ import org.guanzon.cas.parameters.Category_Level4;
 import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Inv_Type;
 import org.guanzon.cas.parameters.Model;
+import org.guanzon.cas.validators.ValidatorFactory;
+import org.guanzon.cas.validators.ValidatorInterface;
 import org.json.simple.JSONObject;
 
 /**
@@ -40,13 +43,14 @@ public class Inventory implements GRecord{
     String psTranStatus;
     
     private Model_Inventory poModel;
-
+    private InventorySubUnit poSubUnit;
     
-    public Inventory(GRider foGRider, boolean fbWthParent) {
+     public Inventory(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
 
         poModel = new Model_Inventory(foGRider);
+        poSubUnit = new InventorySubUnit(foGRider, fbWthParent);
         pnEditMode = EditMode.UNKNOWN;
     }
 
@@ -90,7 +94,9 @@ public class Inventory implements GRecord{
     }
     
     private JSONObject checkData(JSONObject joValue){
-        if(pnEditMode == EditMode.READY || pnEditMode == EditMode.UPDATE){
+        if(pnEditMode == EditMode.READY ||
+                pnEditMode == EditMode.ADDNEW ||
+                    pnEditMode == EditMode.UPDATE){
             if(joValue.containsKey("continue")){
                 if(true == (boolean)joValue.get("continue")){
                     joValue.put("result", "success");
@@ -129,6 +135,9 @@ public class Inventory implements GRecord{
             Connection loConn = null;
             loConn = setConnection();
             poModel.newRecord();
+            
+            poSubUnit = new InventorySubUnit(poGRider, pbWthParent);
+            poSubUnit.addSubUnit();
 
             //init detail
             //init detail
@@ -163,13 +172,16 @@ public class Inventory implements GRecord{
         poModel = new Model_Inventory(poGRider);
         poJSON = poModel.openRecord(fsValue);
         
+        poJSON = checkData(poSubUnit.openRecord(fsValue));
+        
         return poJSON;
     }
 
     @Override
     public JSONObject updateRecord() {
         
-        
+        System.out.print("\n updateRecord editmode == " + pnEditMode + "\n");
+//        pnEditMode = EditMode.UPDATE;
         poJSON = new JSONObject();
         if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UPDATE){
             poJSON.put("result", "error");
@@ -179,6 +191,7 @@ public class Inventory implements GRecord{
         pnEditMode = EditMode.UPDATE;
         poJSON.put("result", "success");
         poJSON.put("message", "Update mode success.");
+         System.out.print("\n updateRecord editmode2 == " + pnEditMode + "\n");
         return poJSON;
     }
 
@@ -198,17 +211,20 @@ public class Inventory implements GRecord{
 //
 //        }
         poJSON = poModel.saveRecord();
-
-        if ("success".equals((String) poJSON.get("result"))) {
-            if (!pbWthParent) {
-                poGRider.commitTrans();
-            }
-        } else {
-            if (!pbWthParent) {
-                poGRider.rollbackTrans();
-            }
+        if("error".equalsIgnoreCase((String)checkData(poJSON).get("result"))){
+            if (!pbWtParent) poGRider.rollbackTrans();
+            return checkData(poJSON);
+        };
+        
+        poJSON = saveSubUnit();
+        if("error".equalsIgnoreCase((String)checkData(poJSON).get("result"))){
+            if (!pbWtParent) poGRider.rollbackTrans();
+            return checkData(poJSON);
         }
 
+        if (!pbWtParent) poGRider.commitTrans();
+        
+        
         return poJSON;
     }
 
@@ -294,29 +310,30 @@ public class Inventory implements GRecord{
                 lsCondition += ", " + SQLUtil.toSQL(Character.toString(psTranStatus.charAt(lnCtr)));
             }
 
-            lsCondition = "cRecdStat IN (" + lsCondition.substring(2) + ")";
+            lsCondition = "a.cRecdStat IN (" + lsCondition.substring(2) + ")";
         } else {
-            lsCondition = "cRecdStat = " + SQLUtil.toSQL(psTranStatus);
+            lsCondition = "a.cRecdStat = " + SQLUtil.toSQL(psTranStatus);
         }
-        String lsSQL = "";
+        String lsSQL = poModel.getSQL();
+       
         if (fbByCode)
-            lsSQL = MiscUtil.addCondition(lsSQL, "sStockIDx = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
         else
-            lsSQL = MiscUtil.addCondition(lsSQL, "sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
-
-    
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
+            
+        System.out.print("this is lsSQL == " + lsSQL + "\n");
 
         poJSON = ShowDialogFX.Search(poGRider,
                 lsSQL,
                 fsValue,
                 "Stock ID»Barcode»Name",
                 "sStockIDx»sBarCodex»sDescript",
-                "sStockIDx»sBarCodex»sDescript",
-                fbByCode ? 0 : 1);
+                "a.sStockIDx»a.sBarCodex»a.sDescript",
+                fbByCode ? 1: 2);
 
-        if (poJSON
-                != null) {
-            return poModel.openRecord((String) poJSON.get("sStockIDx"));
+        if (poJSON != null) {
+            pnEditMode = EditMode.READY;
+            return openRecord((String) poJSON.get("sStockIDx"));
         } else {
             poJSON.put("result", "error");
             poJSON.put("message", "No record loaded to update.");
@@ -327,13 +344,13 @@ public class Inventory implements GRecord{
     public Model_Inventory getModel() {
         return poModel;
     }
-    public JSONObject SearchMaster(int fnCol, String fsValue, boolean fbByCode){
+    public JSONObject SearchMaster(int fnCol, String lsValue, boolean fbByCode){
         String lsHeader = "";
         String lsColName = "";
         String lsColCrit = "";
         String lsSQL = "";
         JSONObject loJSON;
-        
+        String fsValue = (lsValue) == null?"":lsValue;
 //        if (fsValue.equals("") && fbByCode) return null;
                 
         switch(fnCol){
@@ -343,8 +360,10 @@ public class Inventory implements GRecord{
                 loJSON = loCategory.searchRecord(fsValue, fbByCode);
                 
                 if (loJSON != null){
+                    
                     setMaster(fnCol, (String) loCategory.getMaster("sCategrCd"));
-                    setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
+//                    setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
+                    
                     return setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
                 } else {
                     loJSON.put("result", "error");
@@ -352,19 +371,92 @@ public class Inventory implements GRecord{
                     return loJSON;
                 }
             case 7: //sCategCd2
-                Category_Level2 loCategory2 = new Category_Level2(poGRider, true);
-                loCategory2.setRecordStatus(psTranStatus);
-                loJSON = loCategory2.searchRecord(fsValue, fbByCode);
-                 
-                if (loJSON != null){
-                    setMaster(fnCol, (String) loCategory2.getMaster("sCategrCd"));
-                    setMaster("xCategNm2", (String) loCategory2.getMaster("sDescript"));
-                    return setMaster("xCategNm2", (String) loJSON.get("sDescript"));
+                
+                lsSQL ="SELECT" +
+                            "  a.sCategrCd" +
+                            ", a.sDescript" +
+                            ", a.sInvTypCd" +
+                            ", a.sMainCatx" +
+                            ", a.cClassify" +
+                            ", a.cRecdStat" +
+                            ", a.sModified" +
+                            ", a.dModified" +
+                            ", b.sDescript xInvTypNm" +
+                            ", c.sDescript xMainCatx" +
+                        " FROM Category_Level2 a" + 
+                            " LEFT JOIN Inv_Type b ON a.sInvTypCd = b.sInvTypCd" +
+                            " LEFT JOIN Category c ON a.sMainCatx = c.sCategrCd";
+                String lsCondition = "";
+
+                if (psTranStatus.length() > 1) {
+                    for (int lnCtr = 0; lnCtr <= psTranStatus.length() - 1; lnCtr++) {
+                        lsCondition += ", " + SQLUtil.toSQL(Character.toString(psTranStatus.charAt(lnCtr)));
+                    }
+
+                    lsCondition = "a.cRecdStat IN (" + lsCondition.substring(2) + ")";
                 } else {
+                    lsCondition = "a.cRecdStat = " + SQLUtil.toSQL(psTranStatus);
+                }
+
+                if (fbByCode)
+                    lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex = " + SQLUtil.toSQL(fsValue));
+                else
+                    lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL(fsValue + "%"));
+                
+                
+                if(!poModel.getCategCd1().isEmpty()){
+                    lsSQL = MiscUtil.addCondition(lsSQL, "a.sMainCatx = " + SQLUtil.toSQL(poModel.getCategCd1()));
+                }
+                
+                lsSQL = MiscUtil.addCondition(lsSQL, lsCondition);
+                System.out.println(lsSQL);
+                loJSON = ShowDialogFX.Search(
+                                poGRider, 
+                                lsSQL, 
+                                fsValue, 
+                                "Code»Name",
+                                "sCategrCd»sDescript",
+                                "a.sCategrCd»a.sDescript",
+                                fbByCode ? 0 : 1);
+
+                if (loJSON != null) {
+                    setMaster(fnCol, (String) loJSON.get("sCategrCd"));
+                    setMaster("sInvTypCd", (String) loJSON.get("sInvTypCd"));
+                    setMaster("sInvTypCd", (String) loJSON.get("sInvTypCd"));
+                    setMaster("xInvTypNm", (String) loJSON.get("xInvTypNm"));
+                    
+                    setMaster(6, (String) loJSON.get("sMainCatx"));
+//                    setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
+                    setMaster("xCategNm1", (String)loJSON.get("xMainCatx"));
+                    setMaster("xMainCatx", (String)loJSON.get("sMainCatx"));
+//                    System.out.println("sInvTypCd = " + setMaster("sInvTypCd", (String) loJSON.get("sCategrCd")));
+                    return setMaster("xCategNm2", (String) loJSON.get("sDescript"));
+                    
+                }else {
+                    loJSON = new JSONObject();
                     loJSON.put("result", "error");
-                    loJSON.put("message", "No record found.");
+                    loJSON.put("message", "No record selected.");
                     return loJSON;
                 }
+                
+//                Category_Level2 loCategory2 = new Category_Level2(poGRider, true);
+//                loCategory2.setRecordStatus(psTranStatus);
+//                loJSON = loCategory2.searchRecord(fsValue, fbByCode);
+//                 
+//                if (loJSON != null){
+//                    setMaster(fnCol, (String) loCategory2.getMaster("sCategrCd"));
+//                    setMaster("sInvTypCd", (String) loCategory2.getMaster("sCategrCd"));
+//                    
+//                    setMaster(6, (String) loCategory2.getMaster("sMainCatx"));
+////                    setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
+//                    setMaster("xCategNm1", (String)loCategory2.getMaster("xMainCatx"));
+//                    System.out.println("sInvTypCd = " + setMaster("sInvTypCd", (String) loCategory2.getMaster("sCategrCd")));
+//                    return setMaster("xCategNm2", (String) loCategory2.getMaster("sDescript"));
+//                } else {
+//                    loJSON.put("result", "error");
+//                    loJSON.put("message", "No record found.");
+//                    return loJSON;
+//                }
             case 8: //sCategCd3
                 Category_Level3 loCategory3 = new Category_Level3(poGRider, true);
                 loCategory3.setRecordStatus(psTranStatus);
@@ -372,9 +464,9 @@ public class Inventory implements GRecord{
                 
                 if (loJSON != null){
                     setMaster(fnCol, (String) loCategory3.getMaster("sCategrCd"));
-                    setMaster("xCategNm3", (String) loCategory3.getMaster("sDescript"));
-                    return setMaster("xCategNm3", (String) loJSON.get("sDescript"));
+                    return setMaster("xCategNm3", (String) loCategory3.getMaster("sDescript"));
                 } else {
+                    loJSON = new JSONObject();
                     loJSON.put("result", "error");
                     loJSON.put("message", "No record found.");
                     return loJSON;
@@ -386,23 +478,24 @@ public class Inventory implements GRecord{
                 
                 if (loJSON != null){
                     setMaster(fnCol, (String) loCategory4.getMaster("sCategrCd"));
-                    setMaster("xCategNm4", (String) loCategory4.getMaster("sDescript"));
-                    return setMaster("xCategNm4", (String) loJSON.get("sDescript"));
+                    return setMaster("xCategNm4", (String) loCategory4.getMaster("sDescript"));
                 } else {
+                    loJSON = new JSONObject();
                     loJSON.put("result", "error");
                     loJSON.put("message", "No record found.");
                     return loJSON;
                 }
             case 10: //sBrandCde
-                Brand loBrand = new Brand(poGRider, true);
-                loBrand.setRecordStatus(psTranStatus);
-                loJSON = loBrand.searchRecord(fsValue, fbByCode);
-                                
+                Brand loBrands = new Brand(poGRider, true); 
+                loBrands.setRecordStatus(psTranStatus);
+                loJSON = loBrands.searchRecord(fsValue, fbByCode);
+                
                 if (loJSON != null){
-                    setMaster(fnCol, (String) loJSON.get("sBrandCde"));
-                    setMaster("xBrandNme", (String) loJSON.get("sBrandNme"));
-                    return setMaster("xModelNme", (String) loJSON.get("sBrandNme"));
+//                    setMaster(fnCol, (String) loBrands.getMaster("sBrandCde"));
+                    poModel.setBrandCode( (String) loBrands.getMaster("sBrandCde"));
+                    return setMaster("xBrandNme", (String) loBrands.getMaster("sDescript"));
                 } else {
+                    loJSON = new JSONObject();
                     loJSON.put("result", "error");
                     loJSON.put("message", "No record found.");
                     return loJSON;
@@ -413,9 +506,10 @@ public class Inventory implements GRecord{
                 loJSON = loModel.searchRecord(fsValue, fbByCode);
                 
                 if (loJSON != null){
-                    setMaster(fnCol, (String) loJSON.get("sModelCde"));
-                    return setMaster("xModelNme", (String) loJSON.get("sModelNme"));
+                    setMaster(fnCol, (String) loModel.getMaster("sModelCde"));
+                    return setMaster("xModelNme", (String) loModel.getMaster("sModelNme"));
                 } else {
+                    loJSON = new JSONObject();
                     loJSON.put("result", "error");
                     loJSON.put("message", "No record found.");
                     return loJSON;
@@ -426,9 +520,10 @@ public class Inventory implements GRecord{
                 loJSON = loColor.searchRecord(fsValue, fbByCode);
                 
                 if (loJSON != null){
-                    setMaster(fnCol, (String) loJSON.get("sColorCde"));
-                    return setMaster("xColorNme", (String) loJSON.get("sColorCNme"));
+                    setMaster(fnCol, (String) loColor.getMaster("sColorCde"));
+                    return setMaster("xColorNme", (String) loColor.getMaster("sDescript"));
                 } else {
+                    loJSON = new JSONObject();
                     loJSON.put("result", "error");
                     loJSON.put("message", "No record found.");
                     return loJSON;
@@ -465,4 +560,115 @@ public class Inventory implements GRecord{
     public JSONObject SearchMaster(String fsCol, String fsValue, boolean fbByCode){
         return SearchMaster(poModel.getColumn(fsCol), fsValue, fbByCode);
     }
+    
+    public InventorySubUnit getSubUnit(){return poSubUnit;}
+    public void setSubUnit(InventorySubUnit foObj){this.poSubUnit = foObj;}
+    
+    
+    public void setSubUnit(int fnRow, int fnIndex, Object foValue){ poSubUnit.setMaster(fnRow, fnIndex, foValue);}
+    public void setSubUnit(int fnRow, String fsIndex, Object foValue){ poSubUnit.setMaster(fnRow, fsIndex, foValue);}
+    public Object getSubUnit(int fnRow, int fnIndex){return poSubUnit.getMaster(fnRow, fnIndex);}
+    public Object getSubUnit(int fnRow, String fsIndex){return poSubUnit.getMaster(fnRow, fsIndex);}
+    
+    public JSONObject addSubUnit(){
+        poJSON = new JSONObject();
+        poJSON = poSubUnit.addSubUnit();
+        return poJSON;
+    }
+    
+    private JSONObject saveSubUnit(){
+        
+        JSONObject obj = new JSONObject();
+        if (poSubUnit.getMaster().size()<= 0){
+            obj.put("result", "error");
+            obj.put("continue",true);
+            obj.put("message", "No inventory sub unit detected.");
+            return obj;
+        }
+        
+        int lnCtr;
+        String lsSQL;
+        
+        for (lnCtr = 0; lnCtr <= poSubUnit.getMaster().size() -1; lnCtr++){
+            poSubUnit.getMaster().get(lnCtr).setStockID(poModel.getStockID());
+//            Validator_Client_Address validator = new Validator_Client_Address(poSubUnit.get(lnCtr));
+            if(lnCtr>=0){
+                if(poSubUnit.getMaster().get(lnCtr).getStockID().isEmpty() || poSubUnit.getMaster().get(lnCtr).getSubItemID().isEmpty()){
+                    poSubUnit.getMaster().remove(lnCtr);
+                    if (poSubUnit.getMaster().size()<= 0){
+                        obj.put("result", "error");
+                        obj.put("continue",true);
+                        obj.put("message", "No inventory sub unit detected.");
+                        return obj;
+                    }
+//                    System.out.println("size = " + poSubUnit.getMaster().size());
+                }
+            }
+//            ValidatorInterface validator = ValidatorFactory.make(types,  ValidatorFactory.TYPE.Client_Address, poSubUnit.get(lnCtr));
+            poSubUnit.getMaster().get(lnCtr).setModifiedDate(poGRider.getServerDate());
+            
+//            if (!validator.isEntryOkay()){
+//                obj.put("result", "error");
+//                obj.put("message", validator.getMessage());
+//                return obj;
+//            
+//            }
+            obj = poSubUnit.getMaster().get(lnCtr).saveRecord();
+
+        }    
+        
+        return obj;
+    }
+    
+    public JSONObject SearchSubUnit(int fnRow, int fnCol, String lsValue, boolean fbByCode){
+        
+        JSONObject loJSON;
+        
+        String fsValue = (lsValue) == null?"":lsValue;
+        
+               
+        
+        switch(fnCol){
+            case 3: //sub unit
+                String lsSQL =poModel.getSQL();
+               
+            if (fbByCode)
+                lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex LIKE " + SQLUtil.toSQL(fsValue + "%"));
+            else
+                lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL(fsValue + "%"));
+
+            System.out.println(lsSQL);
+            loJSON = ShowDialogFX.Search(
+                            poGRider, 
+                            lsSQL, 
+                            fsValue, 
+                            "Stock ID»BarrCode»sDescript", 
+                            "sStockIDx»sBarCodex»sDescript", 
+                            "a.sStockIDx»a.sBarCodex»a.sDescript", 
+                            fbByCode ? 1 : 2);
+
+                if (loJSON != null) {
+                    System.out.println("size = " + poSubUnit.getMaster().size());
+                    setSubUnit(fnRow,1, poModel.getStockID());
+                    setSubUnit(fnRow,3, (String) loJSON.get("sStockIDx"));
+                    setSubUnit(fnRow,6, poModel.getBarcode());
+                    setSubUnit(fnRow,8, (String) loJSON.get("sBarCodex"));
+                    setSubUnit(fnRow,7, poModel.getDescription());
+                    setSubUnit(fnRow,9, (String) loJSON.get("sDescript"));
+                    setSubUnit(fnRow,10,  (String) loJSON.get("xMeasurID"));
+                    setSubUnit(fnRow,11, (String) loJSON.get("xMeasurNm"));
+                    loJSON.put("result", "success");
+                    loJSON.put("message", "Search sub unit success.");
+                    return loJSON;
+                }else {
+                    loJSON = new JSONObject();
+                    loJSON.put("result", "success");
+                    loJSON.put("message", "No record selected.");
+                    return loJSON;
+                }
+            default:
+                return null;
+        }
+    }
+    
 }

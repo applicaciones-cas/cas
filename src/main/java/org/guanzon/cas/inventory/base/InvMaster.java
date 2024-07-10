@@ -6,17 +6,21 @@ package org.guanzon.cas.inventory.base;
 
 import java.sql.Connection;
 import org.guanzon.appdriver.agent.ShowDialogFX;
-import org.guanzon.appdriver.base.CommonUtils;
+import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.appdriver.constant.RecordStatus;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
+import org.guanzon.cas.inventory.models.Model_Inv_Ledger;
 import org.guanzon.cas.inventory.models.Model_Inv_Master;
+import org.guanzon.cas.inventory.models.Model_Inv_Serial;
 import org.guanzon.cas.inventory.models.Model_Inventory;
+import org.guanzon.cas.model.parameters.Model_Inv_Location;
+import org.guanzon.cas.parameters.Inv_Location;
+import org.guanzon.cas.parameters.Warehouse;
 import org.json.simple.JSONObject;
 
 /**
@@ -27,7 +31,7 @@ public class InvMaster implements GRecord{
     GRider poGRider;
     boolean pbWthParent;
     String psBranchCd;
-    boolean pbWtParent;
+    boolean pbWtParent;     
     public JSONObject poJSON;
     
     int pnEditMode;
@@ -38,6 +42,7 @@ public class InvMaster implements GRecord{
     private Inventory poInventory;
     private InvSerial poSerial;
     private InvLedger poLedger;
+    private Inv_Location poLocation;
 
     
     public InvMaster(GRider foGRider, boolean fbWthParent) {
@@ -48,6 +53,7 @@ public class InvMaster implements GRecord{
         poInventory = new Inventory(foGRider, pbWthParent);
         poSerial = new InvSerial(foGRider, pbWthParent);
         poLedger = new InvLedger(foGRider, pbWthParent);
+        poLocation = new Inv_Location(foGRider, pbWthParent);
         pnEditMode = EditMode.UNKNOWN;
     }
 
@@ -105,6 +111,7 @@ public class InvMaster implements GRecord{
     @Override
     public void setRecordStatus(String fsValue) {
         psTranStatus = fsValue;
+        poInventory.setRecordStatus(psTranStatus);
     }
 
     @Override
@@ -329,6 +336,24 @@ public class InvMaster implements GRecord{
         return poModel;
     }
     
+    public JSONObject SearchInventory(String fsStockIDx, boolean fbByCode){
+        poJSON = poInventory.searchRecord(fsStockIDx, fbByCode);
+        if ("success".equals((String) poJSON.get("result"))){
+            poJSON = poModel.openRecord(poInventory.getModel().getStockID());
+            if ("error".equals((String) poJSON.get("result"))){
+                 ShowMessageFX.Information("No Inventory found in your warehouse.\nPlease save the record to create.", "Computerized Acounting System", "Inventory Detail");
+                 poJSON = newRecord();
+            }else {
+                pnEditMode = EditMode.READY;
+            }
+            
+            poModel.setStockID(poInventory.getModel().getStockID());
+            poModel.setBranchCd(poGRider.getBranchCode());
+            poModel.setBarCodex(poInventory.getModel().getBarcode());
+            poModel.setDescript(poInventory.getModel().getDescription());
+        }      
+        return poJSON;
+    }
     private JSONObject openInvRecord(String fsStockIDx){
         poJSON = new JSONObject();
         if (fsStockIDx.equals("")){
@@ -339,341 +364,63 @@ public class InvMaster implements GRecord{
         
         return poInventory.openRecord(fsStockIDx);
     }
-    public Object getInventory(String fsCol){
-        return getInventory(poModel.getColumn(fsCol));
+    public Model_Inventory getInvModel(){
+        return poInventory.getModel();
     }
-    public Object getInventory(int fnCol){
-        return poInventory.getMaster(fnCol);
+    public Model_Inv_Serial getSerialModel(){
+        return poSerial.getModel();
     }
-    
-    
-    private String getSQ_Inventory(){
-        String lsSQL = "SELECT " +
-                            "  a.sStockIDx" +
-                            ", a.sBarCodex" + 
-                            ", a.sDescript" + 
-                            ", a.sBriefDsc" + 
-                            ", a.sAltBarCd" + 
-                            ", a.sCategCd1" + 
-                            ", a.sCategCd2" + 
-                            ", a.sCategCd3" + 
-                            ", a.sCategCd4" + 
-                            ", a.sBrandCde" + 
-                            ", a.sModelCde" + 
-                            ", a.sColorCde" + 
-                            ", a.sInvTypCd" + 
-                            ", a.nUnitPrce" + 
-                            ", a.nSelPrice" + 
-                            ", a.nDiscLev1" + 
-                            ", a.nDiscLev2" + 
-                            ", a.nDiscLev3" + 
-                            ", a.nDealrDsc" + 
-                            ", a.cComboInv" + 
-                            ", a.cWthPromo" + 
-                            ", a.cSerialze" + 
-                            ", a.cUnitType" + 
-                            ", a.cInvStatx" + 
-                            ", a.sSupersed" + 
-                            ", a.cRecdStat" + 
-                            ", b.sDescript xBrandNme" + 
-                            ", c.sDescript xModelNme" + 
-                            ", d.sDescript xInvTypNm" + 
-                            ", e.sMeasurNm" + 
-                            ", a.cWthExprt" + 
-                        " FROM Inventory a" + 
-                            " LEFT JOIN Brand b" + 
-                                " ON a.sBrandCde = b.sBrandCde" + 
-                            " LEFT JOIN Model c" + 
-                                " ON a.sModelCde = c.sModelCde" + 
-                            " LEFT JOIN Inv_Type d" + 
-                                " ON a.sInvTypCd = d.sInvTypCd" +
-                            " LEFT JOIN Measure e" + 
-                                " ON e.sMeasurID = a.sMeasurID";
-        
-        //validate result based on the assigned inventory type.
-//        if (!System.getProperty("store.inventory.type").isEmpty())
-//            lsSQL = MiscUtil.addCondition(lsSQL, "a.sInvTypCd IN " + CommonUtils.getParameter(System.getProperty("store.inventory.type")));
-        
-        return lsSQL;
+    public Model_Inv_Ledger getLedgerModel(){
+        return poLedger.getModel();
+    }
+    public Model_Inv_Location getLocationModel(){
+        return poLocation.getModel();
     }
     
-    private String getSQ_AllStock(){
-        String lsSQL =  "SELECT" +
-                            " a.sStockIDx," +
-                            " a.sBarCodex xReferNox," +
-                            " a.sDescript," +
-                            " a.sBriefDsc," +
-                            " a.sAltBarCd," +
-                            " a.sCategCd1," +
-                            " a.sCategCd2," +
-                            " a.sCategCd3," +
-                            " a.sCategCd4," +
-                            " a.sBrandCde," +
-                            " a.sModelCde," +
-                            " a.sColorCde," +
-                            " a.sInvTypCd," +
-                            " a.nUnitPrce," +
-                            " a.nSelPrice," +
-                            " a.nDiscLev1," +
-                            " a.nDiscLev2," +
-                            " a.nDiscLev3," +
-                            " a.nDealrDsc," +
-                            " a.cComboInv," +
-                            " a.cWthPromo," +
-                            " a.cSerialze," +
-                            " a.cUnitType," +
-                            " a.cInvStatx," +
-                            " a.sSupersed," +
-                            " a.cRecdStat," +
-                            " b.sDescript xBrandNme," +
-                            " c.sDescript xModelNme," +
-                            " d.sDescript xInvTypNm," +
-                            " e.sMeasurNm," +
-                            " f.nQtyOnHnd," +
-                            " '' sReferNo1," +
-                            " '' sSerialID" +
-                        " FROM Inventory a" + 
-                            " LEFT JOIN Brand b" + 
-                                    " ON a.sBrandCde = b.sBrandCde" + 
-                            " LEFT JOIN Model c" + 
-                                    " ON a.sModelCde = c.sModelCde" + 
-                            " LEFT JOIN Inv_Type d" + 
-                                    " ON a.sInvTypCd = d.sInvTypCd" + 
-                            " LEFT JOIN Measure e" + 
-                                    " ON e.sMeasurID = a.sMeasurID," +
-                            " Inv_Master f" + 
-                        " WHERE a.sStockIDx = f.sStockIDx" + 
-                            " AND f.sBranchCd = " + SQLUtil.toSQL(psBranchCd) +
-                            " AND a.cRecdStat = " + SQLUtil.toSQL(RecordStatus.ACTIVE) +
-                            " AND a.cSerialze = '0'"; //" AND f.nQtyOnHnd > 0"
+    public JSONObject SearchMaster(int fnCol, String fsValue, boolean fbByCode){
+        String lsHeader = "";
+        String lsColName = "";
+        String lsColCrit = "";
+        String lsSQL = "";
+        JSONObject loJSON;
         
-        //validate result based on the assigned inventory type.
-//        if (!System.getProperty("store.inventory.type").isEmpty())
-//            lsSQL = lsSQL + " AND a.sInvTypCd IN " + CommonUtils.getParameter(System.getProperty("store.inventory.type"));
-//        
-        lsSQL = lsSQL + " UNION SELECT" +
-                            " a.sStockIDx," + 
-                            " g.sSerial01 xReferNox," + 
-                            " a.sDescript," + 
-                            " a.sBriefDsc," +
-                            " a.sAltBarCd," +
-                            " a.sCategCd1," +
-                            " a.sCategCd2," +
-                            " a.sCategCd3," +
-                            " a.sCategCd4," +
-                            " a.sBrandCde," +
-                            " a.sModelCde," +
-                            " a.sColorCde," +
-                            " a.sInvTypCd," +
-                            " a.nUnitPrce," +
-                            " a.nSelPrice," +
-                            " a.nDiscLev1," +
-                            " a.nDiscLev2," +
-                            " a.nDiscLev3," +
-                            " a.nDealrDsc," +
-                            " a.cComboInv," +
-                            " a.cWthPromo," +
-                            " a.cSerialze," +
-                            " a.cUnitType," +
-                            " a.cInvStatx," +
-                            " a.sSupersed," +
-                            " a.cRecdStat," +
-                            " b.sDescript xBrandNme," + 
-                            " c.sDescript xModelNme," + 
-                            " d.sDescript xInvTypNm," + 
-                            " e.sMeasurNm," + 
-                            " 1 nQtyOnHnd," + 
-                            " IFNULL(g.sSerial02, '') xReferNo1," +  
-                            " g.sSerialID" +
-                        " FROM Inventory a" +  
-                            " LEFT JOIN Brand b" +  
-                                " ON a.sBrandCde = b.sBrandCde" +  
-                            " LEFT JOIN Model c" +  
-                                " ON a.sModelCde = c.sModelCde" +  
-                            " LEFT JOIN Inv_Type d" +  
-                                " ON a.sInvTypCd = d.sInvTypCd" +  
-                            " LEFT JOIN Measure e" +  
-                                " ON e.sMeasurID = a.sMeasurID," + 
-                            " Inv_Master f," + 
-                            " Inv_Serial g" + 
-                        " WHERE a.sStockIDx = f.sStockIDx" + 
-                            " AND f.sStockIDx = g.sStockIDx" + 
-                            " AND a.cSerialze = '1'" + 
-                            " AND g.cLocation = '1'" + 
-                            " AND g.cSoldStat = '0'" + 
-                            " AND f.sBranchCd = " + SQLUtil.toSQL(psBranchCd) + 
-                            " AND a.cRecdStat = " + SQLUtil.toSQL(RecordStatus.ACTIVE); //" AND f.nQtyOnHnd > 0"
+//        if (fsValue.equals("") && fbByCode) return "";
         
-        //validate result based on the assigned inventory type.
-//        if (!System.getProperty("store.inventory.type").isEmpty())
-//            lsSQL = lsSQL + " AND a.sInvTypCd IN " + CommonUtils.getParameter(System.getProperty("store.inventory.type"));
-//        
-        return lsSQL;
+        switch(fnCol){
+            case 3: //sWHouseID
+                Warehouse loWarehouse = new Warehouse(poGRider, false);
+                
+                loWarehouse.setRecordStatus(psTranStatus);
+                loJSON = loWarehouse.searchRecord(fsValue, fbByCode);
+                
+                if (loJSON != null){
+                    setMaster(fnCol, (String) loWarehouse.getMaster("sWHouseID"));
+                    return setMaster("xWHouseNm", (String) loWarehouse.getMaster("sWHouseNm"));
+                } else {
+                    loJSON.put("result", "error");
+                    loJSON.put("message", "No record found.");
+                    return loJSON;
+                }
+            case 4: //sLocatnCd
+                Inv_Location loLocation = new Inv_Location(poGRider, false);
+                loLocation.setRecordStatus(psTranStatus);
+                loJSON = loLocation.searchRecord(fsValue, fbByCode);
+                
+                if (loJSON != null){
+                    setMaster(fnCol, (String) loLocation.getMaster("sLocatnCd"));
+                    return setMaster("xLocatnNm", (String) loLocation.getMaster("sDescript"));
+                } else {
+                    loJSON.put("result", "error");
+                    loJSON.put("message", "No record found.");
+                    return loJSON;
+                }
+            default:
+                return null;
+                
+        }
     }
     
-    private String getSQ_SoldStock(){
-        String lsSQL =  "SELECT" +
-                            " a.sStockIDx," +
-                            " a.sBarCodex xReferNox," +
-                            " a.sDescript," +
-                            " a.sBriefDsc," +
-                            " a.sAltBarCd," +
-                            " a.sCategCd1," +
-                            " a.sCategCd2," +
-                            " a.sCategCd3," +
-                            " a.sCategCd4," +
-                            " a.sBrandCde," +
-                            " a.sModelCde," +
-                            " a.sColorCde," +
-                            " a.sInvTypCd," +
-                            " a.nUnitPrce," +
-                            " a.nSelPrice," +
-                            " a.nDiscLev1," +
-                            " a.nDiscLev2," +
-                            " a.nDiscLev3," +
-                            " a.nDealrDsc," +
-                            " a.cComboInv," +
-                            " a.cWthPromo," +
-                            " a.cSerialze," +
-                            " a.cUnitType," +
-                            " a.cInvStatx," +
-                            " a.sSupersed," +
-                            " a.cRecdStat," +
-                            " b.sDescript xBrandNme," +
-                            " c.sDescript xModelNme," +
-                            " d.sDescript xInvTypNm," +
-                            " e.sMeasurNm," +
-                            " f.nQtyOnHnd," +
-                            " '' sReferNo1," +
-                            " '' sSerialID" +
-                        " FROM Inventory a" + 
-                            " LEFT JOIN Brand b" + 
-                                    " ON a.sBrandCde = b.sBrandCde" + 
-                            " LEFT JOIN Model c" + 
-                                    " ON a.sModelCde = c.sModelCde" + 
-                            " LEFT JOIN Inv_Type d" + 
-                                    " ON a.sInvTypCd = d.sInvTypCd" + 
-                            " LEFT JOIN Measure e" + 
-                                    " ON e.sMeasurID = a.sMeasurID," +
-                            " Inv_Master f" + 
-                        " WHERE a.sStockIDx = f.sStockIDx" + 
-                            " AND f.sBranchCd = " + SQLUtil.toSQL(psBranchCd) +
-                            " AND a.cRecdStat = " + SQLUtil.toSQL(RecordStatus.ACTIVE) +
-                            " AND a.cSerialze = '0'";
-        
-        //validate result based on the assigned inventory type.
-        if (!System.getProperty("store.inventory.type").isEmpty())
-            lsSQL = lsSQL + " AND a.sInvTypCd IN " + CommonUtils.getParameter(System.getProperty("store.inventory.type"));
-        
-        lsSQL = lsSQL + " UNION SELECT" +
-                            " a.sStockIDx," + 
-                            " g.sSerial01 xReferNox," + 
-                            " a.sDescript," + 
-                            " a.sBriefDsc," +
-                            " a.sAltBarCd," +
-                            " a.sCategCd1," +
-                            " a.sCategCd2," +
-                            " a.sCategCd3," +
-                            " a.sCategCd4," +
-                            " a.sBrandCde," +
-                            " a.sModelCde," +
-                            " a.sColorCde," +
-                            " a.sInvTypCd," +
-                            " a.nUnitPrce," +
-                            " a.nSelPrice," +
-                            " a.nDiscLev1," +
-                            " a.nDiscLev2," +
-                            " a.nDiscLev3," +
-                            " a.nDealrDsc," +
-                            " a.cComboInv," +
-                            " a.cWthPromo," +
-                            " a.cSerialze," +
-                            " a.cUnitType," +
-                            " a.cInvStatx," +
-                            " a.sSupersed," +
-                            " a.cRecdStat," +
-                            " b.sDescript xBrandNme," + 
-                            " c.sDescript xModelNme," + 
-                            " d.sDescript xInvTypNm," + 
-                            " e.sMeasurNm," + 
-                            " 1 nQtyOnHnd," + 
-                            " IFNULL(g.sSerial02, '') xReferNo1," +  
-                            " g.sSerialID" +
-                        " FROM Inventory a" +  
-                            " LEFT JOIN Brand b" +  
-                                " ON a.sBrandCde = b.sBrandCde" +  
-                            " LEFT JOIN Model c" +  
-                                " ON a.sModelCde = c.sModelCde" +  
-                            " LEFT JOIN Inv_Type d" +  
-                                " ON a.sInvTypCd = d.sInvTypCd" +  
-                            " LEFT JOIN Measure e" +  
-                                " ON e.sMeasurID = a.sMeasurID," + 
-                            " Inv_Master f," + 
-                            " Inv_Serial g" + 
-                        " WHERE a.sStockIDx = f.sStockIDx" + 
-                            " AND f.sStockIDx = g.sStockIDx" + 
-                            " AND a.cSerialze = '1'" + 
-                            " AND f.sBranchCd = " + SQLUtil.toSQL(psBranchCd) + 
-                            " AND a.cRecdStat = " + SQLUtil.toSQL(RecordStatus.ACTIVE);
-        
-        //validate result based on the assigned inventory type.
-//        if (!System.getProperty("store.inventory.type").isEmpty())
-//            lsSQL = lsSQL + " AND a.sInvTypCd IN " + CommonUtils.getParameter(System.getProperty("store.inventory.type"));
-        
-        return lsSQL;
+    public JSONObject SearchMaster(String fsCol, String fsValue, boolean fbByCode){
+        return SearchMaster(poModel.getColumn(fsCol), fsValue, fbByCode);
     }
-    
-    private String getSQ_Stock(){
-        String lsSQL =  "SELECT " +
-                    "  a.sStockIDx" +
-                    ", a.sBarCodex" + 
-                    ", a.sDescript" + 
-                    ", a.sBriefDsc" + 
-                    ", a.sAltBarCd" + 
-                    ", a.sCategCd1" + 
-                    ", a.sCategCd2" + 
-                    ", a.sCategCd3" + 
-                    ", a.sCategCd4" + 
-                    ", a.sBrandCde" + 
-                    ", a.sModelCde" + 
-                    ", a.sColorCde" + 
-                    ", a.sInvTypCd" + 
-                    ", a.nUnitPrce" + 
-                    ", a.nSelPrice" + 
-                    ", a.nDiscLev1" + 
-                    ", a.nDiscLev2" + 
-                    ", a.nDiscLev3" + 
-                    ", a.nDealrDsc" + 
-                    ", a.cComboInv" + 
-                    ", a.cWthPromo" + 
-                    ", a.cSerialze" + 
-                    ", a.cUnitType" + 
-                    ", a.cInvStatx" + 
-                    ", a.sSupersed" + 
-                    ", a.cRecdStat" + 
-                    ", b.sDescript xBrandNme" + 
-                    ", c.sDescript xModelNme" + 
-                    ", d.sDescript xInvTypNm" + 
-                    ", e.sMeasurNm" + 
-                    ", f.nQtyOnHnd" + 
-                " FROM Inventory a" + 
-                    " LEFT JOIN Brand b" + 
-                        " ON a.sBrandCde = b.sBrandCde" + 
-                    " LEFT JOIN Model c" + 
-                        " ON a.sModelCde = c.sModelCde" + 
-                    " LEFT JOIN Inv_Type d" + 
-                        " ON a.sInvTypCd = d.sInvTypCd" +
-                    " LEFT JOIN Measure e" + 
-                        " ON e.sMeasurID = a.sMeasurID" + 
-                    ", Inv_Master f" + 
-                " WHERE a.sStockIDx = f.sStockIDx" + 
-                    " AND f.sBranchCd = " + SQLUtil.toSQL(psBranchCd);
-        
-        //validate result based on the assigned inventory type.
-//        if (!System.getProperty("store.inventory.type").isEmpty())
-//            lsSQL = MiscUtil.addCondition(lsSQL, "a.sInvTypCd IN " + CommonUtils.getParameter(System.getProperty("store.inventory.type")));
-//        
-        return lsSQL;
-    }
-    
 }

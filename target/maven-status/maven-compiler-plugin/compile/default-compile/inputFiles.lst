@@ -1,11 +1,17 @@
-D:\Guanzon latest\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInvSerial.java
-D:\Guanzon latest\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInventory.java
-D:\Guanzon latest\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInvMaster.java
-D:\Guanzon latest\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\Inventory.java
-D:\Guanzon latest\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\InvMaster.java
-D:\Guanzon latest\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInvLedger.java
-D:\Guanzon latest\cas-inventory\src\main\java\org\guanzon\cas\inventory\CasInventory.java
-D:\Guanzon latest\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\InvLedger.java
-D:\Guanzon latest\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\InvSerial.java
-D:\Guanzon latest\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\InvHistLedger.java
-D:\Guanzon latest\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInvHistLedger.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInvSerial.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\Inventory.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\InvMaster.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelCategory4.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\InvHistLedger.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\CasInventory.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInventorySubUnit.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\InvSerial.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelCategory.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInventory.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInvMaster.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelCategory3.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelCategory2.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInvHistLedger.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInvLedger.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\InventorySubUnit.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\InvLedger.java
