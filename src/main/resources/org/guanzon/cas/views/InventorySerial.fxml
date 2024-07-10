@@ -170,12 +170,12 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <TextField fx:id="txtField01" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                                                <TextField fx:id="txtField02" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="2" />
-                                                <TextField fx:id="txtField03" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                <TextField fx:id="txtField04" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                <TextField fx:id="txtField05" editable="false" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                <TextField fx:id="txtField06" editable="false" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                <TextField fx:id="txtField01" disable="true" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtField02" disable="true" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtField03" disable="true" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtField04" disable="true" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                <TextField fx:id="txtField05" disable="true" editable="false" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtField06" disable="true" editable="false" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                 <ComboBox fx:id="cmbField01" prefHeight="30.0" prefWidth="203.0" GridPane.columnIndex="9" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                                                 <Button fx:id="btnLoadSerial" mnemonicParsing="false" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Load Serial" GridPane.columnIndex="10" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                                                    <GridPane.margin>

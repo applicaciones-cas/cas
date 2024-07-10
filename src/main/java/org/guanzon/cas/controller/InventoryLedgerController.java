@@ -208,6 +208,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
             }
         }
     }
+     
       private void initTable() {
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");

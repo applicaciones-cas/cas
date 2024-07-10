@@ -98,6 +98,17 @@ public class InventorySerialController implements Initializable {
     @FXML
     private TableColumn index07;
     
+     ObservableList<String> unitType = FXCollections.observableArrayList(
+                "LDU",
+                "Regular",
+                "Free",
+                "Live",
+                "Service",
+                "RDU",
+                "Others",
+                "All"
+        );
+    
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
@@ -115,12 +126,20 @@ public class InventorySerialController implements Initializable {
             oTrans.setRecordStatus("01234");
             pbLoaded = true;
             initTable();
+            poTrans.getInvModel().setUnitType("7");
             txtField01.setText(poTrans.getModel().getBarCodex());
             txtField02.setText(poTrans.getModel().getDescript());
             txtField03.setText(poTrans.getInvModel().getBrandName());
             txtField04.setText(poTrans.getInvModel().getModelName());
             txtField05.setText(poTrans.getInvModel().getColorName());
             txtField06.setText(poTrans.getInvModel().getMeasureName());
+            
+            cmbField01.setItems(unitType);
+            cmbField01.getSelectionModel().select(7);
+            cmbField01.setOnAction(event -> {
+                poTrans.getInvModel().setUnitType(String.valueOf(cmbField01.getSelectionModel().getSelectedIndex()));
+            
+        });
     } 
     
     /*Handle button click*/
@@ -140,29 +159,46 @@ public class InventorySerialController implements Initializable {
                     CommonUtils.closeStage(btnClose);
                     break;
                 case "btnLoadSerial":
+                    String UnitType = String.valueOf(cmbField01.getSelectionModel().getSelectedIndex()); 
                     poJSON = new JSONObject();
-                    poJSON = oTrans.searchRecord(poTrans.getModel().getStockID(), pbLoaded);
-                    loadSerial();
+                    
+                    if (UnitType.equals("7")) {
+                       poJSON = oTrans.OpenInvSerial(poTrans.getModel().getStockID());
+                        System.out.print("\nunitype == " + UnitType);
+                        System.out.println("poJson = " + poJSON.toJSONString());
+                        loadSerial();
+                    } else {
+                        poJSON = oTrans.OpenInvSerialWithCondition(poTrans.getModel().getStockID(), " a.cUnitType = '" + UnitType + "'");
+                        System.out.print("\nunitype == " + UnitType);
+                        System.out.println("poJson = " + poJSON.toJSONString());
+                        loadSerial();
+                    }
                     break;
-                
-
             }
         }
     }
+    
     private void loadSerial(){
         int lnCtr;
         data.clear();
         if(oTrans.getMaster()!= null){
             for (lnCtr = 0; lnCtr < oTrans.getMaster().size(); lnCtr++){
                 data.add(new ModelInvSerial(String.valueOf(lnCtr + 1),
-                     oTrans.getMaster(lnCtr, "sSerialID").toString(), 
+                    (String) oTrans.getMaster(lnCtr, "sSerialID"), 
                     (String)oTrans.getMaster(lnCtr, "sSerial01"),
                     (String)oTrans.getMaster(lnCtr, "sSerial02"), 
-                    (String)oTrans.getMaster(lnCtr, "cLocation"), 
+                    (String)oTrans.getMaster(lnCtr, "xBranchNm"), 
                     (String)oTrans.getMaster(lnCtr, "cSoldStat"), 
                     (String)oTrans.getMaster(lnCtr, "cUnitType"),
               ""));  
-
+                    System.out.println("\nNo == " + String.valueOf(lnCtr + 1));
+                    System.out.println("\nsSerialID == " + (String) oTrans.getMaster(lnCtr, "sSerialID"));
+                    System.out.println("\nsSerial01 == " + (String) oTrans.getMaster(lnCtr, "sSerial01"));
+                    System.out.println("\nsSerial02 == " + (String) oTrans.getMaster(lnCtr, "sSerial02"));
+                    System.out.println("\ncLocation == " + (String) oTrans.getMaster(lnCtr, "xBranchNm"));
+                    System.out.println("\ncSoldStat == " + (String) oTrans.getMaster(lnCtr, "cSoldStat"));
+                    System.out.println("\ncUnitType == " + (String) oTrans.getMaster(lnCtr, "cUnitType"));
+            
             }
         }
     }

@@ -13,6 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -178,9 +180,9 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
     @FXML
     private TextField txtField19;
-
-    @FXML
-    private ComboBox cmbField02;
+//
+//    @FXML
+//    private ComboBox cmbField02;
 
     @FXML
     private CheckBox chkField01;
@@ -266,6 +268,16 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     void chkFiled04_Clicked(MouseEvent event) {
 
     }
+    ObservableList<String> unitType = FXCollections.observableArrayList(
+                "LDU",
+                "Regular",
+                "Free",
+                "Live",
+                "Service",
+                "RDU",
+                "Others"
+        );
+
 
 
     /**
@@ -561,7 +573,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     btnBrowse.setVisible(!lbShow);
     btnBrowse.setManaged(!lbShow);
     
-    cmbField01.setDisable(!lbShow);
+//    cmbField01.setDisable(!lbShow);
     
     txtSeeks01.setDisable(!lbShow);
     txtSeeks02.setDisable(!lbShow);
@@ -631,11 +643,36 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             
             txtField20.setText((String) oTrans.getInvModel().getSupersed());
             txtField21.setText(String.valueOf(oTrans.getInvModel().getShlfLife()));
+            
             cmbField01.setValue(String.valueOf(oTrans.getInvModel().getCategName2()));
             chkField01.setSelected("1".equals(oTrans.getInvModel().getSerialze()));
             chkField02.setSelected("1".equals(oTrans.getInvModel().getComboInv()));
             chkField03.setSelected("1".equals(oTrans.getInvModel().getWthPromo()));
             chkField04.setSelected((oTrans.getInvModel().isActive()));
+            
+            txtField22.setText((String)oTrans.getModel().getLocationnName());
+            System.out.println("getLocationnName == " + (String)oTrans.getModel().getLocationnName());
+            txtField23.setText((String)oTrans.getModel().getWareHouseNm());
+            System.out.println("getWareHouseNm == " + (String)oTrans.getModel().getWareHouseNm());
+            
+            txtField28.setText((String.valueOf(oTrans.getModel().getBegQtyxx())));
+            txtField31.setText((String.valueOf(oTrans.getModel().getClassify())));
+            txtField32.setText((String.valueOf(oTrans.getModel().getAvgMonSl())));
+            txtField33.setText((String.valueOf(oTrans.getModel().getResvOrdr())));
+            txtField34.setText((String.valueOf(oTrans.getModel().getQtyOnHnd())));
+            System.out.println("getQtyOnHnd == " + (String.valueOf(oTrans.getModel().getQtyOnHnd())));
+//            cmbField02.setValue(unitType.get(Integer.parseInt(oTrans.getInvModel().getUnitType())));
+//            cmbField02.setItems(unitType);
+//            Integer sValue = Integer.valueOf(oTrans.getInvModel().getUnitType());
+//            System.out.print("value of unitype == " + sValue);
+//            
+//            cmbField02.getSelectionModel().select(sValue);
+//            cmbField02.setOnAction(event -> {
+//            oTrans.getInvModel().setUnitType(String.valueOf(cmbField02.getSelectionModel().getSelectedIndex()));
+//            
+//        });
+
+
             
             if (chkField04.isSelected()){
                 lblStatus.setText("ACTIVE");
@@ -683,6 +720,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         txtField12.setOnKeyPressed(this::txtField_KeyPressed);
         txtField22.setOnKeyPressed(this::txtField_KeyPressed);
         txtField23.setOnKeyPressed(this::txtField_KeyPressed);
+        
+        
 
     }
     
