@@ -5,6 +5,9 @@
 package org.guanzon.cas.inventory.base;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
@@ -13,6 +16,8 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
+import org.guanzon.cas.inventory.models.Model_Inv_Ledger;
+import org.guanzon.cas.inventory.models.Model_Inv_Serial;
 import org.guanzon.cas.inventory.models.Model_Inv_Serial;
 import org.json.simple.JSONObject;
 
@@ -21,121 +26,68 @@ import org.json.simple.JSONObject;
  * @author User
  */
 public class InvSerial implements GRecord{
+    
+
     GRider poGRider;
     boolean pbWthParent;
-    String psBranchCd;
-    boolean pbWtParent;
-    public JSONObject poJSON;
-    
     int pnEditMode;
-    String psMessagex;
     String psTranStatus;
     
-    private Model_Inv_Serial poModel;
+    ArrayList<Model_Inv_Serial> poModel;
+    JSONObject poJSON;
 
-    
     public InvSerial(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
-
-        poModel = new Model_Inv_Serial(foGRider);
         pnEditMode = EditMode.UNKNOWN;
     }
-
-    
     @Override
     public JSONObject setMaster(int fnCol, Object foData) {
-        
-        JSONObject obj = new JSONObject();
-        obj.put("pnEditMode", pnEditMode);
-        if (pnEditMode != EditMode.UNKNOWN){
-            // Don't allow specific fields to assign values
-            if(!(fnCol == poModel.getColumn("cRecdStat") ||
-                fnCol == poModel.getColumn("sModified") ||
-                fnCol == poModel.getColumn("dModified"))){
-               obj =  poModel.setValue(fnCol, foData);
-               
-//                obj.put(fnCol, pnEditMode);
-            }
-        }
-        return obj;
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public JSONObject setMaster(String fsCol, Object foData) {
-        return setMaster(poModel.getColumn(fsCol), foData);
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    
     }
+
     @Override
     public int getEditMode() {
         return pnEditMode;
     }
-
-    private Connection setConnection(){
-        Connection foConn;
-        
-        if (pbWthParent){
-            foConn = (Connection) poGRider.getConnection();
-            if (foConn == null) foConn = (Connection) poGRider.doConnect();
-        }else foConn = (Connection) poGRider.doConnect();
-        
-        return foConn;
-    }
     
-    private JSONObject checkData(JSONObject joValue){
-        if(pnEditMode == EditMode.READY || pnEditMode == EditMode.UPDATE){
-            if(joValue.containsKey("continue")){
-                if(true == (boolean)joValue.get("continue")){
-                    joValue.put("result", "success");
-                    joValue.put("message", "Record saved successfully.");
-                }
-            }
-        }
-        return joValue;
-    }
-
     @Override
     public void setRecordStatus(String fsValue) {
+        
         psTranStatus = fsValue;
     }
 
     @Override
     public Object getMaster(int fnCol) {
-        if(pnEditMode == EditMode.UNKNOWN)
-            return null;
-        else 
-            return poModel.getValue(fnCol);
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public Object getMaster(String fsCol) {
-        return getMaster(poModel.getColumn(fsCol));
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
     @Override
     public JSONObject newRecord() {
-        
-            poJSON = new JSONObject();
+         poJSON = new JSONObject();
         try{
             
-            poModel = new Model_Inv_Serial(poGRider);
-            Connection loConn = null;
-            loConn = setConnection();
-            poModel.newRecord();
 
             //init detail
             //init detail
-//            poLedger = new ArrayList<>();
+            poModel = new ArrayList<>();
             
-            if (poModel == null){
+            poJSON = addLedger();
                 
-                poJSON.put("result", "error");
-                poJSON.put("message", "initialized new record failed.");
-                return poJSON;
-            }else{
-                poJSON.put("result", "success");
-                poJSON.put("message", "initialized new record.");
-                pnEditMode = EditMode.ADDNEW;
-            }
+                
+            poJSON.put("result", "success");
+            poJSON.put("message", "initialized new record.");
+            pnEditMode = EditMode.ADDNEW;
                
         }catch(NullPointerException e){
             
@@ -148,48 +100,35 @@ public class InvSerial implements GRecord{
 
     @Override
     public JSONObject openRecord(String fsValue) {
-        
         pnEditMode = EditMode.READY;
         poJSON = new JSONObject();
         
-        poModel = new Model_Inv_Serial(poGRider);
-        poJSON = poModel.openRecord(fsValue);
-        
+        poJSON = OpenInvSerial(fsValue);
         return poJSON;
     }
 
     @Override
     public JSONObject updateRecord() {
+        JSONObject loJSON = new JSONObject();
         
-        
-        poJSON = new JSONObject();
         if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UPDATE){
-            poJSON.put("result", "error");
-            poJSON.put("message", "Invalid edit mode.");
-            return poJSON;
+            loJSON.put("result", "success");
+            loJSON.put("message", "Edit mode has changed to update.");
+        } else {
+            loJSON.put("result", "error");
+            loJSON.put("message", "No record loaded to update.");
         }
-        pnEditMode = EditMode.UPDATE;
-        poJSON.put("result", "success");
-        poJSON.put("message", "Update mode success.");
-        return poJSON;
+
+        return loJSON;
     }
 
     @Override
     public JSONObject saveRecord() {
-        poJSON = new JSONObject();
         if (!pbWthParent) {
             poGRider.beginTrans();
         }
-//        ValidatorInterface validator = ValidatorFactory.make(ValidatorFactory.TYPE.AR_Client_Master, poModel);
-//        poModel.setModifiedDate(poGRider.getServerDate());
-//
-//        if (!validator.isEntryOkay()){
-//            poJSON.put("result", "error");
-//            poJSON.put("message", validator.getMessage());
-//            return poJSON;
-//
-//        }
-        poJSON = poModel.saveRecord();
+
+        poJSON = saveLedger();
 
         if ("success".equals((String) poJSON.get("result"))) {
             if (!pbWthParent) {
@@ -204,9 +143,9 @@ public class InvSerial implements GRecord{
         return poJSON;
     }
 
-    @Override 
+    @Override
     public JSONObject deleteRecord(String fsValue) {
-         poJSON = new JSONObject();
+        poJSON = new JSONObject();
 
         poJSON = new JSONObject();
         if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UPDATE) {
@@ -215,11 +154,13 @@ public class InvSerial implements GRecord{
                 poJSON.put("message", "User is not allowed delete transaction.");
                 return poJSON;
             }
-            String lsSQL = "DELETE FROM " + poModel.getTable()+
+            
+            Model_Inv_Serial model = new Model_Inv_Serial(poGRider);
+            String lsSQL = "DELETE FROM " + model.getTable()+
                                 " WHERE sSerialID = " + SQLUtil.toSQL(fsValue);
 
             if (!lsSQL.equals("")){
-                if (poGRider.executeQuery(lsSQL, poModel.getTable(), poGRider.getBranchCode(), "") > 0) {
+                if (poGRider.executeQuery(lsSQL, model.getTable(), poGRider.getBranchCode(), "") > 0) {
                     poJSON.put("result", "success");
                     poJSON.put("message", "Record deleted successfully.");
                 } else {
@@ -238,86 +179,225 @@ public class InvSerial implements GRecord{
 
     @Override
     public JSONObject deactivateRecord(String string) {
-        poJSON = new JSONObject();
-
-        if (poModel.getEditMode() == EditMode.READY || poModel.getEditMode() == EditMode.UPDATE) {
-            poJSON = poModel.setRecdStat(TransactionStatus.STATE_CLOSED);
-
-            if ("error".equals((String) poJSON.get("result"))) {
-                return poJSON;
-            }
-
-            poJSON = poModel.saveRecord();
-        } else {
-            poJSON = new JSONObject();
-            poJSON.put("result", "error");
-            poJSON.put("message", "No record loaded to update.");
-        }
-        return poJSON;
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public JSONObject activateRecord(String string) {
-        
-        poJSON = new JSONObject();
-
-        if (poModel.getEditMode() == EditMode.READY || poModel.getEditMode() == EditMode.UPDATE) {
-            poJSON = poModel.setRecdStat(TransactionStatus.STATE_CLOSED);
-
-            if ("error".equals((String) poJSON.get("result"))) {
-                return poJSON;
-            }
-
-            poJSON = poModel.saveRecord();
-        } else {
-            poJSON = new JSONObject();
-            poJSON.put("result", "error");
-            poJSON.put("message", "No record loaded to update.");
-        }
-        return poJSON;
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public JSONObject searchRecord(String fsValue, boolean fbByCode) {
-      String lsCondition = "";
+        String lsCondition = "";
+        Model_Inv_Serial model = new Model_Inv_Serial(poGRider);
+        String lsSQL = MiscUtil.addCondition(model.getSQL(), "a.sSerialID = " + SQLUtil.toSQL(fsValue));
 
-        if (psTranStatus.length() > 1) {
-            for (int lnCtr = 0; lnCtr <= psTranStatus.length() - 1; lnCtr++) {
-                lsCondition += ", " + SQLUtil.toSQL(Character.toString(psTranStatus.charAt(lnCtr)));
-            }
-
-            lsCondition = "cRecdStat IN (" + lsCondition.substring(2) + ")";
-        } else {
-            lsCondition = "cRecdStat = " + SQLUtil.toSQL(psTranStatus);
-        }
-        String lsSQL = "";
-        if (fbByCode)
-            lsSQL = MiscUtil.addCondition(lsSQL, "sSerialID = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
-        else
-            lsSQL = MiscUtil.addCondition(lsSQL, "sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
-
-    
+        poJSON = new JSONObject();
 
         poJSON = ShowDialogFX.Search(poGRider,
                 lsSQL,
                 fsValue,
-                "Stock ID»Barcode»Branch Code",
-                "sStockIDx»sSerialID»sBranchCd",
-                "sStockIDx»sSerialID»sBranchCd",
+                "Stock ID»Ledger No»Source No»Date",
+                "sStockIDx»nLedgerNo»sSourceCd»dTransact",
+                "sStockIDx»nLedgerNo»sSourceCd»dTransact",
                 fbByCode ? 0 : 1);
 
-        if (poJSON
-                != null) {
-            return poModel.openRecord((String) poJSON.get("sStockIDx"));
+        if (poJSON != null) {
+            return openRecord(fsValue);
         } else {
             poJSON.put("result", "error");
             poJSON.put("message", "No record loaded to update.");
             return poJSON;
         }
     }
+
     @Override
     public Model_Inv_Serial getModel() {
-        return poModel;
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    public ArrayList<Model_Inv_Serial> getMaster(){return poModel;}
+    public void setMaster(ArrayList<Model_Inv_Serial> foObj){poModel = foObj;}
+    
+    
+    public void setMaster(int fnRow, int fnIndex, Object foValue){ poModel.get(fnRow).setValue(fnIndex, foValue);}
+    public void setMaster(int fnRow, String fsIndex, Object foValue){ poModel.get(fnRow).setValue(fsIndex, foValue);}
+    public Object getMaster(int fnRow, int fnIndex){return poModel.get(fnRow).getValue(fnIndex);}
+    public Object getMaster(int fnRow, String fsIndex){return poModel.get(fnRow).getValue(fsIndex);}
+    
+    
+    public JSONObject addLedger(){
+        poJSON = new JSONObject();
+        if (poModel.isEmpty()){
+            poModel.add(new Model_Inv_Serial(poGRider));
+            poModel.get(0).newRecord();
+            poJSON.put("result", "success");
+            poJSON.put("message", "Inventory add record.");
+            
+
+        } else {
+            
+//            ValidatorInterface validator = ValidatorFactory.make(ValidatorFactory.TYPE.AP_Client_Ledger, poModel.get(poModel.size()-1));
+//            Validator_Client_Address  validator = new Validator_Client_Address(paAddress.get(paAddress.size()-1));
+//            if(!validator.isEntryOkay()){
+//                poJSON.put("result", "error");
+//                poJSON.put("message", validator.getMessage());
+//                return poJSON;
+//            }
+            poModel.add(new Model_Inv_Serial(poGRider));
+            poModel.get(poModel.size()-1).newRecord();
+            
+            poJSON.put("result", "success");
+            poJSON.put("message", "Address add record.");
+        }
+        return poJSON;
     }
     
+    public JSONObject OpenInvSerial(String fsValue){
+        String lsSQL = "SELECT" +
+                        "   a.sSerialID" +
+                        " , a.sBranchCd" +
+                        " , a.sSerial01" +
+                        " , a.sSerial02" +
+                        " , a.nUnitPrce" +
+                        " , a.sStockIDx" +
+                        " , a.cLocation" +
+                        " , a.cSoldStat" +
+                        " , a.cUnitType" +
+                        " , a.sCompnyID" +
+                        " , a.sWarranty" +
+                        " , a.dModified" +
+                        " , b.sBarCodex xBarCodex" +
+                        " , b.sDescript xDescript" +
+                        " , c.sBranchNm xBranchNm " +
+                        "FROM Inv_Serial a" +
+                        "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
+                        "    LEFT JOIN Branch c ON a.sBranchCd = c.sBranchCd";
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx  = " + SQLUtil.toSQL(fsValue));
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sBranchCd  = " + SQLUtil.toSQL(poGRider.getBranchCode()));
+        System.out.println("open SERial SQL == \n" +lsSQL);
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+        poJSON = new JSONObject();
+        try {
+            int lnctr = 0;
+            if (MiscUtil.RecordCount(loRS) > 0) {
+                poModel = new ArrayList<>();
+                while(loRS.next()){
+                        poModel.add(new Model_Inv_Serial(poGRider));
+                        poModel.get(poModel.size() - 1).openRecord(loRS.getString("sSerialID"));
+                        
+                        pnEditMode = EditMode.UPDATE;
+                        lnctr++;
+                        poJSON.put("result", "success");
+                        poJSON.put("message", "Record loaded successfully.");
+                    } 
+                
+                System.out.println("lnctr = " + lnctr);
+                
+            }else{
+                poModel = new ArrayList<>();
+                addLedger();
+                poJSON.put("result", "error");
+                poJSON.put("continue", true);
+                poJSON.put("message", "No record selected.");
+            }
+            
+            MiscUtil.close(loRS);
+        } catch (SQLException e) {
+            poJSON.put("result", "error");
+            poJSON.put("message", e.getMessage());
+        }
+        return poJSON;
+    }
+    private JSONObject saveLedger(){
+        
+        JSONObject obj = new JSONObject();
+        if (poModel.size()<= 0){
+            obj.put("result", "error");
+            obj.put("message", "No client address detected. Please encode client address.");
+            return obj;
+        }
+        
+        int lnCtr;
+        String lsSQL;
+        
+        for (lnCtr = 0; lnCtr <= poModel.size() -1; lnCtr++){
+            poModel.get(lnCtr).setStockID(poModel.get(lnCtr).getStockID());
+//            Validator_Client_Address validator = new Validator_Client_Address(paAddress.get(lnCtr));
+//            
+//            ValidatorInterface validator = ValidatorFactory.make(ValidatorFactory.TYPE.AP_Client_Ledger, poModel.get(lnCtr));
+//            poModel.get(lnCtr).setModifiedDate(poGRider.getServerDate());
+//            
+//            if (!validator.isEntryOkay()){
+//                obj.put("result", "error");
+//                obj.put("message", validator.getMessage());
+//                return obj;
+//            
+//            }
+            obj = poModel.get(lnCtr).saveRecord();
+
+        }    
+        
+        return obj;
+    }
+    public JSONObject OpenInvSerialWithCondition(String fsValue, String lsCondition){
+        
+        poJSON =  new JSONObject();
+        String lsSQL = "SELECT" +
+                        "   a.sSerialID" +
+                        " , a.sBranchCd" +
+                        " , a.sSerial01" +
+                        " , a.sSerial02" +
+                        " , a.nUnitPrce" +
+                        " , a.sStockIDx" +
+                        " , a.cLocation" +
+                        " , a.cSoldStat" +
+                        " , a.cUnitType" +
+                        " , a.sCompnyID" +
+                        " , a.sWarranty" +
+                        " , a.dModified" +
+                        " , b.sBarCodex xBarCodex" +
+                        " , b.sDescript xDescript" +
+                        " , c.sBranchNm xBranchNm " +
+                        "FROM Inv_Serial a" +
+                        "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
+                        "    LEFT JOIN Branch c ON a.sBranchCd = c.sBranchCd";
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx  = " + SQLUtil.toSQL(fsValue));
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sBranchCd  = " + SQLUtil.toSQL(poGRider.getBranchCode()));
+        lsSQL = MiscUtil.addCondition(lsSQL, lsCondition);
+        System.out.println("open SERial SQL with condition == \n" + lsSQL);
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+        poJSON = new JSONObject();
+        try {
+            int lnctr = 0;
+            if (MiscUtil.RecordCount(loRS) > 0) {
+                poModel = new ArrayList<>();
+                while(loRS.next()){
+                        poModel.add(new Model_Inv_Serial(poGRider));
+                        poModel.get(poModel.size() - 1).openRecord(loRS.getString("sSerialID"));
+                        
+                        pnEditMode = EditMode.UPDATE;
+                        lnctr++;
+                        poJSON.put("result", "success");
+                        poJSON.put("message", "Record loaded successfully.");
+                    } 
+                
+                System.out.println("lnctr = " + lnctr);
+                
+            }else{
+                poModel = new ArrayList<>();
+//                addLedger();
+                poJSON.put("result", "error");
+//                poJSON.put("continue", true);
+                poJSON.put("message", "No record found.");
+            }
+            
+            MiscUtil.close(loRS);
+        } catch (SQLException e) {
+            poJSON.put("result", "error");
+            poJSON.put("message", e.getMessage());
+        }
+        return poJSON;
+    }
+
 }

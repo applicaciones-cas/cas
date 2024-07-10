@@ -51,6 +51,7 @@ public class ModelInventory {
                             ", a.sModelCde" +
                             ", a.sColorCde" +
                             ", a.sMeasurID" +
+                            ", a.sInvTypCd" +
                             ", a.nUnitPrce" +
                             ", a.nSelPrice" +
                             ", a.nDiscLev1" +
@@ -81,6 +82,7 @@ public class ModelInventory {
                             ", j.sDescript xInvTypNm" +
                             ", k.sBarCodex xSuperCde" +
                             ", k.sDescript xSuperDsc" +
+                            ", c.sMainCatx xMainCatx" +
                         " FROM " + System.getProperty("sys.table") + " a"+ 
                             " LEFT JOIN Category b ON a.sCategCd1 = b.sCategrCd" +
                             " LEFT JOIN Category_Level2 c ON a.sCategCd2 = c.sCategrCd" +
@@ -91,8 +93,7 @@ public class ModelInventory {
                             " LEFT JOIN Color h ON a.sColorCde = h.sColorCde" +
                             " LEFT JOIN Measure i ON a.sMeasurID = i.sMeasurID" +
                             " LEFT JOIN Inv_Type j ON c.sInvTypCd = j.sInvTypCd" +
-                            " LEFT JOIN Inventory k ON a.sSupersed = k.sStockIDx" +
-                        " WHERE 0=1";
+                            " LEFT JOIN Inventory k ON a.sSupersed = k.sStockIDx" ;
         
         
         ResultSet loRS = instance.executeQuery(lsSQL);

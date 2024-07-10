@@ -60,7 +60,7 @@ public class ModelInvHistLedger {
                         " , c.sWHouseNm xWHouseNm " +
                         "FROM " + System.getProperty("sys.table") + " a" +
                         "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWHouseNm";
+                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID";
         
         
         ResultSet loRS = instance.executeQuery(lsSQL);

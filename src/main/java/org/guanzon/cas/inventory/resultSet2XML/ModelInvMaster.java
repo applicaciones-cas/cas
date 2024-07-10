@@ -67,9 +67,8 @@ public class ModelInvMaster {
                             " , d.sDescript xLocatnNm" +
                         " FROM " + System.getProperty("sys.table") + " a"+ 
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                            " LEFT JOIN Warehouse c ON a.sWhouseID = c.sWHouseNm" +
-                            " LEFT JOIN Inv_Location d ON a.sLocatnCd = d.sLocatnCd" +
-                        " WHERE 0=1";
+                            " LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID" +
+                            " LEFT JOIN Inv_Location d ON a.sLocatnCd = d.sLocatnCd";
 
         
         
