@@ -627,18 +627,18 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             txtField13.setText((String) oTrans.getInvModel().getMeasureName());
             
             
-            txtField14.setText(CommonUtils.NumberFormat(oTrans.getInvModel().getDiscountLevel1(), "#,##0.00"));
-            txtField15.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getDiscountLevel2(), "#,##0.00"));
-            txtField16.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getDiscountLevel3(), "#,##0.00"));
-            txtField17.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getDealerDiscount(), "#,##0.00"));
+             txtField14.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDiscountLevel1().toString()), "#,##0.00"));
+            txtField15.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDiscountLevel2().toString()), "#,##0.00"));
+            txtField16.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDiscountLevel3().toString()), "#,##0.00"));
+            txtField17.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDealerDiscount().toString()), "#,##0.00"));
             
             txtField26.setText(String.valueOf(oTrans.getInvModel().getMinLevel()));
             txtField27.setText(String.valueOf(oTrans.getInvModel().getMaxLevel()));
             txtField29.setText(String.valueOf(oTrans.getInvModel().getMinLevel()));
             txtField30.setText(String.valueOf(oTrans.getInvModel().getMaxLevel()));
             
-            txtField18.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getUnitPrice(), "#,##0.00"));
-            txtField19.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getSelPrice(), "#,##0.00"));
+            txtField18.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getUnitPrice().toString()), "#,##0.00"));
+            txtField19.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getSelPrice().toString()), "#,##0.00"));
             
             txtField20.setText((String) oTrans.getInvModel().getSupersed());
             txtField21.setText(String.valueOf(oTrans.getInvModel().getShlfLife()));

@@ -5,6 +5,7 @@
 package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -366,7 +367,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                      break;
 
                 case "btnBrowse": 
-//                    
+//                      
                         poJSON = oTrans.searchRecord(txtSeeks01.getText().toString(), true);
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -375,7 +376,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                             break;
                         }
                         pnEditMode = oTrans.getEditMode();
-                        
+                        data.clear();   
                         System.out.print("\neditmode on browse == " +pnEditMode);
                         loadInventory();
                         loadSubUnitData();
@@ -802,6 +803,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                 switch (lnIndex){
                     
                     case 1: /*search Barrcode*/
+                        System.out.print("LSVALUE OF SEARCH 1 ==== " + lsValue);
                         poJSON = oTrans.searchRecord(lsValue, true);
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -917,15 +919,16 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             txtField12.setText((String) oTrans.getModel().getColorName());
             txtField13.setText((String) oTrans.getModel().getMeasureName());
             
-            txtField14.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountLevel1(), "#,##0.00"));
-            txtField15.setText( CommonUtils.NumberFormat(oTrans.getModel().getDiscountLevel2(), "#,##0.00"));
-            txtField16.setText( CommonUtils.NumberFormat(oTrans.getModel().getDiscountLevel3(), "#,##0.00"));
-            txtField17.setText( CommonUtils.NumberFormat(oTrans.getModel().getDealerDiscount(), "#,##0.00"));
+         
+            txtField14.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().getDiscountLevel1().toString()), "#,##0.00"));
+            txtField15.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().getDiscountLevel2().toString()), "#,##0.00"));
+            txtField16.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().getDiscountLevel3().toString()), "#,##0.00"));
+            txtField17.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().getDealerDiscount().toString()), "#,##0.00"));
             
-            txtField26.setText(String.valueOf(oTrans.getModel().getMinLevel()));
+            txtField26.setText(oTrans.getModel().getMinLevel().toString());
             txtField27.setText(String.valueOf(oTrans.getModel().getMaxLevel()));
-            txtField18.setText( CommonUtils.NumberFormat(oTrans.getModel().getUnitPrice(), "#,##0.00"));
-            txtField19.setText( CommonUtils.NumberFormat(oTrans.getModel().getSelPrice(), "#,##0.00"));
+            txtField18.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().getUnitPrice().toString()), "#,##0.00"));
+            txtField19.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().getSelPrice().toString()), "#,##0.00"));
             
             
             txtField20.setText((String) oTrans.getModel().getSupersed());
