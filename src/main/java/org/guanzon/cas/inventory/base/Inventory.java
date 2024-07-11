@@ -5,6 +5,10 @@
 package org.guanzon.cas.inventory.base;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
@@ -317,12 +321,43 @@ public class Inventory implements GRecord{
         String lsSQL = poModel.getSQL();
        
         if (fbByCode)
-            lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
         else
             lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
             
         System.out.print("this is lsSQL == " + lsSQL + "\n");
 
+        
+        if(!pbWthParent){
+            lsSQL = poModel.getSQL();
+            if (fbByCode)
+                lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
+            else
+                lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
+                lsSQL += " LIMIT 1";
+                
+              
+            System.out.print("test lsSQL == " + lsSQL + "\n");  
+            ResultSet loRS = poGRider.executeQuery(lsSQL);
+
+          try {
+                if (!loRS.next()){
+                    MiscUtil.close(loRS);
+
+                    poJSON = new JSONObject();
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "No transaction found for the givern criteria.");
+                    return poJSON;
+                }
+              
+                lsSQL = loRS.getString("sStockIDx");
+                MiscUtil.close(loRS);
+                return openRecord(lsSQL);
+          } catch (SQLException ex) {
+              Logger.getLogger(InvMaster.class.getName()).log(Level.SEVERE, null, ex);
+          }
+
+        }
         poJSON = ShowDialogFX.Search(poGRider,
                 lsSQL,
                 fsValue,
@@ -335,6 +370,7 @@ public class Inventory implements GRecord{
             pnEditMode = EditMode.READY;
             return openRecord((String) poJSON.get("sStockIDx"));
         } else {
+            poJSON = new JSONObject();
             poJSON.put("result", "error");
             poJSON.put("message", "No record loaded to update.");
             return poJSON;

@@ -5,6 +5,10 @@
 package org.guanzon.cas.inventory.base;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRider;
@@ -311,9 +315,41 @@ public class InvMaster implements GRecord{
             lsSQL = MiscUtil.addCondition(lsSQL, "sStockIDx = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
         else
             lsSQL = MiscUtil.addCondition(lsSQL, "sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
+        
+        
+        
+        if(!pbWthParent){
+            lsSQL = poModel.makeSelectSQL();
+            if (fbByCode)
+                lsSQL = MiscUtil.addCondition(lsSQL, "sStockIDx = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
+            else
+                lsSQL = MiscUtil.addCondition(lsSQL, "sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
+                lsSQL += " LIMIT 1";
+                
+                
+            ResultSet loRS = poGRider.executeQuery(lsSQL);
 
+          try {
+                if (!loRS.next()){
+                    MiscUtil.close(loRS);
+
+                    poJSON = new JSONObject();
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "No transaction found for the givern criteria.");
+                    return poJSON;
+                }
+              
+                lsSQL = loRS.getString("sStockIDx");
+                MiscUtil.close(loRS);
+                return poModel.openRecord(lsSQL);
+          } catch (SQLException ex) {
+              Logger.getLogger(InvMaster.class.getName()).log(Level.SEVERE, null, ex);
+          }
+
+        }
+        
+        
     
-
         poJSON = ShowDialogFX.Search(poGRider,
                 lsSQL,
                 fsValue,
@@ -322,10 +358,10 @@ public class InvMaster implements GRecord{
                 "sStockIDx»sBarCodex»sDescript",
                 fbByCode ? 0 : 1);
 
-        if (poJSON
-                != null) {
+        if (poJSON != null) {
             return poModel.openRecord((String) poJSON.get("sStockIDx"));
         } else {
+            poJSON = new JSONObject();
             poJSON.put("result", "error");
             poJSON.put("message", "No record loaded to update.");
             return poJSON;

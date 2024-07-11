@@ -304,7 +304,7 @@ public class InvLedger implements GRecord{
                         " FROM Inv_Ledger a" +
                         "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                         "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID";
-        lsSQL = MiscUtil.addCondition(lsSQL, "sStockIDx = " + SQLUtil.toSQL(fsValue));
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue));
         System.out.println(lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
 
