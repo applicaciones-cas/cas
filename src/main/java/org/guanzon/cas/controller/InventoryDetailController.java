@@ -213,8 +213,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     @FXML
     private TextField txtField23;
 //
-//    @FXML
-//    private TextField txtField24;
+    @FXML
+    private TextField txtField24;
 
     @FXML
     private TextField txtField25;
@@ -541,6 +541,14 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                 gridFix.setDisable(!pbValue);
                 gridEditable.setDisable(!pbValue);
             }
+            System.out.println("EDIT MODE STAT == " + pnEditMode);
+            if (pnEditMode == EditMode.UPDATE || pnEditMode == 2) { 
+                  txtField22.setDisable(true);
+             }
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == 0) { 
+                  txtField22.setDisable(false);
+             }
+                         
     }
     
     /*TO CONTROL BUTTONS BASE ON INITMODE*/
@@ -650,27 +658,18 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             chkField04.setSelected((oTrans.getInvModel().isActive()));
             
             txtField22.setText((String)oTrans.getModel().getLocationnName());
-            System.out.println("getLocationnName == " + (String)oTrans.getModel().getLocationnName());
             txtField23.setText((String)oTrans.getModel().getWareHouseNm());
-            System.out.println("getWareHouseNm == " + (String)oTrans.getModel().getWareHouseNm());
+            txtField24.setText((String)oTrans.getModel().getSectionName());
+            txtField25.setText((String)oTrans.getModel().getBinNumber());
             
             txtField28.setText((String.valueOf(oTrans.getModel().getBegQtyxx())));
             txtField31.setText((String.valueOf(oTrans.getModel().getClassify())));
             txtField32.setText((String.valueOf(oTrans.getModel().getAvgMonSl())));
             txtField33.setText((String.valueOf(oTrans.getModel().getResvOrdr())));
             txtField34.setText((String.valueOf(oTrans.getModel().getQtyOnHnd())));
-            System.out.println("getQtyOnHnd == " + (String.valueOf(oTrans.getModel().getQtyOnHnd())));
-//            cmbField02.setValue(unitType.get(Integer.parseInt(oTrans.getInvModel().getUnitType())));
-//            cmbField02.setItems(unitType);
-//            Integer sValue = Integer.valueOf(oTrans.getInvModel().getUnitType());
-//            System.out.print("value of unitype == " + sValue);
-//            
-//            cmbField02.getSelectionModel().select(sValue);
-//            cmbField02.setOnAction(event -> {
-//            oTrans.getInvModel().setUnitType(String.valueOf(cmbField02.getSelectionModel().getSelectedIndex()));
-//            
-//        });
 
+            if(pnEditMode == EditMode.ADDNEW) txtField22.setPromptText("PRESS F3: Search");
+           
 
             
             if (chkField04.isSelected()){
@@ -705,7 +704,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         txtField21.focusedProperty().addListener(txtField_Focus);
         txtField22.focusedProperty().addListener(txtField_Focus);
         txtField23.focusedProperty().addListener(txtField_Focus);
-//      txtField24.focusedProperty().addListener(txtField_Focus);
+        txtField24.focusedProperty().addListener(txtField_Focus);
         txtField25.focusedProperty().addListener(txtField_Focus);
         txtField26.focusedProperty().addListener(txtField_Focus);
         txtField27.focusedProperty().addListener(txtField_Focus);
@@ -763,7 +762,9 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                         }
                         System.out.print( "Location == " + oTrans.getMaster(27));
-                        txtField22.setText((String) oTrans.getMaster(27));  
+                        txtField22.setText((String) oTrans.getMaster(27)); 
+                        txtField23.setText(oTrans.getModel().getWareHouseNm());
+                        txtField24.setText(oTrans.getModel().getSectionName()); 
                         break;
                     case 23:
                         poJson = new JSONObject();
@@ -798,7 +799,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
              txtField05, txtField06, txtField07, txtField08, txtField09,txtField10, 
              txtField11, txtField12, txtField13, txtField14, txtField15,txtField16, 
              txtField17, txtField18, txtField19, txtField20, txtField21,txtField22, 
-             txtField23, txtField25, txtField26, txtField27,txtField28,txtField29, 
+             txtField23, txtField24, txtField25, txtField26, txtField27,txtField28,txtField29, 
              txtField30, txtField31, txtField32, txtField33, txtField34},
 
         };

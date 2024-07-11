@@ -481,7 +481,7 @@
                                                             <Insets right="10.0" />
                                                          </GridPane.margin>
                                                       </Text>
-                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Level" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Level" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                                                          <font>
                                                             <Font size="14.0" />
                                                          </font>
@@ -489,10 +489,19 @@
                                                             <Insets right="10.0" />
                                                          </GridPane.margin>
                                                       </Text>
-                                                      <TextField fx:id="txtField22" promptText="PRESS F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                                                      <TextField fx:id="txtField23" promptText="PRESS F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                      <TextField fx:id="txtField25" promptText="PRESS F3: Search" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                      <TextField fx:id="txtField22" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                      <TextField fx:id="txtField23" disable="true" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                      <TextField fx:id="txtField25" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                                       <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="4" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Section" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                                         <font>
+                                                            <Font size="14.0" />
+                                                         </font>
+                                                         <GridPane.margin>
+                                                            <Insets right="10.0" />
+                                                         </GridPane.margin>
+                                                      </Text>
+                                                      <TextField fx:id="txtField24" disable="true" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                    </children>
                                                 </GridPane>
                                                 <GridPane fx:id="gridFix" hgap="3.0" vgap="3.0">
