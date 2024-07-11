@@ -509,20 +509,17 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
         txtSeeks02.setOnKeyPressed(this::txtSeeks_KeyPressed);
         
-//        cmbField02.setItems(unitType);
-//        cmbField02.getSelectionModel().select(0);
-//        cmbField02.setOnAction(event -> {
-//            oTrans.getModel().setUnitType(String.valueOf(cmbField02.getSelectionModel().getSelectedIndex()));
-//            
-//        });
         
         System.out.println("Connected - " + oApp.getLogName());
         System.out.println("Connected - " + oApp.getDivisionCode());
         System.out.println("Connected - " + oApp.getDivisionName());
         
-//        if (!oApp.getDivisionCode().equals(3)  || !oApp.getDivisionCode() .equals(4) ){
-//            forHospitality();
-//        }
+
+        if (chkField04.isSelected()){
+                lblStatus.setText("ACTIVE");
+            }else{
+                lblStatus.setText("INACTIVE");
+            }
 
     }
     /*textfield lost focus*/
@@ -631,7 +628,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                     break;
                     
                 case 27: /*MAXIMUM LEVEL*/
-                   
                    oTrans.getModel().setMaxLevel((Integer.parseInt(lsValue)));
                    System.out.print( "MAXIMUM LEVEL == " + oTrans.getModel().setMaxLevel((Integer.parseInt(lsValue))));
                    if ("error".equals((String) jsonObject.get("result"))) {
@@ -675,7 +671,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                 case 25: /*Quantity*/
                     oTrans.getSubUnit().getMaster().get(pnRow).setQuantity(Integer.parseInt(lsValue));
                     loadSubUnitData();
-//                            pnContact, "sRemarksx", lsValue);
                     
             }                  
         } else
@@ -807,7 +802,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                 switch (lnIndex){
                     
                     case 1: /*search Barrcode*/
-                        poJSON = oTrans.searchRecord(txtSeeks01.getText().toString(), true);
+                        poJSON = oTrans.searchRecord(lsValue, true);
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                            
@@ -815,16 +810,13 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                             break;
                         }
                         pnEditMode = oTrans.getEditMode();
-                        
-                        System.out.print("\neditmode on browse == " +pnEditMode);
                         loadInventory();
                         loadSubUnitData();
                         loadSubUnit();
                         initTable();
-                        System.out.println("EDITMODE sa cancel= " + pnEditMode);
                         break;
                     case 2 :
-                         poJSON = oTrans.searchRecord(txtSeeks02.getText().toString(), false);
+                         poJSON = oTrans.searchRecord(lsValue, false);
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                            
@@ -943,10 +935,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             chkField02.setSelected("1".equals(oTrans.getModel().getComboInv()));
             chkField03.setSelected("1".equals(oTrans.getModel().getWthPromo()));
             chkField04.setSelected((oTrans.getModel().isActive()));
-            
-            
-//            cmbField02.setValue(unitType.get(Integer.parseInt((oTrans.getModel().getUnitType().isEmpty())?"0":oTrans.getModel().getUnitType())));
-//            System.out.println("unitType = " + unitType.get(Integer.parseInt(oTrans.getModel().getUnitType())));
+
             if (chkField04.isSelected()){
                 lblStatus.setText("ACTIVE");
             }else{
@@ -971,10 +960,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        
-//        index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        index08.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
 //        
         index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
@@ -989,7 +974,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             });
         });
         tblSubItems.setItems(data);
-//        tblMobile.getSelectionModel().select(pnMobile + 1);
         tblSubItems.autosize();
     }
     
