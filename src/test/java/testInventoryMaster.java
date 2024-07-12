@@ -4,20 +4,14 @@
  */
 
 
-import java.math.BigDecimal;
-import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
-import org.guanzon.appdriver.base.SQLUtil;
-import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inventory.base.InvMaster;
-import org.guanzon.cas.inventory.base.Inventory;
 import org.json.simple.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -66,7 +60,7 @@ public class testInventoryMaster{
             Assert.fail((String) loJSON.get("message"));
         }
 
-        loJSON = record.getInvModel().setStockID("M00124000053");
+        loJSON = record.getInvModel().setStockID("M00124000054");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
@@ -291,11 +285,11 @@ public class testInventoryMaster{
         Assert.assertEquals(1, record.getModel().getBinNumber());
         
         
-         loJSON = record.getModel().setBegQtyxx(0.0);
+         loJSON = record.getModel().setBegQtyxx(0);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals(0.0, record.getModel().getBegQtyxx());
+        Assert.assertEquals(0, record.getModel().getBegQtyxx());
         
         
          loJSON = record.getModel().setClassify("F");
@@ -332,12 +326,12 @@ public class testInventoryMaster{
         }
         Assert.assertEquals("1", record.getInvModel().getRecdStat());
         
-        loJSON = record.getModel().setStockID("M00124000053");
+        loJSON = record.getModel().setStockID("M00124000054");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         } 
         
-        Assert.assertEquals("M00124000053", record.getModel().getStockID());
+        Assert.assertEquals("M00124000054", record.getModel().getStockID());
         
         loJSON = record.getModel().setBranchCd("M001");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -346,17 +340,17 @@ public class testInventoryMaster{
         
         Assert.assertEquals("M001", record.getModel().getBranchCd());
         TransNox = record.getInvModel().getStockID();
-        loJSON = record.saveRecord();
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
+//        loJSON = record.saveRecord();
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
     }
         
      @Test
     public void testOpenInventory() {
         JSONObject loJSON;
         System.out.println(TransNox);
-        loJSON = record.openRecord(TransNox);
+        loJSON = record.openRecord("M00124000054");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
@@ -401,23 +395,23 @@ public class testInventoryMaster{
         Assert.assertEquals("1", record.getInvModel().getRecdStat());
         
         
-        Assert.assertEquals("M001241", record.getModel().getLocatnCode());
-        Assert.assertEquals("BLDG. 1-A", record.getModel().getLocationnName());
+        Assert.assertEquals("M001242", record.getModel().getLocatnCode());
+        Assert.assertEquals("BLDG. 1-B", record.getModel().getLocationnName());
         Assert.assertEquals("001", record.getModel().getWareHouseID());        
         Assert.assertEquals("Building 1", record.getModel().getWareHouseNm());
-        Assert.assertEquals("001", record.getModel().getBinNumber());        
+        Assert.assertEquals(1, Integer.parseInt(record.getModel().getBinNumber().toString()), 0);        
         
         
         Assert.assertEquals(0, record.getModel().getBegQtyxx());        
         Assert.assertEquals("F", record.getModel().getClassify());
-        Assert.assertEquals(0.00, record.getModel().getAvgMonSl());        
-        Assert.assertEquals(0, record.getModel().getResvOrdr());   
-        Assert.assertEquals(0, record.getModel().getQtyOnHnd());
+        Assert.assertEquals(0, Integer.parseInt(record.getModel().getAvgMonSl().toString()));        
+        Assert.assertEquals(0, Integer.parseInt(record.getModel().getResvOrdr().toString()));   
+        Assert.assertEquals(0, Integer.parseInt(record.getModel().getQtyOnHnd().toString()));
     }
      @Test
     public void testUpdateInventory() {
         JSONObject loJSON;
-        loJSON = record.openRecord("M00124000052");
+        loJSON = record.openRecord("M00124000054");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }

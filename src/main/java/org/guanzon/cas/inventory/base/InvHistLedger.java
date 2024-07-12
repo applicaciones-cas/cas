@@ -16,8 +16,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
-import org.guanzon.cas.inventory.models.Model_Inv_Hist_Ledger;
-import org.guanzon.cas.inventory.models.Model_Inv_Hist_Ledger;
+import org.guanzon.cas.model.inventory.Model_Inv_Hist_Ledger;
 import org.json.simple.JSONObject;
 
 /**
@@ -25,7 +24,7 @@ import org.json.simple.JSONObject;
  * @author User
  */
 public class InvHistLedger implements GRecord{
-    
+
 
     GRider poGRider;
     boolean pbWthParent;
@@ -210,6 +209,32 @@ public class InvHistLedger implements GRecord{
             return poJSON;
         }
     }
+    
+    public JSONObject searchRecordWithCondition(String fsValue, String condition, boolean fbByCode) {
+        String lsCondition = "";
+        Model_Inv_Hist_Ledger model = new Model_Inv_Hist_Ledger(poGRider);
+        String lsSQL = MiscUtil.addCondition(model.getSQL(), "sStockIDx = " + SQLUtil.toSQL(fsValue));
+        lsSQL = MiscUtil.addCondition(lsSQL, SQLUtil.toSQL(condition));
+        
+
+        poJSON = new JSONObject();
+
+        poJSON = ShowDialogFX.Search(poGRider,
+                lsSQL,
+                fsValue,
+                "Stock ID»Ledger No»Source No»Date",
+                "sStockIDx»nLedgerNo»sSourceCd»dTransact",
+                "sStockIDx»nLedgerNo»sSourceCd»dTransact",
+                fbByCode ? 0 : 1);
+
+        if (poJSON != null) {
+            return openRecord(fsValue);
+        } else {
+            poJSON.put("result", "error");
+            poJSON.put("message", "No record loaded to update.");
+            return poJSON;
+        }
+    }
 
     @Override
     public Model_Inv_Hist_Ledger getModel() {
@@ -274,10 +299,10 @@ public class InvHistLedger implements GRecord{
                         " , b.sBarCodex xBarCodex" +
                         " , b.sDescript xDescript" +
                         " , c.sWHouseNm xWHouseNm" +
-                        " FROM " + System.getProperty("sys.table") + " a" +
+                        " FROM Inv_Ledger a" +
                         "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                         "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID";
-        lsSQL = MiscUtil.addCondition(lsSQL, "sStockIDx = " + SQLUtil.toSQL(fsValue));
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue));
         System.out.println(lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
 
@@ -303,6 +328,69 @@ public class InvHistLedger implements GRecord{
                 poJSON.put("result", "error");
                 poJSON.put("continue", true);
                 poJSON.put("message", "No record selected.");
+            }
+            
+            MiscUtil.close(loRS);
+        } catch (SQLException e) {
+            poJSON.put("result", "error");
+            poJSON.put("message", e.getMessage());
+        }
+        return poJSON;
+    }
+    public JSONObject OpenInvLedgerWithCondition(String fsValue, String lsCondition){
+        
+        poJSON =  new JSONObject();
+        String lsSQL = "SELECTF" +
+                        "   a.sStockIDx" +
+                        " , a.sBranchCd" +
+                        " , a.sWHouseID" +
+                        " , a.nLedgerNo" +
+                        " , a.dTransact" +
+                        " , a.sSourceCd" +
+                        " , a.sSourceNo" +
+                        " , a.nQtyInxxx" +
+                        " , a.nQtyOutxx" +
+                        " , a.nQtyOrder" +
+                        " , a.nQtyIssue" +
+                        " , a.nPurPrice" +
+                        " , a.nUnitPrce" +
+                        " , a.nQtyOnHnd" +
+                        " , a.dExpiryxx" +
+                        " , a.sModified" +
+                        " , a.dModified" +
+                        " , b.sBarCodex xBarCodex" +
+                        " , b.sDescript xDescript" +
+                        " , c.sWHouseNm xWHouseNm " +
+                        "FROM Inv_Hist_Ledger a" +
+                        "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
+                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID";
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue));
+        lsSQL = MiscUtil.addCondition(lsSQL, lsCondition);
+        System.out.println(lsSQL);
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+
+        try {
+            int lnctr = 0;
+            if (MiscUtil.RecordCount(loRS) > 0) {
+                poModel = new ArrayList<>();
+                while(loRS.next()){
+                        poModel.add(new Model_Inv_Hist_Ledger(poGRider));
+                        poModel.get(poModel.size() - 1).openRecord(loRS.getString("sStockIDx"));
+                        
+                        pnEditMode = EditMode.UPDATE;
+                        lnctr++;
+                        poJSON.put("result", "success");
+                        poJSON.put("message", "Record loaded successfully.");
+                    } 
+                
+                System.out.println("lnctr = " + lnctr);
+                
+            }else{
+                poModel = new ArrayList<>();
+//                addLedger();
+                poJSON.put("result", "error");
+//                poJSON.put("continue", true);
+                poJSON.put("message", "No record found.");
             }
             
             MiscUtil.close(loRS);

@@ -17,8 +17,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
-import org.guanzon.cas.inventory.models.Model_Inv_Ledger;
-import org.guanzon.cas.inventory.models.Model_Inventory;
+import org.guanzon.cas.model.inventory.Model_Inventory;
 import org.guanzon.cas.parameters.Brand;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Category_Level2;
@@ -202,9 +201,8 @@ public class Inventory implements GRecord{
     @Override
     public JSONObject saveRecord() {
         poJSON = new JSONObject();
-        if (!pbWthParent) {
-            poGRider.beginTrans();
-        }
+        if (!pbWthParent) poGRider.beginTrans();
+        
 //        ValidatorInterface validator = ValidatorFactory.make(ValidatorFactory.TYPE.AR_Client_Master, poModel);
 //        poModel.setModifiedDate(poGRider.getServerDate());
 //

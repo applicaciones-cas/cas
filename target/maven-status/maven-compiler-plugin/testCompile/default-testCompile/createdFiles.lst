@@ -1,4 +1,6 @@
+testInventoryHistLedger.class
 testInventoryLedger.class
 testInventory.class
+testInventorySerial.class
 testInventorySubItem.class
 testInventoryMaster.class

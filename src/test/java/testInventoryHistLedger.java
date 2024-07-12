@@ -8,23 +8,21 @@ import java.util.Date;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
-import org.guanzon.appdriver.base.SQLUtil;
-import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.inventory.base.Inventory;
-import org.guanzon.cas.inventory.base.InvLedger;
+import org.guanzon.cas.inventory.base.InvHistLedger;
 import org.json.simple.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 /**
  *
  * @author User
  */
-public class testInventoryLedger{
+public class testInventoryHistLedger{
 
     static GRider instance;
-    static InvLedger record;
+    static InvHistLedger record;
 
     @BeforeClass
     public static void setUpClass() {
@@ -49,7 +47,7 @@ public class testInventoryLedger{
         
 
         instance = MiscUtil.Connect();
-        record = new InvLedger(instance, false);
+        record = new InvHistLedger(instance, false);
     }
 
     @Test
@@ -68,6 +66,7 @@ public class testInventoryLedger{
                 }
             }
         }
+        
         loJSON = record.getMaster().get(record.getMaster().size()-1).setStockID("M00124000003");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
@@ -102,7 +101,7 @@ public class testInventoryLedger{
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals(1, record.getMaster().get(record.getMaster().size()-1).getLedgerNo(), 0);
+        Assert.assertEquals(1.0, record.getMaster().get(record.getMaster().size()-1).getLedgerNo(), 0);
         
         loJSON = record.getMaster().get(record.getMaster().size()-1).setTransactDate(CommonUtils.toDate(instance.getServerDate().toString()));
         if ("error".equals((String) loJSON.get("result"))) {
@@ -114,7 +113,7 @@ public class testInventoryLedger{
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals(5, record.getMaster().get(record.getMaster().size()-1).getQuantityIn(), 0);
+        Assert.assertEquals(5.0, record.getMaster().get(record.getMaster().size()-1).getQuantityIn(), 0);
         
         loJSON = record.getMaster().get(record.getMaster().size()-1).setQuantityIssue(0);
         if ("error".equals((String) loJSON.get("result"))) {
@@ -126,7 +125,7 @@ public class testInventoryLedger{
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals(30, record.getMaster().get(record.getMaster().size()-1).getQuantityOnHand(), 0);
+        Assert.assertEquals(30.0, record.getMaster().get(record.getMaster().size()-1).getQuantityOnHand(), 0);
         
         loJSON = record.getMaster().get(record.getMaster().size()-1).setQuantityOrder(0);
         if ("error".equals((String) loJSON.get("result"))) {
