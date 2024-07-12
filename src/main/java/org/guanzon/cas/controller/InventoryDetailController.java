@@ -660,7 +660,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             txtField22.setText((String)oTrans.getModel().getLocationnName());
             txtField23.setText((String)oTrans.getModel().getWareHouseNm());
             txtField24.setText((String)oTrans.getModel().getSectionName());
-            txtField25.setText((String)oTrans.getModel().getBinNumber());
+            txtField25.setText(String.valueOf(oTrans.getModel().getBinNumber()));
             
             txtField28.setText((String.valueOf(oTrans.getModel().getBegQtyxx())));
             txtField31.setText((String.valueOf(oTrans.getModel().getClassify())));
@@ -718,6 +718,10 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         txtField12.setOnKeyPressed(this::txtField_KeyPressed);
         txtField22.setOnKeyPressed(this::txtField_KeyPressed);
         txtField23.setOnKeyPressed(this::txtField_KeyPressed);
+        
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
+        txtSeeks02.setOnKeyPressed(this::txtSeeks_KeyPressed);
+        
         if (chkField04.isSelected()){
                 lblStatus.setText("ACTIVE");
             }else{
@@ -725,6 +729,64 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             }
         
 
+    }
+    /*Text seek/search*/
+    private void txtSeeks_KeyPressed(KeyEvent event){
+        TextField txtSeeks = (TextField)event.getSource();
+        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
+        String lsValue = (txtSeeks.getText() == null ?"": txtSeeks.getText());
+        JSONObject poJSON;
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex){
+                    
+                    case 1: /*search Barrcode*/
+                        System.out.print("LSVALUE OF SEARCH 1 ==== " + lsValue);
+                        poJSON = oTrans.SearchInventory(lsValue, true);
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                           
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        pnEditMode = oTrans.getEditMode();
+                        
+                        initButton(pnEditMode);
+                        System.out.print("\neditmode on browse == " + pnEditMode);
+                        
+                        initTabAnchor();
+                        loadInventory();
+                        
+                        break;
+                    case 2 :
+                         poJSON = oTrans.SearchInventory(lsValue, false);
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                           
+                            txtSeeks02.clear();
+                            break;
+                        }
+                         pnEditMode = oTrans.getEditMode();
+                        
+                        initButton(pnEditMode);
+                        System.out.print("\neditmode on browse == " + pnEditMode);
+                        
+                        initTabAnchor();
+                        loadInventory();
+                        break;
+                }
+            case ENTER:
+                
+        }
+        switch (event.getCode()){
+        case ENTER:
+            CommonUtils.SetNextFocus(txtSeeks);
+        case DOWN:
+            CommonUtils.SetNextFocus(txtSeeks);
+            break;
+        case UP:
+            CommonUtils.SetPreviousFocus(txtSeeks);
+        }
     }
     
     /*textfield lost focus*/
@@ -738,8 +800,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         if (lsValue == null) return;         
         if(!nv){ /*Lost Focus*/
             switch (lnIndex){
-                case 1: /*Stock ID*/
-//                    
+                case 25: /*Stock ID*/
+                    oTrans.getModel().setBinNumber(Integer.parseInt(lsValue));
                     break;            
             }                  
         } else
