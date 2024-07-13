@@ -505,6 +505,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         txtField10.setOnKeyPressed(this::txtField_KeyPressed);
         txtField11.setOnKeyPressed(this::txtField_KeyPressed);
         txtField12.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField13.setOnKeyPressed(this::txtField_KeyPressed);
         txtField22.setOnKeyPressed(this::txtField_KeyPressed);
         
         txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
@@ -762,6 +763,17 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                             System.out.print( "Color == " + oTrans.getMaster(40));
                            txtField12.setText((String) oTrans.getMaster(40));      
                         break;
+                        
+                     case 13: /*search measure*/
+                        poJson = new JSONObject();
+                        poJson =  oTrans.SearchMaster(13,lsValue, false);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
+                           }
+                            System.out.print( "measure == " + oTrans.getMaster(40));
+                           txtField13.setText((String) oTrans.getMaster(41));      
+                        break;
                     case 22: /*search Barrcode for sub unit*/
                         
                         poJson = new JSONObject();
@@ -933,7 +945,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             
             txtField20.setText((String) oTrans.getModel().getSupersed());
             txtField21.setText(String.valueOf(oTrans.getModel().getShlfLife()));
-            cmbField01.setValue(String.valueOf(oTrans.getModel().getCategName2()));
+            cmbField01.setValue(String.valueOf(oTrans.getModel().getInvTypNm()));
             chkField01.setSelected("1".equals(oTrans.getModel().getSerialze()));
             chkField02.setSelected("1".equals(oTrans.getModel().getComboInv()));
             chkField03.setSelected("1".equals(oTrans.getModel().getWthPromo()));
