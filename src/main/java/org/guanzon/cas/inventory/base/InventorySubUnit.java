@@ -414,6 +414,7 @@ public class InventorySubUnit implements GRecord{
 //                return obj;
 //            
 //            }
+            poModel.get(lnCtr).setEntryNox(lnCtr + 1);
             obj = poModel.get(lnCtr).saveRecord();
 
         }    

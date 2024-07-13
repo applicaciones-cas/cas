@@ -18,6 +18,7 @@ import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
 import org.guanzon.cas.model.inventory.Model_Inventory;
+import org.guanzon.cas.model.inventory.Model_Inventory_Sub_Unit;
 import org.guanzon.cas.parameters.Brand;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Category_Level2;
@@ -25,6 +26,7 @@ import org.guanzon.cas.parameters.Category_Level3;
 import org.guanzon.cas.parameters.Category_Level4;
 import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Inv_Type;
+import org.guanzon.cas.parameters.Measure;
 import org.guanzon.cas.parameters.Model;
 import org.guanzon.cas.validators.ValidatorFactory;
 import org.guanzon.cas.validators.ValidatorInterface;
@@ -574,18 +576,20 @@ public class Inventory implements GRecord{
 //                    setMaster(fnCol, "");
 //                    return "";
 //                }
-//            case 29: //sMeasurID
-//                Measure loMeasure = new Measure(poGRider, psBranchCd, false);
-//                
-//                loJSON = loMeasure.searchMeasure(fsValue, fbByCode);
-//                
-//                if (loJSON != null){
-//                    setMaster(fnCol, (String) loJSON.get("sMeasurID"));
-//                    return (String) loJSON.get("sMeasurNm");
-//                } else {
-//                    setMaster(fnCol, "");
-//                    return "";
-//                }
+            case 13: //sMeasurID
+                Measure loMeasure = new Measure(poGRider, false);
+                loMeasure.setRecordStatus(psTranStatus);
+                loJSON = loMeasure.searchRecord(fsValue, fbByCode);
+                
+                if (loJSON != null){
+                    setMaster(fnCol, (String) loMeasure.getMaster("sMeasurID"));
+                    return setMaster("xMeasurNm", (String) loMeasure.getMaster("sMeasurNm"));
+                }  else {
+                    loJSON = new JSONObject();
+                    loJSON.put("result", "error");
+                    loJSON.put("message", "No record found.");
+                    return loJSON;
+                }
             default:
                 return null;
         }
