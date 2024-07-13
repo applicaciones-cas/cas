@@ -361,13 +361,13 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
                     }
                     break;
 
-                case 3:
-                    poJSON = oTrans.getModel().setBriefDescription(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
+//                case 3:
+//                    poJSON = oTrans.getModel().setBriefDescription(lsValue);
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        System.err.println((String) poJSON.get("message"));
+//                        return;
+//                    }
+//                    break;
             }
         } else {
             txtField.selectAll();
@@ -381,7 +381,7 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
         psPrimary = oTrans.getModel().getLocationCode();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
-        txtField03.setText(oTrans.getModel().getBriefDescription());
+//        txtField03.setText(oTrans.getModel().getBriefDescription());
 
         cbActive.setSelected(lbActive);
 

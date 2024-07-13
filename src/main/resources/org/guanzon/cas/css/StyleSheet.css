@@ -679,3 +679,9 @@ TAB PANE CSS                                                                    
 .date-picker-popup .spinner .button .right-arrow {
 	-fx-background-color: white;
 }
+
+
+
+.label:disabled {
+    -fx-opacity: 1.0; /* This ensures the text is fully opaque */
+}

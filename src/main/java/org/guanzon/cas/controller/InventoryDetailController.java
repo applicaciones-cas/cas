@@ -212,7 +212,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
     @FXML
     private TextField txtField23;
-
+//
     @FXML
     private TextField txtField24;
 
@@ -372,7 +372,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
                 
                 case "btnBrowse": 
-                       poJSON = oTrans.SearchInventory(txtSeeks01.getText().toString(), false);
+                    String lsValue = (txtSeeks01.getText().toString().isEmpty() ?"": txtSeeks01.getText().toString());
+                       poJSON = oTrans.SearchInventory(lsValue, false);
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                            
@@ -524,24 +525,30 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         }
     }
 
-    /*USE TO DISABLE ANCHOR BASE ON INITMODE*/
+    /*USE TO DISABLE ANCHOR BASE ON INITMODE*/    
     private void initTabAnchor(){
-        
+        System.out.print("EDIT MODE == " + pnEditMode);
         boolean pbValue = pnEditMode == EditMode.ADDNEW || 
                 pnEditMode == EditMode.UPDATE;
-        System.out.println("\ninitabanchor mode == " + pbValue);
-        System.out.println("\ninitabanchor mode == " + pnEditMode);
-        AnchorInput.setDisable(!pbValue);
-        gridFix.setDisable(!pbValue);
-        gridEditable.setDisable(!pbValue);
-//        AnchorTable.setDisable(pbValue);
-
-        if (pnEditMode== 0) {
-             gridFix.setDisable(pbValue);
-             AnchorInput.setDisable(pbValue);
-             gridEditable.setDisable(!pbValue);
-        }
         
+        System.out.print("pbValue == " + pbValue);
+        AnchorInput.setDisable(pbValue);
+        gridFix.setDisable(pbValue);
+        gridEditable.setDisable(!pbValue);
+        
+            if(pnEditMode == EditMode.READY ||pnEditMode == EditMode.UNKNOWN){
+                AnchorInput.setDisable(!pbValue);
+                gridFix.setDisable(!pbValue);
+                gridEditable.setDisable(!pbValue);
+            }
+            System.out.println("EDIT MODE STAT == " + pnEditMode);
+            if (pnEditMode == EditMode.UPDATE || pnEditMode == 2) { 
+                  txtField22.setDisable(true);
+             }
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == 0) { 
+                  txtField22.setDisable(false);
+             }
+                         
     }
     
     /*TO CONTROL BUTTONS BASE ON INITMODE*/
@@ -628,18 +635,18 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             txtField13.setText((String) oTrans.getInvModel().getMeasureName());
             
             
-            txtField14.setText(CommonUtils.NumberFormat(oTrans.getInvModel().getDiscountLevel1(), "#,##0.00"));
-            txtField15.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getDiscountLevel2(), "#,##0.00"));
-            txtField16.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getDiscountLevel3(), "#,##0.00"));
-            txtField17.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getDealerDiscount(), "#,##0.00"));
+             txtField14.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDiscountLevel1().toString()), "#,##0.00"));
+            txtField15.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDiscountLevel2().toString()), "#,##0.00"));
+            txtField16.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDiscountLevel3().toString()), "#,##0.00"));
+            txtField17.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDealerDiscount().toString()), "#,##0.00"));
             
             txtField26.setText(String.valueOf(oTrans.getInvModel().getMinLevel()));
             txtField27.setText(String.valueOf(oTrans.getInvModel().getMaxLevel()));
             txtField29.setText(String.valueOf(oTrans.getInvModel().getMinLevel()));
             txtField30.setText(String.valueOf(oTrans.getInvModel().getMaxLevel()));
             
-            txtField18.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getUnitPrice(), "#,##0.00"));
-            txtField19.setText( CommonUtils.NumberFormat(oTrans.getInvModel().getSelPrice(), "#,##0.00"));
+            txtField18.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getUnitPrice().toString()), "#,##0.00"));
+            txtField19.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getSelPrice().toString()), "#,##0.00"));
             
             txtField20.setText((String) oTrans.getInvModel().getSupersed());
             txtField21.setText(String.valueOf(oTrans.getInvModel().getShlfLife()));
@@ -651,27 +658,18 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             chkField04.setSelected((oTrans.getInvModel().isActive()));
             
             txtField22.setText((String)oTrans.getModel().getLocationnName());
-            System.out.println("getLocationnName == " + (String)oTrans.getModel().getLocationnName());
             txtField23.setText((String)oTrans.getModel().getWareHouseNm());
-            System.out.println("getWareHouseNm == " + (String)oTrans.getModel().getWareHouseNm());
+            txtField24.setText((String)oTrans.getModel().getSectionName());
+            txtField25.setText(String.valueOf(oTrans.getModel().getBinNumber()));
             
             txtField28.setText((String.valueOf(oTrans.getModel().getBegQtyxx())));
             txtField31.setText((String.valueOf(oTrans.getModel().getClassify())));
             txtField32.setText((String.valueOf(oTrans.getModel().getAvgMonSl())));
             txtField33.setText((String.valueOf(oTrans.getModel().getResvOrdr())));
             txtField34.setText((String.valueOf(oTrans.getModel().getQtyOnHnd())));
-            System.out.println("getQtyOnHnd == " + (String.valueOf(oTrans.getModel().getQtyOnHnd())));
-//            cmbField02.setValue(unitType.get(Integer.parseInt(oTrans.getInvModel().getUnitType())));
-//            cmbField02.setItems(unitType);
-//            Integer sValue = Integer.valueOf(oTrans.getInvModel().getUnitType());
-//            System.out.print("value of unitype == " + sValue);
-//            
-//            cmbField02.getSelectionModel().select(sValue);
-//            cmbField02.setOnAction(event -> {
-//            oTrans.getInvModel().setUnitType(String.valueOf(cmbField02.getSelectionModel().getSelectedIndex()));
-//            
-//        });
 
+            if(pnEditMode == EditMode.ADDNEW) txtField22.setPromptText("PRESS F3: Search");
+           
 
             
             if (chkField04.isSelected()){
@@ -721,8 +719,74 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         txtField22.setOnKeyPressed(this::txtField_KeyPressed);
         txtField23.setOnKeyPressed(this::txtField_KeyPressed);
         
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
+        txtSeeks02.setOnKeyPressed(this::txtSeeks_KeyPressed);
+        
+        if (chkField04.isSelected()){
+                lblStatus.setText("ACTIVE");
+            }else{
+                lblStatus.setText("INACTIVE");
+            }
         
 
+    }
+    /*Text seek/search*/
+    private void txtSeeks_KeyPressed(KeyEvent event){
+        TextField txtSeeks = (TextField)event.getSource();
+        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
+        String lsValue = (txtSeeks.getText() == null ?"": txtSeeks.getText());
+        JSONObject poJSON;
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex){
+                    
+                    case 1: /*search Barrcode*/
+                        System.out.print("LSVALUE OF SEARCH 1 ==== " + lsValue);
+                        poJSON = oTrans.SearchInventory(lsValue, true);
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                           
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        pnEditMode = oTrans.getEditMode();
+                        
+                        initButton(pnEditMode);
+                        System.out.print("\neditmode on browse == " + pnEditMode);
+                        
+                        initTabAnchor();
+                        loadInventory();
+                        
+                        break;
+                    case 2 :
+                         poJSON = oTrans.SearchInventory(lsValue, false);
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                           
+                            txtSeeks02.clear();
+                            break;
+                        }
+                         pnEditMode = oTrans.getEditMode();
+                        
+                        initButton(pnEditMode);
+                        System.out.print("\neditmode on browse == " + pnEditMode);
+                        
+                        initTabAnchor();
+                        loadInventory();
+                        break;
+                }
+            case ENTER:
+                
+        }
+        switch (event.getCode()){
+        case ENTER:
+            CommonUtils.SetNextFocus(txtSeeks);
+        case DOWN:
+            CommonUtils.SetNextFocus(txtSeeks);
+            break;
+        case UP:
+            CommonUtils.SetPreviousFocus(txtSeeks);
+        }
     }
     
     /*textfield lost focus*/
@@ -736,140 +800,9 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         if (lsValue == null) return;         
         if(!nv){ /*Lost Focus*/
             switch (lnIndex){
-                case 1: /*Stock ID*/
-//                    oTrans.getModel().setStockID(lsValue);
-//                   System.out.print( "STOCK ID == " + oTrans.getModel().setStockID(lsValue));
-                    break;
-//                case 2:/*barrcode*/
-//                   oTrans.getModel().setBarcode(lsValue);
-//                   System.out.print( "BARRCODE == " + oTrans.getModel().setBarcode(lsValue));
-//                    break;
-//                case 3:/*ALT barrcode*/   
-//                   oTrans.getModel().setAltBarcode (lsValue);
-//                   System.out.print( "ALT BARRCODE == " + oTrans.getModel().setAltBarcode (lsValue));
-//                    break;
-//                case 4:/*BRIEF DESC*/
-//                   oTrans.getModel().setBriefDescription(lsValue);
-//                   System.out.print( "BRIEF DESC == " + oTrans.getModel().setBriefDescription (lsValue));
-//                    break;
-//                case 5:/*DESC*/
-//                   oTrans.getModel().setDescription(lsValue);
-//                   System.out.print( "DESC == " + oTrans.getModel().setDescription(lsValue));
-//                    break;
-//                case 6:/*CATEGORY CODE 1*/
-//                   oTrans.getModel().setCategCd1(lsValue);
-//                   System.out.print( "CATEGORY 1 == " + oTrans.getModel().setCategCd1(lsValue));
-//                    break;
-//                case 7:/*CATEGORY CODE 2*/
-//                  oTrans.getModel().setCategCd2(lsValue);
-//                   System.out.print( "CATEGORY 2 == " + oTrans.getModel().setCategCd2(lsValue));
-//                    break;
-//                case 8:/*CATEGORY CODE 3*/
-//                   oTrans.getModel().setCategCd3(lsValue);
-//                   System.out.print( "CATEGORY 3 == " + oTrans.getModel().setCategCd3(lsValue));
-//                    break;
-//                case 9:/*CATEGORY CODE 4*/
-//                   oTrans.getModel().setCategCd4(lsValue);
-//                   System.out.print( "CATEGORY 4 == " + oTrans.getModel().setCategCd4(lsValue));
-//                    break;
-//                case 10:/*Brand*/
-////                   oTrans.getModel().setBrandCode(lsValue);
-////                   System.out.print( "BRAND == " + oTrans.getModel().setBrandCode(lsValue));
-//                    break;
-//                case 11:/*Model*/
-////                   oTrans.getModel().setModelCode(lsValue);
-////                   System.out.print( "Model == " + oTrans.getModel().setModelCode(lsValue));
-//                    break;
-//                case 12:/*Color*/
-////                   oTrans.getModel().setColorCode(lsValue);
-////                   System.out.print( "color == " + oTrans.getModel().setColorCode(lsValue));
-//                    break;
-//                case 13:/*Measure*/
-////                   oTrans.getModel().setMeasureID(lsValue);
-////                   System.out.print( "Measure == " + oTrans.getModel().setMeasureID(lsValue));
-//                    break;
-//                case 14:/*discount 1*/
-//                   oTrans.getModel().setDiscountLvl1((Double.parseDouble(lsValue)));
-//                   System.out.print( "discount 1 == " + oTrans.getModel().setDiscountLvl1((Double.parseDouble(lsValue))));
-//                   if ("error".equals(jsonObject.get("result"))) {
-//                        System.err.println((String) jsonObject.get("message"));
-//                        return;
-//                    }
-//                    break;
-//                case 15:/*discount 2*/
-//                    oTrans.getModel().setDiscountLvl2(Double.parseDouble(lsValue));
-//                   System.out.print( "discount 2 == " + oTrans.getModel().setDiscountLvl2(Double.parseDouble(lsValue)));
-//                   if ("error".equals((String) jsonObject.get("result"))) {
-//                        System.err.println((String) jsonObject.get("message"));
-//                        return;
-//                    }
-//                    break;
-//                case 16:/*discount 3*/
-//                   oTrans.getModel().setDiscountLevel3((Double.parseDouble(lsValue)));
-//                   System.out.print( "discount 3 == " + oTrans.getModel().setDiscountLevel3(Double.parseDouble(lsValue)));
-//                   if ("error".equals((String) jsonObject.get("result"))) {
-//                        System.err.println((String) jsonObject.get("message"));
-//                        return;
-//                    }
-//                    break;
-//                case 17:/*dealer discount or discount 4*/
-//                   oTrans.getModel().setDealerDiscount((Double.parseDouble(lsValue)));
-//                   System.out.print( "discount 3 == " + oTrans.getModel().setDealerDiscount(Double.parseDouble(lsValue)));
-//                   if ("error".equals((String) jsonObject.get("result"))) {
-//                        System.err.println((String) jsonObject.get("message"));
-//                        return;
-//                    }
-//                    break;
-//                case 26: /*MINIMUM LEVEL*/
-//                   
-//                   oTrans.getModel().setMinLevel((Integer.parseInt(lsValue)));
-//                   System.out.print( "MINIMUM LEVEL == " + oTrans.getModel().setMinLevel((Integer.parseInt(lsValue))));
-//                   if ("error".equals((String) jsonObject.get("result"))) {
-//                        System.err.println((String) jsonObject.get("message"));
-//                        return;
-//                    }
-//                    break;
-//                    
-//                case 27: /*MAXIMUM LEVEL*/
-//                   
-//                   oTrans.getModel().setMaxLevel((Integer.parseInt(lsValue)));
-//                   System.out.print( "MAXIMUM LEVEL == " + oTrans.getModel().setMaxLevel((Integer.parseInt(lsValue))));
-//                   if ("error".equals((String) jsonObject.get("result"))) {
-//                        System.err.println((String) jsonObject.get("message"));
-//                        return;
-//                    }
-//                    break;    
-//                case 18:/*cost*/
-//                   oTrans.getModel().setUnitPrice((Double.parseDouble(lsValue)));
-//                   System.out.print( "discount 3 == " + oTrans.getModel().setUnitPrice(Double.parseDouble(lsValue)));
-//                   if ("error".equals((String) jsonObject.get("result"))) {
-//                        System.err.println((String) jsonObject.get("message"));
-//                        return;
-//                    }
-//                    break;
-//                case 19:/*SRP*/
-//                   oTrans.getModel().setSelPrice((Double.parseDouble(lsValue)));
-//                   System.out.print( "discount 3 == " + oTrans.getModel().setSelPrice(Double.parseDouble(lsValue)));
-//                   if ("error".equals((String) jsonObject.get("result"))) {
-//                        System.err.println((String) jsonObject.get("message"));
-//                        return;
-//                    }
-//                    break;
-//                case 20:/*superseded*/
-//                   oTrans.getModel().setSupersed(lsValue);
-//                   System.out.print( "supersed == " + oTrans.getModel().setSupersed(lsValue));
-//                    break;
-//                    
-//                case 21: /*shelf life*/
-//                   if(lsValue.isEmpty()) lsValue = "0";
-//                   oTrans.getModel().setShlfLife((Integer.parseInt(lsValue)));
-//                   System.out.print( "shelflife == " + oTrans.getModel().setShlfLife((Integer.parseInt(lsValue))));
-//                   if ("error".equals((String) jsonObject.get("result"))) {
-//                        System.err.println((String) jsonObject.get("message"));
-//                        return;
-//                    }
-//                    break;
-                
+                case 25: /*Stock ID*/
+                    oTrans.getModel().setBinNumber(Integer.parseInt(lsValue));
+                    break;            
             }                  
         } else
             txtField.selectAll();
@@ -883,78 +816,6 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex){
-//                    case 06: /*search category 1*/
-//                        poJson = new JSONObject();
-//                        poJson =  oTrans.SearchMaster(6,lsValue, false);
-//                           System.out.println("poJson = " + poJson.toJSONString());
-//                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                               ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                           }
-//                            System.out.print( "category 1 == " + oTrans.getMaster(32));
-////                           txtField06.setText((String) oTrans.getModel().getCategName1()); 
-//                           cmbField01.setValue((String) oTrans.getMaster(32));
-//                        break;
-//                    case 7: /*search category 2*/
-//                        poJson = new JSONObject();
-//                        poJson =  oTrans.SearchMaster(7,lsValue, false);
-//                           System.out.println("poJson = " + poJson.toJSONString());
-//                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                               ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                           }
-//                            System.out.print( "category 2 == " + oTrans.getMaster(33));
-//                           txtField07.setText((String) oTrans.getMaster(33));      
-//                        break;
-//                    case 8: /*search category 3*/
-//                        poJson = new JSONObject();
-//                        poJson =  oTrans.SearchMaster(8,lsValue, false);
-//                           System.out.println("poJson = " + poJson.toJSONString());
-//                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                               ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                           }
-//                            System.out.print( "category 3 == " + oTrans.getMaster(34));
-//                           txtField08.setText((String) oTrans.getMaster(34));      
-//                        break;
-//                    case 9: /*search category 4*/
-//                        poJson = new JSONObject();
-//                        poJson =  oTrans.SearchMaster(9,lsValue, false);
-//                           System.out.println("poJson = " + poJson.toJSONString());
-//                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                               ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                           }
-//                            System.out.print( "category 4 == " + oTrans.getMaster(35));
-//                           txtField09.setText((String) oTrans.getMaster(35));      
-//                        break;
-//                    case 10: /*search Brand*/
-//                        poJson = new JSONObject();
-//                        poJson =  oTrans.SearchMaster(10,lsValue, false);
-//                           System.out.println("poJson = " + poJson.toJSONString());
-//                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                               ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                           }
-//                            System.out.print( "brand == " + oTrans.getMaster(36));
-//                           txtField10.setText((String) oTrans.getMaster(36));      
-//                        break;  
-//                    case 11: /*search Model*/
-//                        poJson = new JSONObject();
-//                        poJson =  oTrans.SearchMaster(11,lsValue, false);
-//                           System.out.println("poJson = " + poJson.toJSONString());
-//                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                               ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                           }
-//                            System.out.print( "Model == " + oTrans.getMaster(37));
-//                           txtField11.setText((String) oTrans.getMaster(37));      
-//                        break;
-//                    case 12: /*search color*/
-//                        poJson = new JSONObject();
-//                        poJson =  oTrans.SearchMaster(12,lsValue, false);
-//                           System.out.println("poJson = " + poJson.toJSONString());
-//                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                               ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                           }
-//                            System.out.print( "Color == " + oTrans.getMaster(39));
-//                           txtField12.setText((String) oTrans.getMaster(39));      
-//                        break;
-                    
                     case 22:
                         poJson = new JSONObject();
                         poJson = oTrans.SearchMaster(4,lsValue, false);
@@ -963,7 +824,9 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                         }
                         System.out.print( "Location == " + oTrans.getMaster(27));
-                        txtField22.setText((String) oTrans.getMaster(27));  
+                        txtField22.setText((String) oTrans.getMaster(27)); 
+                        txtField23.setText(oTrans.getModel().getWareHouseNm());
+                        txtField24.setText(oTrans.getModel().getSectionName()); 
                         break;
                     case 23:
                         poJson = new JSONObject();

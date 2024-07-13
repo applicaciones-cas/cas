@@ -394,7 +394,7 @@
                                                 <CheckBox fx:id="chkField03" mnemonicParsing="false" onMouseClicked="#chkFiled03_Clicked" text="with Promo" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="21" />
                                                 <TextField fx:id="txtField20" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="19" />
                                                 <TextField fx:id="txtField21" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="20" />
-                                                <Label fx:id="lblStatus" alignment="CENTER" contentDisplay="CENTER" maxWidth="264.0" minWidth="150.0" prefHeight="37.0" prefWidth="264.0" style="-fx-background-color: FF8201;" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                                <Label fx:id="lblStatus" alignment="CENTER" contentDisplay="CENTER" maxWidth="264.0" minWidth="150.0" prefHeight="37.0" prefWidth="264.0" style="-fx-background-color: FF8201;" stylesheets="@../css/StyleSheet.css" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                                                    <font>
                                                       <Font name="System Bold" size="18.0" />
                                                    </font>
