@@ -42,14 +42,14 @@ public class Inventory implements GRecord{
     String psBranchCd;
     boolean pbWtParent;
     public JSONObject poJSON;
-    
+
     int pnEditMode;
     String psMessagex;
     String psTranStatus;
-    
+
     private Model_Inventory poModel;
     private InventorySubUnit poSubUnit;
-    
+
      public Inventory(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
@@ -59,10 +59,10 @@ public class Inventory implements GRecord{
         pnEditMode = EditMode.UNKNOWN;
     }
 
-    
+
     @Override
     public JSONObject setMaster(int fnCol, Object foData) {
-        
+
         JSONObject obj = new JSONObject();
         obj.put("pnEditMode", pnEditMode);
         if (pnEditMode != EditMode.UNKNOWN){
@@ -71,7 +71,7 @@ public class Inventory implements GRecord{
                 fnCol == poModel.getColumn("sModified") ||
                 fnCol == poModel.getColumn("dModified"))){
                obj =  poModel.setValue(fnCol, foData);
-               
+
 //                obj.put(fnCol, pnEditMode);
             }
         }
@@ -89,15 +89,15 @@ public class Inventory implements GRecord{
 
     private Connection setConnection(){
         Connection foConn;
-        
+
         if (pbWthParent){
             foConn = (Connection) poGRider.getConnection();
             if (foConn == null) foConn = (Connection) poGRider.doConnect();
         }else foConn = (Connection) poGRider.doConnect();
-        
+
         return foConn;
     }
-    
+
     private JSONObject checkData(JSONObject joValue){
         if(pnEditMode == EditMode.READY ||
                 pnEditMode == EditMode.ADDNEW ||
@@ -121,7 +121,7 @@ public class Inventory implements GRecord{
     public Object getMaster(int fnCol) {
         if(pnEditMode == EditMode.UNKNOWN)
             return null;
-        else 
+        else
             return poModel.getValue(fnCol);
     }
 
@@ -129,27 +129,72 @@ public class Inventory implements GRecord{
     public Object getMaster(String fsCol) {
         return getMaster(poModel.getColumn(fsCol));
     }
-    
+
     @Override
     public JSONObject newRecord() {
-        
+
             poJSON = new JSONObject();
         try{
-            
+
             poModel = new Model_Inventory(poGRider);
             Connection loConn = null;
             loConn = setConnection();
             poModel.newRecord();
-            
+            Category loCateg = new Category(poGRider, true);
+//            if(poGRider.getDivisionCode().equals("1")){
+//                loCateg.openRecord("0001");
+//            }else if(poGRider.getDivisionCode().equals("2")){
+//                loCateg.openRecord("0002");
+//            }else if(poGRider.getDivisionCode().equals("3")){
+//                loCateg.openRecord("0003");
+//            }else{
+//                loCateg.openRecord("0004");
+//            }
+            switch (poGRider.getDivisionCode()) {
+                case "0"://mobilephone
+                    loCateg.openRecord("0002");
+                    break;
+
+                case "1"://motorycycle
+                    loCateg.openRecord("0001");
+                    break;
+
+                case "2"://Auto Group - Honda Cars
+                case "5"://Auto Group - Nissan
+                case "6"://Auto Group - Any
+                    loCateg.openRecord("0003");
+                    break;
+
+                case "3"://Hospitality
+                case "4"://Pedritos Group
+                    loCateg.openRecord("0004");
+                    break;
+
+                case "7"://Guanzon Services Office
+                     break;
+
+                case "8"://Main Office
+                    break;
+            }
+//            System.out.println("category = " + System.getProperty("store.inventory.industry"));
+//            System.out.println("category code = " + loCateg.getMaster("sCategrCd"));
+//            System.out.println("category descript = " + loCateg.getMaster("sDescript"));
+//            setMaster(6, (String) loCateg.getMaster("sCategrCd"));
+//            setMaster("xCategNm1", (String)loCateg.getMaster("sDescript"));
+            poModel.setCategCd1((String) loCateg.getMaster("sCategrCd"));
+            poModel.setCategName1((String) loCateg.getMaster("sDescript"));
+//            System.out.println("category get code = " + poModel.getCategCd1());
+//            System.out.println("category get descript = " + poModel.getCategName1());
+
             poSubUnit = new InventorySubUnit(poGRider, pbWthParent);
             poSubUnit.addSubUnit();
 
             //init detail
             //init detail
 //            poLedger = new ArrayList<>();
-            
+
             if (poModel == null){
-                
+
                 poJSON.put("result", "error");
                 poJSON.put("message", "initialized new record failed.");
                 return poJSON;
@@ -158,33 +203,33 @@ public class Inventory implements GRecord{
                 poJSON.put("message", "initialized new record.");
                 pnEditMode = EditMode.ADDNEW;
             }
-               
+
         }catch(NullPointerException e){
-            
+
             poJSON.put("result", "error");
             poJSON.put("message", e.getMessage());
         }
-        
+
         return poJSON;
     }
 
     @Override
     public JSONObject openRecord(String fsValue) {
-        
+
         pnEditMode = EditMode.READY;
         poJSON = new JSONObject();
-        
+
         poModel = new Model_Inventory(poGRider);
         poJSON = poModel.openRecord(fsValue);
-        
+
         poJSON = checkData(poSubUnit.openRecord(fsValue));
-        
+
         return poJSON;
     }
 
     @Override
     public JSONObject updateRecord() {
-        
+
         System.out.print("\n updateRecord editmode == " + pnEditMode + "\n");
 //        pnEditMode = EditMode.UPDATE;
         poJSON = new JSONObject();
@@ -204,7 +249,7 @@ public class Inventory implements GRecord{
     public JSONObject saveRecord() {
         poJSON = new JSONObject();
         if (!pbWthParent) poGRider.beginTrans();
-        
+
 //        ValidatorInterface validator = ValidatorFactory.make(ValidatorFactory.TYPE.AR_Client_Master, poModel);
 //        poModel.setModifiedDate(poGRider.getServerDate());
 //
@@ -218,8 +263,8 @@ public class Inventory implements GRecord{
         if("error".equalsIgnoreCase((String)checkData(poJSON).get("result"))){
             if (!pbWtParent) poGRider.rollbackTrans();
             return checkData(poJSON);
-        };
-        
+        }
+
         poJSON = saveSubUnit();
         if("error".equalsIgnoreCase((String)checkData(poJSON).get("result"))){
             if (!pbWtParent) poGRider.rollbackTrans();
@@ -227,12 +272,12 @@ public class Inventory implements GRecord{
         }
 
         if (!pbWtParent) poGRider.commitTrans();
-        
-        
+
+
         return poJSON;
     }
 
-    @Override 
+    @Override
     public JSONObject deleteRecord(String fsValue) {
          poJSON = new JSONObject();
 
@@ -260,7 +305,7 @@ public class Inventory implements GRecord{
             poJSON.put("message", "Invalid update mode. Unable to save record.");
             return poJSON;
         }
-        
+
         return poJSON;
     }
 
@@ -286,7 +331,7 @@ public class Inventory implements GRecord{
 
     @Override
     public JSONObject activateRecord(String string) {
-        
+
         poJSON = new JSONObject();
 
         if (poModel.getEditMode() == EditMode.READY || poModel.getEditMode() == EditMode.UPDATE) {
@@ -319,15 +364,15 @@ public class Inventory implements GRecord{
             lsCondition = "a.cRecdStat = " + SQLUtil.toSQL(psTranStatus);
         }
         String lsSQL = poModel.getSQL();
-       
+
         if (fbByCode)
             lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
         else
             lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
-            
+
         System.out.print("this is lsSQL == " + lsSQL + "\n");
 
-        
+
         if(!pbWthParent){
             lsSQL = poModel.getSQL();
             if (fbByCode)
@@ -335,9 +380,9 @@ public class Inventory implements GRecord{
             else
                 lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
                 lsSQL += " LIMIT 1";
-                
-              
-            System.out.print("test lsSQL == " + lsSQL + "\n");  
+
+
+            System.out.print("test lsSQL == " + lsSQL + "\n");
             ResultSet loRS = poGRider.executeQuery(lsSQL);
 
           try {
@@ -349,7 +394,7 @@ public class Inventory implements GRecord{
                     poJSON.put("message", "No transaction found for the givern criteria.");
                     return poJSON;
                 }
-              
+
                 lsSQL = loRS.getString("sStockIDx");
                 MiscUtil.close(loRS);
                 return openRecord(lsSQL);
@@ -388,18 +433,18 @@ public class Inventory implements GRecord{
         JSONObject loJSON;
         String fsValue = (lsValue) == null?"":lsValue;
 //        if (fsValue.equals("") && fbByCode) return null;
-                
+
         switch(fnCol){
             case 6: //sCategCd1
-                Category loCategory = new Category(poGRider, true); 
+                Category loCategory = new Category(poGRider, true);
                 loCategory.setRecordStatus(psTranStatus);
                 loJSON = loCategory.searchRecord(fsValue, fbByCode);
-                
+
                 if (loJSON != null){
-                    
+
                     setMaster(fnCol, (String) loCategory.getMaster("sCategrCd"));
 //                    setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
-                    
+
                     return setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
                 } else {
                     loJSON.put("result", "error");
@@ -407,7 +452,7 @@ public class Inventory implements GRecord{
                     return loJSON;
                 }
             case 7: //sCategCd2
-                
+
                 lsSQL ="SELECT" +
                             "  a.sCategrCd" +
                             ", a.sDescript" +
@@ -419,7 +464,7 @@ public class Inventory implements GRecord{
                             ", a.dModified" +
                             ", b.sDescript xInvTypNm" +
                             ", c.sDescript xMainCatx" +
-                        " FROM Category_Level2 a" + 
+                        " FROM Category_Level2 a" +
                             " LEFT JOIN Inv_Type b ON a.sInvTypCd = b.sInvTypCd" +
                             " LEFT JOIN Category c ON a.sMainCatx = c.sCategrCd";
                 String lsCondition = "";
@@ -438,18 +483,18 @@ public class Inventory implements GRecord{
                     lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex = " + SQLUtil.toSQL(fsValue));
                 else
                     lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL(fsValue + "%"));
-                
-                
+
+
                 if(!poModel.getCategCd1().isEmpty()){
                     lsSQL = MiscUtil.addCondition(lsSQL, "a.sMainCatx = " + SQLUtil.toSQL(poModel.getCategCd1()));
                 }
-                
+
                 lsSQL = MiscUtil.addCondition(lsSQL, lsCondition);
                 System.out.println(lsSQL);
                 loJSON = ShowDialogFX.Search(
-                                poGRider, 
-                                lsSQL, 
-                                fsValue, 
+                                poGRider,
+                                lsSQL,
+                                fsValue,
                                 "Code»Name",
                                 "sCategrCd»sDescript",
                                 "a.sCategrCd»a.sDescript",
@@ -460,29 +505,29 @@ public class Inventory implements GRecord{
                     setMaster("sInvTypCd", (String) loJSON.get("sInvTypCd"));
                     setMaster("sInvTypCd", (String) loJSON.get("sInvTypCd"));
                     setMaster("xInvTypNm", (String) loJSON.get("xInvTypNm"));
-                    
+
                     setMaster(6, (String) loJSON.get("sMainCatx"));
 //                    setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
                     setMaster("xCategNm1", (String)loJSON.get("xMainCatx"));
                     setMaster("xMainCatx", (String)loJSON.get("sMainCatx"));
 //                    System.out.println("sInvTypCd = " + setMaster("sInvTypCd", (String) loJSON.get("sCategrCd")));
                     return setMaster("xCategNm2", (String) loJSON.get("sDescript"));
-                    
+
                 }else {
                     loJSON = new JSONObject();
                     loJSON.put("result", "error");
                     loJSON.put("message", "No record selected.");
                     return loJSON;
                 }
-                
+
 //                Category_Level2 loCategory2 = new Category_Level2(poGRider, true);
 //                loCategory2.setRecordStatus(psTranStatus);
 //                loJSON = loCategory2.searchRecord(fsValue, fbByCode);
-//                 
+//
 //                if (loJSON != null){
 //                    setMaster(fnCol, (String) loCategory2.getMaster("sCategrCd"));
 //                    setMaster("sInvTypCd", (String) loCategory2.getMaster("sCategrCd"));
-//                    
+//
 //                    setMaster(6, (String) loCategory2.getMaster("sMainCatx"));
 ////                    setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
 //                    setMaster("xCategNm1", (String)loCategory2.getMaster("xMainCatx"));
@@ -497,7 +542,7 @@ public class Inventory implements GRecord{
                 Category_Level3 loCategory3 = new Category_Level3(poGRider, true);
                 loCategory3.setRecordStatus(psTranStatus);
                 loJSON = loCategory3.searchRecord(fsValue, fbByCode);
-                
+
                 if (loJSON != null){
                     setMaster(fnCol, (String) loCategory3.getMaster("sCategrCd"));
                     return setMaster("xCategNm3", (String) loCategory3.getMaster("sDescript"));
@@ -511,7 +556,7 @@ public class Inventory implements GRecord{
                 Category_Level4 loCategory4 = new Category_Level4(poGRider, true);
                 loCategory4.setRecordStatus(psTranStatus);
                 loJSON = loCategory4.searchRecord(fsValue, fbByCode);
-                
+
                 if (loJSON != null){
                     setMaster(fnCol, (String) loCategory4.getMaster("sCategrCd"));
                     return setMaster("xCategNm4", (String) loCategory4.getMaster("sDescript"));
@@ -522,10 +567,10 @@ public class Inventory implements GRecord{
                     return loJSON;
                 }
             case 10: //sBrandCde
-                Brand loBrands = new Brand(poGRider, true); 
+                Brand loBrands = new Brand(poGRider, true);
                 loBrands.setRecordStatus(psTranStatus);
                 loJSON = loBrands.searchRecord(fsValue, fbByCode);
-                
+
                 if (loJSON != null){
 //                    setMaster(fnCol, (String) loBrands.getMaster("sBrandCde"));
                     poModel.setBrandCode( (String) loBrands.getMaster("sBrandCde"));
@@ -540,7 +585,7 @@ public class Inventory implements GRecord{
                 Model loModel = new Model(poGRider, false);
                 loModel.setRecordStatus(psTranStatus);
                 loJSON = loModel.searchRecord(fsValue, fbByCode);
-                
+
                 if (loJSON != null){
                     setMaster(fnCol, (String) loModel.getMaster("sModelCde"));
                     return setMaster("xModelNme", (String) loModel.getMaster("sModelNme"));
@@ -554,7 +599,7 @@ public class Inventory implements GRecord{
                 Color loColor = new Color(poGRider, false);
                 loColor.setRecordStatus(psTranStatus);
                 loJSON = loColor.searchRecord(fsValue, fbByCode);
-                
+
                 if (loJSON != null){
                     setMaster(fnCol, (String) loColor.getMaster("sColorCde"));
                     return setMaster("xColorNme", (String) loColor.getMaster("sDescript"));
@@ -566,9 +611,9 @@ public class Inventory implements GRecord{
                 }
 //            case 13: //sInvTypCd
 //                Inv_Type loInvType = new Inv_Type(poGRider, false);
-//                
+//
 //                loJSON = loInvType.searchRecord(fsValue, fbByCode);
-//                
+//
 //                if (loJSON != null){
 //                    setMaster(fnCol, (String) loJSON.get("sInvTypCd"));
 //                    return (String) loJSON.get("sDescript");
@@ -580,7 +625,7 @@ public class Inventory implements GRecord{
                 Measure loMeasure = new Measure(poGRider, false);
                 loMeasure.setRecordStatus(psTranStatus);
                 loJSON = loMeasure.searchRecord(fsValue, fbByCode);
-                
+
                 if (loJSON != null){
                     setMaster(fnCol, (String) loMeasure.getMaster("sMeasurID"));
                     return setMaster("xMeasurNm", (String) loMeasure.getMaster("sMeasurNm"));
@@ -594,28 +639,28 @@ public class Inventory implements GRecord{
                 return null;
         }
     }
-    
+
     public JSONObject SearchMaster(String fsCol, String fsValue, boolean fbByCode){
         return SearchMaster(poModel.getColumn(fsCol), fsValue, fbByCode);
     }
-    
+
     public InventorySubUnit getSubUnit(){return poSubUnit;}
     public void setSubUnit(InventorySubUnit foObj){this.poSubUnit = foObj;}
-    
-    
+
+
     public void setSubUnit(int fnRow, int fnIndex, Object foValue){ poSubUnit.setMaster(fnRow, fnIndex, foValue);}
     public void setSubUnit(int fnRow, String fsIndex, Object foValue){ poSubUnit.setMaster(fnRow, fsIndex, foValue);}
     public Object getSubUnit(int fnRow, int fnIndex){return poSubUnit.getMaster(fnRow, fnIndex);}
     public Object getSubUnit(int fnRow, String fsIndex){return poSubUnit.getMaster(fnRow, fsIndex);}
-    
+
     public JSONObject addSubUnit(){
         poJSON = new JSONObject();
         poJSON = poSubUnit.addSubUnit();
         return poJSON;
     }
-    
+
     private JSONObject saveSubUnit(){
-        
+
         JSONObject obj = new JSONObject();
         if (poSubUnit.getMaster().size()<= 0){
             obj.put("result", "error");
@@ -623,10 +668,10 @@ public class Inventory implements GRecord{
             obj.put("message", "No inventory sub unit detected.");
             return obj;
         }
-        
+
         int lnCtr;
         String lsSQL;
-        
+
         for (lnCtr = 0; lnCtr <= poSubUnit.getMaster().size() -1; lnCtr++){
             poSubUnit.getMaster().get(lnCtr).setStockID(poModel.getStockID());
 //            Validator_Client_Address validator = new Validator_Client_Address(poSubUnit.get(lnCtr));
@@ -644,49 +689,60 @@ public class Inventory implements GRecord{
             }
 //            ValidatorInterface validator = ValidatorFactory.make(types,  ValidatorFactory.TYPE.Client_Address, poSubUnit.get(lnCtr));
             poSubUnit.getMaster().get(lnCtr).setModifiedDate(poGRider.getServerDate());
-            
+
 //            if (!validator.isEntryOkay()){
 //                obj.put("result", "error");
 //                obj.put("message", validator.getMessage());
 //                return obj;
-//            
+//
 //            }
-            obj = poSubUnit.getMaster().get(lnCtr).saveRecord();
+//            obj = poSubUnit.getMaster().get(lnCtr).saveRecord();
+            obj = poSubUnit.saveRecord();
 
-        }    
-        
+        }
+
         return obj;
     }
-    
+
     public JSONObject SearchSubUnit(int fnRow, int fnCol, String lsValue, boolean fbByCode){
-        
+
         JSONObject loJSON;
-        
+
         String fsValue = (lsValue) == null?"":lsValue;
-        
-               
-        
+
+
+
         switch(fnCol){
             case 3: //sub unit
                 String lsSQL =poModel.getSQL();
-               
+
             if (fbByCode)
                 lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex LIKE " + SQLUtil.toSQL(fsValue + "%"));
             else
                 lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL(fsValue + "%"));
 
+
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx <> " + SQLUtil.toSQL(poModel.getStockID()));
+
             System.out.println(lsSQL);
             loJSON = ShowDialogFX.Search(
-                            poGRider, 
-                            lsSQL, 
-                            fsValue, 
-                            "Stock ID»BarrCode»sDescript", 
-                            "sStockIDx»sBarCodex»sDescript", 
-                            "a.sStockIDx»a.sBarCodex»a.sDescript", 
+                            poGRider,
+                            lsSQL,
+                            fsValue,
+                            "Stock ID»BarrCode»sDescript",
+                            "sStockIDx»sBarCodex»sDescript",
+                            "a.sStockIDx»a.sBarCodex»a.sDescript",
                             fbByCode ? 1 : 2);
 
                 if (loJSON != null) {
                     System.out.println("size = " + poSubUnit.getMaster().size());
+                    for(int lnCtr = 0; lnCtr < poSubUnit.getMaster().size() -1; lnCtr++){
+                        if(poSubUnit.getMaster().get(lnCtr).getSubItemID().equalsIgnoreCase((String) loJSON.get("sStockIDx"))){
+                            loJSON.put("result", "error");
+                            loJSON.put("message", "Search sub unit already added.");
+                            return loJSON;
+                        }
+                    }
                     setSubUnit(fnRow,1, poModel.getStockID());
                     setSubUnit(fnRow,3, (String) loJSON.get("sStockIDx"));
                     setSubUnit(fnRow,6, poModel.getBarcode());
@@ -708,5 +764,5 @@ public class Inventory implements GRecord{
                 return null;
         }
     }
-    
+
 }

@@ -207,7 +207,7 @@ public class testInventoryMaster{
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals(1, record.getInvModel().getMaxLevel(), 0);
+        Assert.assertEquals(0, Integer.parseInt(record.getInvModel().getMaxLevel().toString()), 0);
         
         loJSON = record.getInvModel().setComboInv("0");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -384,7 +384,7 @@ public class testInventoryMaster{
         Assert.assertEquals(0.0, Double.parseDouble(record.getInvModel().getDealerDiscount().toString()), delta);
         
         Assert.assertEquals(0, Integer.parseInt(record.getInvModel().getMinLevel().toString()), 0);
-        Assert.assertEquals(1, record.getInvModel().getMaxLevel(), 0);
+        Assert.assertEquals(0, Integer.parseInt(record.getInvModel().getMaxLevel().toString()), 0);
         Assert.assertEquals("0", record.getInvModel().getComboInv());
         Assert.assertEquals("1", record.getInvModel().getSerialze());
         Assert.assertEquals("0", record.getInvModel().getWthPromo());

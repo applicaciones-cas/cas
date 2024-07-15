@@ -445,11 +445,10 @@ public class InvMaster implements GRecord{
                                 poGRider, 
                                 lsSQL, 
                                 fsValue, 
-                                "Code»Name",
-                                "sLocatnCd»sDescript",
-                                "a.sLocatnCd»a.sDescript",
+                                "Code»Name»Warehouse»Section",
+                                "sLocatnCd»sDescript»xWHouseNm»xSectnNme",
+                                "a.sLocatnCd»a.sDescript»b.sWHouseNm»c.sSectnNme",
                                 fbByCode ? 0 : 1);
-
                 if (loJSON != null) {
                     setMaster(fnCol, (String) loJSON.get("sLocatnCd"));
                     setMaster("xLocatnNm", (String) loJSON.get("sDescript"));
