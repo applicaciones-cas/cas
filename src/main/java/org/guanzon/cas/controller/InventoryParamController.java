@@ -321,6 +321,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                             pnEditMode = EditMode.ADDNEW;
                             initButton(pnEditMode);
                             loadInventory();
+                           initSubItemForm();
                             txtField06.setText((String) oTrans.getModel().getCategName1()); 
 //                            loadComapany();
                             initTabAnchor();
@@ -387,6 +388,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                         pnEditMode = oTrans.getEditMode();
                         data.clear();   
                         System.out.print("\neditmode on browse == " +pnEditMode);
+                        
+                        initSubItemForm();
                         loadInventory();
                         loadSubUnitData();
                         loadSubUnit();
@@ -429,8 +432,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
     /*USE TO DISABLE ANCHOR BASE ON INITMODE*/
     
     private void initTabAnchor(){
-        boolean pbValue = pnEditMode == EditMode.ADDNEW || 
-                pnEditMode == EditMode.UPDATE;
+        boolean pbValue = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
         AnchorInput.setDisable(!pbValue);
         subItemFields.setDisable(!pbValue);
         AnchorTable.setDisable(!pbValue);
@@ -443,26 +445,28 @@ public class InventoryParamController implements Initializable,ScreenInterface {
 //                    txtField13.setVisible(false);
 //                break;
 //        }
-        String category = System.getProperty("store.inventory.industry", "0001;0002;");
-         // Split the category string by the delimiter ";"
-        String[] categories = category.split(";");
-        for (String cat : categories) {
-            if (!cat.isEmpty()) { // Ensure the string is not empty
-                switch (cat) {
-                    case "0001":
-                    case "0002":
-                    case "0003":
-                        AnchorTable.setVisible(false);
-                        lblMeasure.setVisible(false);
-                        txtField13.setVisible(false);
-                    break;
-                    default:
-                        System.out.println("Unknown category: " + cat);
-                        // Handle unknown categories
-                        break;
-                }
-            }
-        }
+        
+//        String category = System.getProperty("store.inventory.industry");
+//         // Split the category string by the delimiter ";"
+//        String[] categories = category.split(";");
+//        for (String cat : categories) {
+//            if (!oTrans.getModel().getCategCd1().isEmpty()) { // Ensure the string is not empty
+//                switch (cat) {
+//                    case "0001":
+//                    case "0002":
+//                    case "0003":
+//                        AnchorTable.setVisible(false);
+//                        lblMeasure.setVisible(false);
+//                        txtField13.setVisible(false);
+//                        break;
+//                    case "0004":
+//                        AnchorTable.setVisible(true);
+//                        lblMeasure.setVisible(true);
+//                        txtField13.setVisible(true);
+//                        break;
+//                }
+//            }
+//        }
     }
     
     /*TO CONTROL BUTTONS BASE ON INITMODE*/
@@ -505,8 +509,27 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             txtSeeks01.requestFocus();
             txtSeeks02.setDisable(lbShow);  
         }
+        
 //        initClientType();
 
+    }
+    private void initSubItemForm(){
+        if (!oTrans.getModel().getCategCd1().isEmpty()) { // Ensure the string is not empty
+            switch (oTrans.getModel().getCategCd1()) {
+                case "0001":
+                case "0002":
+                case "0003":
+                    AnchorTable.setVisible(false);
+                    lblMeasure.setVisible(false);
+                    txtField13.setVisible(false);
+                    break;
+                case "0004":
+                    AnchorTable.setVisible(true);
+                    lblMeasure.setVisible(true);
+                    txtField13.setVisible(true);
+                    break;
+            }
+        }
     }
     
     private void InitTextFields(){
@@ -748,7 +771,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                                txtField07.clear();
                            }
                            txtField06.setText((String) oTrans.getModel().getCategName1()); 
-                           oTrans.getModel().setCategCd1(System.getProperty("store.inventory.category"));
+                           initSubItemForm();
                         break;
                     case 7: /*search category 2*/
                         poJson = new JSONObject();
