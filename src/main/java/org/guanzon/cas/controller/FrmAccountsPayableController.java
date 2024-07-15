@@ -231,6 +231,7 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
         btnSave.setOnAction(this::handleButtonAction);
         btnUpdate.setOnAction(this::handleButtonAction);
         btnClose.setOnAction(this::handleButtonAction);
+        btnBrowse.setOnAction(this::handleButtonAction);
     }
     private void initSearchFields(){
         /*textFields FOCUSED PROPERTY*/
@@ -347,6 +348,17 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                             initButton(pnEditMode);
                             initTabAnchor();
                         }
+                    break;
+                case "btnBrowse":    
+                       
+                            poJSON =  oTrans.searchRecord(txtSearch02.getText(), false);
+                           System.out.println("poJson = " + poJSON.toJSONString());
+                           if("error".equalsIgnoreCase(poJSON.get("result").toString())){
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                           }
+                           pnEditMode = oTrans.getEditMode();
+                           txtSearch02.setText(oTrans.getModel().getClientName());
+                    
                     break;
                 case "btnSave":
                         JSONObject saveResult = oTrans.saveRecord();
@@ -847,10 +859,19 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex){
+                    case 01: /*search company*/
+                        poJson = new JSONObject();
+                            poJson =  oTrans.searchRecord(lsValue, true);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                           }
+                           pnEditMode = oTrans.getEditMode();
+                           txtSearch02.setText(oTrans.getModel().getClientName());
+                           
+                        break;
                     case 02: /*search company*/
                         poJson = new JSONObject();
-                        String input = "";
-                        input = lsValue;
                             poJson =  oTrans.searchRecord(lsValue, false);
                            System.out.println("poJson = " + poJson.toJSONString());
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){

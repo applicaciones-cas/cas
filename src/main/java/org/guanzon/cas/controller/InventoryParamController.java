@@ -435,15 +435,33 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         subItemFields.setDisable(!pbValue);
         AnchorTable.setDisable(!pbValue);
         
-        
-        switch (System.getProperty("store.inventory.industry")) {
-            case "Pedritos":
-            case "Hospitality":
-            case "General Purchase":    
-                    AnchorTable.setVisible(false);
-                    lblMeasure.setVisible(false);
-                    txtField13.setVisible(false);
-                break;
+//        System.out.print("category = " + System.getProperty("store.inventory.industry"));
+//        switch (System.getProperty("store.inventory.industry")) {
+//            case "0004":    
+//                    AnchorTable.setVisible(false);
+//                    lblMeasure.setVisible(false);
+//                    txtField13.setVisible(false);
+//                break;
+//        }
+        String category = System.getProperty("store.inventory.industry", "0001;0002;");
+         // Split the category string by the delimiter ";"
+        String[] categories = category.split(";");
+        for (String cat : categories) {
+            if (!cat.isEmpty()) { // Ensure the string is not empty
+                switch (cat) {
+                    case "0001":
+                    case "0002":
+                    case "0003":
+                        AnchorTable.setVisible(false);
+                        lblMeasure.setVisible(false);
+                        txtField13.setVisible(false);
+                    break;
+                    default:
+                        System.out.println("Unknown category: " + cat);
+                        // Handle unknown categories
+                        break;
+                }
+            }
         }
     }
     

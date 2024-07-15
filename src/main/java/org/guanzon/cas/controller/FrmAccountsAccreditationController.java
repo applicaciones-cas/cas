@@ -337,8 +337,32 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                     }
                     break;
                 case "btnBrowse": 
+                    String lsValue = txtSeek01.getText();
+                    oTrans.setAccountType(String.valueOf(cmbField01.getSelectionModel().getSelectedIndex()));
+                        poJSON = new JSONObject();
+                           poJSON =  oTrans.SearchAccredetation(lsValue, true);
+                           System.out.println("poJson = " + poJSON.toJSONString());
+                           if("error".equalsIgnoreCase(poJSON.get("result").toString())){
+//                               loadCompanyTransaction();
+                               ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);                              
+                           }
+                           pnEditMode = oTrans.getEditMode();
+//                        loadDetail();
+                        
+                            retrieveDetails();
+//                    oTrans.setAccountType(String.valueOf(cmbField01.getSelectionModel().getSelectedIndex()));
+//                        poJSON = new JSONObject();
+//                           poJSON =  oTrans.SearchAccredetation(txtSeek01.getText(), true);
+//                           System.out.println("poJson = " + poJSON.toJSONString());
+//                           if("error".equalsIgnoreCase(poJSON.get("result").toString())){
+////                               loadCompanyTransaction();
+//                               ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);                              
+//                           }
+//                           pnEditMode = oTrans.getEditMode();
+//                        
+//                            retrieveDetails();
+                        break;
                        
-                    break;
         }
     }
 }
