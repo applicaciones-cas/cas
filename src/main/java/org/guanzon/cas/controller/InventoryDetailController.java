@@ -337,6 +337,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                     poJSON = oTrans.updateRecord();
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
                         }
                         pnEditMode =  oTrans.getEditMode();
                         
@@ -807,7 +808,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         } else
             txtField.selectAll();
     };
-    
+    /*Txtfield search*/
     private void txtField_KeyPressed(KeyEvent event){
         TextField txtField = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));

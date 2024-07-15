@@ -1,5 +1,9 @@
 package org.guanzon.cas;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
 import org.guanzon.cas.GriderGui;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -17,6 +21,12 @@ public class LetMeIn extends Application {
         System.setProperty("sys.default.path.config", path);
         System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/");
         
+        if (!loadProperties()) {
+            System.err.println("Unable to load config.");
+            System.exit(1);
+        } else {
+            System.out.println("Config file loaded successfully.");
+        }
 
         GRider instance = new GRider("gRider");
 
@@ -37,6 +47,22 @@ public class LetMeIn extends Application {
     public void start(Stage primaryStage) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+private static boolean loadProperties() {
+        try {
+            Properties po_props = new Properties();
+            po_props.load(new FileInputStream("D:\\GGC_Maven_Systems\\config\\cas.properties"));
 
+            System.setProperty("store.branch.code", po_props.getProperty("store.branch.code"));
+            System.setProperty("store.inventory.industry", po_props.getProperty("store.inventory.category"));
+            
+            return true;
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+            return false;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
     
 }

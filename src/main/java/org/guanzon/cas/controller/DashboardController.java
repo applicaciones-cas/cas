@@ -109,27 +109,29 @@ public class DashboardController implements Initializable {
     }
 
     private void loadUserInfo() {
-        try {
-            // Execute query using the initialized GRider object
-            ResultSet name;
-            String lsQuery = "SELECT b.sCompnyNm "
-                    + " FROM xxxSysUser a"
-                    + " LEFT JOIN Client_Master b"
-                    + " ON a.sEmployNo  = b.sClientID"
-                    + " WHERE a.sUserIDxx = " + SQLUtil.toSQL(oApp.getUserID());
-            name = oApp.executeQuery(lsQuery);
-
-            // Process query result
-            if (name != null && name.next()) {
-                AppUserInfo.setText(name.getString("sCompnyNm") + " || " + oApp.getDepartment());
-                System.out.println(oApp.getEmployeeLevel() + "  " + oApp.getDepartment());
-//                System.setProperty("user.name", name.getString("sCompnyNm"));
-            }
-        } catch (SQLException ex) {
-            // Handle SQL exception
-            Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            // Execute query using the initialized GRider object
+//            ResultSet name;
+//            String lsQuery = "SELECT b.sCompnyNm "
+//                    + " FROM xxxSysUser a"
+//                    + " LEFT JOIN Client_Master b"
+//                    + " ON a.sEmployNo  = b.sClientID"
+//                    + " WHERE a.sUserIDxx = " + SQLUtil.toSQL(oApp.getUserID());
+//            name = oApp.executeQuery(lsQuery);
+//
+//            // Process query result
+//            if (name != null && name.next()) {
+//                AppUserInfo.setText(name.getString("sCompnyNm") + " || " + oApp.getDepartment());
+//                System.out.println(oApp.getEmployeeLevel() + "  " + oApp.getDepartment());
+////                System.setProperty("user.name", name.getString("sCompnyNm"));
+//            }
+//        } catch (SQLException ex) {
+//            // Handle SQL exception
+//            Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        AppUserInfo.setText(oApp.getLogName() + " || " + oApp.getDivisionName());
     }
+    
 
     public TabPane loadAnimate(String fsFormName) {
         //set fxml controller class
