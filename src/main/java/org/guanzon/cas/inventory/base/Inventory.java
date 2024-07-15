@@ -5,6 +5,10 @@
 package org.guanzon.cas.inventory.base;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
@@ -13,8 +17,8 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
-import org.guanzon.cas.inventory.models.Model_Inv_Ledger;
-import org.guanzon.cas.inventory.models.Model_Inventory;
+import org.guanzon.cas.model.inventory.Model_Inventory;
+import org.guanzon.cas.model.inventory.Model_Inventory_Sub_Unit;
 import org.guanzon.cas.parameters.Brand;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Category_Level2;
@@ -22,6 +26,7 @@ import org.guanzon.cas.parameters.Category_Level3;
 import org.guanzon.cas.parameters.Category_Level4;
 import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Inv_Type;
+import org.guanzon.cas.parameters.Measure;
 import org.guanzon.cas.parameters.Model;
 import org.guanzon.cas.validators.ValidatorFactory;
 import org.guanzon.cas.validators.ValidatorInterface;
@@ -198,9 +203,8 @@ public class Inventory implements GRecord{
     @Override
     public JSONObject saveRecord() {
         poJSON = new JSONObject();
-        if (!pbWthParent) {
-            poGRider.beginTrans();
-        }
+        if (!pbWthParent) poGRider.beginTrans();
+        
 //        ValidatorInterface validator = ValidatorFactory.make(ValidatorFactory.TYPE.AR_Client_Master, poModel);
 //        poModel.setModifiedDate(poGRider.getServerDate());
 //
@@ -317,12 +321,43 @@ public class Inventory implements GRecord{
         String lsSQL = poModel.getSQL();
        
         if (fbByCode)
-            lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
         else
             lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
             
         System.out.print("this is lsSQL == " + lsSQL + "\n");
 
+        
+        if(!pbWthParent){
+            lsSQL = poModel.getSQL();
+            if (fbByCode)
+                lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
+            else
+                lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
+                lsSQL += " LIMIT 1";
+                
+              
+            System.out.print("test lsSQL == " + lsSQL + "\n");  
+            ResultSet loRS = poGRider.executeQuery(lsSQL);
+
+          try {
+                if (!loRS.next()){
+                    MiscUtil.close(loRS);
+
+                    poJSON = new JSONObject();
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "No transaction found for the givern criteria.");
+                    return poJSON;
+                }
+              
+                lsSQL = loRS.getString("sStockIDx");
+                MiscUtil.close(loRS);
+                return openRecord(lsSQL);
+          } catch (SQLException ex) {
+              Logger.getLogger(InvMaster.class.getName()).log(Level.SEVERE, null, ex);
+          }
+
+        }
         poJSON = ShowDialogFX.Search(poGRider,
                 lsSQL,
                 fsValue,
@@ -335,6 +370,7 @@ public class Inventory implements GRecord{
             pnEditMode = EditMode.READY;
             return openRecord((String) poJSON.get("sStockIDx"));
         } else {
+            poJSON = new JSONObject();
             poJSON.put("result", "error");
             poJSON.put("message", "No record loaded to update.");
             return poJSON;
@@ -540,18 +576,20 @@ public class Inventory implements GRecord{
 //                    setMaster(fnCol, "");
 //                    return "";
 //                }
-//            case 29: //sMeasurID
-//                Measure loMeasure = new Measure(poGRider, psBranchCd, false);
-//                
-//                loJSON = loMeasure.searchMeasure(fsValue, fbByCode);
-//                
-//                if (loJSON != null){
-//                    setMaster(fnCol, (String) loJSON.get("sMeasurID"));
-//                    return (String) loJSON.get("sMeasurNm");
-//                } else {
-//                    setMaster(fnCol, "");
-//                    return "";
-//                }
+            case 13: //sMeasurID
+                Measure loMeasure = new Measure(poGRider, false);
+                loMeasure.setRecordStatus(psTranStatus);
+                loJSON = loMeasure.searchRecord(fsValue, fbByCode);
+                
+                if (loJSON != null){
+                    setMaster(fnCol, (String) loMeasure.getMaster("sMeasurID"));
+                    return setMaster("xMeasurNm", (String) loMeasure.getMaster("sMeasurNm"));
+                }  else {
+                    loJSON = new JSONObject();
+                    loJSON.put("result", "error");
+                    loJSON.put("message", "No record found.");
+                    return loJSON;
+                }
             default:
                 return null;
         }

@@ -47,9 +47,12 @@ public class ModelInventorySubUnit {
                             ", b.sDescript xDescript" +
                             ", c.sBarCodex xBarCodeU" +
                             ", c.sDescript xDescripU" +
+                            ", c.sMeasurID xMeasurID" +
+                            ", d.sMeasurNm xMeasurNm" +
                         " FROM " + System.getProperty("sys.table") + " a" +
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                             " LEFT JOIN Inventory c ON a.sItmSubID = c.sStockIDx" +
+                            " LEFT JOIN Measure d ON a.sMeasurID = d.sMeasurID" +
                         " WHERE 0=1";
         
         

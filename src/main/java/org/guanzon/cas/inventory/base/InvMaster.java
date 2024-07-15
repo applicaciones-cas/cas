@@ -14,10 +14,10 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
-import org.guanzon.cas.inventory.models.Model_Inv_Ledger;
-import org.guanzon.cas.inventory.models.Model_Inv_Master;
-import org.guanzon.cas.inventory.models.Model_Inv_Serial;
-import org.guanzon.cas.inventory.models.Model_Inventory;
+import org.guanzon.cas.model.inventory.Model_Inv_Ledger;
+import org.guanzon.cas.model.inventory.Model_Inv_Master;
+import org.guanzon.cas.model.inventory.Model_Inv_Serial;
+import org.guanzon.cas.model.inventory.Model_Inventory;
 import org.guanzon.cas.model.parameters.Model_Inv_Location;
 import org.guanzon.cas.parameters.Inv_Location;
 import org.guanzon.cas.parameters.Warehouse;
@@ -170,7 +170,7 @@ public class InvMaster implements GRecord{
         
         poModel = new Model_Inv_Master(poGRider);
         poJSON = poModel.openRecord(fsValue);
-        
+//        pnEditMode = poModel.getEditMode();
         return poJSON;
     }
 
@@ -402,18 +402,91 @@ public class InvMaster implements GRecord{
                     return loJSON;
                 }
             case 4: //sLocatnCd
-                Inv_Location loLocation = new Inv_Location(poGRider, false);
-                loLocation.setRecordStatus(psTranStatus);
-                loJSON = loLocation.searchRecord(fsValue, fbByCode);
                 
-                if (loJSON != null){
-                    setMaster(fnCol, (String) loLocation.getMaster("sLocatnCd"));
-                    return setMaster("xLocatnNm", (String) loLocation.getMaster("sDescript"));
+                
+                lsSQL = "SELECT" +
+                            "  a.sLocatnCd" +
+                            ", a.sDescript" +
+                            ", a.sWHouseID" +
+                            ", a.sSectnIDx" +
+                            ", a.cRecdStat" +
+                            ", a.sModified" +
+                            ", a.dModified" +
+                            ", b.sWHouseNm xWHouseNm" +
+                            ", c.sSectnNme xSectnNme" +
+                        " FROM Inv_Location a" +
+                            " LEFT JOIN Warehouse b ON a.sWHouseID = b.sWHouseID" +
+                            " LEFT JOIN Section c ON a.sSectnIDx = c.sSectnIDx" ;
+                String lsCondition = "";
+
+                if (psTranStatus.length() > 1) {
+                    for (int lnCtr = 0; lnCtr <= psTranStatus.length() - 1; lnCtr++) {
+                        lsCondition += ", " + SQLUtil.toSQL(Character.toString(psTranStatus.charAt(lnCtr)));
+                    }
+
+                    lsCondition = "a.cRecdStat IN (" + lsCondition.substring(2) + ")";
                 } else {
+                    lsCondition = "a.cRecdStat = " + SQLUtil.toSQL(psTranStatus);
+                }
+
+                if (fbByCode)
+                    lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex = " + SQLUtil.toSQL(fsValue));
+                else
+                    lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL(fsValue + "%"));
+                
+                
+                if(!poModel.getWareHouseID().isEmpty()){
+                    lsSQL = MiscUtil.addCondition(lsSQL, "a.sMainCatx = " + SQLUtil.toSQL(poModel.getWareHouseID()));
+                }
+                
+                lsSQL = MiscUtil.addCondition(lsSQL, lsCondition);
+                System.out.println(lsSQL);
+                loJSON = ShowDialogFX.Search(
+                                poGRider, 
+                                lsSQL, 
+                                fsValue, 
+                                "Code»Name",
+                                "sLocatnCd»sDescript",
+                                "a.sLocatnCd»a.sDescript",
+                                fbByCode ? 0 : 1);
+
+                if (loJSON != null) {
+                    setMaster(fnCol, (String) loJSON.get("sLocatnCd"));
+                    setMaster("xLocatnNm", (String) loJSON.get("sDescript"));
+                    setMaster("xSectnNme", (String) loJSON.get("sSectnIDx"));
+                    setMaster("sWHouseID", (String) loJSON.get("sWHouseID"));
+                    setMaster("xWHouseNm", (String) loJSON.get("xWHouseNm"));
+                    
+//                    setMaster(6, (String) loJSON.get("sMainCatx"));
+////                    setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
+//                    setMaster("xCategNm1", (String)loJSON.get("xMainCatx"));
+//                    setMaster("xMainCatx", (String)loJSON.get("sMainCatx"));
+//                    System.out.println("sInvTypCd = " + setMaster("sInvTypCd", (String) loJSON.get("sCategrCd")));
+                    return setMaster("xSectnNme", (String) loJSON.get("xSectnNme"));
+                    
+                }else {
+                    loJSON = new JSONObject();
                     loJSON.put("result", "error");
-                    loJSON.put("message", "No record found.");
+                    loJSON.put("message", "No record selected.");
                     return loJSON;
                 }
+                
+                
+                
+                
+                
+//                Inv_Location loLocation = new Inv_Location(poGRider, false);
+//                loLocation.setRecordStatus(psTranStatus);
+//                loJSON = loLocation.searchRecord(fsValue, fbByCode);
+//                
+//                if (loJSON != null){
+//                    setMaster(fnCol, (String) loLocation.getMaster("sLocatnCd"));
+//                    return setMaster("xLocatnNm", (String) loLocation.getMaster("sDescript"));
+//                } else {
+//                    loJSON.put("result", "error");
+//                    loJSON.put("message", "No record found.");
+//                    return loJSON;
+//                }
             default:
                 return null;
                 

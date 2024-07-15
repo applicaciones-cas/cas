@@ -16,7 +16,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
-import org.guanzon.cas.inventory.models.Model_Inventory_Sub_Unit;
+import org.guanzon.cas.model.inventory.Model_Inventory_Sub_Unit;
 import org.guanzon.cas.validators.ValidatorFactory;
 import org.guanzon.cas.validators.ValidatorInterface;
 import org.json.simple.JSONObject;
@@ -414,6 +414,7 @@ public class InventorySubUnit implements GRecord{
 //                return obj;
 //            
 //            }
+            poModel.get(lnCtr).setEntryNox(lnCtr + 1);
             obj = poModel.get(lnCtr).saveRecord();
 
         }    

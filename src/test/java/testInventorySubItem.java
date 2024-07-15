@@ -54,28 +54,60 @@ public class testInventorySubItem{
     @Test
     public void testProgramFlow() {
         JSONObject loJSON;
-
-        loJSON = record.newRecord();
+        loJSON = record.openRecord("M00124000051");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-
-        loJSON = record.getMaster().get(0).setStockID("M00124000001");
+        if(record.getMaster().size() >= 1){
+            if(!record.getMaster().get(record.getMaster().size()-1).getStockID().isEmpty() || !record.getMaster().get(record.getMaster().size()-1).getSubItemID().isEmpty()){
+                loJSON = record.addSubUnit();
+                if ("error".equals((String) loJSON.get("result"))) {
+                    Assert.fail((String) loJSON.get("message"));
+                }
+            }
+        }
+//        loJSON = record.getMaster().get(record.getMaster().size()-1).setStockID("M00124000051");
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
+//        Assert.assertEquals("M00124000051", record.getModel().getStockID());
+        
+        loJSON = record.getMaster().get(record.getMaster().size()-1).setEntryNox(record.getMaster().size());
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        loJSON = record.getMaster().get(0).setEntryNox(1);
+        Assert.assertEquals(record.getMaster().size(), record.getModel().getEntryNox(), 0);
+        
+        loJSON = record.getMaster().get(record.getMaster().size()-1).setSubItemID("M00124000004");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        loJSON = record.getMaster().get(0).setSubItemID("M00124000004");
+        Assert.assertEquals("M00124000004", record.getModel().getStockID());
+        
+        loJSON = record.getMaster().get(record.getMaster().size()-1).setQuantity(5);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        loJSON = record.getMaster().get(0).setQuantity(5);
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
+        Assert.assertEquals(5, Integer.parseInt(record.getModel().getQuantity().toString()), 0);
+//        for(int lnCtr = 1; lnCtr <= record.getMaster().size(); lnCtr++){
+//            
+//            loJSON = record.getMaster().get(record.getMaster().size()).setStockID("M00124000001");
+//            if ("error".equals((String) loJSON.get("result"))) {
+//                Assert.fail((String) loJSON.get("message"));
+//            }
+//            loJSON = record.getMaster().get(record.getMaster().size()).setEntryNox(record.getMaster().size());
+//            if ("error".equals((String) loJSON.get("result"))) {
+//                Assert.fail((String) loJSON.get("message"));
+//            }
+//            loJSON = record.getMaster().get(record.getMaster().size()).setSubItemID("M00124000004");
+//            if ("error".equals((String) loJSON.get("result"))) {
+//                Assert.fail((String) loJSON.get("message"));
+//            }
+//            loJSON = record.getMaster().get(record.getMaster().size()).setQuantity(5);
+//            if ("error".equals((String) loJSON.get("result"))) {
+//                Assert.fail((String) loJSON.get("message"));
+//            }
+//        }
         
         loJSON = record.saveRecord();
         if ("error".equals((String) loJSON.get("result"))) {
