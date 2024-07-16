@@ -30,6 +30,7 @@ import org.guanzon.cas.parameters.Measure;
 import org.guanzon.cas.parameters.Model;
 import org.guanzon.cas.validators.ValidatorFactory;
 import org.guanzon.cas.validators.ValidatorInterface;
+import org.guanzon.cas.validators.inventory.Validator_Inventory_Sub_Unit;
 import org.json.simple.JSONObject;
 
 /**
@@ -50,6 +51,7 @@ public class Inventory implements GRecord{
     private Model_Inventory poModel;
     private InventorySubUnit poSubUnit;
 
+    public ValidatorFactory.TYPE types;
      public Inventory(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
@@ -57,6 +59,36 @@ public class Inventory implements GRecord{
         poModel = new Model_Inventory(foGRider);
         poSubUnit = new InventorySubUnit(foGRider, fbWthParent);
         pnEditMode = EditMode.UNKNOWN;
+        
+        switch (poGRider.getDivisionCode()) {
+                case "0"://mobilephone
+                    types = ValidatorFactory.TYPE.MP;
+                    break;
+
+                case "1"://motorycycle
+                    types = ValidatorFactory.TYPE.MC;
+                    break;
+
+                case "2"://Auto Group - Honda Cars
+                case "5"://Auto Group - Nissan
+                case "6"://Auto Group - Any
+                    types = ValidatorFactory.TYPE.AUTO;
+                    break;
+
+                case "3"://Hospitality
+                    types = ValidatorFactory.TYPE.GENERAL;
+                    break;
+                case "4"://Pedritos Group
+                    types = ValidatorFactory.TYPE.HOSPITALITY;
+                    break;
+
+                case "7"://Guanzon Services Office
+                     break;
+
+                case "8"://Main Office
+                    break;
+            }
+        
     }
 
 
@@ -176,15 +208,8 @@ public class Inventory implements GRecord{
                 case "8"://Main Office
                     break;
             }
-//            System.out.println("category = " + System.getProperty("store.inventory.industry"));
-//            System.out.println("category code = " + loCateg.getMaster("sCategrCd"));
-//            System.out.println("category descript = " + loCateg.getMaster("sDescript"));
-//            setMaster(6, (String) loCateg.getMaster("sCategrCd"));
-//            setMaster("xCategNm1", (String)loCateg.getMaster("sDescript"));
             poModel.setCategCd1((String) loCateg.getMaster("sCategrCd"));
             poModel.setCategName1((String) loCateg.getMaster("sDescript"));
-//            System.out.println("category get code = " + poModel.getCategCd1());
-//            System.out.println("category get descript = " + poModel.getCategName1());
 
             poSubUnit = new InventorySubUnit(poGRider, pbWthParent);
             poSubUnit.addSubUnit();
@@ -249,16 +274,36 @@ public class Inventory implements GRecord{
     public JSONObject saveRecord() {
         poJSON = new JSONObject();
         if (!pbWthParent) poGRider.beginTrans();
+        
+        ValidatorInterface validator = ValidatorFactory.make(types, poModel);
+        switch (poModel.getCategCd1()) {
+                case "0002"://mobilephone
+                    types = ValidatorFactory.TYPE.MP;
+                    break;
 
-//        ValidatorInterface validator = ValidatorFactory.make(ValidatorFactory.TYPE.AR_Client_Master, poModel);
-//        poModel.setModifiedDate(poGRider.getServerDate());
-//
-//        if (!validator.isEntryOkay()){
-//            poJSON.put("result", "error");
-//            poJSON.put("message", validator.getMessage());
-//            return poJSON;
-//
-//        }
+                case "0001"://motorycycle
+                    types = ValidatorFactory.TYPE.MC;
+                    break;
+
+                case "0003"://Auto Group - Honda Cars
+                    types = ValidatorFactory.TYPE.AUTO;
+                    break;
+
+                case "0004"://Hospitality
+                    types = ValidatorFactory.TYPE.HOSPITALITY;
+                    break;
+                case "0005"://Pedritos Group
+                    types = ValidatorFactory.TYPE.GENERAL;
+                    break;
+            }
+        poModel.setModifiedDate(poGRider.getServerDate());
+
+        if (!validator.isEntryOkay()){
+            poJSON.put("result", "error");
+            poJSON.put("message", validator.getMessage());
+            return poJSON;
+
+        }
         poJSON = poModel.saveRecord();
         if("error".equalsIgnoreCase((String)checkData(poJSON).get("result"))){
             if (!pbWtParent) poGRider.rollbackTrans();
@@ -687,15 +732,18 @@ public class Inventory implements GRecord{
 //                    System.out.println("size = " + poSubUnit.getMaster().size());
                 }
             }
-//            ValidatorInterface validator = ValidatorFactory.make(types,  ValidatorFactory.TYPE.Client_Address, poSubUnit.get(lnCtr));
             poSubUnit.getMaster().get(lnCtr).setModifiedDate(poGRider.getServerDate());
+            if(poModel.getCategCd1().equals("0004")){
+                Validator_Inventory_Sub_Unit validator = new Validator_Inventory_Sub_Unit(poSubUnit.getMaster().get(lnCtr));
+                if (!validator.isEntryOkay()){
+                    obj.put("result", "error");
+                    obj.put("message", validator.getMessage());
+                    return obj;
 
-//            if (!validator.isEntryOkay()){
-//                obj.put("result", "error");
-//                obj.put("message", validator.getMessage());
-//                return obj;
-//
-//            }
+                }
+            }
+
+//            
 //            obj = poSubUnit.getMaster().get(lnCtr).saveRecord();
             obj = poSubUnit.saveRecord();
 

@@ -148,8 +148,10 @@ public class InventorySubUnit implements GRecord{
     @Override
     public JSONObject deleteRecord(String fsValue) {
         poJSON = new JSONObject();
+        if (!pbWthParent) {
+            poGRider.beginTrans();
+        }
 
-        poJSON = new JSONObject();
         if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UPDATE) {
             if (poGRider.getUserLevel() < UserRight.SUPERVISOR){
                 poJSON.put("result", "error");
@@ -163,14 +165,24 @@ public class InventorySubUnit implements GRecord{
 
             if (!lsSQL.equals("")){
                 if (poGRider.executeQuery(lsSQL, model.getTable(), poGRider.getBranchCode(), "") > 0) {
+                    if (!pbWthParent) {
+                        poGRider.commitTrans();
+                    }
                     poJSON.put("result", "success");
                     poJSON.put("message", "Record deleted successfully.");
                 } else {
+                    
+                    if (!pbWthParent) {
+                        poGRider.rollbackTrans();
+                    }
                     poJSON.put("result", "error");
                     poJSON.put("message", poGRider.getErrMsg());
                 }
             }
         }else {
+            if (!pbWthParent) {
+                poGRider.rollbackTrans();
+            }
             poJSON.put("result", "error");
             poJSON.put("message", "Invalid update mode. Unable to save record.");
             return poJSON;

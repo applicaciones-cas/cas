@@ -21,6 +21,7 @@ import org.guanzon.cas.model.inventory.Model_Inventory;
 import org.guanzon.cas.model.parameters.Model_Inv_Location;
 import org.guanzon.cas.parameters.Inv_Location;
 import org.guanzon.cas.parameters.Warehouse;
+import org.guanzon.cas.validators.inventory.Validator_Inventory_Master;
 import org.json.simple.JSONObject;
 
 /**
@@ -196,15 +197,15 @@ public class InvMaster implements GRecord{
         if (!pbWthParent) {
             poGRider.beginTrans();
         }
-//        ValidatorInterface validator = ValidatorFactory.make(ValidatorFactory.TYPE.AR_Client_Master, poModel);
-//        poModel.setModifiedDate(poGRider.getServerDate());
-//
-//        if (!validator.isEntryOkay()){
-//            poJSON.put("result", "error");
-//            poJSON.put("message", validator.getMessage());
-//            return poJSON;
-//
-//        }
+        Validator_Inventory_Master validator = new Validator_Inventory_Master(poModel);
+        poModel.setModifiedDate(poGRider.getServerDate());
+
+        if (!validator.isEntryOkay()){
+            poJSON.put("result", "error");
+            poJSON.put("message", validator.getMessage());
+            return poJSON;
+
+        }
         poJSON = poModel.saveRecord();
 
         if ("success".equals((String) poJSON.get("result"))) {
