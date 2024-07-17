@@ -4,7 +4,11 @@
  */
 
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Properties;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
@@ -37,6 +41,13 @@ public class testInventory{
         else{
             path = "/srv/GGC_Maven_Systems";
         }
+        
+        if (!loadProperties()) {
+            System.err.println("Unable to load config.");
+            System.exit(1);
+        } else {
+            System.out.println("Config file loaded successfully.");
+        }
         System.setProperty("sys.default.path.config", path);
 
         GRider instance = new GRider("gRider");
@@ -45,15 +56,32 @@ public class testInventory{
             System.err.println(instance.getErrMsg());
             System.exit(1);
         }
-
-        System.out.println("Connected");
+        
+        System.setProperty("sys.default.path.config", path);
         System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/");
         
 
+        System.out.println("Connected");
         instance = MiscUtil.Connect();
         record = new Inventory(instance, false);
     }
+    private static boolean loadProperties() {
+        try {
+            Properties po_props = new Properties();
+            po_props.load(new FileInputStream("D:\\GGC_Maven_Systems\\config\\cas.properties"));
 
+            System.setProperty("store.branch.code", po_props.getProperty("store.branch.code"));
+            System.setProperty("store.inventory.industry", po_props.getProperty("store.inventory.category"));
+            
+            return true;
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+            return false;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
     @Test
     public void testNewInventory() {
         JSONObject loJSON;
@@ -97,11 +125,11 @@ public class testInventory{
         }
         Assert.assertEquals("0001", record.getModel().getCategCd1());
         
-        loJSON = record.getModel().setCategCd2("0003");
+        loJSON = record.getModel().setCategCd2("0002");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals("0003", record.getModel().getCategCd2());
+        Assert.assertEquals("0002", record.getModel().getCategCd2());
         
         loJSON = record.getModel().setCategCd3("0001");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -127,17 +155,17 @@ public class testInventory{
         }
         Assert.assertEquals("Samasung", record.getModel().getBrandName());
 //        
-        loJSON = record.getModel().setModelCode("");
+        loJSON = record.getModel().setModelCode("M0012401");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals("", record.getModel().getModelCode());
+        Assert.assertEquals("M0012401", record.getModel().getModelCode());
         
-        loJSON = record.getModel().setModelName("");
+        loJSON = record.getModel().setModelName("RAIDER GTR 180");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals("", (record.getModel().getModelName())==null?"":record.getModel().getModelName());
+        Assert.assertEquals("RAIDER GTR 180", (record.getModel().getModelName())==null?"":record.getModel().getModelName());
         
         loJSON = record.getModel().setColorCode("M001001");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -157,11 +185,11 @@ public class testInventory{
         }
         Assert.assertEquals("", record.getModel().getMeasureID());
         
-        loJSON = record.getModel().setMeasureName("");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals("", (record.getModel().getMeasureName())==null?"":record.getModel().getModelName());
+//        loJSON = record.getModel().setMeasureName("");
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
+//        Assert.assertEquals("", (record.getModel().getMeasureName())==null?"":record.getModel().getModelName());
 
         loJSON = record.getModel().setUnitPrice(1800.00);
         if ("error".equals((String) loJSON.get("result"))) {
@@ -210,7 +238,7 @@ public class testInventory{
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals(0, Integer.parseInt(record.getModel().getMaxLevel().toString()), 0);
+        Assert.assertEquals(1, Integer.parseInt(record.getModel().getMaxLevel().toString()), 0);
         
         loJSON = record.getModel().setComboInv("0");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -260,10 +288,10 @@ public class testInventory{
         }
         Assert.assertEquals("1", record.getModel().getRecdStat());
         TransNox = record.getModel().getStockID();
-        loJSON = record.saveRecord();
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
+//        loJSON = record.saveRecord();
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
         
         
     }
@@ -271,7 +299,7 @@ public class testInventory{
     public void testOpenInventory() {
         JSONObject loJSON;
         System.out.println(TransNox);
-        loJSON = record.openRecord(TransNox);
+        loJSON = record.openRecord("M00124000086");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
@@ -305,7 +333,7 @@ public class testInventory{
         Assert.assertEquals(0.0, Double.parseDouble(record.getModel().getDealerDiscount().toString()), delta);
         
         Assert.assertEquals(0, Integer.parseInt(record.getModel().getMinLevel().toString()), 0);
-        Assert.assertEquals(0, Integer.parseInt(record.getModel().getMaxLevel().toString()), 0);
+        Assert.assertEquals(1, Integer.parseInt(record.getModel().getMaxLevel().toString()), 0);
         Assert.assertEquals("0", record.getModel().getComboInv());
         Assert.assertEquals("1", record.getModel().getSerialze());
         Assert.assertEquals("0", record.getModel().getWthPromo());

@@ -723,7 +723,7 @@ public class Inventory implements GRecord{
             if(lnCtr>=0){
                 if(poSubUnit.getMaster().get(lnCtr).getStockID().isEmpty() || poSubUnit.getMaster().get(lnCtr).getSubItemID().isEmpty()){
                     poSubUnit.getMaster().remove(lnCtr);
-                    if (poSubUnit.getMaster().size()<= 0){
+                    if (lnCtr>poSubUnit.getMaster().size()-1){
                         obj.put("result", "error");
                         obj.put("continue",true);
                         obj.put("message", "No inventory sub unit detected.");
@@ -732,7 +732,7 @@ public class Inventory implements GRecord{
 //                    System.out.println("size = " + poSubUnit.getMaster().size());
                 }
             }
-            poSubUnit.getMaster().get(lnCtr).setModifiedDate(poGRider.getServerDate());
+//            poSubUnit.getMaster().get(lnCtr).setModifiedDate(poGRider.getServerDate());
             if(poModel.getCategCd1().equals("0004")){
                 Validator_Inventory_Sub_Unit validator = new Validator_Inventory_Sub_Unit(poSubUnit.getMaster().get(lnCtr));
                 if (!validator.isEntryOkay()){
@@ -744,8 +744,8 @@ public class Inventory implements GRecord{
             }
 
 //            
-//            obj = poSubUnit.getMaster().get(lnCtr).saveRecord();
-            obj = poSubUnit.saveRecord();
+            obj = poSubUnit.getMaster().get(lnCtr).saveRecord();
+//            obj = poSubUnit.saveRecord();
 
         }
 

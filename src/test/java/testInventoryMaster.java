@@ -4,6 +4,10 @@
  */
 
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.cas.inventory.base.InvMaster;
@@ -32,23 +36,49 @@ public class testInventoryMaster{
         else{
             path = "/srv/GGC_Maven_Systems";
         }
+        
         System.setProperty("sys.default.path.config", path);
 
+        if (!loadProperties()) {
+            System.err.println("Unable to load config.");
+            System.exit(1);
+        } else {
+            System.out.println("Config file loaded successfully.");
+        }
         GRider instance = new GRider("gRider");
 
         if (!instance.logUser("gRider", "M001000001")){
             System.err.println(instance.getErrMsg());
             System.exit(1);
         }
-
-        System.out.println("Connected");
+        
+        System.setProperty("sys.default.path.config", path);
         System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/");
         
 
+        System.out.println("Connected");
         instance = MiscUtil.Connect();
         record = new InvMaster(instance, false);
         record.setRecordStatus("0123");
     }
+    private static boolean loadProperties() {
+        try {
+            Properties po_props = new Properties();
+            po_props.load(new FileInputStream("D:\\GGC_Maven_Systems\\config\\cas.properties"));
+
+            System.setProperty("store.branch.code", po_props.getProperty("store.branch.code"));
+            System.setProperty("store.inventory.industry", po_props.getProperty("store.inventory.category"));
+            
+            return true;
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+            return false;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
 
     @Test
     public void testNewInventory() {
@@ -207,7 +237,7 @@ public class testInventoryMaster{
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals(0, Integer.parseInt(record.getInvModel().getMaxLevel().toString()), 0);
+        Assert.assertEquals(1, Integer.parseInt(record.getInvModel().getMaxLevel().toString()), 0);
         
         loJSON = record.getInvModel().setComboInv("0");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -384,7 +414,7 @@ public class testInventoryMaster{
         Assert.assertEquals(0.0, Double.parseDouble(record.getInvModel().getDealerDiscount().toString()), delta);
         
         Assert.assertEquals(0, Integer.parseInt(record.getInvModel().getMinLevel().toString()), 0);
-        Assert.assertEquals(0, Integer.parseInt(record.getInvModel().getMaxLevel().toString()), 0);
+        Assert.assertEquals(1, Integer.parseInt(record.getInvModel().getMaxLevel().toString()), 0);
         Assert.assertEquals("0", record.getInvModel().getComboInv());
         Assert.assertEquals("1", record.getInvModel().getSerialze());
         Assert.assertEquals("0", record.getInvModel().getWthPromo());

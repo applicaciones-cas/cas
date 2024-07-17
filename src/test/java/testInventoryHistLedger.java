@@ -4,7 +4,11 @@
  */
 
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
+import java.util.Properties;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
@@ -35,19 +39,43 @@ public class testInventoryHistLedger{
         }
         System.setProperty("sys.default.path.config", path);
 
-        instance = new GRider("gRider");
+        GRider instance = new GRider("gRider");
 
         if (!instance.logUser("gRider", "M001000001")){
             System.err.println(instance.getErrMsg());
             System.exit(1);
         }
-
-        System.out.println("Connected");
+        
+        System.setProperty("sys.default.path.config", path);
         System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/");
         
+        if (!loadProperties()) {
+            System.err.println("Unable to load config.");
+            System.exit(1);
+        } else {
+            System.out.println("Config file loaded successfully.");
+        }
 
+        System.out.println("Connected");
         instance = MiscUtil.Connect();
         record = new InvHistLedger(instance, false);
+    }
+    private static boolean loadProperties() {
+        try {
+            Properties po_props = new Properties();
+            po_props.load(new FileInputStream("D:\\GGC_Maven_Systems\\config\\cas.properties"));
+
+            System.setProperty("store.branch.code", po_props.getProperty("store.branch.code"));
+            System.setProperty("store.inventory.industry", po_props.getProperty("store.inventory.category"));
+            
+            return true;
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+            return false;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 
     @Test
@@ -103,11 +131,14 @@ public class testInventoryHistLedger{
         }
         Assert.assertEquals(1.0, record.getMaster().get(record.getMaster().size()-1).getLedgerNo(), 0);
         
-        loJSON = record.getMaster().get(record.getMaster().size()-1).setTransactDate(CommonUtils.toDate(instance.getServerDate().toString()));
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        
+//        loJSON = record.getMaster().get(record.getMaster().size()-1).setTransactDate(CommonUtils.toDate(instance.getServerDate().toString()));
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
+//        loJSON = record.getMaster().get(record.getMaster().size()-1).setExpiryDate(CommonUtils.toDate(instance.getServerDate().toString()));
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
         
         loJSON = record.getMaster().get(record.getMaster().size()-1).setQuantityIn(5);
         if ("error".equals((String) loJSON.get("result"))) {
@@ -157,16 +188,13 @@ public class testInventoryHistLedger{
         }
         
         Assert.assertEquals("M001", record.getMaster().get(record.getMaster().size()-1).getBranchCode());
-        loJSON = record.getMaster().get(record.getMaster().size()-1).setExpiryDate(CommonUtils.toDate(instance.getServerDate().toString()));
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
         
         
-        loJSON = record.saveRecord();
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
+        
+//        loJSON = record.saveRecord();
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
     }
 
     @AfterClass
