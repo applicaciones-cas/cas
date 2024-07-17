@@ -201,6 +201,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
     }    
 
     private void ClickButton() {
+        btnBrowse.setOnAction(this::handleButtonAction);
         btnCancel.setOnAction(this::handleButtonAction);
         btnNew.setOnAction(this::handleButtonAction);
         btnSave.setOnAction(this::handleButtonAction);
@@ -223,6 +224,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                         }
                     break;
                 case "btnNew":
+                    clearCompanyFields();
                     poJSON = oTrans.newTransaction();
                     if ("success".equals((String) poJSON.get("result"))){
                             pnEditMode = EditMode.ADDNEW;
@@ -267,7 +269,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                         initButton(pnEditMode);
                         initTabAnchor();
                     
-                    
+                        
                         poJSON = oTrans.updateTransaction();
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -282,6 +284,8 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                         if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
                             
                             clearCompanyFields();
+                            oTrans = new Account_Accreditation(oApp, true);
+                            oTrans.setTransactionStatus("0123");
                              pnEditMode = EditMode.UNKNOWN;     
                              initButton(pnEditMode);
                              initTabAnchor();
@@ -315,7 +319,6 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                             ShowMessageFX.Information((String) addDetails.get("message"), "Computerized Acounting System", pxeModuleName);
                             break;
                         } 
-//                        clearMobileFields();
                         loadComapany();
                         pnCompany = oTrans.getAccount().size()-1;
                         tblAccreditation.getSelectionModel().select(pnCompany + 1);
@@ -327,7 +330,6 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                         oTrans.getAccount().remove(pnCompany);
                         if(oTrans.getAccount().size() <= 0){
                             oTrans.addDetail();
-                            
                         }
                         
                         pnCompany = oTrans.getAccount().size()-1;
@@ -343,24 +345,10 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                            poJSON =  oTrans.SearchAccredetation(lsValue, true);
                            System.out.println("poJson = " + poJSON.toJSONString());
                            if("error".equalsIgnoreCase(poJSON.get("result").toString())){
-//                               loadCompanyTransaction();
                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                           pnEditMode = oTrans.getEditMode();
-//                        loadDetail();
-                        
+                            pnEditMode = oTrans.getEditMode();
                             retrieveDetails();
-//                    oTrans.setAccountType(String.valueOf(cmbField01.getSelectionModel().getSelectedIndex()));
-//                        poJSON = new JSONObject();
-//                           poJSON =  oTrans.SearchAccredetation(txtSeek01.getText(), true);
-//                           System.out.println("poJson = " + poJSON.toJSONString());
-//                           if("error".equalsIgnoreCase(poJSON.get("result").toString())){
-////                               loadCompanyTransaction();
-//                               ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                           }
-//                           pnEditMode = oTrans.getEditMode();
-//                        
-//                            retrieveDetails();
                         break;
                        
         }
@@ -373,7 +361,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                 data.add(new ModelAccredetations(String.valueOf(lnCtr + 1),
                     oTrans.getAccount(lnCtr, "sClientID").toString(),
                     oTrans.getAccount(lnCtr, "xCompnyNm").toString(),
-                    oTrans.getAccount(lnCtr, "xCPerson1").toString(),
+                    (oTrans.getAccount(lnCtr, "xCPerson1")==null?"":oTrans.getAccount(lnCtr, "xCPerson1").toString()),
                     oTrans.getAccount(lnCtr, "sRemarksx").toString(),
                     oTrans.getAccount(lnCtr, "cTranType").toString(),
                     "",
@@ -401,32 +389,19 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
          btnCancel.setVisible(lbShow);
         btnSearch.setVisible(lbShow);
         btnSave.setVisible(lbShow);
-//        btnApproved.setVisible(lbShow);        
-//        btnDisaaproved.setVisible(lbShow);
         
         btnSave.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
-//        btnApproved.setManaged(lbShow);
-//        btnDisaaproved.setManaged(lbShow);
         btnSearch.setManaged(lbShow);
         btnUpdate.setVisible(!lbShow);
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
         
-
-//        txtSearch01.setDisable(!lbShow);
-//        txtSearch02.setDisable(!lbShow);
         
         if (lbShow){
-//            txtSearch01.setDisable(lbShow);
-//            txtSearch01.clear();
-//            txtSearch02.setDisable(lbShow);
-            
             btnCancel.setVisible(lbShow);
             btnSearch.setVisible(lbShow);
             btnSave.setVisible(lbShow);
-//            btnApproved.setVisible(lbShow);
-//            btnDisaaproved.setVisible(lbShow);
             
             btnUpdate.setVisible(!lbShow);
             btnBrowse.setVisible(!lbShow);
@@ -437,9 +412,6 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
             btnClose.setManaged(false);
         }
         else{
-//            txtSearch01.setDisable(lbShow);
-//            txtSearch01.requestFocus();
-//            txtSearch02.setDisable(lbShow);  
         }
         
     }
@@ -448,13 +420,6 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                 pnEditMode == EditMode.UPDATE;
         AnchroInputs.setDisable(!pbValue);
         AnchorTable.setDisable(!pbValue);
-//        anchorAddress.setDisable(!pbValue);
-//        anchorMobile.setDisable(!pbValue);
-//        anchorEmail.setDisable(!pbValue);
-//        anchorSocial.setDisable(!pbValue);
-//        anchorContctPerson.setDisable(!pbValue);
-//        anchorOtherInfo.setDisable(!pbValue);
-    
     }
     private void initComboBoxes(){
         
@@ -504,11 +469,9 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
 //                               loadCompanyTransaction();
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
-                           pnEditMode = oTrans.getEditMode();
-//                        loadDetail();
-                        
+                            pnEditMode = oTrans.getEditMode();
+//                          loadDetail();
                             retrieveDetails();
-////                          
                         break;
                     case 05:
                         poJson = new JSONObject();
@@ -537,7 +500,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
     private void txtField_KeyPressed(KeyEvent event){
         TextField txtField = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
-        String lsValue = txtField.getText();
+        String lsValue = (txtField.getText() == null ?"": txtField.getText());
         JSONObject poJson;
         switch (event.getCode()) {
             case F3:
@@ -559,13 +522,6 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                            txtField03.setText((String) oTrans.getAccount(pnCompany,"xCPerson1"));                                                     
                            txtField03.setText((String) oTrans.getAccount(pnCompany,"xCPerson1"));
                            
-               
-//                           a = (String) poJson.get("sClientID");
-//                           b = (String) poJson.get("sContctID");
-//                           oTransnox = (String) poJson.get("sClientID");
-//                           txtField04.setText((String) poJson.get("xCPerson1"));                         
-//                           txtField05.setText((String) poJson.get("sMobileNo"));
-//                           txtField06.setText((String) poJson.get("sTaxIDNox"));
                         break;
                     case 05:
                         poJson = new JSONObject();
@@ -704,7 +660,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
     
     
         private void clearCompanyFields(){
-        TextField[] fields = { txtField01,txtField02, txtField03, txtField04 };
+        TextField[] fields = { txtField01,txtField02, txtField03, txtField04,txtField05 };
 
         // Loop through each array of TextFields and clear them
         for (TextField field : fields) {
@@ -729,9 +685,18 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                 pnEditMode == EditMode.ADDNEW || 
                 pnEditMode == EditMode.UPDATE){
             
-//                    txtField01.setText((String) oTrans.getAccount(pnCompany, 1));
+//                    cmbField02.getSelectionModel().select(oTrans.getAccount(pnCompany, 3));
+                    cmbField02.getSelectionModel().select(Integer.parseInt(oTrans.getAccount(pnCompany, 3).toString()));
+                    cmbField03.getSelectionModel().select(Integer.parseInt(oTrans.getAccount(pnCompany, 9).toString()));
+                    txtField01.setText((String) oTrans.getAccount(pnCompany, "sTransNox"));
+                    txtField05.setText((String) oTrans.getAccount(pnCompany, 18));
+                    txtField02.setText((String) oTrans.getAccount(pnCompany, "xCompnyNm"));
+                    txtField03.setText((String) oTrans.getAccount(pnCompany, "xCPerson1"));
+                    txtField04.setText((String) oTrans.getAccount(pnCompany, "sRemarksx"));
+                       
                     loadComapany();
                 }
+        txtSeek01.clear();
         }
 }
 

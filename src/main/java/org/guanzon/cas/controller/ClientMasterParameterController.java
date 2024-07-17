@@ -1022,7 +1022,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                             txtSeeks99.clear();
                             break;
                         }
-                        pnEditMode = oTrans.getEditMode();
+                        pnEditMode = EditMode.READY;
                         loadDetail();
                         
                     break;
@@ -1948,40 +1948,46 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         for (int lnCtr = 0; lnCtr < oTrans.getInsContactList().size(); lnCtr++){
             if(pnContact == lnCtr){
                 if(isChecked){
-                    oTrans.setInsContact(pnContact, "cPrimaryx", "1");
+                    oTrans.setInsContact(pnContact, "cRecdStat", "1");
+                    System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
                 }else{
-                    oTrans.setInsContact(lnCtr, "cPrimaryx", "0");
+                    oTrans.setInsContact(lnCtr, "cRecdStat", "0");
+                    System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
                 }
             }else{
-                oTrans.setInsContact(lnCtr, "cPrimaryx", "0");
+                oTrans.setInsContact(lnCtr, "cRecdStat", "0");
+                System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
             }
             
         }
         loadContctPerson();
-        String val = (isChecked)? "1":"0";
-        System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
         
     }
     @FXML
     private void CheckContact02_Clicked(MouseEvent event) {
         boolean isChecked = cbContact02.isSelected();
        
-        oTrans.setInsContact(pnContact, "cRecdStat", (isChecked)? "1":"0");
-        
+        for (int lnCtr = 0; lnCtr < oTrans.getInsContactList().size(); lnCtr++){
+            if(pnContact == lnCtr){
+                if(isChecked){
+                    oTrans.setInsContact(pnContact, "cPrimaryx", "1");
+                    System.out.println("cPrimaryx = " + oTrans.getInsContact(pnContact, "cPrimaryx"));
+                }else{
+                    oTrans.setInsContact(lnCtr, "cPrimaryx", "0");
+                    System.out.println("cPrimaryx = " + oTrans.getInsContact(pnContact, "cPrimaryx"));
+                }
+            }else{
+                oTrans.setInsContact(lnCtr, "cPrimaryx", "0");
+                System.out.println("cPrimaryx = " + oTrans.getInsContact(pnContact, "cPrimaryx"));
+            }
+        }
         loadContctPerson();
-        String val = (isChecked)? "1":"0";
-        System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
-        
     }
     
     @FXML
     private void cbAddress01_Clicked(MouseEvent event) {
         boolean isChecked = cbAddress01.isSelected();
-       
         oTrans.setAddress(pnAddress, "cRecdStat", (isChecked)? "1":"0");
-        
         loadAddress();
     }
     
@@ -2001,14 +2007,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
             }
             
         }
-       
-//        for (int lnCtr = 0; lnCtr < oTrans.getAddressList().size(); lnCtr++){
-//            if(isChecked){
-//                oTrans.setAddress(pnAddress, "cPrimaryx", "1");
-//            }else{
-//                oTrans.setAddress(lnCtr, "cPrimaryx", "0");
-//            }
-//        }
         loadAddress();
     }
     
@@ -2266,7 +2264,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         initAddressGrid();
         loadSocialMedia();
         initSocialMediaGrid();
-        
         retrieveDetails();
     }
     private void initTabAnchor(){

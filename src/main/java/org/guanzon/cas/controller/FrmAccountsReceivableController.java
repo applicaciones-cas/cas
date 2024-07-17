@@ -233,6 +233,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         btnSave.setOnAction(this::handleButtonAction);
         btnUpdate.setOnAction(this::handleButtonAction);
         btnClose.setOnAction(this::handleButtonAction);
+        btnBrowse.setOnAction(this::handleButtonAction);
     }
     private void initSearchFields(){
         /*textFields FOCUSED PROPERTY*/
@@ -245,7 +246,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
     private void searchinfo_KeyPressed(KeyEvent event){
         TextField txtSearch = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(9,11));
-        String lsValue = txtSearch.getText();
+        String lsValue = (txtSearch.getText()==null?"":txtSearch.getText());
         JSONObject poJson;
         switch (event.getCode()) {
             case F3:
@@ -329,6 +330,18 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                             initTabAnchor();
                         }
                     break;
+                case "btnBrowse":
+                         String lsValue = (txtSearch01.getText()==null?"":txtSearch01.getText());
+                         poJSON = oTrans.searchRecord(lsValue, true);
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+                        pnEditMode =  oTrans.getEditMode();
+                        
+                        initButton(pnEditMode);
+                        initTabAnchor();
+                        retrieveDetails();
+                    break;
                 case "btnUpdate":
                          poJSON = oTrans.updateRecord();
                         if ("error".equals((String) poJSON.get("result"))){
@@ -344,6 +357,9 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                             clearAllFields();
 //                            appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
 //                            pnEditMode = EditMode.UNKNOWN;
+
+                            oTrans = new AR_Client_Master(oApp, true);
+                            oTrans.setRecordStatus("0123");
                             pnEditMode = EditMode.UNKNOWN;
                             initButton(pnEditMode);
                             initTabAnchor();
@@ -511,7 +527,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
     private void txtField_KeyPressed(KeyEvent event){
         TextField txtField = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
-        String lsValue = txtField.getText();
+        String lsValue = (txtField.getText()==null?"":txtField.getText());
         JSONObject poJson;
         switch (event.getCode()) {
             case F3:
@@ -519,8 +535,6 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                     case 02: /*search branch*/
 //                        receivedDataLabel.setText(receivedData);
                         poJson = new JSONObject();
-                        String input = "";
-                        input = lsValue;
                             poJson =  oTrans.SearchClient(lsValue, false);
                            System.out.println("poJson = " + poJson.toJSONString());
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
@@ -832,6 +846,8 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
             btnNew.setManaged(false);
             btnUpdate.setManaged(false);
             btnClose.setManaged(false);
+            txtSearch01.clear();  
+            txtSearch02.clear();  
         }
         else{
             txtSearch01.setDisable(lbShow);
@@ -843,21 +859,32 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
     private void txtSearch_KeyPressed(KeyEvent event){
         TextField txtSearch = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(9,11));
-        String lsValue = txtSearch.getText();
+        String lsValue = (txtSearch.getText()==null?"":txtSearch.getText());
         JSONObject poJson;
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex){
+                    case 01: /*search company*/
+                        poJson = new JSONObject();
+                            poJson =  oTrans.searchRecord(lsValue, true);
+                           System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                           }
+                           pnEditMode = oTrans.getEditMode();
+                           txtSearch01.setText(oTrans.getModel().getClientID());
+                           txtSearch02.setText(oTrans.getModel().getClientName());
+                           
+                        break;
                     case 02: /*search company*/
                         poJson = new JSONObject();
-                        String input = "";
-                        input = lsValue;
                             poJson =  oTrans.searchRecord(lsValue, false);
                            System.out.println("poJson = " + poJson.toJSONString());
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                 ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                            }
                            pnEditMode = oTrans.getEditMode();
+                           txtSearch01.setText(oTrans.getModel().getClientID());
                            txtSearch02.setText(oTrans.getModel().getClientName());
                            
                         break;
@@ -881,6 +908,13 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         if(pnEditMode == EditMode.READY || 
                 pnEditMode == EditMode.ADDNEW || 
                 pnEditMode == EditMode.UPDATE){
+            if(pnEditMode == EditMode.READY){
+                txtSearch01.setText(oTrans.getModel().getClientID());
+                txtSearch02.setText(oTrans.getModel().getClientName());
+            }else{
+                txtSearch01.clear();
+                txtSearch02.clear();
+            }
             txtField01.setText((String) oTrans.getModel().getClientID());
             txtField02.setText((String) oTrans.getModel().getClientName());
             txtField03.setText((String) oTrans.getModel().getAddress());
