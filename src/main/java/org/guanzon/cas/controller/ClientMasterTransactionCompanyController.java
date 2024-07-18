@@ -523,7 +523,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         private void companyinfo_KeyPressed(KeyEvent event) {
         TextField cmpnyInfo = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(9, 11));
-        String lsValue = cmpnyInfo.getText();
+        String lsValue = (cmpnyInfo.getText()==null?"":cmpnyInfo.getText());
         JSONObject poJson;
         switch (event.getCode()) {
             case F3:
@@ -647,7 +647,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                 case "btnSave":
                     oTrans.setAddress(pnAddress, "cPrimaryx", Logical.YES);
                     
-                    oTrans.getModel().setClientType("1");
+                    oTrans.getModel().setClientType("0");
                     JSONObject saveResult = oTrans.saveRecord();
                     if ("success".equals((String) saveResult.get("result"))) {
                         System.err.println((String) saveResult.get("message"));

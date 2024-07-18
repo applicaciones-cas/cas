@@ -188,6 +188,9 @@ public class InventoryParamController implements Initializable,ScreenInterface {
     private Text lblMeasure;
     
     @FXML
+    private Text lblShelf;
+    
+    @FXML
     private CheckBox chkField04;
 
     @FXML
@@ -340,7 +343,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                             ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                             break;
                         }
-                        pnEditMode =  EditMode.UPDATE;
+                         pnEditMode =  oTrans.getEditMode();
                         System.out.println("EDITMODE sa update= " + pnEditMode);
                         initButton(pnEditMode);
                         initTable();
@@ -348,10 +351,12 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                     break;
                 case "btnCancel":
                         if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){                            
-                             clearAllFields();
-                             pnEditMode = EditMode.UNKNOWN;     
-                             initButton(pnEditMode);
-                             initTabAnchor();
+                            clearAllFields();
+                            oTrans = new Inventory(oApp, true);
+                            oTrans.setRecordStatus("0123");
+                            pnEditMode = EditMode.UNKNOWN;     
+                            initButton(pnEditMode);
+                            initTabAnchor();
                         }
                         System.out.println("EDITMODE sa cancel= " + pnEditMode);
                     break;
@@ -385,7 +390,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                             txtSeeks01.clear();
                             break;
                         }
-                        pnEditMode = oTrans.getEditMode();
+                        pnEditMode = EditMode.READY;
                         data.clear();   
                         System.out.print("\neditmode on browse == " +pnEditMode);
                         
@@ -430,43 +435,14 @@ public class InventoryParamController implements Initializable,ScreenInterface {
     }
     
     /*USE TO DISABLE ANCHOR BASE ON INITMODE*/
-    
     private void initTabAnchor(){
         boolean pbValue = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
         AnchorInput.setDisable(!pbValue);
         subItemFields.setDisable(!pbValue);
         AnchorTable.setDisable(!pbValue);
-        
-//        System.out.print("category = " + System.getProperty("store.inventory.industry"));
-//        switch (System.getProperty("store.inventory.industry")) {
-//            case "0004":    
-//                    AnchorTable.setVisible(false);
-//                    lblMeasure.setVisible(false);
-//                    txtField13.setVisible(false);
-//                break;
-//        }
-        
-//        String category = System.getProperty("store.inventory.industry");
-//         // Split the category string by the delimiter ";"
-//        String[] categories = category.split(";");
-//        for (String cat : categories) {
-//            if (!oTrans.getModel().getCategCd1().isEmpty()) { // Ensure the string is not empty
-//                switch (cat) {
-//                    case "0001":
-//                    case "0002":
-//                    case "0003":
-//                        AnchorTable.setVisible(false);
-//                        lblMeasure.setVisible(false);
-//                        txtField13.setVisible(false);
-//                        break;
-//                    case "0004":
-//                        AnchorTable.setVisible(true);
-//                        lblMeasure.setVisible(true);
-//                        txtField13.setVisible(true);
-//                        break;
-//                }
-//            }
-//        }
+        if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UNKNOWN){
+            AnchorTable.setDisable(pbValue);
+        }
     }
     
     /*TO CONTROL BUTTONS BASE ON INITMODE*/
@@ -474,7 +450,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         btnCancel.setVisible(lbShow);
         btnSearch.setVisible(lbShow);
-        btnSave.setVisible(lbShow);
+        btnSave.setVisible(lbShow); 
         
         btnSave.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
@@ -509,9 +485,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             txtSeeks01.requestFocus();
             txtSeeks02.setDisable(lbShow);  
         }
-        
-//        initClientType();
-
     }
     private void initSubItemForm(){
         if (!oTrans.getModel().getCategCd1().isEmpty()) { // Ensure the string is not empty
@@ -521,12 +494,16 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                 case "0003":
                     AnchorTable.setVisible(false);
                     lblMeasure.setVisible(false);
+                    lblShelf.setVisible(false);
                     txtField13.setVisible(false);
+                    txtField21  .setVisible(false);
                     break;
                 case "0004":
                     AnchorTable.setVisible(true);
                     lblMeasure.setVisible(true);
+                    lblShelf.setVisible(true);
                     txtField13.setVisible(true);
+                    txtField21.setVisible(true);
                     break;
             }
         }
