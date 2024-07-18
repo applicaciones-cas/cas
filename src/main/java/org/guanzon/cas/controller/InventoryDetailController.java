@@ -383,7 +383,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                             txtSeeks01.clear();
                             break;
                         }
-                        pnEditMode = oTrans.getEditMode();
+                        pnEditMode = EditMode.READY;
                         
                         initButton(pnEditMode);
                         System.out.print("\neditmode on browse == " + pnEditMode);
