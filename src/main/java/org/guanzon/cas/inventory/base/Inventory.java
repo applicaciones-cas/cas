@@ -275,7 +275,6 @@ public class Inventory implements GRecord{
         poJSON = new JSONObject();
         if (!pbWthParent) poGRider.beginTrans();
         
-        ValidatorInterface validator = ValidatorFactory.make(types, poModel);
         switch (poModel.getCategCd1()) {
                 case "0002"://mobilephone
                     types = ValidatorFactory.TYPE.MP;
@@ -296,6 +295,8 @@ public class Inventory implements GRecord{
                     types = ValidatorFactory.TYPE.GENERAL;
                     break;
             }
+        
+        ValidatorInterface validator = ValidatorFactory.make(types, poModel);
         poModel.setModifiedDate(poGRider.getServerDate());
 
         if (!validator.isEntryOkay()){
@@ -716,7 +717,11 @@ public class Inventory implements GRecord{
 
         int lnCtr;
         String lsSQL;
-
+//        obj = poSubUnit.deleteRecord(poModel.getStockID());
+//        
+//        if ("success".equals((String) obj.get("result"))) {
+//            System.out.println(obj.toJSONString());
+//        }
         for (lnCtr = 0; lnCtr <= poSubUnit.getMaster().size() -1; lnCtr++){
             poSubUnit.getMaster().get(lnCtr).setStockID(poModel.getStockID());
 //            Validator_Client_Address validator = new Validator_Client_Address(poSubUnit.get(lnCtr));
@@ -744,8 +749,8 @@ public class Inventory implements GRecord{
             }
 
 //            
-            obj = poSubUnit.getMaster().get(lnCtr).saveRecord();
-//            obj = poSubUnit.saveRecord();
+//            obj = poSubUnit.getMaster().get(lnCtr).saveRecord();
+            obj = poSubUnit.saveRecord();
 
         }
 

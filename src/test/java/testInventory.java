@@ -125,11 +125,11 @@ public class testInventory{
         }
         Assert.assertEquals("0001", record.getModel().getCategCd1());
         
-        loJSON = record.getModel().setCategCd2("0002");
+        loJSON = record.getModel().setCategCd2("0005");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals("0002", record.getModel().getCategCd2());
+        Assert.assertEquals("0005", record.getModel().getCategCd2());
         
         loJSON = record.getModel().setCategCd3("0001");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -185,11 +185,11 @@ public class testInventory{
         }
         Assert.assertEquals("", record.getModel().getMeasureID());
         
-//        loJSON = record.getModel().setMeasureName("");
-//        if ("error".equals((String) loJSON.get("result"))) {
-//            Assert.fail((String) loJSON.get("message"));
-//        }
-//        Assert.assertEquals("", (record.getModel().getMeasureName())==null?"":record.getModel().getModelName());
+        loJSON = record.getModel().setMeasureName("");
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+        Assert.assertEquals("", (record.getModel().getMeasureName())==null?"":record.getModel().getMeasureName());
 
         loJSON = record.getModel().setUnitPrice(1800.00);
         if ("error".equals((String) loJSON.get("result"))) {
@@ -288,10 +288,10 @@ public class testInventory{
         }
         Assert.assertEquals("1", record.getModel().getRecdStat());
         TransNox = record.getModel().getStockID();
-//        loJSON = record.saveRecord();
-//        if ("error".equals((String) loJSON.get("result"))) {
-//            Assert.fail((String) loJSON.get("message"));
-//        }
+        loJSON = record.saveRecord();
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
         
         
     }

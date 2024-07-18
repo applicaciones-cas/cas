@@ -51,7 +51,6 @@ public class ModelInvHistLedger {
                         " , a.nQtyIssue" +
                         " , a.nPurPrice" +
                         " , a.nUnitPrce" +
-                        " , a.nQtyOnHnd" +
                         " , a.dExpiryxx" +
                         " , a.sModified" +
                         " , a.dModified" +

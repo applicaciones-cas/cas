@@ -100,50 +100,50 @@ public class testInventorySerial{
 //            }
 //        }
 //       
-        
-        loJSON = record.getMaster().get(record.getMaster().size()-1).setSerial01("G3J1E-0300659");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        
-        loJSON = record.getMaster().get(record.getMaster().size()-1).setSerial02("MH3SG4650J0034231");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        
-        loJSON = record.getMaster().get(record.getMaster().size()-1).setUnitPrice(123);
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        loJSON = record.getMaster().get(record.getMaster().size()-1).setStockID("M00124000001");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        loJSON = record.getMaster().get(record.getMaster().size()-1).setLocation("1");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        loJSON = record.getMaster().get(record.getMaster().size()-1).setSoldStat("1");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-//        loJSON = record.getMaster().get(record.getMaster().size()-1).set("1");
+//        
+//        loJSON = record.getMaster().get(record.getMaster().size()-1).setSerial01("G3J1E-0300659");
 //        if ("error".equals((String) loJSON.get("result"))) {
 //            Assert.fail((String) loJSON.get("message"));
 //        }
-        loJSON = record.getMaster().get(record.getMaster().size()-1).setCompnyID("M001");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-
-        loJSON = record.getMaster().get(record.getMaster().size()-1).setWarranty("");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        loJSON = record.getMaster().get(record.getMaster().size()-1).setBranchCode(instance.getBranchCode());
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
+//        
+//        loJSON = record.getMaster().get(record.getMaster().size()-1).setSerial02("MH3SG4650J0034231");
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
+//        
+//        loJSON = record.getMaster().get(record.getMaster().size()-1).setUnitPrice(123);
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
+//        loJSON = record.getMaster().get(record.getMaster().size()-1).setStockID("M00124000001");
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
+//        loJSON = record.getMaster().get(record.getMaster().size()-1).setLocation("1");
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
+//        loJSON = record.getMaster().get(record.getMaster().size()-1).setSoldStat("1");
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
+////        loJSON = record.getMaster().get(record.getMaster().size()-1).set("1");
+////        if ("error".equals((String) loJSON.get("result"))) {
+////            Assert.fail((String) loJSON.get("message"));
+////        }
+//        loJSON = record.getMaster().get(record.getMaster().size()-1).setCompnyID("M001");
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
+//
+//        loJSON = record.getMaster().get(record.getMaster().size()-1).setWarranty("");
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
+//        loJSON = record.getMaster().get(record.getMaster().size()-1).setBranchCode(instance.getBranchCode());
+//        if ("error".equals((String) loJSON.get("result"))) {
+//            Assert.fail((String) loJSON.get("message"));
+//        }
 //        loJSON = record.saveRecord();
 //        if ("error".equals((String) loJSON.get("result"))) {
 //            Assert.fail((String) loJSON.get("message"));

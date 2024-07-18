@@ -90,15 +90,15 @@ public class testInventoryMaster{
             Assert.fail((String) loJSON.get("message"));
         }
 
-        loJSON = record.getInvModel().setStockID("M00124000054");
+        loJSON = record.getInvModel().setStockID("M00124000055");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        loJSON = record.getInvModel().setBarcode("230000012708");
+        loJSON = record.getInvModel().setBarcode("230000012709");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals("230000012708", record.getInvModel().getBarcode());
+        Assert.assertEquals("230000012709", record.getInvModel().getBarcode());
         
         loJSON = record.getInvModel().setDescription("sasasasa");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -356,12 +356,12 @@ public class testInventoryMaster{
         }
         Assert.assertEquals("1", record.getInvModel().getRecdStat());
         
-        loJSON = record.getModel().setStockID("M00124000054");
+        loJSON = record.getModel().setStockID("M00124000055");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         } 
         
-        Assert.assertEquals("M00124000054", record.getModel().getStockID());
+        Assert.assertEquals("M00124000055", record.getModel().getStockID());
         
         loJSON = record.getModel().setBranchCd("M001");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -370,10 +370,10 @@ public class testInventoryMaster{
         
         Assert.assertEquals("M001", record.getModel().getBranchCd());
         TransNox = record.getInvModel().getStockID();
-//        loJSON = record.saveRecord();
-//        if ("error".equals((String) loJSON.get("result"))) {
-//            Assert.fail((String) loJSON.get("message"));
-//        }
+        loJSON = record.saveRecord();
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
     }
         
      @Test
@@ -384,7 +384,7 @@ public class testInventoryMaster{
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals("230000012708", record.getInvModel().getBarcode());
+        Assert.assertEquals("230000012709", record.getInvModel().getBarcode());
         Assert.assertEquals("230000012708", record.getInvModel().getAltBarcode());
         Assert.assertEquals("sasasasa", record.getInvModel().getDescription());
         Assert.assertEquals("", record.getInvModel().getBriefDescription());

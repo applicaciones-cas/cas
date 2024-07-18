@@ -278,7 +278,7 @@ public class InvHistLedger implements GRecord{
     }
     
     public JSONObject OpenInvLedger(String fsValue){
-        String lsSQL = "SELECT" +
+        String lsSQL =  "SELECT" +
                         "   a.sStockIDx" +
                         " , a.sBranchCd" +
                         " , a.sWHouseID" +
@@ -292,16 +292,16 @@ public class InvHistLedger implements GRecord{
                         " , a.nQtyIssue" +
                         " , a.nPurPrice" +
                         " , a.nUnitPrce" +
-                        " , a.nQtyOnHnd" +
+//                        " , a.nQtyOnHnd" +
                         " , a.dExpiryxx" +
                         " , a.sModified" +
                         " , a.dModified" +
                         " , b.sBarCodex xBarCodex" +
                         " , b.sDescript xDescript" +
-                        " , c.sWHouseNm xWHouseNm" +
-                        " FROM Inv_Ledger a" +
+                        " , c.sWHouseNm xWHouseNm " +
+                        "FROM Inv_Hist_Ledger a" +
                         "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID";
+                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID";;
         lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue));
         System.out.println(lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
@@ -354,7 +354,7 @@ public class InvHistLedger implements GRecord{
                         " , a.nQtyIssue" +
                         " , a.nPurPrice" +
                         " , a.nUnitPrce" +
-                        " , a.nQtyOnHnd" +
+//                        " , a.nQtyOnHnd" +
                         " , a.dExpiryxx" +
                         " , a.sModified" +
                         " , a.dModified" +
