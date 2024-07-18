@@ -411,6 +411,13 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                         break;
                     case 6:
                         /*company name*/
+                         if (lsValue.matches("\\d{11}")) {
+                            oTrans.setInsContact(pnContact, "sMobileNo", lsValue);
+                        } else {
+                             ShowMessageFX.OkayCancel(null, pxeModuleName, "Contact number must be exactly 11 digits.");
+                            socialinfo.requestFocus();
+                            break;
+                        }
                         oTrans.setInsContact(pnContact, "sMobileNo", lsValue);
                         break;
                     case 7:

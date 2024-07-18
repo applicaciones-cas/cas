@@ -768,7 +768,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
 
                 for (Tab tab : tabpane.getTabs()) {
                     if (tab.getText().equals(sFormName)) {
-                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "You have unsaved data on Sales Job Order Information. Are you sure you want to create new sales job order record?") == true) {
+                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "You have unsaved data on " + pxeModuleName + ". Are you sure you want to create new sales job order record?") == true) {
                         
                             System.out.println("globalvariable = " + GlobalVariables.sClientID);
                         } else {
@@ -777,7 +777,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                             return;
                         }
 
-                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "You have opened Sales Job Order Information Form. Are you sure you want to create new sales job order record?") == true) {
+                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "You have opened " + pxeModuleName + ". Are you sure you want to create new sales job order record?") == true) {
                             
                             System.out.println("globalvariable = " + GlobalVariables.sClientID);
                         } else {
