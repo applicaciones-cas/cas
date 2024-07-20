@@ -416,6 +416,7 @@ public class InvLedger implements GRecord{
         
         for (lnCtr = 0; lnCtr <= poModel.size() -1; lnCtr++){
             poModel.get(lnCtr).setStockID(poModel.get(lnCtr).getStockID());
+            poModel.get(lnCtr).setLedgerNo(lnCtr + 1);
 //            Validator_Client_Address validator = new Validator_Client_Address(paAddress.get(lnCtr));
 //            
 //            ValidatorInterface validator = ValidatorFactory.make(ValidatorFactory.TYPE.AP_Client_Ledger, poModel.get(lnCtr));

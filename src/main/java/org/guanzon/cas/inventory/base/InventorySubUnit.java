@@ -32,6 +32,7 @@ public class InventorySubUnit implements GRecord{
     boolean pbWthParent;
     int pnEditMode;
     String psTranStatus;
+    String psTransNox;
     
     ArrayList<Model_Inventory_Sub_Unit> poModel;
     JSONObject poJSON;
@@ -103,7 +104,7 @@ public class InventorySubUnit implements GRecord{
     public JSONObject openRecord(String fsValue) {
         pnEditMode = EditMode.READY;
         poJSON = new JSONObject();
-        
+        psTransNox = fsValue;
         poJSON = OpenInvSubUnit(fsValue);
         return poJSON;
     }
@@ -147,8 +148,10 @@ public class InventorySubUnit implements GRecord{
     @Override
     public JSONObject deleteRecord(String fsValue) {
         poJSON = new JSONObject();
+        if (!pbWthParent) {
+            poGRider.beginTrans();
+        }
 
-        poJSON = new JSONObject();
         if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UPDATE) {
             if (poGRider.getUserLevel() < UserRight.SUPERVISOR){
                 poJSON.put("result", "error");
@@ -162,14 +165,24 @@ public class InventorySubUnit implements GRecord{
 
             if (!lsSQL.equals("")){
                 if (poGRider.executeQuery(lsSQL, model.getTable(), poGRider.getBranchCode(), "") > 0) {
+                    if (!pbWthParent) {
+                        poGRider.commitTrans();
+                    }
                     poJSON.put("result", "success");
                     poJSON.put("message", "Record deleted successfully.");
                 } else {
+                    
+                    if (!pbWthParent) {
+                        poGRider.rollbackTrans();
+                    }
                     poJSON.put("result", "error");
                     poJSON.put("message", poGRider.getErrMsg());
                 }
             }
         }else {
+            if (!pbWthParent) {
+                poGRider.rollbackTrans();
+            }
             poJSON.put("result", "error");
             poJSON.put("message", "Invalid update mode. Unable to save record.");
             return poJSON;
@@ -389,6 +402,63 @@ public class InventorySubUnit implements GRecord{
         }
         return poJSON;
     }
+    
+    public ArrayList<Model_Inventory_Sub_Unit> OpenInvSubUnitArray(String fsValue){
+        
+        poJSON =  new JSONObject();
+        ArrayList<Model_Inventory_Sub_Unit> loModel;
+        String lsSQL = "SELECT" +
+                        "  a.sStockIDx" +
+                        ", a.nEntryNox" +
+                        ", a.sItmSubID" +
+                        ", a.nQuantity" +
+                        ", a.dModified" +
+                        ", b.sBarCodex xBarCodex" +
+                        ", b.sDescript xDescript" +
+                        ", c.sBarCodex xBarCodeU" +
+                        ", c.sDescript xDescripU" +
+                        ", c.sMeasurID xMeasurID" +
+                        ", d.sMeasurNm xMeasurNm" +
+                    " FROM Inventory_Sub_Unit a" +
+                        " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
+                        " LEFT JOIN Inventory c ON a.sItmSubID = c.sStockIDx" + 
+                        " LEFT JOIN Measure d ON c.sMeasurID = d.sMeasurID";;
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue));
+        System.out.println(lsSQL);
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+
+        try {
+            int lnctr = 0;
+            if (MiscUtil.RecordCount(loRS) > 0) {
+                loModel = new ArrayList<>();
+                while(loRS.next()){
+                        loModel.add(new Model_Inventory_Sub_Unit(poGRider));
+                        loModel.get(loModel.size() - 1).openRecord(loRS.getString("sItmSubID"));
+                        
+                        lnctr++;
+                        poJSON.put("result", "success");
+                        poJSON.put("message", "Record loaded successfully.");
+                    } 
+                
+                System.out.println("lnctr = " + lnctr);
+                
+            }else{
+                loModel = new ArrayList<>();
+                poJSON.put("result", "error");
+                poJSON.put("continue", true);
+                poJSON.put("message", "No record found.");
+                return loModel;
+            }
+            
+            MiscUtil.close(loRS);
+        } catch (SQLException e) {
+            loModel = new ArrayList<>();
+            poJSON.put("result", "error");
+            poJSON.put("message", e.getMessage());
+            return loModel;
+        }
+        return loModel;
+    }
     private JSONObject saveSubUnit(){
         
         JSONObject obj = new JSONObject();
@@ -400,8 +470,19 @@ public class InventorySubUnit implements GRecord{
         
         int lnCtr;
         String lsSQL;
+        obj = deleteRecord(psTransNox);
         
+        if ("success".equals((String) obj.get("result"))) {
+            System.out.println(obj.toJSONString());
+        }
+//        ArrayList<Model_Inventory_Sub_Unit> loModel = OpenInvSubUnitArray(psTransNox);
         for (lnCtr = 0; lnCtr <= poModel.size() -1; lnCtr++){
+            poModel.get(lnCtr).setEditMode(EditMode.ADDNEW);
+//            if (lnCtr <= loModel.size()-1){
+//                poModel.get(lnCtr).setEditMode(EditMode.UPDATE);
+//            }else{
+//                poModel.get(lnCtr).setEditMode(EditMode.ADDNEW);
+//            }
 //            poModel.get(lnCtr).setStockID(poModel.get(lnCtr).getStockID());
 //            Validator_Client_Address validator = new Validator_Client_Address(paAddress.get(lnCtr));
 //            
