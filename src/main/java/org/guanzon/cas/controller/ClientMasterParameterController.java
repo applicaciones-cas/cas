@@ -816,34 +816,34 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         personalinfo08.setOnKeyPressed(this::personalinfo_KeyPressed);
         personalinfo06.setOnKeyPressed(this::personalinfo_KeyPressed);
          // Set a custom StringConverter to format date
-          DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        personalinfo07.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(LocalDate date) {
-                if (date != null) {
-                    oTrans.setMaster("dBirthDte", dateFormatter.format(date).toString());
-                    System.out.println("dBirthDte = " + date);
-                    
-                    txtField07.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
-                    return dateFormatter.format(date);
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    oTrans.setMaster("dBirthDte",LocalDate.parse(string, dateFormatter).toString());
-                    
-//                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
-                    return LocalDate.parse(string, dateFormatter);
-                } else {
-                    return null;
-                }
-            }
-        });
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        
+//        personalinfo07.setConverter(new StringConverter<LocalDate>() {
+//            @Override
+//            public String toString(LocalDate date) {
+//                if (date != null) {
+//                    oTrans.setMaster("dBirthDte", dateFormatter.format(date).toString());
+//                    System.out.println("dBirthDte = " + date);
+//                    
+//                    txtField07.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+//                    return dateFormatter.format(date);
+//                } else {
+//                    return "";
+//                }
+//            }
+//
+//            @Override
+//            public LocalDate fromString(String string) {
+//                if (string != null && !string.isEmpty()) {
+//                    oTrans.setMaster("dBirthDte",LocalDate.parse(string, dateFormatter).toString());
+//                    
+////                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
+//                    return LocalDate.parse(string, dateFormatter);
+//                } else {
+//                    return null;
+//                }
+//            }
+//        });
         txtField07.setConverter(new StringConverter<LocalDate>() {
             @Override
             public String toString(LocalDate date) {
@@ -2248,7 +2248,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                         txtField03.setText(lsAddress);
                     }
                 }
-                
             }
             
             if(!data.isEmpty()){
@@ -2293,6 +2292,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         initSocialMediaGrid();
         
         retrieveDetails();
+        personalinfo07.setValue(LocalDate.now());
     }
     private void initTabAnchor(){
         boolean pbValue = pnEditMode == EditMode.ADDNEW || 

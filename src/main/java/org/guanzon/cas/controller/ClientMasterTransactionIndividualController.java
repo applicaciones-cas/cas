@@ -362,7 +362,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         ClickButton();
 
         // Initialize the Client_Master transaction
-        oTrans = new Client_Master(oApp, true, oApp.getBranchCode());
+        oTrans = new Client_Master(oApp, false, oApp.getBranchCode());
 
         // Call newRecord to initialize a new record
         oTrans.newRecord();

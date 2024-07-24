@@ -49,8 +49,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.clients.account.AR_Client_Master;
-import org.guanzon.cas.clients.account.AR_Client_Master;
+import org.guanzon.cas.clients.resultSet2XML.AR_Client_Master;
+import org.guanzon.cas.clients.resultSet2XML.AR_Client_Master;
 import org.guanzon.cas.clients.account.GlobalVariables;
 import org.guanzon.cas.model.ModelAPClientLedger;
 import org.guanzon.cas.model.ModelAPClientLedgers;
@@ -752,6 +752,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
             ClientMasterTransactionCompanyController loControl = new ClientMasterTransactionCompanyController();
             loControl.setGRider(oApp);
             loControl.setParentController(this);
+            loControl.setCompanyName((txtField02.getText()==null?"":txtField02.getText().toString()));
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml"));
             fxmlLoader.setController(loControl);
             Parent parent = fxmlLoader.load();
@@ -768,7 +769,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
 
                 for (Tab tab : tabpane.getTabs()) {
                     if (tab.getText().equals(sFormName)) {
-                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "You have unsaved data on " + pxeModuleName + ". Are you sure you want to create new sales job order record?") == true) {
+                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "You have unsaved data on " + pxeModuleName + ". Are you sure you want to create new client for account receivable  record?") == true) {
                         
                             System.out.println("globalvariable = " + GlobalVariables.sClientID);
                         } else {
@@ -777,7 +778,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                             return;
                         }
 
-                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "You have opened " + pxeModuleName + ". Are you sure you want to create new sales job order record?") == true) {
+                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "You have opened " + pxeModuleName + ".  Are you sure you want to create new client for account receivable record?") == true) {
                             
                             System.out.println("globalvariable = " + GlobalVariables.sClientID);
                         } else {

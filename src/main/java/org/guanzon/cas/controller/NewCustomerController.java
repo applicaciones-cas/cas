@@ -130,7 +130,7 @@ public class NewCustomerController  implements Initializable, ScreenInterface {
 //            initButton(pnEditMode);
         }
         
-        oTrans = new Client_Master(oApp, true, oApp.getBranchCode());
+        oTrans = new Client_Master(oApp, false, oApp.getBranchCode());
         
         // Call newRecord to initialize a new record
         oTrans.newRecord();
