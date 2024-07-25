@@ -252,6 +252,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         loadContctPerson();
         initContctPersonGrid();
         cmpnyInfo01.setText(lsCompanyName);
+        txtField02.setText(lsCompanyName);
         oTrans.getModel().setFullName(lsCompanyName);
         cmpnyInfo01.requestFocus();
         oTrans.setType(ValidatorFactory.ClientTypes.COMPANY);
@@ -291,7 +292,6 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                     case 1:
                         /*company name*/
                         oTrans.setMaster(8, lsValue);
-                        
                         break;
                     case 7:/*tin id*/
                         oTrans.setMaster(16, lsValue);
@@ -769,7 +769,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
             lblStatus.setText("INACTIVE");
         }
         
-        cbContact01.setSelected((oTrans.getInsContact(pnContact, 14).toString() == "0"?false:true));
+        cbContact01.setSelected((!"0".equals(oTrans.getInsContact(pnContact, 14).toString())));
         cbContact02.setSelected((oTrans.getInsContact(pnContact, 13).toString() == "0"?false:true));
 //        cbContact02.setSelected((boolean) oTrans.getInsContact(pnContact, 13));
     }

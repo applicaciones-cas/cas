@@ -707,34 +707,38 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                     break;  
                 case 6:/*tin No */
                     break;
-                case 7:/*Credit limit*/
+                 case 7:/*Credit limit*/
+//                    jsonObject = oTrans.getMasterModel().setCreditLimit(lsValue); 
+//                    txtField.setText(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00"));
                     txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
-//                    jsonObject = oTrans.getMasterModel().setCreditLimit(lsValue);                 
-                    jsonObject = oTrans.setMaster(10,(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    jsonObject = oTrans.setMaster(10,(Double.parseDouble(lsValue.replace(",", ""))));
+//                    System.out.print("number format cL == " + (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
                     break;
                 case 8:/*discount*/
-                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
-//                    jsonObject = oTrans.getMasterModel().setDiscount(lsValue);                 
-                    jsonObject = oTrans.setMaster(9,(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+//                    jsonObject = oTrans.getMasterModel().setDiscount(lsValue);               
+                    txtField.setText(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "0.00"));
+                    jsonObject = oTrans.setMaster(9,(Double.parseDouble(lsValue)));
+//                     System.out.print("number format discount == " + (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
                     break;
                 case 9:/*term */
 //                    jsonObject = oTrans.getMasterModel().setTerm(lsValue);                    
 //                    jsonObject = oTrans.setMaster(8,lsValue);
                     break;
                 case 10 :/*beginning balance*/
-                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    
 //                    jsonObject = oTrans.getMasterModel().setBeginBal(lsValue);
-                    jsonObject = oTrans.setMaster(7,(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    jsonObject = oTrans.setMaster(7,(Double.parseDouble(lsValue.replace(",", ""))));
                     break;
                 case 11 :/*available balance*/
+//                      jsonObject = oTrans.getMasterModel().setABalance(lsValue); 
                     txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
-//                      jsonObject = oTrans.getMasterModel().setABalance(lsValue);                 
-                    jsonObject = oTrans.setMaster(11,(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    jsonObject = oTrans.setMaster(11,(Double.parseDouble(lsValue.replace(",", ""))));
                     break;
                 case 12 :/*outstanding balance*/
+//                      jsonObject = oTrans.getMasterModel().setOBalance(lsValue);    
                     txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
-//                      jsonObject = oTrans.getMasterModel().setOBalance(lsValue);                                     
-                    jsonObject = oTrans.setMaster(12,(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    jsonObject = oTrans.setMaster(12,(Double.parseDouble(lsValue.replace(",", ""))));
                     break;
             }                    
         } else

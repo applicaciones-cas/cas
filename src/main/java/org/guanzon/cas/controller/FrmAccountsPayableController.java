@@ -434,108 +434,8 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
         
         // Set a custom StringConverter to format date
           DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-          
-//         cpField01.setOnAction(event -> {
-//            // Handle the event when a date is selected
-//            System.out.println("Selected date: " + cpField01.getValue());
-//            oTrans.setMaster(6,  SQLUtil.toDate(CommonUtils.toDate(cpField0)));
-//        });  
-//          
-        
-//        cpField01.setConverter(new StringConverter<LocalDate>() {
-//            @Override
-//            public String toString(LocalDate date) {
-//                if (date != null) {
-////                    SQLUtil.toDate("2025-01-01", SQLUtil.FORMAT_SHORT_DATE)
-//                    
-////                     oTrans.setMaster(6, dateFormatter.format(date).toString());
-////                    
-//                    System.out.println("dCltSince = " + date);
-//                    
-//                    cpField01.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
-//                    oTrans.setMaster("dCltSince", (CommonUtils.toDate(cpField01.getValue().toString())));
-//                    return dateFormatter.format(date);
-//                } else {
-//                    return "";
-//                }
-//            }
-//
-//            @Override
-//            public LocalDate fromString(String string) {
-//                if (string != null && !string.isEmpty()) {
-//                    oTrans.setMaster("dCltSince", (CommonUtils.toDate(cpField01.getValue().toString())));
-//                    
-////                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
-//                    return LocalDate.parse(string, dateFormatter);
-//                } else {
-//                    return null;
-//                }
-//            }
-//        });
-//        
-//        
-//        cpField02.setConverter(new StringConverter<LocalDate>() {
-//            @Override
-//            public String toString(LocalDate date) {
-//                if (date != null) {
-////                    SQLUtil.toDate("2025-01-01", SQLUtil.FORMAT_SHORT_DATE)
-//                    
-////                     oTrans.setMaster(6, dateFormatter.format(date).toString());
-////                    
-//                    
-//                    
-//                    cpField02.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
-//                    Date x = (CommonUtils.toDate(date.toString()));
-//                    System.out.println("dBegDatex1 = " + x);
-//                    
-//                    oTrans.setMaster("dBegDatex", (CommonUtils.toDate(date.toString())));
-//                    return dateFormatter.format(date);
-//                } else {
-//                    return "";
-//                }
-//            }
-//
-//            @Override
-//            public LocalDate fromString(String string) {
-//                if (string != null && !string.isEmpty()) {
-//                    oTrans.setMaster("dBegDatex", (CommonUtils.toDate(cpField02.getValue().toString())));
-//                    
-////                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
-//                    return LocalDate.parse(string, dateFormatter);
-//                } else {
-//                    return null;
-//                }
-//            }
-//        });
+       
         initdatepicker();
-//        cpField02.setConverter(new StringConverter<LocalDate>() {
-//            @Override
-//            public String toString(LocalDate date) {
-//                if (date != null) {
-//                    oTrans.setMaster("dBegDatex", (CommonUtils.toDate(cpField02.getValue().toString())));
-////                    oTrans.setMaster(6, dateFormatter.format(date).toString());
-//                    System.out.println("dBegDatex = " + CommonUtils.toDate(cpField02.getValue().toString()));
-//                    
-//                    cpField02.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
-//                    return dateFormatter.format(date);
-//                } else {
-//                    return "";
-//                }
-//            }
-//
-//            @Override
-//            public LocalDate fromString(String string) {
-//                if (string != null && !string.isEmpty()) {
-////                    oTrans.setMaster(6,LocalDate.parse(string, dateFormatter).toString());
-//                    oTrans.setMaster("dBegDatex", (CommonUtils.toDate(cpField02.getValue().toString())));
-////                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
-//                    return LocalDate.parse(string, dateFormatter);
-//                } else {
-//                    return null;
-//                }
-//            }
-//        });
-        
     }
     private void initTabAnchor(){
         boolean pbValue = pnEditMode == EditMode.ADDNEW || 
@@ -715,13 +615,13 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
 //                    jsonObject = oTrans.getMasterModel().setCreditLimit(lsValue); 
 //                    txtField.setText(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00"));
                     txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
-                    jsonObject = oTrans.setMaster(10,(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    jsonObject = oTrans.setMaster(10,(Double.parseDouble(lsValue.replace(",", ""))));
 //                    System.out.print("number format cL == " + (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
                     break;
                 case 8:/*discount*/
 //                    jsonObject = oTrans.getMasterModel().setDiscount(lsValue);               
-                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
-                    jsonObject = oTrans.setMaster(9,(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    txtField.setText(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "0.00"));
+                    jsonObject = oTrans.setMaster(9,(Double.parseDouble(lsValue)));
 //                     System.out.print("number format discount == " + (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
                     break;
                 case 9:/*term */
@@ -732,17 +632,17 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                     
 //                    jsonObject = oTrans.getMasterModel().setBeginBal(lsValue);
                     txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
-                    jsonObject = oTrans.setMaster(7,(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    jsonObject = oTrans.setMaster(7,(Double.parseDouble(lsValue.replace(",", ""))));
                     break;
                 case 11 :/*available balance*/
 //                      jsonObject = oTrans.getMasterModel().setABalance(lsValue); 
                     txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
-                    jsonObject = oTrans.setMaster(11,(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    jsonObject = oTrans.setMaster(11,(Double.parseDouble(lsValue.replace(",", ""))));
                     break;
                 case 12 :/*outstanding balance*/
 //                      jsonObject = oTrans.getMasterModel().setOBalance(lsValue);    
                     txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
-                    jsonObject = oTrans.setMaster(12,(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    jsonObject = oTrans.setMaster(12,(Double.parseDouble(lsValue.replace(",", ""))));
                     break;
             }                    
         } else
