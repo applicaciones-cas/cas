@@ -631,8 +631,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         tblContact.setItems(contact_data);
         tblContact.getSelectionModel().select(pnContact + 1);
         tblContact.autosize();
-        
-        
+
         getContactSelectedItem();
     }
     
@@ -706,13 +705,13 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                         oTrans.getInsContactList().remove(pnContact);
                         if(oTrans.getInsContactList().size() <= 0){
                             oTrans.addInsContact();
-                            
                         }
                         
                         pnContact = oTrans.getInsContactList().size()-1;
+//                        oTrans.setInsContact(1, 13, "1");
                         loadContctPerson();
                         clearContactperson();
-                        txtContact01.requestFocus();
+//                        txtContact01.requestFocus();
                     }
                     break;
                 // Add more cases for other buttons if needed
@@ -737,7 +736,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         
         cbContact01.setSelected(false);
         cbContact02.setSelected(false);
-        txtContact01.requestFocus();
+//        txtContact01.requestFocus();
     }
     /***********************************/
     /*initialize tblcontact click event*/
@@ -761,8 +760,8 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         txtContact07.setText(oTrans.getInsContact(pnContact, 6) == null || oTrans.getInsContact(pnContact, 6).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 6));
         txtContact08.setText(oTrans.getInsContact(pnContact, 7) == null || oTrans.getInsContact(pnContact, 7).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 7));
         txtContact09.setText(oTrans.getInsContact(pnContact, 8) == null || oTrans.getInsContact(pnContact, 8).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 8));
-        txtContact10.setText(oTrans.getInsContact(pnContact, 12) == null || oTrans.getInsContact(pnContact, 12).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 13));
-        txtContact01.requestFocus();
+        txtContact10.setText(oTrans.getInsContact(pnContact, 12) == null || oTrans.getInsContact(pnContact, 12).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 12));
+
         if (cbContact01.isSelected()){
             lblStatus.setText("ACTIVE");
         }else{
@@ -771,6 +770,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         
         cbContact01.setSelected((!"0".equals(oTrans.getInsContact(pnContact, 14).toString())));
         cbContact02.setSelected((oTrans.getInsContact(pnContact, 13).toString() == "0"?false:true));
+        
 //        cbContact02.setSelected((boolean) oTrans.getInsContact(pnContact, 13));
     }
 
@@ -817,19 +817,9 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
             }else{
                 oTrans.setInsContact(lnCtr, "cPrimaryx", "0");
             }
-            
         }
-//        oTrans.setInsContact(pnContact, "cPrimaryx", (isChecked) ? "1" : "0");
         loadContctPerson();
-//        String val = (isChecked) ? "1" : "0";
-//        System.out.println("isChecked = " + val);
-//        System.out.println("value = " + oTrans.getInsContact(pnContact, "cPrimaryx"));
     }
-
-    private void clearallFields() {
-
-    }    
-
     void loadReturn(String lsValue) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }

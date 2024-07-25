@@ -211,7 +211,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
         initTabAnchor();
         pbLoaded = true;
     }    
-
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;

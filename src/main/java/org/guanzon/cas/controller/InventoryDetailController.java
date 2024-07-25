@@ -684,7 +684,30 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             }else{
                 lblStatus.setText("INACTIVE");
             }
+            initSubItemForm();
      }
+    }
+    private void initSubItemForm(){
+        if (!oTrans.getInvModel().getCategCd1().isEmpty()) { // Ensure the string is not empty
+            switch (oTrans.getInvModel().getCategCd1()) {
+                case "0001":
+                case "0002":
+                case "0003":
+                    AnchorTable.setVisible(false);
+                    lblMeasure.setVisible(false);
+                    lblShelf.setVisible(false);
+                    txtField13.setVisible(false);
+                    txtField21  .setVisible(false);
+                    break;
+                case "0004":
+                    AnchorTable.setVisible(true);
+                    lblMeasure.setVisible(true);
+                    lblShelf.setVisible(true);
+                    txtField13.setVisible(true);
+                    txtField21.setVisible(true);
+                    break;
+            }
+        }
     }
     private void InitTextFields(){
 
