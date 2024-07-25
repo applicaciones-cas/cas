@@ -44,6 +44,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -103,6 +104,9 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
 
     @FXML
     private TextField txtField01;
+    
+    @FXML
+    private Text lblAddressType;
 
     @FXML
     private ComboBox cmbField01;
@@ -812,34 +816,34 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         personalinfo08.setOnKeyPressed(this::personalinfo_KeyPressed);
         personalinfo06.setOnKeyPressed(this::personalinfo_KeyPressed);
          // Set a custom StringConverter to format date
-          DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        personalinfo07.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(LocalDate date) {
-                if (date != null) {
-                    oTrans.setMaster("dBirthDte", dateFormatter.format(date).toString());
-                    System.out.println("dBirthDte = " + date);
-                    
-                    txtField07.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
-                    return dateFormatter.format(date);
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    oTrans.setMaster("dBirthDte",LocalDate.parse(string, dateFormatter).toString());
-                    
-//                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
-                    return LocalDate.parse(string, dateFormatter);
-                } else {
-                    return null;
-                }
-            }
-        });
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        
+//        personalinfo07.setConverter(new StringConverter<LocalDate>() {
+//            @Override
+//            public String toString(LocalDate date) {
+//                if (date != null) {
+//                    oTrans.setMaster("dBirthDte", dateFormatter.format(date).toString());
+//                    System.out.println("dBirthDte = " + date);
+//                    
+//                    txtField07.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+//                    return dateFormatter.format(date);
+//                } else {
+//                    return "";
+//                }
+//            }
+//
+//            @Override
+//            public LocalDate fromString(String string) {
+//                if (string != null && !string.isEmpty()) {
+//                    oTrans.setMaster("dBirthDte",LocalDate.parse(string, dateFormatter).toString());
+//                    
+////                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
+//                    return LocalDate.parse(string, dateFormatter);
+//                } else {
+//                    return null;
+//                }
+//            }
+//        });
         txtField07.setConverter(new StringConverter<LocalDate>() {
             @Override
             public String toString(LocalDate date) {
@@ -888,12 +892,15 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
             tabIndex04.setDisable(true);
             tabIndex05.setDisable(true);
             tabIndex06.setDisable(false);
+            
         }else{
             tabIndex06.setDisable(true);
             tabIndex03.setDisable(false);
             tabIndex04.setDisable(false);
             tabIndex05.setDisable(false);
         }
+        Integer lsValue = cmbField01.getSelectionModel().getSelectedIndex();
+        disablefields(lsValue);
     }
     private void initButton(int fnValue){
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
@@ -1022,7 +1029,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                             txtSeeks99.clear();
                             break;
                         }
-                        pnEditMode = oTrans.getEditMode();
+                        pnEditMode = EditMode.READY;
                         loadDetail();
                         
                     break;
@@ -1243,6 +1250,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
             switch (lnIndex){
                 case 1: /*company name*/
 //                    jsonObject = oTrans.setMaster( 8,lsValue);
+                    
                     jsonObject = oTrans.getModel().setFullName(lsValue);
                     break;
                 case 2:/*last name*/
@@ -1280,9 +1288,12 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                     jsonObject = oTrans.getModel().setPHNationalIDNumber(lsValue);
                     break;
             }
-            personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
-            txtField02.setText(personalinfo01.getText());
-            txtField06.setText(personalinfo12.getText());
+            if (cmbField01.getSelectionModel().getSelectedIndex() == 1){
+                personalinfo01.setText(personalinfo02.getText() + "," + personalinfo03.getText() + " " + personalinfo05.getText() + " " + personalinfo04.getText());
+                txtField02.setText(personalinfo01.getText());
+                txtField06.setText(personalinfo12.getText());
+            }
+            
             
                     
         } else
@@ -1491,6 +1502,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         cmbField01.setOnAction(event -> {
             oTrans.setMaster("cClientTp", cmbField01.getSelectionModel().getSelectedIndex());
             initClientType();
+            
         });
         
 
@@ -1948,31 +1960,44 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         for (int lnCtr = 0; lnCtr < oTrans.getInsContactList().size(); lnCtr++){
             if(pnContact == lnCtr){
                 if(isChecked){
-                    oTrans.setInsContact(pnContact, "cPrimaryx", "1");
+                    oTrans.setInsContact(pnContact, "cRecdStat", "1");
+                    System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
                 }else{
-                    oTrans.setInsContact(lnCtr, "cPrimaryx", "0");
+                    oTrans.setInsContact(lnCtr, "cRecdStat", "0");
+                    System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
                 }
             }else{
-                oTrans.setInsContact(lnCtr, "cPrimaryx", "0");
+                oTrans.setInsContact(lnCtr, "cRecdStat", "0");
+                System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
             }
             
         }
         loadContctPerson();
-        String val = (isChecked)? "1":"0";
-        System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
+//        String val = (isChecked)? "1":"0";
+//        System.out.println("isChecked = " + val);
+//        System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
         
     }
     @FXML
     private void CheckContact02_Clicked(MouseEvent event) {
         boolean isChecked = cbContact02.isSelected();
        
-        oTrans.setInsContact(pnContact, "cRecdStat", (isChecked)? "1":"0");
-        
+        for (int lnCtr = 0; lnCtr < oTrans.getInsContactList().size(); lnCtr++){
+            if(pnContact == lnCtr){
+                if(isChecked){
+                    oTrans.setInsContact(pnContact, "cPrimaryx", "1");
+                    System.out.println("cPrimaryx = " + oTrans.getInsContact(pnContact, "cPrimaryx"));
+                }else{
+                    oTrans.setInsContact(lnCtr, "cPrimaryx", "0");
+                    System.out.println("cPrimaryx = " + oTrans.getInsContact(pnContact, "cPrimaryx"));
+                }
+            }else{
+                oTrans.setInsContact(lnCtr, "cPrimaryx", "0");
+                System.out.println("cPrimaryx = " + oTrans.getInsContact(pnContact, "cPrimaryx"));
+            }
+            
+        }
         loadContctPerson();
-        String val = (isChecked)? "1":"0";
-        System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
         
     }
     
@@ -2223,7 +2248,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                         txtField03.setText(lsAddress);
                     }
                 }
-                
             }
             
             if(!data.isEmpty()){
@@ -2268,6 +2292,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         initSocialMediaGrid();
         
         retrieveDetails();
+        personalinfo07.setValue(LocalDate.now());
     }
     private void initTabAnchor(){
         boolean pbValue = pnEditMode == EditMode.ADDNEW || 
@@ -2360,5 +2385,33 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
 
     void loadReturn(String lsValue) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    private void disablefields(int fsValue) {
+        boolean lbShow = (fsValue == 0);
+        
+        // Arrays of TextFields grouped by sections
+        TextField[][] allFields = {
+            // Text fields related to specific sections
+            {personalinfo02, personalinfo03, personalinfo04, personalinfo05, personalinfo06, personalinfo08
+            , personalinfo11, personalinfo12,AddressField05,AddressField06,AddressField05},
+        };
+        personalinfo09.setDisable(lbShow);
+        personalinfo10.setDisable(lbShow);
+        
+        cbAddress03.setVisible(lbShow);
+        cbAddress04.setVisible(lbShow);
+        cbAddress05.setVisible(lbShow);
+        cbAddress06.setVisible(lbShow);
+        cbAddress07.setVisible(lbShow);
+        cbAddress08.setVisible(lbShow);
+        lblAddressType.setVisible(lbShow);
+        // Loop through each array of TextFields and clear them
+        for (TextField[] fields : allFields) {
+            for (TextField field : fields) {
+                field.setDisable(lbShow);
+            }
+        }
+        personalinfo01.setDisable(!lbShow);
     }
 }   

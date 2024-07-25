@@ -195,7 +195,6 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
@@ -303,7 +302,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Measure" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="12" GridPane.valignment="CENTER">
+                                                <Text fx:id="lblMeasure" strokeType="OUTSIDE" strokeWidth="0.0" text="Measure" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="12" GridPane.valignment="CENTER">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -359,7 +358,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Shelf Life" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="20">
+                                                <Text fx:id="lblShelf" strokeType="OUTSIDE" strokeWidth="0.0" text="Shelf Life" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="20">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -402,8 +401,7 @@
                                                       <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                                    </padding>
                                                 </Label>
-                                                <CheckBox fx:id="chkField04" mnemonicParsing="false" onMouseClicked="#chkFiled04_Clicked" text="Active" GridPane.columnIndex="5" GridPane.rowIndex="22" />
-                                                <Separator prefWidth="200.0" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="21" />
+                                                <CheckBox fx:id="chkField04" mnemonicParsing="false" onMouseClicked="#chkFiled04_Clicked" text="Active" GridPane.columnIndex="5" GridPane.rowIndex="21" />
                                                 <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="7" />
                                                 <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="13" />
                                                 <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="18" />
@@ -497,7 +495,7 @@
                                                       </Text>
                                                       <TextField fx:id="txtField22" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                       <TextField fx:id="txtField23" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="4" />
-                                                      <TextField fx:id="txtField24" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="txtField24" disable="true" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Quantity" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
                                                          <font>
                                                             <Font size="14.0" />

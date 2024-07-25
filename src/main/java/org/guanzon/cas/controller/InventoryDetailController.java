@@ -337,6 +337,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                     poJSON = oTrans.updateRecord();
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
                         }
                         pnEditMode =  oTrans.getEditMode();
                         
@@ -345,10 +346,12 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                     break;
                 case "btnCancel":
                         if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
-                             pnEditMode = EditMode.UNKNOWN;     
-                             initButton(pnEditMode);
-                             initTabAnchor();
-                             clearAllFields();
+                            oTrans = new InvMaster(oApp, true);
+                            oTrans.setRecordStatus("0123"); 
+                            pnEditMode = EditMode.UNKNOWN;     
+                            initButton(pnEditMode);
+                            initTabAnchor();
+                            clearAllFields();
                         }
                     break;
                 case "btnSave":
@@ -380,7 +383,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                             txtSeeks01.clear();
                             break;
                         }
-                        pnEditMode = oTrans.getEditMode();
+                        pnEditMode = EditMode.READY;
                         
                         initButton(pnEditMode);
                         System.out.print("\neditmode on browse == " + pnEditMode);
@@ -391,7 +394,11 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                 case "btnLedger":
                         {
                             try {
-                                loadLedger(oTrans.getInvModel().getStockID());
+                                if(pnEditMode == EditMode.READY ||
+                                    pnEditMode == EditMode.ADDNEW ||
+                                    pnEditMode == EditMode.UPDATE){
+                                    loadLedger(oTrans.getInvModel().getStockID());
+                                }
                             } catch (SQLException ex) {
                                 Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -807,7 +814,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         } else
             txtField.selectAll();
     };
-    
+    /*Txtfield search*/
     private void txtField_KeyPressed(KeyEvent event){
         TextField txtField = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));

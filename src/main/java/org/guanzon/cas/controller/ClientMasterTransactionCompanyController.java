@@ -187,6 +187,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
     private int pnEmail = 0;
     private int pnSocMed = 0;
     private int pnAddress = 0;
+    public String lsCompanyName = "";
 
     /**
      * Initializes the controller class.
@@ -199,6 +200,9 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 
     public void setTransaction(String fsValue) {
         oTransnox = fsValue;
+    }
+    public void setCompanyName(String fsValue) {
+        lsCompanyName = fsValue;
     }
      private Object parentController;
      private unloadForm loadform;
@@ -227,7 +231,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         ClickButton();
 
         // Initialize the Client_Master transaction
-        oTrans = new Client_Master(oApp, true, oApp.getBranchCode());
+        oTrans = new Client_Master(oApp, false, oApp.getBranchCode());
 
         // Call newRecord to initialize a new record
         oTrans.newRecord();
@@ -247,6 +251,8 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         
         loadContctPerson();
         initContctPersonGrid();
+        cmpnyInfo01.setText(lsCompanyName);
+        oTrans.getModel().setFullName(lsCompanyName);
         cmpnyInfo01.requestFocus();
         oTrans.setType(ValidatorFactory.ClientTypes.COMPANY);
         pbLoaded = true;
@@ -411,6 +417,13 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                         break;
                     case 6:
                         /*company name*/
+                         if (lsValue.matches("\\d{11}")) {
+                            oTrans.setInsContact(pnContact, "sMobileNo", lsValue);
+                        } else {
+                             ShowMessageFX.OkayCancel(null, pxeModuleName, "Contact number must be exactly 11 digits.");
+                            socialinfo.requestFocus();
+                            break;
+                        }
                         oTrans.setInsContact(pnContact, "sMobileNo", lsValue);
                         break;
                     case 7:
@@ -523,7 +536,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         private void companyinfo_KeyPressed(KeyEvent event) {
         TextField cmpnyInfo = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(9, 11));
-        String lsValue = cmpnyInfo.getText();
+        String lsValue = (cmpnyInfo.getText()==null?"":cmpnyInfo.getText());
         JSONObject poJson;
         switch (event.getCode()) {
             case F3:
@@ -616,6 +629,9 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         tblContact.setItems(contact_data);
         tblContact.getSelectionModel().select(pnContact + 1);
         tblContact.autosize();
+        
+        
+        getContactSelectedItem();
     }
     
     /************************/
@@ -647,7 +663,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                 case "btnSave":
                     oTrans.setAddress(pnAddress, "cPrimaryx", Logical.YES);
                     
-                    oTrans.getModel().setClientType("1");
+                    oTrans.getModel().setClientType("0");
                     JSONObject saveResult = oTrans.saveRecord();
                     if ("success".equals((String) saveResult.get("result"))) {
                         System.err.println((String) saveResult.get("message"));
@@ -662,6 +678,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                         
                     } else {
                         ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        oApp.rollbackTrans();
                         System.out.println("Record not saved successfully.");
                         System.out.println((String) saveResult.get("message"));
                     }
@@ -715,7 +732,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         txtContact08.clear();
         txtContact09.clear();
         txtContact10.clear();
-
+        
         cbContact01.setSelected(false);
         cbContact02.setSelected(false);
         txtContact01.requestFocus();
@@ -726,6 +743,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
     @FXML
     private void tblContact_Clicked(MouseEvent event) {
         pnContact = tblContact.getSelectionModel().getSelectedIndex();
+        System.out.println("pnContact = " + pnContact);
         getContactSelectedItem();
     }
     /**********************************************************/
@@ -748,8 +766,10 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         }else{
             lblStatus.setText("INACTIVE");
         }
-        cbContact01.setSelected((boolean) oTrans.getInsContact(pnMobile, 14));
-        cbContact02.setSelected((boolean) oTrans.getInsContact(pnMobile, 13));
+        
+        cbContact01.setSelected((oTrans.getInsContact(pnContact, 14).toString() == "0"?false:true));
+        cbContact02.setSelected((oTrans.getInsContact(pnContact, 13).toString() == "0"?false:true));
+//        cbContact02.setSelected((boolean) oTrans.getInsContact(pnContact, 13));
     }
 
     /**********************************/
@@ -758,11 +778,25 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
     @FXML
     private void CheckContact01_Clicked(MouseEvent event) {
         boolean isChecked = cbContact01.isSelected();
-        oTrans.setInsContact(pnContact, 13, (isChecked) ? "1" : "0");
+//        oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
+
+        for (int lnCtr = 0; lnCtr < oTrans.getInsContactList().size(); lnCtr++){
+            if(pnContact == lnCtr){
+                if(isChecked){
+                    oTrans.setInsContact(pnContact, "cRecdStat", "1");
+                }else{
+                    oTrans.setInsContact(lnCtr, "cRecdStat", "0");
+                }
+            }else{
+                oTrans.setInsContact(lnCtr, "cRecdStat", "0");
+            }
+            
+        }
+//        oTrans.setInsContact(pnContact, 13, (isChecked) ? "1" : "0");
         loadContctPerson();
-        String val = (isChecked) ? "1" : "0";
-        System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
+//        String val = (isChecked) ? "1" : "0";
+//        System.out.println("isChecked = " + val);
+//        System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
     }
     
     /**********************************/
@@ -771,11 +805,23 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
     @FXML
     private void CheckContact02_Clicked(MouseEvent event) {
         boolean isChecked = cbContact02.isSelected();
-        oTrans.setInsContact(pnContact, "cPrimaryx", (isChecked) ? "1" : "0");
+        for (int lnCtr = 0; lnCtr < oTrans.getInsContactList().size(); lnCtr++){
+            if(pnContact == lnCtr){
+                if(isChecked){
+                    oTrans.setInsContact(pnContact, "cPrimaryx", "1");
+                }else{
+                    oTrans.setInsContact(lnCtr, "cPrimaryx", "0");
+                }
+            }else{
+                oTrans.setInsContact(lnCtr, "cPrimaryx", "0");
+            }
+            
+        }
+//        oTrans.setInsContact(pnContact, "cPrimaryx", (isChecked) ? "1" : "0");
         loadContctPerson();
-        String val = (isChecked) ? "1" : "0";
-        System.out.println("isChecked = " + val);
-        System.out.println("value = " + oTrans.getInsContact(pnContact, "cPrimaryx"));
+//        String val = (isChecked) ? "1" : "0";
+//        System.out.println("isChecked = " + val);
+//        System.out.println("value = " + oTrans.getInsContact(pnContact, "cPrimaryx"));
     }
 
     private void clearallFields() {

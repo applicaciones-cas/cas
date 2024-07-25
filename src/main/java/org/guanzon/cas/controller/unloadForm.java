@@ -77,6 +77,8 @@ public class unloadForm {
             ((ClientMasterTransactionCompanyController) parentController).loadReturn(lsValue);
         }else if (parentController instanceof FrmAccountsPayableController) {
             ((FrmAccountsPayableController) parentController).loadReturn(lsValue);
+        }else if (parentController instanceof FrmAccountsReceivableController) {
+            ((FrmAccountsReceivableController) parentController).loadReturn(lsValue);
         }
     }
      

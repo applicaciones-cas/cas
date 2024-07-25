@@ -362,7 +362,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         ClickButton();
 
         // Initialize the Client_Master transaction
-        oTrans = new Client_Master(oApp, true, oApp.getBranchCode());
+        oTrans = new Client_Master(oApp, false, oApp.getBranchCode());
 
         // Call newRecord to initialize a new record
         oTrans.newRecord();
@@ -995,10 +995,17 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             switch (lnIndex){
                 case 1: /*company name*/
                                        
-                     
+                     if (lsValue.matches("\\d{11}")) {
+                            oTrans.setInsContact(pnMobile, "sMobileNo", lsValue);
+                        } else {
+                             ShowMessageFX.OkayCancel(null, pxeModuleName, "Contact number must be exactly 11 digits.");
+                            mobileinfo.requestFocus();
+                            break;
+                        }
+                        oTrans.setMobile(pnMobile, "sMobileNo", lsValue);
                     
-                    System.out.println(pnMobile);
-                    oTrans.setMobile(pnMobile, "sMobileNo", lsValue);
+//                    System.out.println(pnMobile);
+//                    oTrans.setMobile(pnMobile, "sMobileNo", lsValue);
                     break;
                 
             }
