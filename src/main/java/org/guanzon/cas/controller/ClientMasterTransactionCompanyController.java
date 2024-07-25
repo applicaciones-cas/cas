@@ -370,8 +370,9 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         txtContact07.focusedProperty().addListener(contactinfo_Focus);
         txtContact08.focusedProperty().addListener(contactinfo_Focus);
         txtContact09.focusedProperty().addListener(contactinfo_Focus);
-        
         txtContact10.focusedProperty().addListener(contactinfoTextArea_Focus);
+
+        
     }
     /************************/
     /*initialize text fields*/
@@ -385,9 +386,10 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                 return;
             }
 
-            TextField socialinfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-            int lnIndex = Integer.parseInt(socialinfo.getId().substring(10, 12));
-            String lsValue = socialinfo.getText();
+            
+            TextField txtContact = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+            int lnIndex = Integer.parseInt(txtContact.getId().substring(10, 12));
+            String lsValue = (txtContact.getText() == null ?"": txtContact.getText());
             JSONObject jsonObject = new JSONObject();
             if (lsValue == null) {
                 return;
@@ -421,7 +423,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                             oTrans.setInsContact(pnContact, "sMobileNo", lsValue);
                         } else {
                              ShowMessageFX.OkayCancel(null, pxeModuleName, "Contact number must be exactly 11 digits.");
-                            socialinfo.requestFocus();
+                            txtContact.requestFocus();
                             break;
                         }
                         oTrans.setInsContact(pnContact, "sMobileNo", lsValue);
@@ -442,7 +444,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                 }
                 loadContctPerson();
             } else {
-                socialinfo.selectAll();
+                txtContact.selectAll();
             }
 
     //            pnIndex = lnIndex;
@@ -457,9 +459,9 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                 return;
             }
 
-            TextArea socialinfo = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-            int lnIndex = Integer.parseInt(socialinfo.getId().substring(10, 12));
-            String lsValue = socialinfo.getText();
+            TextArea txtContact = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
+            int lnIndex = Integer.parseInt(txtContact.getId().substring(10, 12));
+            String lsValue = (txtContact.getText() == null ?"": txtContact.getText());
             JSONObject jsonObject = new JSONObject();
             if (lsValue == null) {
                 return;
@@ -470,12 +472,12 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                     case 10:
                         /*company name*/
                         oTrans.setInsContact(pnContact, "sRemarksx", lsValue);
+                                
                         break;
-
                 }
                 loadContctPerson();
             } else {
-                socialinfo.selectAll();
+                txtContact.selectAll();
             }
 
     //            pnIndex = lnIndex;
@@ -759,7 +761,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         txtContact07.setText(oTrans.getInsContact(pnContact, 6) == null || oTrans.getInsContact(pnContact, 6).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 6));
         txtContact08.setText(oTrans.getInsContact(pnContact, 7) == null || oTrans.getInsContact(pnContact, 7).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 7));
         txtContact09.setText(oTrans.getInsContact(pnContact, 8) == null || oTrans.getInsContact(pnContact, 8).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 8));
-        txtContact10.setText(oTrans.getInsContact(pnContact, 13) == null || oTrans.getInsContact(pnContact, 13).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 13));
+        txtContact10.setText(oTrans.getInsContact(pnContact, 12) == null || oTrans.getInsContact(pnContact, 12).toString().isEmpty() ? "" : (String) oTrans.getInsContact(pnContact, 13));
         txtContact01.requestFocus();
         if (cbContact01.isSelected()){
             lblStatus.setText("ACTIVE");
