@@ -30,6 +30,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -92,7 +93,10 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
 
     @FXML
     private Button btnSave;
-
+    
+    @FXML
+    private Label lblStat;
+    
     @FXML
     private Button btnUpdate;
 
@@ -850,7 +854,7 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
             txtField12.setText(oTrans.getModel().getOBalance().toString());
             txtField13.setText((String) oTrans.getModel().getCategoryName());
             
-           
+           StatusLabel();
 
             
             
@@ -941,6 +945,25 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
         txtField04.setText((String) poJson.get("sCPerson1"));                         
         txtField05.setText((String) poJson.get("sMobileNo"));
         txtField06.setText((String) poJson.get("sTaxIDNox"));
+    }
+    
+    private void StatusLabel(){
+    String lsValue = oTrans.getModel().getRecdStat();
+    
+        switch (lsValue) {
+            case "0":
+                lblStat.setText("OPEN");
+                break;
+            case "1":
+                lblStat.setText("APPROVED");
+                break;
+            case "3":
+                lblStat.setText("DISAPPROVED");
+                break;  
+            case "4":
+                lblStat.setText("BLACKLISTED");
+                break;    
+        }
     }
 
 }

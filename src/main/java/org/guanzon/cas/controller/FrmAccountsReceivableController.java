@@ -24,6 +24,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -140,6 +141,9 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
 
     @FXML
     private TextField txtField05;
+    
+    @FXML
+    private Label lblStat;
 
     @FXML
     private TextField txtField06;
@@ -945,8 +949,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
             txtField12.setText(oTrans.getModel().getOBalance().toString());
             txtField13.setText((String) oTrans.getModel().getCategoryName());
             
-           
-
+            StatusLabel();
             
             
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -1037,4 +1040,22 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         txtField06.setText((String) poJson.get("sTaxIDNox"));
     }
 
+        private void StatusLabel(){
+            String lsValue = oTrans.getModel().getRecdStat();
+
+                switch (lsValue) {
+                    case "0":
+                        lblStat.setText("OPEN");
+                        break;
+                    case "1":
+                        lblStat.setText("APPROVED");
+                        break;
+                    case "3":
+                        lblStat.setText("DISAPPROVED");
+                        break;  
+                    case "4":
+                        lblStat.setText("BLACKLISTED");
+                        break;    
+                }
+        }
 }

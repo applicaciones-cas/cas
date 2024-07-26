@@ -326,7 +326,7 @@
                                                 <Insets left="5.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <Label alignment="CENTER" minWidth="225.0" style="-fx-background-color: FF8201;" text="Active" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+                                          <Label fx:id="lblStat" alignment="CENTER" minWidth="225.0" style="-fx-background-color: FF8201;" text="Active" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="5" GridPane.columnSpan="3" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
                                              <font>
                                                 <Font name="System Bold" size="18.0" />
                                              </font>
