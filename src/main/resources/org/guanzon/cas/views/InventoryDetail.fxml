@@ -307,7 +307,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Measure" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="12" GridPane.valignment="CENTER">
+                                                <Text fx:id="lblMeasure" strokeType="OUTSIDE" strokeWidth="0.0" text="Measure" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="12" GridPane.valignment="CENTER">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -363,7 +363,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Shelf Life" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="20">
+                                                <Text fx:id="lblShelf" strokeType="OUTSIDE" strokeWidth="0.0" text="Shelf Life" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="20">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
