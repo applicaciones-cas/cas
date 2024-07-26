@@ -436,9 +436,9 @@ public class InvMaster implements GRecord{
                     lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL(fsValue + "%"));
                 
                 
-                if(!poModel.getWareHouseID().isEmpty()){
-                    lsSQL = MiscUtil.addCondition(lsSQL, "a.sMainCatx = " + SQLUtil.toSQL(poModel.getWareHouseID()));
-                }
+//                if(!poModel.getWareHouseID().isEmpty()){
+//                    lsSQL = MiscUtil.addCondition(lsSQL, "a.sMainCatx = " + SQLUtil.toSQL(poModel.getWareHouseID()));
+//                }
                 
                 lsSQL = MiscUtil.addCondition(lsSQL, lsCondition);
                 System.out.println(lsSQL);
