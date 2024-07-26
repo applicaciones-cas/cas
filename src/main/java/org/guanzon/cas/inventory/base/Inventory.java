@@ -493,13 +493,15 @@ public class Inventory implements GRecord{
 
                     return setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
                 } else {
+                    
+                    loJSON = new JSONObject();
                     loJSON.put("result", "error");
                     loJSON.put("message", "No record found.");
                     return loJSON;
                 }
             case 7: //sCategCd2
 
-                lsSQL ="SELECT" +
+                lsSQL = "SELECT" +
                             "  a.sCategrCd" +
                             ", a.sDescript" +
                             ", a.sInvTypCd" +
@@ -604,7 +606,7 @@ public class Inventory implements GRecord{
                 loJSON = loCategory4.searchRecord(fsValue, fbByCode);
 
                 if (loJSON != null){
-                    setMaster(fnCol, (String) loCategory4.getMaster("sCategrCd"));
+                    setMaster("sCategCd4", (String) loCategory4.getMaster("sCategrCd"));
                     return setMaster("xCategNm4", (String) loCategory4.getMaster("sDescript"));
                 } else {
                     loJSON = new JSONObject();
@@ -767,52 +769,60 @@ public class Inventory implements GRecord{
 
         switch(fnCol){
             case 3: //sub unit
-                String lsSQL =poModel.getSQL();
+                if(!poModel.getCategCd1().isEmpty()){
+                   String lsSQL =poModel.getSQL();
 
-            if (fbByCode)
-                lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex LIKE " + SQLUtil.toSQL(fsValue + "%"));
-            else
-                lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL(fsValue + "%"));
+                    if (fbByCode)
+                        lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex LIKE " + SQLUtil.toSQL(fsValue + "%"));
+                    else
+                        lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL(fsValue + "%"));
 
 
-            lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx <> " + SQLUtil.toSQL(poModel.getStockID()));
+                    lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx <> " + SQLUtil.toSQL(poModel.getStockID()));
+                    
+                    lsSQL = MiscUtil.addCondition(lsSQL, "a.sCategCd1 = " + SQLUtil.toSQL(poModel.getCategCd1()));
 
-            System.out.println(lsSQL);
-            loJSON = ShowDialogFX.Search(
-                            poGRider,
-                            lsSQL,
-                            fsValue,
-                            "Stock ID»BarrCode»sDescript",
-                            "sStockIDx»sBarCodex»sDescript",
-                            "a.sStockIDx»a.sBarCodex»a.sDescript",
-                            fbByCode ? 1 : 2);
+                    System.out.println(lsSQL);
+                    loJSON = ShowDialogFX.Search(
+                                    poGRider,
+                                    lsSQL,
+                                    fsValue,
+                                    "Stock ID»BarrCode»sDescript",
+                                    "sStockIDx»sBarCodex»sDescript",
+                                    "a.sStockIDx»a.sBarCodex»a.sDescript",
+                                    fbByCode ? 1 : 2);
 
-                if (loJSON != null) {
-                    System.out.println("size = " + poSubUnit.getMaster().size());
-                    for(int lnCtr = 0; lnCtr < poSubUnit.getMaster().size() -1; lnCtr++){
-                        if(poSubUnit.getMaster().get(lnCtr).getSubItemID().equalsIgnoreCase((String) loJSON.get("sStockIDx"))){
+                        if (loJSON != null) {
+                            System.out.println("size = " + poSubUnit.getMaster().size());
+                            for(int lnCtr = 0; lnCtr < poSubUnit.getMaster().size() -1; lnCtr++){
+                                if(poSubUnit.getMaster().get(lnCtr).getSubItemID().equalsIgnoreCase((String) loJSON.get("sStockIDx"))){
+                                    loJSON = new JSONObject();
+                                    loJSON.put("result", "error");
+                                    loJSON.put("message", "Search sub unit already added.");
+                                    return loJSON;
+                                }
+                            }
+                            setSubUnit(fnRow,1, poModel.getStockID());
+                            setSubUnit(fnRow,3, (String) loJSON.get("sStockIDx"));
+                            setSubUnit(fnRow,6, poModel.getBarcode());
+                            setSubUnit(fnRow,8, (String) loJSON.get("sBarCodex"));
+                            setSubUnit(fnRow,7, poModel.getDescription());
+                            setSubUnit(fnRow,9, (String) loJSON.get("sDescript"));
+                            setSubUnit(fnRow,10,  (String) loJSON.get("xMeasurID"));
+                            setSubUnit(fnRow,11, (String) loJSON.get("xMeasurNm"));
+                            loJSON.put("result", "success");
+                            loJSON.put("message", "Search sub unit success.");
+                            return loJSON;
+                        }else {
+                            loJSON = new JSONObject();
                             loJSON.put("result", "error");
-                            loJSON.put("message", "Search sub unit already added.");
+                            loJSON.put("message", "Search parent inventory record first before searching sub item.");
                             return loJSON;
                         }
-                    }
-                    setSubUnit(fnRow,1, poModel.getStockID());
-                    setSubUnit(fnRow,3, (String) loJSON.get("sStockIDx"));
-                    setSubUnit(fnRow,6, poModel.getBarcode());
-                    setSubUnit(fnRow,8, (String) loJSON.get("sBarCodex"));
-                    setSubUnit(fnRow,7, poModel.getDescription());
-                    setSubUnit(fnRow,9, (String) loJSON.get("sDescript"));
-                    setSubUnit(fnRow,10,  (String) loJSON.get("xMeasurID"));
-                    setSubUnit(fnRow,11, (String) loJSON.get("xMeasurNm"));
-                    loJSON.put("result", "success");
-                    loJSON.put("message", "Search sub unit success.");
-                    return loJSON;
-                }else {
-                    loJSON = new JSONObject();
-                    loJSON.put("result", "success");
-                    loJSON.put("message", "No record selected.");
-                    return loJSON;
+                }else{
+                    
                 }
+            
             default:
                 return null;
         }

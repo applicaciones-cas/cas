@@ -1,3 +1,4 @@
+org\guanzon\cas\inventory\constant\InvConstants.class
 org\guanzon\cas\inventory\resultSet2XML\ModelCategory4.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventorySubUnit.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInvHistLedger.class
@@ -9,6 +10,7 @@ org\guanzon\cas\inventory\base\InvSerial.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventory.class
 org\guanzon\cas\inventory\resultSet2XML\ModelCategory.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInvSerial.class
+org\guanzon\cas\inventory\base\InvTransfer.class
 org\guanzon\cas\inventory\resultSet2XML\ModelCategory3.class
 org\guanzon\cas\inventory\base\InvLedger.class
 org\guanzon\cas\inventory\base\InvMaster.class
