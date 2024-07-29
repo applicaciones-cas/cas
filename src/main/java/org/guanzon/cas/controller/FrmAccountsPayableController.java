@@ -6,13 +6,9 @@ package org.guanzon.cas.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -28,7 +24,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -48,13 +43,10 @@ import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.clients.account.AP_Client_Master;
 import org.guanzon.cas.clients.account.GlobalVariables;
 import org.guanzon.cas.model.ModelAPClientLedger;
-import org.guanzon.cas.model.ModelAddress;
-import org.guanzon.cas.model.ModelMobile;
 import org.guanzon.cas.model.SharedModel;
 import org.json.simple.JSONObject;
 
@@ -260,9 +252,7 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                             txtSearch02.clear();
                             break;
                         }
-                        pnEditMode = oTrans.getEditMode();
-//                        loadDetail();
-                        
+                        pnEditMode = oTrans.getEditMode();                        
                         retrieveDetails();
                     break;
                     case 02: /*search company name*/
@@ -273,8 +263,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                             break;
                         }
                         pnEditMode = oTrans.getEditMode();
-//                        loadDetail();
-                        
                         retrieveDetails();
                     break;
                 }
@@ -314,9 +302,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
 
                         System.out.println("ADDNEW = " + EditMode.ADDNEW);
                         System.out.println("EDITMODE = " + pnEditMode);
-//                            clearAllFields();
-//                            txtField01.setText((String) oTrans.getMaster("sClientID"));
-//                            loadDetail();
 
                         txtField02.requestFocus();
                         txtField07.setText((String) oTrans.getModel().getCreditLimit());
@@ -363,9 +348,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                 case "btnCancel":
                         if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
                             clearAllFields();
-//                            appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
-//                            pnEditMode = EditMode.UNKNOWN;
-                            
                             oTrans = new AP_Client_Master(oApp, true);
                             oTrans.setRecordStatus("0123");
                             pnEditMode = EditMode.UNKNOWN;
@@ -456,7 +438,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
             case F3:
                 switch (lnIndex){
                     case 02: /*search branch*/
-//                        receivedDataLabel.setText(receivedData);
                         poJson = new JSONObject();
                         String input = "";
                         input = lsValue;
@@ -464,9 +445,7 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                            System.out.println("poJson = " + poJson.toJSONString());
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                loadCompanyTransaction();
-                               
                                String receivedData = SharedModel.sharedString;
-                               
                                System.out.println("receivedData = " + GlobalVariables.sClientID);
 //                               poJson = oTrans.SearchClient(receivedData, tr);
                            }
@@ -536,8 +515,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
             public LocalDate fromString(String string) {
                 if (string != null && !string.isEmpty()) {
                     oTrans.setMaster(5,LocalDate.parse(string, dateFormatter).toString());
-                    
-//                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
                     return LocalDate.parse(string, dateFormatter);
                 } else {
                     return null;
@@ -562,8 +539,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
             public LocalDate fromString(String string) {
                 if (string != null && !string.isEmpty()) {
                     oTrans.setMaster(6,LocalDate.parse(string, dateFormatter).toString());
-                    
-//                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
                     return LocalDate.parse(string, dateFormatter);
                 } else {
                     return null;
@@ -571,22 +546,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
             }
         });
 
-//         cpField01.setOnAction(event -> {
-//            // Handle the event when a date is selected
-//            System.out.println("dCltSince date: " + cpField01.getValue());
-//            
-//            oTrans.setMaster("dCltSince", (CommonUtils.toDate(cpField01.getValue().toString())));
-////            oTrans.setLedger(5, pnEditMode, oApp);
-//        });
-//         
-//         cpField02.setOnAction((ActionEvent event) -> {
-//            // Handle the event when a date is selected
-//            System.out.println("dBegDatex date: " + cpField02.getValue());
-//            
-//            oTrans.setMaster("dBegDatex", (CommonUtils.toDate(cpField02.getValue().toString())));
-////            oTrans.setLedger(5, pnEditMode, oApp);
-//        });
-    
     }
     
     final ChangeListener<? super Boolean> txtField_Focus = (ObservableValue<? extends Boolean> o,Boolean ov,Boolean nv)->{ 
@@ -615,21 +574,14 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                 case 6:/*tin No */
                     break;
                 case 7:/*Credit limit*/
-//                    jsonObject = oTrans.getMasterModel().setCreditLimit(lsValue); 
-//                    txtField.setText(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00"));
                     txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
                     jsonObject = oTrans.setMaster(10,(Double.parseDouble(lsValue.replace(",", ""))));
-//                    System.out.print("number format cL == " + (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
                     break;
-                case 8:/*discount*/
-//                    jsonObject = oTrans.getMasterModel().setDiscount(lsValue);               
+                case 8:/*discount*/     
                     txtField.setText(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "0.00"));
                     jsonObject = oTrans.setMaster(9,(Double.parseDouble(lsValue)));
-//                     System.out.print("number format discount == " + (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
                     break;
                 case 9:/*term */
-//                    jsonObject = oTrans.getMasterModel().setTerm(lsValue);                    
-//                    jsonObject = oTrans.setMaster(8,lsValue);
                     break;
                 case 10 :/*beginning balance*/
                     
@@ -638,12 +590,10 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                     jsonObject = oTrans.setMaster(7,(Double.parseDouble(lsValue.replace(",", ""))));
                     break;
                 case 11 :/*available balance*/
-//                      jsonObject = oTrans.getMasterModel().setABalance(lsValue); 
                     txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
                     jsonObject = oTrans.setMaster(11,(Double.parseDouble(lsValue.replace(",", ""))));
                     break;
                 case 12 :/*outstanding balance*/
-//                      jsonObject = oTrans.getMasterModel().setOBalance(lsValue);    
                     txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
                     jsonObject = oTrans.setMaster(12,(Double.parseDouble(lsValue.replace(",", ""))));
                     break;
@@ -671,7 +621,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml"));
             fxmlLoader.setController(loControl);
             Parent parent = fxmlLoader.load();
-//            loControl.setAddMode((String) oTrans.getMaster(3));
             AnchorPane otherAnchorPane = loControl.AnchorMain;
 
             // Get the parent of the TabContent node
@@ -689,7 +638,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                             System.out.println("globalvariable = " + GlobalVariables.sClientID);
                         } else {
                             System.out.println("globalvariable = " + GlobalVariables.sClientID);
-                            
                             return;
                         }
 
@@ -853,11 +801,7 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
             txtField11.setText(oTrans.getModel().getABalance().toString());
             txtField12.setText(oTrans.getModel().getOBalance().toString());
             txtField13.setText((String) oTrans.getModel().getCategoryName());
-            
-           StatusLabel();
-
-            
-            
+            StatusLabel();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
             // Parse the formatted date string into a LocalDate object
@@ -876,15 +820,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
             }
             
             chkfield01.setSelected(("1".equals((String) oTrans.getMaster("cVatablex"))));
-//            txtField01.setText((String) oTrans.getModel().getClientID());
-//            txtField02.setText((String) oTrans.getModel().getFullName());
-//            txtField06.setText((oTrans.getMaster(29) == null)? "" : (String) oTrans.getMaster(29));
-//            txtField05.setText((String) oTrans.getModel().getMaidenName());
-//            txtField09.setText((String) oTrans.getMaster(28));
-//            txtField08.setText((String) oTrans.getMaster(27));
-//            if(!oTrans.getModel().getClientType().trim().isEmpty() && oTrans.getModel().getClientType()!= null){
-//                cmbField01.getSelectionModel().select(Integer.parseInt((String) oTrans.getModel().getClientType()));
-//            }
               loadLedger();
               txtSearch01.clear();
               txtSearch02.clear();
@@ -928,7 +863,7 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
             for (TextField field : fields) {
                 field.clear();
             }
-        }
+        }   
     }
  
     public void loadReturn(String lsValue) {

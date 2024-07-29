@@ -374,9 +374,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 
         
     }
-    /************************/
-    /*initialize text fields*/
-    /************************/
+
     /*******************************************/
     /*initialize value to data                 */
     /*serves also as lost focus FOR contactinfo*/
@@ -385,8 +383,6 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
             if (!pbLoaded) {
                 return;
             }
-
-            
             TextField txtContact = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
             int lnIndex = Integer.parseInt(txtContact.getId().substring(10, 12));
             String lsValue = (txtContact.getText() == null ?"": txtContact.getText());
@@ -446,8 +442,6 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
             } else {
                 txtContact.selectAll();
             }
-
-    //            pnIndex = lnIndex;
         };
 
     /***************************************************/
@@ -479,8 +473,6 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
             } else {
                 txtContact.selectAll();
             }
-
-    //            pnIndex = lnIndex;
         };
     
     /***************************/
@@ -679,7 +671,6 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                         
                     } else {
                         ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        oApp.rollbackTrans();
                         System.out.println("Record not saved successfully.");
                         System.out.println((String) saveResult.get("message"));
                     }
@@ -708,13 +699,10 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                         }
                         
                         pnContact = oTrans.getInsContactList().size()-1;
-//                        oTrans.setInsContact(1, 13, "1");
                         loadContctPerson();
                         clearContactperson();
-//                        txtContact01.requestFocus();
                     }
                     break;
-                // Add more cases for other buttons if needed
             }
         }
     }
@@ -771,7 +759,6 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         cbContact01.setSelected((!"0".equals(oTrans.getInsContact(pnContact, 14).toString())));
         cbContact02.setSelected((oTrans.getInsContact(pnContact, 13).toString() == "0"?false:true));
         
-//        cbContact02.setSelected((boolean) oTrans.getInsContact(pnContact, 13));
     }
 
     /**********************************/
@@ -794,11 +781,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
             }
             
         }
-//        oTrans.setInsContact(pnContact, 13, (isChecked) ? "1" : "0");
         loadContctPerson();
-//        String val = (isChecked) ? "1" : "0";
-//        System.out.println("isChecked = " + val);
-//        System.out.println("value = " + oTrans.getInsContact(pnContact, "cRecdStat"));
     }
     
     /**********************************/

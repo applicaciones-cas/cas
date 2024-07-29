@@ -305,7 +305,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                             System.err.println((String) saveResult.get("message"));
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
 //                            clearAllFields();
-                            pnEditMode = EditMode.UNKNOWN;
+                            pnEditMode = oTrans.getEditMode();
                             initButton(pnEditMode);
                             initTabAnchor();
                             clearCompanyFields();
