@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -107,6 +108,10 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
 
     @FXML
     private Button btnClose;
+    
+    @FXML
+    private Label lblStat;
+
 
     @FXML
     private ComboBox cmbField01;
@@ -488,7 +493,23 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
         
         
         cmbField03.setOnAction(event -> {
-            oTrans.setAccount(pnCompany,9, cmbField03.getSelectionModel().getSelectedIndex());
+            int lnValue = cmbField03.getSelectionModel().getSelectedIndex();
+            if(lnValue>1){
+                oTrans.setAccount(pnCompany,9, lnValue + 1);
+            }else{
+                oTrans.setAccount(pnCompany,9, lnValue);
+            }
+//            switch (lsValue) {
+//                case 0:
+//                case 1:
+//                    oTrans.setAccount(pnCompany,9, "1");
+//                case 2:
+//                    oTrans.setAccount(pnCompany,9, "3");
+//                case 3:
+//                    oTrans.setAccount(pnCompany,9, "4");
+//                    break;
+//            }
+//            
              System.out.print("\ncTranStat = " + cmbField03.getSelectionModel().getSelectedIndex());
         });
     }
@@ -725,6 +746,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
        
        cmbField03.setItems(AccountStatus);
        cmbField03.getSelectionModel().select(0);
+       lblStat.setText("UNKNOWN");
        
     }
         private void getAccreditationSelectedItems() {
@@ -741,17 +763,49 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
             
 //                    cmbField02.getSelectionModel().select(oTrans.getAccount(pnCompany, 3));
                     cmbField02.getSelectionModel().select(Integer.parseInt(oTrans.getAccount(pnCompany, 3).toString()));
-                    cmbField03.getSelectionModel().select(Integer.parseInt(oTrans.getAccount(pnCompany, 9).toString()));
+//                    cmbField03.getSelectionModel().select(Integer.parseInt(oTrans.getAccount(pnCompany, 9).toString()));
                     txtField01.setText((String) oTrans.getAccount(pnCompany, "sTransNox"));
                     System.out.println("getCategoryName = " + oTrans.getAccount(pnCompany, 18));
                     txtField05.setText((String) oTrans.getAccount(pnCompany, 18));
                     txtField02.setText((String) oTrans.getAccount(pnCompany, "xCompnyNm"));
                     txtField03.setText((String) oTrans.getAccount(pnCompany, "xCPerson1"));
                     txtField04.setText((String) oTrans.getAccount(pnCompany, "sRemarksx"));
-                       
+                    String lsValue = oTrans.getAccount(pnCompany,"cTranStat").toString();
+//                    System.err.println("lsvalue ko ng stat == " + lsValue);
+//                    int lnStatus = Integer.parseInt(oTrans.getAccount(pnCompany,"cTranStat").toString());
+//                    if(lnStatus>= 3){
+//                        lnStatus--;
+//                        System.out.println("lnStatus = " + (lnStatus));
+//                        lblStat.setText(AccountStatus.get((lnStatus)));
+//                    }else{
+//                        lblStat.setText(AccountStatus.get(lnStatus));
+//                    }
                     loadComapany();
+                    StatusLabel(lsValue);
                 }
         txtSeek01.clear();
         }
+        private void StatusLabel(String lsValue){
+                
+                switch (lsValue) {
+                    case "0":
+                        lblStat.setText("OPEN");
+                        cmbField03.getSelectionModel().select(0);
+                        break;
+                    case "1":
+                        lblStat.setText("APPROVED");
+                        cmbField03.getSelectionModel().select(1);
+                        break;
+                    case "3":
+                        lblStat.setText("DISAPPROVED");
+                        cmbField03.getSelectionModel().select(2);
+                        break;  
+                    case "4":
+                        lblStat.setText("BLOCKLISTED");
+                        cmbField03.getSelectionModel().select(3);
+                        break;    
+                }
+        }
+        
 }
 

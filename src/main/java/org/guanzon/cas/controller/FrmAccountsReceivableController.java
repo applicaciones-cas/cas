@@ -6,14 +6,9 @@ package org.guanzon.cas.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -28,8 +23,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -47,15 +42,10 @@ import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.clients.resultSet2XML.AR_Client_Master;
 import org.guanzon.cas.clients.resultSet2XML.AR_Client_Master;
 import org.guanzon.cas.clients.account.GlobalVariables;
 import org.guanzon.cas.model.ModelAPClientLedger;
-import org.guanzon.cas.model.ModelAPClientLedgers;
-import org.guanzon.cas.model.ModelAddress;
-import org.guanzon.cas.model.ModelMobile;
 import org.guanzon.cas.model.SharedModel;
 import org.json.simple.JSONObject;
 
@@ -151,6 +141,9 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
 
     @FXML
     private TextField txtField05;
+    
+    @FXML
+    private Label lblStat;
 
     @FXML
     private TextField txtField06;
@@ -707,13 +700,18 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                     break;  
                 case 6:/*tin No */
                     break;
-                case 7:/*Credit limit*/
-//                    jsonObject = oTrans.getMasterModel().setCreditLimit(lsValue);                 
-                    jsonObject = oTrans.setMaster(10,lsValue);
+                 case 7:/*Credit limit*/
+//                    jsonObject = oTrans.getMasterModel().setCreditLimit(lsValue); 
+//                    txtField.setText(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00"));
+                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    jsonObject = oTrans.setMaster(10,(Double.parseDouble(lsValue.replace(",", ""))));
+//                    System.out.print("number format cL == " + (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
                     break;
                 case 8:/*discount*/
-//                    jsonObject = oTrans.getMasterModel().setDiscount(lsValue);                 
-                    jsonObject = oTrans.setMaster(9,lsValue);
+//                    jsonObject = oTrans.getMasterModel().setDiscount(lsValue);               
+                    txtField.setText(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "0.00"));
+                    jsonObject = oTrans.setMaster(9,(Double.parseDouble(lsValue)));
+//                     System.out.print("number format discount == " + (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
                     break;
                 case 9:/*term */
 //                    jsonObject = oTrans.getMasterModel().setTerm(lsValue);                    
@@ -722,15 +720,18 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                 case 10 :/*beginning balance*/
                     
 //                    jsonObject = oTrans.getMasterModel().setBeginBal(lsValue);
-                    jsonObject = oTrans.setMaster(7,lsValue);
+                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    jsonObject = oTrans.setMaster(7,(Double.parseDouble(lsValue.replace(",", ""))));
                     break;
                 case 11 :/*available balance*/
-//                      jsonObject = oTrans.getMasterModel().setABalance(lsValue);                 
-                    jsonObject = oTrans.setMaster(11,lsValue);
+//                      jsonObject = oTrans.getMasterModel().setABalance(lsValue); 
+                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    jsonObject = oTrans.setMaster(11,(Double.parseDouble(lsValue.replace(",", ""))));
                     break;
                 case 12 :/*outstanding balance*/
-//                      jsonObject = oTrans.getMasterModel().setOBalance(lsValue);                                     
-                    jsonObject = oTrans.setMaster(12,lsValue);
+//                      jsonObject = oTrans.getMasterModel().setOBalance(lsValue);    
+                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+                    jsonObject = oTrans.setMaster(12,(Double.parseDouble(lsValue.replace(",", ""))));
                     break;
             }                    
         } else
@@ -948,8 +949,7 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
             txtField12.setText(oTrans.getModel().getOBalance().toString());
             txtField13.setText((String) oTrans.getModel().getCategoryName());
             
-           
-
+            StatusLabel();
             
             
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -1040,4 +1040,22 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         txtField06.setText((String) poJson.get("sTaxIDNox"));
     }
 
+        private void StatusLabel(){
+            String lsValue = oTrans.getModel().getRecdStat();
+
+                switch (lsValue) {
+                    case "0":
+                        lblStat.setText("OPEN");
+                        break;
+                    case "1":
+                        lblStat.setText("APPROVED");
+                        break;
+                    case "3":
+                        lblStat.setText("DISAPPROVED");
+                        break;  
+                    case "4":
+                        lblStat.setText("BLACKLISTED");
+                        break;    
+                }
+        }
 }

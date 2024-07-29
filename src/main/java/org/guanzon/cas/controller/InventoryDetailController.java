@@ -40,6 +40,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -180,9 +181,9 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
     @FXML
     private TextField txtField19;
-//
-//    @FXML
-//    private ComboBox cmbField02;
+
+    @FXML
+    private Text lblShelf, lblMeasure;
 
     @FXML
     private CheckBox chkField01;
@@ -341,6 +342,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                         }
                         pnEditMode =  oTrans.getEditMode();
                         
+                        System.err.println("update btn editmode ==" + pnEditMode);
                         initButton(pnEditMode);
                         initTabAnchor();
                     break;
@@ -383,7 +385,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                             txtSeeks01.clear();
                             break;
                         }
-                        pnEditMode = EditMode.READY;
+                        pnEditMode = oTrans.getEditMode();
                         
                         initButton(pnEditMode);
                         System.out.print("\neditmode on browse == " + pnEditMode);
@@ -684,7 +686,30 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             }else{
                 lblStatus.setText("INACTIVE");
             }
+            initSubItemForm();
      }
+    }
+    private void initSubItemForm(){
+        if (!oTrans.getInvModel().getCategCd1().isEmpty()) { // Ensure the string is not empty
+            switch (oTrans.getInvModel().getCategCd1()) {
+                case "0001":
+                case "0002":
+                case "0003":
+//                    AnchorTable.setVisible(false);
+                    lblMeasure.setVisible(false);
+                    lblShelf.setVisible(false);
+                    txtField13.setVisible(false);
+                    txtField21  .setVisible(false);
+                    break;
+                case "0004":
+//                    AnchorTable.setVisible(true);
+                    lblMeasure.setVisible(true);
+                    lblShelf.setVisible(true);
+                    txtField13.setVisible(true);
+                    txtField21.setVisible(true);
+                    break;
+            }
+        }
     }
     private void InitTextFields(){
 

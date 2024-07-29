@@ -597,19 +597,19 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                    System.out.print( "DESC == " + oTrans.getModel().setDescription(lsValue));
                     break;
                 case 6:/*CATEGORY CODE 1*/
-                   oTrans.getModel().setCategCd1(lsValue);
+//                   oTrans.getModel().setCategCd1(lsValue);
                    System.out.print( "CATEGORY 1 == " + oTrans.getModel().setCategCd1(lsValue));
                     break;
                 case 7:/*CATEGORY CODE 2*/
-                  oTrans.getModel().setCategCd2(lsValue);
+//                  oTrans.getModel().setCategCd2(lsValue);
                    System.out.print( "CATEGORY 2 == " + oTrans.getModel().setCategCd2(lsValue));
                     break;
                 case 8:/*CATEGORY CODE 3*/
-                   oTrans.getModel().setCategCd3(lsValue);
+//                   oTrans.getModel().setCategCd3(lsValue);
                    System.out.print( "CATEGORY 3 == " + oTrans.getModel().setCategCd3(lsValue));
                     break;
                 case 9:/*CATEGORY CODE 4*/
-                   oTrans.getModel().setCategCd4(lsValue);
+//                   oTrans.getModel().setCategCd4(lsValue);
                    System.out.print( "CATEGORY 4 == " + oTrans.getModel().setCategCd4(lsValue));
                     break;
                 case 10:/*Brand*/

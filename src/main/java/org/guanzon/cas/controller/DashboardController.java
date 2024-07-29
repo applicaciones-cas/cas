@@ -168,8 +168,9 @@ public class DashboardController implements Initializable {
             //newTab.setOnClosed(event -> {
             newTab.setOnCloseRequest(event -> {
                 if (showMessage()) {
-                    Tabclose();
                     tabName.remove(newTab.getText());
+                    
+                    Tabclose();
                 } else {
                     event.consume();
                 }
@@ -201,7 +202,7 @@ public class DashboardController implements Initializable {
     public void Tabclose() {
         int tabsize = tabpane.getTabs().size();
         if (tabsize == 1) {
-            setScene(loadAnimateAnchor("FXMLMainScreen.fxml"));
+            setScene(loadAnimateAnchor("Dashboard.fxml"));
         }
     }
 
@@ -325,7 +326,7 @@ public class DashboardController implements Initializable {
 
     public void Tabclose(TabPane tabpane) {
         int tabsize = tabpane.getTabs().size();
-        if (tabsize == 1) {
+        if (tabsize == 0) {
             setScene(loadAnimateAnchor("Dashboard.fxml"));
         }
     }
@@ -502,8 +503,9 @@ public class DashboardController implements Initializable {
 
     /*LOAD ANIMATE FOR ANCHORPANE MAIN HOME*/
     public AnchorPane loadAnimateAnchor(String fsFormName) {
-
+        System.err.println("fsFormName to close == " + String.valueOf(fsFormName));
         ScreenInterface fxObj = getController(fsFormName);
+        System.err.println("fxObj to close == " + String.valueOf(fxObj));
         fxObj.setGRider(oApp);
 
         FXMLLoader fxmlLoader = new FXMLLoader();
