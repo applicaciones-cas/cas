@@ -19,8 +19,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.RecordStatus;
 import org.guanzon.appdriver.iface.GTransaction;
 import org.guanzon.cas.inventory.constant.InvConstants;
-import org.guanzon.cas.model.inventory.Model_Inv_Master;
-import org.guanzon.cas.model.inventory.Model_Inventory_Sub_Unit;
+import org.guanzon.cas.model.inventory.Model_Inventory_Trans;
 import org.json.simple.JSONObject;
 
 /**
@@ -48,8 +47,8 @@ public class InventoryTrans implements GTransaction{
     private String psWarnMsg = "";
     private String psErrMsgx = "";
     
-    private ArrayList<Model_Inv_Master> poModel;
-    private ArrayList<Model_Inv_Master> poModelProcessd;
+    private ArrayList<Model_Inventory_Trans> poModel;
+    private ArrayList<Model_Inventory_Trans> poModelProcessd;
     private ResultSet poRSDetail;
     
     private final String pxeLastTran = "2018-10-01";
@@ -61,6 +60,8 @@ public class InventoryTrans implements GTransaction{
         
         psSourceCd = "";
         psSourceNo = "";
+        
+        psBranchCd =  poGRider.getBranchCode();
         pnEditMode = EditMode.UNKNOWN;
         
     }
@@ -124,10 +125,11 @@ public class InventoryTrans implements GTransaction{
         if (pnEditMode == EditMode.DELETE){
             return delDetail();
         }
-           
-        if (!processInventory()) return false;
-        
+        poJSON = processInventory();
+        if (poJSON.get("result").equals("error")) return poJSON;
+//        
         return saveDetail();
+//return poJSON;
     }
 
     @Override
@@ -556,26 +558,60 @@ public class InventoryTrans implements GTransaction{
         return saveTransaction();
     }
     
-    public ArrayList<Model_Inv_Master> getMaster(){return poModel;}
-    public void setMaster(ArrayList<Model_Inv_Master> foObj){this.poModel = foObj;}
+    public ArrayList<Model_Inventory_Trans> getMaster(){return poModel;}
+    public void setMaster(ArrayList<Model_Inventory_Trans> foObj){this.poModel = foObj;}
 
+    
+    public JSONObject setDetail(int fnRow, String fsIndex, Object fsValue){
+        poJSON = new JSONObject();
+        if (fnRow > poModel.size()){
+            poJSON.put("result", "error");
+            poJSON.put("message", "Undefined index detected.");
+            return poJSON;
+        }
+        if (fnRow == poModel.size()) addDetail();
+        
+        switch(fsIndex.toLowerCase()){
+            case "sstockidx":
+                poJSON = poModel.get(fnRow).setStockID((String) fsValue); break;
+            case "nquantity":
+                poJSON = poModel.get(fnRow).setQuantity(Double.valueOf(fsValue.toString())); break;
+            case "nqtyonhnd":
+                poJSON = poModel.get(fnRow).setQtyOnHnd(Double.valueOf(fsValue.toString())); break;
+            case "nbackordr":
+                poJSON = poModel.get(fnRow).setBackOrdr(Double.valueOf(fsValue.toString())); break;
+            case "nresvordr":
+                poJSON = poModel.get(fnRow).setResvOrdr(Double.valueOf(fsValue.toString())); break;
+            case "nledgerno":
+                poJSON = poModel.get(fnRow).setLedgerNo((int) fsValue); break;
+            case "sreplacid":
+                poJSON = poModel.get(fnRow).setReplaceID((String) fsValue); break;
+            case "nqtyorder":
+                poJSON = poModel.get(fnRow).setQuantityOrder(Double.valueOf(fsValue.toString())); break;
+            case "dexpiryxx":
+                poJSON = poModel.get(fnRow).setExpiryDate(fsValue.toString()); break;
+            case "npurchase":
+                poJSON = poModel.get(fnRow).setPurchasePrice(Double.parseDouble(fsValue.toString())); break;
+        }
+        return poJSON;
+    }
 
-    public void setMaster(int fnRow, int fnIndex, Object foValue){ poModel.get(fnRow).setValue(fnIndex, foValue);}
-    public void setMaster(int fnRow, String fsIndex, Object foValue){ poModel.get(fnRow).setValue(fsIndex, foValue);}
+    public JSONObject setMaster(int fnRow, int fnIndex, Object foValue){ return poModel.get(fnRow).setValue(fnIndex, foValue);}
+    public JSONObject setMaster(int fnRow, String fsIndex, Object foValue){ return poModel.get(fnRow).setValue(fsIndex, foValue);}
     public Object getMaster(int fnRow, int fnIndex){return poModel.get(fnRow).getValue(fnIndex);}
     public Object getMaster(int fnRow, String fsIndex){return poModel.get(fnRow).getValue(fsIndex);}
 
     public JSONObject addDetail(){
         poJSON = new JSONObject();
         if (poModel.isEmpty()){
-            poModel.add(new Model_Inv_Master(poGRider));
+            poModel.add(new Model_Inventory_Trans(poGRider));
             poModel.get(0).newRecord();
             poJSON.put("result", "success");
             poJSON.put("message", "Inventory add record.");
             
 
         } else {
-            poModel.add(new Model_Inv_Master(poGRider));
+            poModel.add(new Model_Inventory_Trans(poGRider));
             poModel.get(poModel.size()-1).newRecord();
             
             poJSON.put("result", "success");
@@ -643,6 +679,7 @@ public class InventoryTrans implements GTransaction{
                             ", a.nQtyOrder" + 
                             ", a.nQtyIssue" + 
                             ", a.nQtyOnHnd" + 
+                            ", a.sWHouseID" + 
                             ", b.nBackOrdr" + 
                             ", b.nResvOrdr" + 
                             ", b.nLedgerNo xLedgerNo" + 
@@ -691,6 +728,8 @@ public class InventoryTrans implements GTransaction{
                             ", IFNULL(c.nQtyOnHnd, 0) xQtyOnHnd" +
                             ", b.dTransact dLastTran" +
                             ", a.sStockIDx" +
+                            ", a.sWHouseID" + 
+                            ", b.dExpiryxx" + 
                         " FROM Inv_Master a" +
                             " LEFT JOIN Inv_Ledger b" + 
                                 " ON a.sBranchCd = b.sBranchCd" +
@@ -708,30 +747,32 @@ public class InventoryTrans implements GTransaction{
                 
                 loRS = poGRider.executeQuery(lsSQL);
                 
-                poModelProcessd.add(new Model_Inv_Master(poGRider));
+                poModelProcessd.add(new Model_Inventory_Trans(poGRider));
                 lnRow = poModelProcessd.size()-1;
                 
                 if (MiscUtil.RecordCount(loRS) == 0){
-//                    poModelProcessd.get(lnRow).IsNewParts("1");
+                    poModelProcessd.get(lnRow).IsNewParts("1");
                     poModelProcessd.get(lnRow).setQtyOnHnd(0);
                     poModelProcessd.get(lnRow).setLedgerNo(0);
                     poModelProcessd.get(lnRow).setBackOrdr(0);
                     poModelProcessd.get(lnRow).setResvOrdr(0);
                     poModelProcessd.get(lnRow).setFloatQty(0);
                     poModelProcessd.get(lnRow).setLastTranDate(pdTransact.toString());
-//                    poModelProcessd.get(lnRow).setDateExpire(pdTransact);
+                    poModelProcessd.get(lnRow).setExpiryDate(pdTransact.toString());
 
                     poModelProcessd.get(lnRow).setRecdStat(RecordStatus.ACTIVE);
                 } else {
                     try {
                         loRS.first();
-//                        poModelProcessd.get(lnRow).IsNewParts("0");
+                        poModelProcessd.get(lnRow).IsNewParts("0");
                         poModelProcessd.get(lnRow).setQtyOnHnd(loRS.getDouble("nQtyOnHnd"));
                         poModelProcessd.get(lnRow).setLedgerNo(loRS.getInt("nLedgerNo"));
                         poModelProcessd.get(lnRow).setBackOrdr(loRS.getDouble("nBackOrdr"));
                         poModelProcessd.get(lnRow).setResvOrdr(loRS.getDouble("nResvOrdr"));
                         poModelProcessd.get(lnRow).setFloatQty(loRS.getDouble("nFloatQty"));
                         poModelProcessd.get(lnRow).setRecdStat(loRS.getString("cRecdStat"));
+                        poModelProcessd.get(lnRow).setWareHouseID(loRS.getString("sWHouseID"));
+//                        poModelProcessd.get(lnRow).setExpiryDate(loRS.getDate("dExpiryxx").toString());
                         
                         if (loRS.getDate("dAcquired") != null) poModelProcessd.get(lnRow).setAcquiredDate(loRS.getDate("dAcquired"));
                         if (loRS.getDate("dLastTran") != null){
@@ -759,175 +800,176 @@ public class InventoryTrans implements GTransaction{
                 }
                 
                 poModelProcessd.get(lnRow).setStockID(poModel.get(lnCtr).getStockID());
-                poModelProcessd.get(lnRow).setQtyInxxx(0);
-                poModelProcessd.get(lnRow).setQtyOutxx(0);
-                poModelProcessd.get(lnRow).setQtyIssue(0);
-                poModelProcessd.get(lnRow).setQtyOrder(0);
+                poModelProcessd.get(lnRow).setQuantityIn(0);
+                poModelProcessd.get(lnRow).setQuantityOut(0);
+                poModelProcessd.get(lnRow).setQuantityIssue(0);
+                poModelProcessd.get(lnRow).setQuantityOrder(0);
             }
             
             switch (psSourceCd){
                 case InvConstants.ACCEPT_DELIVERY:
-//                    poModelProcessd.get(lnRow).setQtyInxxx( poModelProcessd.get(lnRow).getQtyInxxx().doubleValue()
-//                                                        +  poModel.get(lnCtr).getQuantity().doubleValue());
+//                    poModelProcessd.get(lnRow).setQuantityIn(( poModelProcessd.get(lnRow).getQuantityIn().doubleValue()
+//                                                        +  Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
 //                    if (pbWarehous){
-//                        if (poModel.get(lnCtr).getReplacID().equals("")){
+//                        if (poModel.get(lnCtr).getReplaceID().equals("")){
 //                            poModelProcessd.get(lnRow).setQtyOrder(poModelProcessd.get(lnRow).getQtyOrder().doubleValue()
-//                                                                - poModel.get(lnCtr).getQuantity().doubleValue());
+//                                                                - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
 //                        }
 //                    } 
                     
-                    poModelProcessd.get(lnRow).setQtyInxxx( poModelProcessd.get(lnRow).getQtyInxxx().doubleValue()
-                                                        +  poModel.get(lnCtr).getQuantity().doubleValue());//alway based on order
+                    poModelProcessd.get(lnRow).setQuantityIn(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIn().toString())
+                                                        +  Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));//alway based on order
                     if (pbWarehous){
-                        if (poModel.get(lnCtr).getReplacID().equals("")){
-                            poModelProcessd.get(lnRow).setQtyOrder(poModelProcessd.get(lnRow).getQtyOrder().doubleValue()
-                                                                - poModel.get(lnCtr).getQuantity().doubleValue());
+                        if (poModel.get(lnCtr).getReplaceID().equals("")){
+                            poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
+                                                                - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                         }
                     } 
                     
                     
                     break;
-                    case InvConstants.ACCEPT_DELIVERY_DISCREPANCY:
-                        
-                        System.err.println("qtyin" +poModelProcessd.get(lnRow).getQtyInxxx());
-                        System.err.println("qtyinput?" +poModelProcessd.get(lnRow).getQuantity());
-                    poModelProcessd.get(lnRow).setQtyInxxx( poModelProcessd.get(lnRow).getQtyInxxx().doubleValue()
-                                                        +  poModel.get(lnCtr).getQuantity().doubleValue());
-                    if (pbWarehous){
-                        if (poModel.get(lnCtr).getReplacID().equals("")){
-                            poModelProcessd.get(lnRow).setQtyOrder(poModelProcessd.get(lnRow).getQtyOrder().doubleValue()
-                                                                - poModel.get(lnCtr).getQuantity().doubleValue());
-                        }
-                    } 
-                    break;
+//                    case InvConstants.ACCEPT_DELIVERY_DISCREPANCY:
+//                        
+//                        System.err.println("qtyin" +poModelProcessd.get(lnRow).getQuantityIn());
+//                        System.err.println("qtyinput?" +poModelProcessd.get(lnRow).getQuantity());
+//                    poModelProcessd.get(lnRow).setQuantityIn(( poModelProcessd.get(lnRow).getQuantityIn().doubleValue()
+//                                                        +  Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+//                    if (pbWarehous){
+//                        if (poModel.get(lnCtr).getReplaceID().equals("")){
+//                            poModelProcessd.get(lnRow).setQtyOrder(poModelProcessd.get(lnRow).getQtyOrder().doubleValue()
+//                                                                - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+//                        }
+//                    } 
+//                    break;
                 case InvConstants.BRANCH_ORDER:
-                    poModelProcessd.get(lnRow).setQtyOrder(poModelProcessd.get(lnRow).getQtyOrder().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
                 case InvConstants.BRANCH_ORDER_CONFIRM:
                 case InvConstants.CUSTOMER_ORDER:
                 case InvConstants.RETAIL_ORDER:
-                    poModelProcessd.get(lnRow).setQtyIssue(poModelProcessd.get(lnRow).getQtyIssue().doubleValue()
-                                                        - poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
+                                                        - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
                 case InvConstants.CANCEL_RETAIL_ORDER:
                 case InvConstants.WHOLESALE_ORDER_CANCEL:
-                    poModelProcessd.get(lnRow).setQtyIssue(poModelProcessd.get(lnRow).getQtyIssue().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
+                                                        - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
-                case InvConstants.DELIVERY:
-//                    poModelProcessd.get(lnRow).setDateExpire(poModel.get(lnCtr).getDateExpire());
-                    poModelProcessd.get(lnRow).setQtyOutxx(poModelProcessd.get(lnRow).getQtyOutxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
-                    
-                    if (poModel.get(lnCtr).getReplacID().equals("")){
-                        poModelProcessd.get(lnRow).setQtyIssue(poModelProcessd.get(lnRow).getQtyIssue().doubleValue()
-                                                            + poModel.get(lnCtr).getQuantity().doubleValue());
-                    }
-                    break;
-                    case InvConstants.DELIVERY_DISCREPANCY:
-//                    poModelProcessd.get(lnRow).setDateExpire(poModel.get(lnCtr).getDateExpire());
-                    poModelProcessd.get(lnRow).setQtyOutxx(poModelProcessd.get(lnRow).getQtyOutxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
-                    
-                    if (poModel.get(lnCtr).getReplacID().equals("")){
-                        poModelProcessd.get(lnRow).setQtyIssue(poModelProcessd.get(lnRow).getQtyIssue().doubleValue()
-                                                            + poModel.get(lnCtr).getQuantity().doubleValue());
-                    }
-                    break;
+//                case InvConstants.DELIVERY:
+////                    poModelProcessd.get(lnRow).setDateExpire(poModel.get(lnCtr).getDateExpire());
+//                    
+//                    poModelProcessd.get(lnRow).setQuantityOut(poModelProcessd.get(lnRow).getQuantityOut()
+//                                                        - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+//                    
+//                    if (poModel.get(lnCtr).getReplaceID().equals("")){
+//                        poModelProcessd.get(lnRow).setQuantityIssue(poModelProcessd.get(lnRow).getQuantityIssue()
+//                                                        - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+//                    }
+//                    break;
+//                    case InvConstants.DELIVERY_DISCREPANCY:
+////                    poModelProcessd.get(lnRow).setDateExpire(poModel.get(lnCtr).getDateExpire());
+//                    poModelProcessd.get(lnRow).setQuantityOut((poModelProcessd.get(lnRow).getQuantityOut().doubleValue()
+//                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+//                    
+//                    if (poModel.get(lnCtr).getReplaceID().equals("")){
+//                        poModelProcessd.get(lnRow).setQuantityIssue(poModelProcessd.get(lnRow).getQuantityIssue().doubleValue()
+//                                                            + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+//                    }
+//                    break;
                 case InvConstants.JOB_ORDER:
-                    poModelProcessd.get(lnRow).setQtyOutxx(poModelProcessd.get(lnRow).getQtyOutxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
+                                                        - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     
-                    if (poModel.get(lnCtr).getReplacID().equals("")){
-                        poModelProcessd.get(lnRow).setQtyIssue(poModelProcessd.get(lnRow).getQtyIssue().doubleValue()
-                                                            + poModel.get(lnCtr).getResvOrdr().doubleValue());
-                    }        
+                    if (poModel.get(lnCtr).getReplaceID().equals("")){
+                        poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
+                                                        - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+                    }      
                     break;
                 case InvConstants.PURCHASE:
-                    poModelProcessd.get(lnRow).setQtyOrder(poModelProcessd.get(lnRow).getQtyOrder().doubleValue()
-                                                        + poModel.get(lnCtr).getQtyOrder().doubleValue());
-                    poModelProcessd.get(lnRow).setQtyIssue(poModelProcessd.get(lnRow).getQtyIssue().doubleValue()
-                                                        + poModel.get(lnCtr).getQtyIssue().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantityOrder().toString()));
+                    poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantityIssue().toString()));
                     break;
                 case InvConstants.PURCHASE_RECEIVING:
-                    poModelProcessd.get(lnRow).setQtyInxxx(poModelProcessd.get(lnRow).getQtyInxxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityIn(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIn().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
 //                    poModelProcessd.get(lnRow).setDateExpire(poModel.get(lnCtr).getDateExpire());
-                    poModelProcessd.get(lnRow).setPurchase(poModel.get(lnCtr).getPurchase());
+                    poModelProcessd.get(lnRow).setPurchasePrice(Double.parseDouble(poModel.get(lnCtr).getPurchasePrice().toString()));
 
-                    if (poModel.get(lnCtr).getReplacID().equals("")){
-                        poModelProcessd.get(lnRow).setQtyOrder(poModelProcessd.get(lnRow).getQtyOrder().doubleValue()
-                                                            - poModel.get(lnCtr).getQuantity().doubleValue());
+                    if (poModel.get(lnCtr).getReplaceID().equals("")){
+                        poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
+                                                            - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     }
                     break;
                 case InvConstants.PURCHASE_RETURN:
-                    poModelProcessd.get(lnRow).setQtyOutxx(poModelProcessd.get(lnRow).getQtyOutxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
+                                                            + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
                 case InvConstants.PURCHASE_REPLACEMENT:
-                    poModelProcessd.get(lnRow).setQtyInxxx(poModelProcessd.get(lnRow).getQtyInxxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityIn(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIn().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
                 case InvConstants.WHOLESALE:
-                    poModelProcessd.get(lnRow).setQtyOutxx(poModelProcessd.get(lnRow).getQtyOutxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
                 case InvConstants.WHOLESALE_RETURN:
-                    poModelProcessd.get(lnRow).setQtyInxxx(poModelProcessd.get(lnRow).getQtyInxxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityIn(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIn().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
                 case InvConstants.WHOLESALE_REPLACAMENT:
-                    poModelProcessd.get(lnRow).setQtyOutxx(poModelProcessd.get(lnRow).getQtyOutxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
                 case InvConstants.SALES:
-                    poModelProcessd.get(lnRow).setQtyOutxx(poModelProcessd.get(lnRow).getQtyOutxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                    
-                    /*if (!poModel.get(lnCtr).getReplacID().equals("")){
-                        poModelProcessd.get(lnRow).setQtyOutxx(poModelProcessd.get(lnRow).getQtyOutxx()
+                    /*if (!poModel.get(lnCtr).getReplaceID().equals("")){
+                        poModelProcessd.get(lnRow).setQuantityOut((poModelProcessd.get(lnRow).getQuantityOut()
                                                             + poModel.get(lnCtr).getQuantity());
                     }*/
                     break;
                 case InvConstants.SALES_RETURN:
-                    poModelProcessd.get(lnRow).setQtyInxxx(poModelProcessd.get(lnRow).getQtyInxxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityIn(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIn().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
                 case InvConstants.SALES_REPLACEMENT:
                 case InvConstants.SALES_GIVE_AWAY:
                 case InvConstants.WARRANTY_RELEASE:
                 case InvConstants.DEBIT_MEMO:
-                    poModelProcessd.get(lnRow).setQtyOutxx(poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
 //                    poModelProcessd.get(lnRow).setDateExpire(pdTransact);
                     break;
-                case InvConstants.WASTE_INV:
-                    poModelProcessd.get(lnRow).setQtyOutxx(poModelProcessd.get(lnRow).getQtyOutxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
-                    break;
+//                case InvConstants.WASTE_INV:
+//                    poModelProcessd.get(lnRow).setQuantityOut(poModelProcessd.get(lnRow).getQuantityOut()
+//                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+//                    break;
                 case InvConstants.CREDIT_MEMO:
-                    poModelProcessd.get(lnRow).setQtyInxxx(poModel.get(lnCtr).getQuantity().doubleValue());
+                    poModelProcessd.get(lnRow).setQuantityIn(Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
 //                    poModelProcessd.get(lnRow).setDateExpire(pdTransact);
                     break;
-                case InvConstants.DAILY_PRODUCTION_IN:
-                    poModelProcessd.get(lnRow).setDateExpire(poModel.get(lnCtr).getDateExpire());
-                    poModelProcessd.get(lnRow).setQtyInxxx(poModelProcessd.get(lnRow).getQtyInxxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
-                    break;
-                case InvConstants.DAILY_PRODUCTION_OUT:
-                    poModelProcessd.get(lnRow).setDateExpire(pdTransact);
-                    poModelProcessd.get(lnRow).setQtyOutxx(poModelProcessd.get(lnRow).getQtyOutxx().doubleValue()
-                                                        + poModel.get(lnCtr).getQuantity().doubleValue());
-                    
-                    if (poModel.get(lnCtr).getReplacID().equals("")){
-                        poModelProcessd.get(lnRow).setQtyIssue(poModelProcessd.get(lnRow).getQtyIssue().doubleValue()
-                                                            + poModel.get(lnCtr).getQuantity().doubleValue());
-                    }
-                    break;
+//                case InvConstants.DAILY_PRODUCTION_IN:
+//                    poModelProcessd.get(lnRow).setDateExpire(poModel.get(lnCtr).getDateExpire());
+//                    poModelProcessd.get(lnRow).setQuantityIn(poModelProcessd.get(lnRow).getQuantityIn()
+//                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+//                    break;
+//                case InvConstants.DAILY_PRODUCTION_OUT:
+//                    poModelProcessd.get(lnRow).setDateExpire(pdTransact);
+//                    poModelProcessd.get(lnRow).setQuantityOut((poModelProcessd.get(lnRow).getQuantityOut().doubleValue()
+//                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+//                    
+//                    if (poModel.get(lnCtr).getReplaceID().equals("")){
+//                        poModelProcessd.get(lnRow).setQuantityIssue(poModelProcessd.get(lnRow).getQuantityIssue().doubleValue()
+//                                                            + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+//                    }
+//                    break;
             }
             
-            if (!poModel.get(lnCtr).getReplacID().equals("")){
-                lnRow = findOnProcInventory("sStockIDx", poModel.get(lnCtr).getReplacID());
+            if (!poModel.get(lnCtr).getReplaceID().equals("")){
+                lnRow = findOnProcInventory("sStockIDx", poModel.get(lnCtr).getReplaceID());
                 
                 if (lnRow == -1){
                     lsSQL = "SELECT" +
@@ -951,7 +993,7 @@ public class InventoryTrans implements GTransaction{
                                     " ON a.sBranchCd = c.sBranchCd" +
                                         " AND a.sStockIDx = c.sStockIDx" +
                                         " AND c.dTransact <= " + SQLUtil.toSQL(pdTransact) + 
-                            " WHERE a.sStockIDx = " + SQLUtil.toSQL(poModel.get(lnCtr).getReplacID()) + 
+                            " WHERE a.sStockIDx = " + SQLUtil.toSQL(poModel.get(lnCtr).getReplaceID()) + 
                                 " AND a.sBranchCd = " + SQLUtil.toSQL(psBranchCd) +
                             " ORDER BY c.dTransact DESC" +
                                 ", c.nLedgerNo DESC" +
@@ -959,22 +1001,22 @@ public class InventoryTrans implements GTransaction{
 
                     loRS = poGRider.executeQuery(lsSQL);
 
-                    poModelProcessd.add(new UnitInventoryTrans());
+                    poModelProcessd.add(new Model_Inventory_Trans(poGRider));
                     lnRow = poModelProcessd.size()-1;
                     
                     if (MiscUtil.RecordCount(loRS) == 0){
-//                        poModelProcessd.get(lnRow).IsNewParts("1");
+                        poModelProcessd.get(lnRow).IsNewParts("1");
                         poModelProcessd.get(lnRow).setQtyOnHnd(0);
                         poModelProcessd.get(lnRow).setLedgerNo(0);
                         poModelProcessd.get(lnRow).setBackOrdr(0);
                         poModelProcessd.get(lnRow).setResvOrdr(0);
                         poModelProcessd.get(lnRow).setFloatQty(0);
-                        poModelProcessd.get(lnRow).setLastTranDate(pdTransact);
+                        poModelProcessd.get(lnRow).setLastTranDate(pdTransact.toString());
                         poModelProcessd.get(lnRow).setRecdStat(RecordStatus.ACTIVE);
                     } else {
                         try {
                             loRS.first();
-//                            poModelProcessd.get(lnRow).IsNewParts("0");
+                            poModelProcessd.get(lnRow).IsNewParts("0");
                             poModelProcessd.get(lnRow).setQtyOnHnd(loRS.getDouble("nQtyOnHnd"));
                             poModelProcessd.get(lnRow).setLedgerNo(loRS.getInt("nLedgerNo"));
                             poModelProcessd.get(lnRow).setBackOrdr(loRS.getDouble("nBackOrdr"));
@@ -1007,43 +1049,205 @@ public class InventoryTrans implements GTransaction{
                         } 
                     }
 
-                    poModelProcessd.get(lnRow).setStockIDx(poModel.get(lnCtr).getReplacID());
-                    poModelProcessd.get(lnRow).setQtyInxxx(0);
-                    poModelProcessd.get(lnRow).setQtyOutxx(0);
-                    poModelProcessd.get(lnRow).setQtyIssue(0);
-                    poModelProcessd.get(lnRow).setQtyOrder(0);
+                    poModelProcessd.get(lnRow).setStockID(poModel.get(lnCtr).getReplaceID());
+                    poModelProcessd.get(lnRow).setQuantityIn(0);
+                    poModelProcessd.get(lnRow).setQuantityOut(0);
+                    poModelProcessd.get(lnRow).setQuantityIssue(0);
+                    poModelProcessd.get(lnRow).setQuantityOrder(0);
                 }
                 
                 switch (psSourceCd){
-                    case InvConstants.ACCEPT_DELIVERY_DISCREPANCY:
+//                    case InvConstants.ACCEPT_DELIVERY_DISCREPANCY:
                     case InvConstants.ACCEPT_DELIVERY:
                         if (!pbWarehous){
-                            poModelProcessd.get(lnRow).setQtyOrder(poModelProcessd.get(lnRow).getQtyOrder().doubleValue()
-                                                                - poModel.get(lnCtr).getQuantity().doubleValue());
+                            poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
+                                                                - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                         }
                         break;
-                    case InvConstants.DELIVERY:
-                    case InvConstants.DELIVERY_DISCREPANCY:
-                        
-                        poModelProcessd.get(lnRow).setQtyIssue(poModelProcessd.get(lnRow).getQtyIssue().doubleValue()
-                                                            + poModel.get(lnCtr).getQuantity().doubleValue());
-                        break;
+//                    case InvConstants.DELIVERY:
+//                    case InvConstants.DELIVERY_DISCREPANCY:
+//                        
+//                        poModelProcessd.get(lnRow).setQuantityIssue(poModelProcessd.get(lnRow).getQuantityIssue()
+//                                                            + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+//                        break;
                     case InvConstants.JOB_ORDER:
-                        poModelProcessd.get(lnRow).setQtyIssue(poModelProcessd.get(lnRow).getQtyIssue().doubleValue()
-                                                            + poModel.get(lnCtr).getQuantity().doubleValue());
+                        poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
+                                                            + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                         break;
                     case InvConstants.PURCHASE_RECEIVING:
-                        poModelProcessd.get(lnRow).setQtyOrder(poModelProcessd.get(lnRow).getQtyOrder().doubleValue()
-                                                            - poModel.get(lnCtr).getQuantity().doubleValue());
+                        poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
+                                                            - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                         break;
                     case InvConstants.SALES:
-                        poModelProcessd.get(lnRow).setQtyIssue(poModelProcessd.get(lnRow).getQtyIssue().doubleValue()
+                        poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
                                                             + Double.parseDouble(poModel.get(lnCtr).getResvOrdr().toString()));
                         break;
                 }
             }
         }
-        return true;
+        
+        poJSON.put("result", "success");
+        poJSON.put("message", "Record saved successfully.");
+        return poJSON;
+    }
+    private JSONObject saveDetail(){
+        poJSON = new JSONObject();
+        Number lnQtyOnHnd, lnBackOrdr;
+        Number lnBegQtyxx, lnResvOrdr;
+        int lnLedgerNo, lnRow;
+        boolean lbActivate = false, lbNewInvxx = false;
+        String lsMasSQL, lsLgrSQL;
+        Date ldAcquired;
+        ResultSet loRS;
+        
+        for (int lnCtr = 0; lnCtr <= poModelProcessd.size()-1; lnCtr++){
+            if (psSourceCd.equals(InvConstants.ACCEPT_DELIVERY) ||
+//                psSourceCd.equals(InvConstants.ACCEPT_DELIVERY_DISCREPANCY) ||
+//                psSourceCd.equals(InvConstants.ACCEPT_WARRANTY_TRANSFER) ||
+                psSourceCd.equals(InvConstants.BRANCH_ORDER) ||
+                psSourceCd.equals(InvConstants.BRANCH_ORDER_CONFIRM) ||
+                psSourceCd.equals(InvConstants.CUSTOMER_ORDER) ||
+                psSourceCd.equals(InvConstants.PURCHASE) ||
+                psSourceCd.equals(InvConstants.PURCHASE_RECEIVING) ||
+                psSourceCd.equals(InvConstants.PURCHASE_RETURN) ||
+                psSourceCd.equals(InvConstants.CREDIT_MEMO) ||
+//                psSourceCd.equals(InvConstants.DAILY_PRODUCTION_IN) ||
+//                psSourceCd.equals(InvConstants.DAILY_PRODUCTION_OUT) ||
+//                psSourceCd.equals(InvConstants.DELIVERY) ||
+//                psSourceCd.equals(InvConstants.DELIVERY_DISCREPANCY) ||
+                psSourceCd.equals(InvConstants.DEBIT_MEMO)){
+                
+                lbNewInvxx = poModelProcessd.get(lnCtr).IsNewParts().equals("1");
+                lbActivate = poModelProcessd.get(lnCtr).getRecdStat().equals(RecordStatus.INACTIVE);
+            }
+            
+            lsMasSQL = "";
+            lsLgrSQL = "";
+            
+            if (lbNewInvxx){
+                lnQtyOnHnd = Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityIn().toString());
+                lnBackOrdr = Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityOrder().toString());
+                lnResvOrdr = Math.abs(Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityIssue().toString()));
+                lnLedgerNo = 1;
+
+                lsMasSQL = "INSERT INTO Inv_Master SET" +
+                                "  sStockIDx = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getStockID()) +
+                                ", sBranchCd = " + SQLUtil.toSQL(psBranchCd) +
+                                ", sLocatnCd = " + SQLUtil.toSQL("") +
+                                ", nBinNumbr = " + 0 +
+                                ", nBegQtyxx = " + 0 +
+                                ", nQtyOnHnd = " + poModelProcessd.get(lnCtr).getQuantityIn() +
+                                ", nMinLevel = " + 0 +
+                                ", nMaxLevel = " + 0 +
+                                ", nAvgMonSl = " + 0 +
+                                ", nAvgCostx = " + 0.00 +
+                                ", cClassify = " + SQLUtil.toSQL("F") +
+                                ", nBackOrdr = " + lnBackOrdr +
+                                ", nResvOrdr = " + lnResvOrdr +
+                                ", nFloatQty = " + 0 +
+                                ", nLedgerNo = " + lnLedgerNo +
+                                ", dBegInvxx = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getExpiryDate()) +
+                                ", cRecdStat = " + SQLUtil.toSQL("1") +
+                                ", sModified = " + SQLUtil.toSQL(poGRider.getUserID()) +
+                                ", dModified = " + SQLUtil.toSQL(poGRider.getServerDate());
+                
+                if (Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityIn().toString()) > 0.0)
+                    lsMasSQL = lsMasSQL + ", dAcquired = " + SQLUtil.toSQL(pdTransact);
+            } else {
+                lnQtyOnHnd = Double.parseDouble(poModelProcessd.get(lnCtr).getQtyOnHnd().toString()) + Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityIn().toString()) - Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityOut().toString());
+                lnBackOrdr = Double.parseDouble(poModelProcessd.get(lnCtr).getBackOrdr().toString()) + Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityOrder().toString());
+                lnResvOrdr = Double.parseDouble(poModelProcessd.get(lnCtr).getResvOrdr().toString()) - Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityIssue().toString());
+                lnLedgerNo = Integer.parseInt(poModelProcessd.get(lnCtr).getLedgerNo().toString()) + 1;
+                         
+                /*if (lnQtyOnHnd < 0){
+                    if (ShowMessageFX.YesNo("Transaction resulted to some part/s having negative inventory!", pxeModuleName, "Continue saving anyway?") == false){
+                        setMessage("Update cancelled by the user.");
+                        return false;
+                    }
+                }*/
+                
+                if (lnBackOrdr.doubleValue() < 0.00) 
+                    lsMasSQL = lsMasSQL + ", nBackOrdr = 0";
+                else 
+                    lsMasSQL = lsMasSQL + ", nBackOrdr = nBackOrdr + " + poModelProcessd.get(lnCtr).getQuantityOrder();
+                
+                if (lnResvOrdr.doubleValue() < 0.00) 
+                    lsMasSQL = lsMasSQL + ", nResvOrdr = 0";
+                else 
+                    lsMasSQL = lsMasSQL + ", nResvOrdr = nResvOrdr + " + poModelProcessd.get(lnCtr).getQuantityIssue();
+                
+                if (lbActivate)
+                    lsMasSQL = lsMasSQL + ", cRecdStat = " + SQLUtil.toSQL(RecordStatus.ACTIVE);
+                
+                if (poModelProcessd.get(lnCtr).getAcquiredDate()== null){
+                    if (Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityIn().toString()) + Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityOut().toString()) > 0.0){
+                        ldAcquired = getAcquisition(poModelProcessd.get(lnCtr).getStockID(), new Date(poModelProcessd.get(lnCtr).getAcquiredDate().toString()));
+                        lsMasSQL = lsMasSQL + ", dAcquired = " + SQLUtil.toSQL(ldAcquired);
+                    }   
+                    
+                    if (poModelProcessd.get(lnCtr).getDBegInvxx() == null)
+                        lsMasSQL = lsMasSQL + ", dBegInvxx = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getDBegInvxx());
+                    else if(poModelProcessd.get(lnCtr).getDBegInvxx() == SQLUtil.toDate("1900-01-01", "yyyy-MM-dd"))
+                        lsMasSQL = lsMasSQL + ", dBegInvxx = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getDBegInvxx());
+                }
+                
+                lsMasSQL = "UPDATE Inv_Master SET" + 
+                                "  nQtyOnHnd = nQtyOnHnd + " + 
+                                                (Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityIn().toString()) - Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityOut().toString())) + 
+                                lsMasSQL + 
+                                ", nLedgerNo = " + lnLedgerNo + 
+//                                ", dLastTran = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getExpiryDate()) +
+                                ", dLastTran = " + SQLUtil.toSQL(poModel.get(lnCtr).getExpiryDate()) +
+                                ", dModified = " + SQLUtil.toSQL(poGRider.getServerDate()) + 
+                            " WHERE sStockIDx = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getStockID()) + 
+                                " AND sBranchCd = " + SQLUtil.toSQL(psBranchCd);
+                System.out.println(lsMasSQL);
+            }    
+                
+            lsLgrSQL = "INSERT INTO Inv_Ledger SET" +
+                            "  sStockIDx = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getStockID()) +
+                            ", nLedgerNo = " + lnLedgerNo +
+                            ", sBranchCd = " + SQLUtil.toSQL(psBranchCd) +
+                            ", dTransact = " + SQLUtil.toSQL(pdTransact) +
+                            ", sSourceCd = " + SQLUtil.toSQL(psSourceCd) +
+                            ", sSourceNo = " + SQLUtil.toSQL(psSourceNo) +
+                            ", nQtyInxxx = " + poModelProcessd.get(lnCtr).getQuantityIn()+
+                            ", nQtyOutxx = " + poModelProcessd.get(lnCtr).getQuantityOut()+
+                            ", nQtyIssue = " + poModelProcessd.get(lnCtr).getQuantityIssue()+
+                            ", nQtyOrder = " + poModelProcessd.get(lnCtr).getQuantityOrder()+
+                            ", sWHouseID = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getWareHouseID())+
+                            ", nQtyOnHnd = " + lnQtyOnHnd +
+                            ", sModified = " + SQLUtil.toSQL(poGRider.getUserID()) + 
+                            ", dModified = " + SQLUtil.toSQL(poGRider.getServerDate());
+            
+            if (psSourceCd == InvConstants.PURCHASE_RECEIVING){
+                lsLgrSQL = lsLgrSQL +
+                            ", dExpiryxx = " + SQLUtil.toSQL(poModel.get(lnCtr).getExpiryDate()) +
+                            ", nPurPrice = " + poModel.get(lnCtr).getPurchasePrice();
+            }
+            System.out.println("lsMasSQL = " + lsMasSQL);
+            System.out.println("lsMasSQL = " + lsLgrSQL);
+               
+            if (poGRider.executeQuery(lsMasSQL, "Inv_Master", psBranchCd, "") <= 0){
+                poJSON.put("result", "error");
+                poJSON.put("message", poGRider.getErrMsg() + "\n" + poGRider.getMessage());
+                return poJSON;
+            }
+
+            if (poGRider.executeQuery(lsLgrSQL, "Inv_Ledger", psBranchCd, "") <= 0){
+                poJSON.put("result", "error");
+                poJSON.put("message", poGRider.getErrMsg() + "\n" + poGRider.getMessage());
+                return poJSON;
+            }
+            
+            poJSON.put("result", "success");
+            poJSON.put("message", "Record saved successfully.");
+
+            //TODO:
+            //realign on hand   
+        }
+
+        return poJSON;
     }
     
     private int findOnProcInventory(String fsIndex, Object fsValue){
@@ -1054,6 +1258,33 @@ public class InventoryTrans implements GTransaction{
                 return lnCtr;
         }
         return -1;
+    }
+    private Date getAcquisition(String fsStockIDx, Date fdBegInvxx){
+        if (fdBegInvxx == null)
+            return pdTransact;
+        else{
+            String lsSQL = "SELECT dTransact" + 
+                            " FROM Inv_Ledger" + 
+                            " WHERE sBranchCd = " + SQLUtil.toSQL(psBranchCd) + 
+                                " AND sStockIDx = " + SQLUtil.toSQL(fsStockIDx) + 
+                                " AND nQtyInxxx + nQtyOutxx > 0" + 
+                            " ORDER BY dTransact" + 
+                            " LIMIT 1";
+            ResultSet loRS = poGRider.executeQuery(lsSQL);
+            if (MiscUtil.RecordCount(loRS) == 1){
+                try {
+                    loRS.first();
+                    return loRS.getDate("dTransact");
+                } catch (SQLException e) {
+                    poJSON = new JSONObject();
+                    poJSON.put("result","error");
+                    poJSON.put("message",e.getMessage());
+                    return null;
+                }   
+            }
+        }        
+        
+        return pdTransact;
     }
     
 }

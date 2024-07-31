@@ -1,7 +1,7 @@
 /**
  * Inventory Constants
- * @author Michael Torres Cuison
- * @since 2018.10.09
+ * @author Jonathan Sabiniano
+ * @since 2024.07.26
  */
 
 package org.guanzon.cas.inventory.constant;
