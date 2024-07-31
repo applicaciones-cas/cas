@@ -164,13 +164,10 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                     } else {
                         poJson = new JSONObject();
                         poJson = oTrans.OpenInvLedgerWithCondition(poTrans.getModel().getStockID(), " a.dTransact BETWEEN '" + fromDate + "' AND '" + thruDate +"'");
-//                        poJson =  oTrans.SearchMaster(7,lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if("error".equalsIgnoreCase(poJson.get("result").toString())){
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-                        }
-//                            System.out.print( "category 2 == " + oTrans.getMaster(33));
-//                           txtField07.setText((String) oTrans.getMaster(33));   
+                        }  
                         loadLedger();
                         System.out.println("From Date: " + fromDate);
                         System.out.println("Thru Date: " + thruDate);
@@ -218,10 +215,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
         index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index07.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-//        index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        index08.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        
+        
         index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
         index03.setCellValueFactory(new PropertyValueFactory<>("index03"));
@@ -237,7 +231,6 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
             });
         });
         tblInventoryLedger.setItems(data);
-//        tblMobile.getSelectionModel().select(pnMobile + 1);
         tblInventoryLedger.autosize();
     }
      

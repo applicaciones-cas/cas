@@ -106,23 +106,18 @@ public class unloadForm {
                             myBox.getChildren().clear();
                             myBox.getChildren().add(getScene("/org/guanzon/cas/views/MainScreenBG.fxml", oApp));
                         }
-                        
                         if(tabName.size()>0){
                             tabName.remove(sTabTitle);
-//                            TabsStateManager.saveCurrentTab(tabName);
                         }
-//                        TabsStateManager.closeTab(sTabTitle);
                     break;
                  }
             }   
-            
-            
         }
     }
      
      public AnchorPane getScene(String fsFormName, GRider oApp){
-         ScreenInterface fxObj = new MainScreenBGController();
-         fxObj.setGRider(oApp);
+        ScreenInterface fxObj = new MainScreenBGController();
+        fxObj.setGRider(oApp);
         
         FXMLLoader fxmlLoader = new FXMLLoader();   
         fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
@@ -145,6 +140,4 @@ public class unloadForm {
         }
         return null;
     }
-     
-     
 }

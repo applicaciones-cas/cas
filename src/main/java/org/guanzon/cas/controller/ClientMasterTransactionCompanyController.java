@@ -370,9 +370,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         txtContact07.focusedProperty().addListener(contactinfo_Focus);
         txtContact08.focusedProperty().addListener(contactinfo_Focus);
         txtContact09.focusedProperty().addListener(contactinfo_Focus);
-        txtContact10.focusedProperty().addListener(contactinfoTextArea_Focus);
-
-        
+        txtContact10.focusedProperty().addListener(contactinfoTextArea_Focus); 
     }
 
     /*******************************************/
@@ -436,7 +434,6 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                         /*company name*/
                         oTrans.setInsContact(pnContact, "sEMailAdd", lsValue);
                         break;
-
                 }
                 loadContctPerson();
             } else {
@@ -463,10 +460,8 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
             if (!nv) {
                 /*Lost Focus*/
                 switch (lnIndex) {
-                    case 10:
-                        /*company name*/
+                    case 10:/*company name*/                        
                         oTrans.setInsContact(pnContact, "sRemarksx", lsValue);
-                                
                         break;
                 }
                 loadContctPerson();
@@ -518,8 +513,6 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                         break;
                 }
                 txtField03.setText( cmpnyInfo02.getText() + " " +  cmpnyInfo03.getText() + " " +  cmpnyInfo06.getText() + " " +  cmpnyInfo05.getText());
-                
-    //            loadAddress();
             } else {
                 cmpnyInfo.selectAll();
             }
@@ -561,7 +554,6 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                 txtField03.setText( cmpnyInfo02.getText() + " " +  cmpnyInfo03.getText() + " " +  cmpnyInfo06.getText() + " " +  cmpnyInfo05.getText());
             case ENTER:
         }
-
             switch (event.getCode()) {
                 case ENTER:
                     CommonUtils.SetNextFocus(cmpnyInfo);
@@ -572,7 +564,6 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
                     CommonUtils.SetPreviousFocus(cmpnyInfo);
             }
         }
-     
     /***********************************/
     /*initialize loadcontactperson data*/
     /***********************************/
@@ -636,6 +627,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         btnAddInsContact.setOnAction(this::handleButtonAction);
         btnDelInsContact.setOnAction(this::handleButtonAction);
     }
+    
     /*************************************/
     /*initialize handlebuttonaction event*/
     /*************************************/

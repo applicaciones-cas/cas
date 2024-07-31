@@ -220,7 +220,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
         state = fsValue;
     }
     
-    
     private void ClickButton() {
         btnCancel.setOnAction(this::handleButtonAction);
         btnNew.setOnAction(this::handleButtonAction);
@@ -231,11 +230,8 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
     }
     private void initSearchFields(){
         /*textFields FOCUSED PROPERTY*/
-//        txtSearch01.focusedProperty().addListener(txtField_Focus);
         txtSearch01.setOnKeyPressed(this::searchinfo_KeyPressed);
         txtSearch02.setOnKeyPressed(this::searchinfo_KeyPressed);
-        
-//        txtSeeks99.focusedProperty().addListener(txtField_Focus);
     }
     private void searchinfo_KeyPressed(KeyEvent event){
         TextField txtSearch = (TextField)event.getSource();
@@ -267,7 +263,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                     break;
                 }
             case ENTER:
-                
         }
         
         switch (event.getCode()){
@@ -331,7 +326,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                         ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         System.out.println("Record not saved successfully.");
                         System.out.println((String) poJSON.get("message"));
-
                         initTabAnchor();
                     }
                     break;
@@ -585,7 +579,6 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                     break;
                 case 10 :/*beginning balance*/
                     
-//                    jsonObject = oTrans.getMasterModel().setBeginBal(lsValue);
                     txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
                     jsonObject = oTrans.setMaster(7,(Double.parseDouble(lsValue.replace(",", ""))));
                     break;

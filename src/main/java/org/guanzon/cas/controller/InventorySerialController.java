@@ -210,10 +210,7 @@ public class InventorySerialController implements Initializable {
         index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index07.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-//        index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        index08.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        
+
         index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
         index03.setCellValueFactory(new PropertyValueFactory<>("index03"));
@@ -228,7 +225,6 @@ public class InventorySerialController implements Initializable {
             });
         });
         tblSerialLedger.setItems(data);
-//        tblMobile.getSelectionModel().select(pnMobile + 1);
         tblSerialLedger.autosize();
     }
 }

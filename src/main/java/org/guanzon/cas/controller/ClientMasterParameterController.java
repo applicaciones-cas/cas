@@ -59,13 +59,10 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-
-
 public class ClientMasterParameterController implements Initializable, ScreenInterface {
     private final String pxeModuleName = "ClientMasterParameter";
     private GRider oApp;
     private Client_Master oTrans;
-//    private JSONObject poJSON;
     private int pnEditMode;  
     
     private String oTransnox = "";
@@ -592,7 +589,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                         break;
                 }
             case ENTER:
-                
         }
         
         switch (event.getCode()){
@@ -689,7 +685,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                         break;
                 }
             case ENTER:
-                
         }
         loadAddress();
         
@@ -747,7 +742,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         });
     }
     
-    
     private void InitSocMedInfo(){
         /*MOBILE INFO FOCUSED PROPERTY*/
         txtSocial01.focusedProperty().addListener(socialinfo_Focus);
@@ -764,8 +758,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
             loadSocialMedia();
             initSocialMediaGrid();
         });
-        
-        
     }
     private void InitPersonalInfo(){
         /*PERSONAL INFO FOCUSED PROPERTY*/
@@ -821,7 +813,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         
         AddressField03.setOnKeyPressed(this::addressinfo_KeyPressed);
         AddressField04.setOnKeyPressed(this::addressinfo_KeyPressed);
-        
     }
     
     private void initTextFields(){
@@ -835,7 +826,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
             tabIndex04.setDisable(true);
             tabIndex05.setDisable(true);
             tabIndex06.setDisable(false);
-            
         }else{
             tabIndex06.setDisable(true);
             tabIndex03.setDisable(false);
@@ -1123,7 +1113,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         }
     }
     
-    
     /* this is where you insert data */
     final ChangeListener<? super Boolean> personalinfo_Focus = (o,ov,nv)->{ 
         if (!pbLoaded) return;
@@ -1313,9 +1302,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         return date.format(outputFormatter);
     }
     
-    
     private void initComboBoxes(){
-        
         // Set the items of the ComboBox to the list of genders
         personalinfo09.setItems(genders);
         personalinfo09.getSelectionModel().select(0);
@@ -1352,7 +1339,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     private void loadAddress(){
         int lnCtr;
         address_data.clear();
-//        oTrans.getAddress(pnAddress).list();
         if(oTrans.getAddressList() != null){
             for (lnCtr = 0; lnCtr < oTrans.getAddressList().size(); lnCtr++){
                 String lsTown = (String)oTrans.getAddress(lnCtr, 20) + ", " + (String)oTrans.getAddress(lnCtr, 22);
@@ -1538,7 +1524,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         tblAddress.setItems(address_data);
         tblAddress.getSelectionModel().select(pnAddress + 1);
         tblAddress.autosize();
-       
     }
     
     private void loadContctPerson(){
@@ -1546,18 +1531,18 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         if(oTrans.getInsContactList() != null){
             for (int lnCtr = 0; lnCtr < oTrans.getInsContactList().size(); lnCtr++){
                 contact_data.add(new ModelInstitutionalContactPerson(String.valueOf(lnCtr + 1),
-                    oTrans.getInsContact(lnCtr, "sCPerson1").toString(),
-                    oTrans.getInsContact(lnCtr, "sCPPosit1").toString(),
-                    oTrans.getInsContact(lnCtr, "sMobileNo").toString(),
-                    oTrans.getInsContact(lnCtr, "sTelNoxxx").toString(),
-                    oTrans.getInsContact(lnCtr, "sFaxNoxxx").toString(),
-                    oTrans.getInsContact(lnCtr, "sEMailAdd").toString(),
-                    oTrans.getInsContact(lnCtr, "sAccount1").toString(),
-                    oTrans.getInsContact(lnCtr, "sAccount2").toString(),
-                    oTrans.getInsContact(lnCtr, "sAccount3").toString(),
-                    oTrans.getInsContact(lnCtr, "sRemarksx").toString(),
-                    oTrans.getInsContact(lnCtr, "cPrimaryx").toString(),
-                    oTrans.getInsContact(lnCtr, "cRecdStat").toString()));
+                oTrans.getInsContact(lnCtr, "sCPerson1").toString(),
+                oTrans.getInsContact(lnCtr, "sCPPosit1").toString(),
+                oTrans.getInsContact(lnCtr, "sMobileNo").toString(),
+                oTrans.getInsContact(lnCtr, "sTelNoxxx").toString(),
+                oTrans.getInsContact(lnCtr, "sFaxNoxxx").toString(),
+                oTrans.getInsContact(lnCtr, "sEMailAdd").toString(),
+                oTrans.getInsContact(lnCtr, "sAccount1").toString(),
+                oTrans.getInsContact(lnCtr, "sAccount2").toString(),
+                oTrans.getInsContact(lnCtr, "sAccount3").toString(),
+                oTrans.getInsContact(lnCtr, "sRemarksx").toString(),
+                oTrans.getInsContact(lnCtr, "cPrimaryx").toString(),
+                oTrans.getInsContact(lnCtr, "cRecdStat").toString()));
             }
         }
     }
@@ -1684,8 +1669,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
     @FXML
     private void CheckPrimary_Clicked(MouseEvent event) {
         boolean isChecked = cbMobileNo01.isSelected();
-//        oTrans.setMobile(pnMobile, "cPrimaryx", (isChecked)? "1":"0");
-
         for (int lnCtr = 0; lnCtr < oTrans.getMobileList().size(); lnCtr++){
             if(pnMobile == lnCtr){
                 if(isChecked){
@@ -1851,8 +1834,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         oTrans.setAddress(pnAddress, "cLTMSAddx", (isChecked)? "1":"0");
     }
     
-    
-    
     private void clearAllFields() {
         // Arrays of TextFields grouped by sections
         TextField[][] allFields = {
@@ -1875,7 +1856,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
         cmbField01.getSelectionModel().select(0);
         cmbField01.setDisable(true);
         
-
         // Loop through each array of TextFields and clear them
         for (TextField[] fields : allFields) {
             for (TextField field : fields) {
@@ -1905,7 +1885,6 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
              txtContact03, txtContact04, txtContact05, txtContact06, txtContact07,
              txtContact08, txtContact09
         };
-
         // Loop through each array of TextFields and clear them
         for (TextField field : fields) {
             field.clear();

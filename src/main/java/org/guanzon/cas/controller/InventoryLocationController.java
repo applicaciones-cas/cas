@@ -122,7 +122,6 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
                     pnEditMode = EditMode.UNKNOWN;
                     return;
 
@@ -142,7 +141,6 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
@@ -206,12 +204,7 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
 
             case "btnClose":
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-//                        if (unload != null) {
-//                            unload.unloadForm(AnchorMain, oApp, "Size");
-//                        } else {
-//                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
-//                        }
-//                        break;
+//                        
                 } else {
                     return;
                 }
@@ -360,14 +353,6 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
                         return;
                     }
                     break;
-
-//                case 3:
-//                    poJSON = oTrans.getModel().setBriefDescription(lsValue);
-//                    if ("error".equals((String) poJSON.get("result"))) {
-//                        System.err.println((String) poJSON.get("message"));
-//                        return;
-//                    }
-//                    break;
             }
         } else {
             txtField.selectAll();
@@ -381,7 +366,6 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
         psPrimary = oTrans.getModel().getLocationCode();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
-//        txtField03.setText(oTrans.getModel().getBriefDescription());
 
         cbActive.setSelected(lbActive);
 
@@ -392,7 +376,6 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
             btnActivate.setText("Activate");
             faActivate.setGlyphName("CHECK");
         }
-
     }
 
     private void clearFields() {

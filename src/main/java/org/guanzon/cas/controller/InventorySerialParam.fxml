@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -18,7 +19,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane layoutX="119.0" layoutY="52.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
@@ -85,7 +86,7 @@
                            <children>
                               <AnchorPane fx:id="AnchorInput" maxWidth="-Infinity" minHeight="0.0" minWidth="-Infinity" style="-fx-border-color: FF8201;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <GridPane hgap="3.0" vgap="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <GridPane hgap="3.0" stylesheets="@../../../../../resources/org/guanzon/cas/css/StyleSheet.css" vgap="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="110.0" prefWidth="110.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
@@ -174,7 +175,7 @@
                                                 <Insets right="10.0" />
                                              </GridPane.margin>
                                           </Text>
-                                          <TextField fx:id="txtField01" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                          <TextField fx:id="txtField01" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                           <TextField fx:id="txtField03" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                           <TextField fx:id="txtField04" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                           <ComboBox fx:id="cmbField01" disable="true" prefWidth="203.0" visibleRowCount="0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
@@ -304,4 +305,8 @@
          </bottom>
       </BorderPane>
    </children>
+   <stylesheets>
+      <URL value="@../css/StyleSheet.css" />
+      <URL value="@../../../../../resources/org/guanzon/cas/css/MainPanelStyle.css" />
+   </stylesheets>
 </AnchorPane>

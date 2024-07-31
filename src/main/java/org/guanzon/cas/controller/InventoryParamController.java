@@ -214,7 +214,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
     @FXML
     private TableView tblSubItems;
     
-
     @FXML
     private TableColumn index01;
 
@@ -239,15 +238,14 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                 "RDU",
                 "Others"
         );
-
     /**
      * Initializes the controller class.
      */
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
-        
     }  
+    
     @FXML
     void chkFiled01_Clicked(MouseEvent event) {
         boolean isChecked = chkField01.isSelected();
@@ -266,8 +264,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         oTrans.getModel().setWthPromo((isChecked ? "1": "0"));
     }
     
-    
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
@@ -284,9 +280,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         initTabAnchor();
         ClickButton();
         System.out.println("CLIENT ID == " + oApp.getClientID());
-//        if (oApp.getClientID()){
-//            hideSubItem();
-//        }
+
         pbLoaded = true;
         // TODO
     }    
@@ -326,11 +320,9 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                             loadInventory();
                            initSubItemForm();
                             txtField06.setText((String) oTrans.getModel().getCategName1()); 
-//                            loadComapany();
                             initTabAnchor();
                         }else{
                             ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            System.out.println("Record not saved successfully.");
                             System.out.println((String) poJSON.get("message"));
                             initTabAnchor();
                         }
@@ -428,10 +420,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                         txtField22.requestFocus();
                     }
                     break;
-                    
+            }
         }
-    }
-    
     }
     
     /*USE TO DISABLE ANCHOR BASE ON INITMODE*/
@@ -613,20 +603,12 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                    System.out.print( "CATEGORY 4 == " + oTrans.getModel().setCategCd4(lsValue));
                     break;
                 case 10:/*Brand*/
-//                   oTrans.getModel().setBrandCode(lsValue);
-//                   System.out.print( "BRAND == " + oTrans.getModel().setBrandCode(lsValue));
                     break;
                 case 11:/*Model*/
-//                   oTrans.getModel().setModelCode(lsValue);
-//                   System.out.print( "Model == " + oTrans.getModel().setModelCode(lsValue));
                     break;
                 case 12:/*Color*/
-//                   oTrans.getModel().setColorCode(lsValue);
-//                   System.out.print( "color == " + oTrans.getModel().setColorCode(lsValue));
                     break;
                 case 13:/*Measure*/
-//                   oTrans.getModel().setMeasureID(lsValue);
-//                   System.out.print( "Measure == " + oTrans.getModel().setMeasureID(lsValue));
                     break;
                 case 14:/*discount 1*/
                    oTrans.getModel().setDiscountLvl1((Double.parseDouble(lsValue)));
@@ -833,7 +815,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                                 txtField22.clear();
                                 break;
                             }
-                        
                         System.out.print("\neditmode on browse == " +pnEditMode);
                         loadSubUnit();
                         loadSubUnitData();
@@ -841,7 +822,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                         break;
                 }
             case ENTER:
-                
         }
         switch (event.getCode()){
         case ENTER:
@@ -956,7 +936,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                     (String)oTrans.getSubUnit(lnCtr, "xDescripU"),
                     oTrans.getSubUnit(lnCtr, "nQuantity").toString(), 
                     (String)oTrans.getSubUnit(lnCtr, "xMeasurNm")));  
-
             }
         }
     }
@@ -1062,6 +1041,4 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         txtField24.clear();
         txtField25.clear();
     }
-    
-
 }
