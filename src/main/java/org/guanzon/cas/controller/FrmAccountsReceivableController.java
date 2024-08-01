@@ -366,6 +366,8 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                         if ("success".equals((String) saveResult.get("result"))){
                             System.err.println((String) saveResult.get("message"));
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                            
+                            System.out.print("EDIT MODE save == " + oTrans.getEditMode());
                             clearAllFields();
                             pnEditMode = EditMode.UNKNOWN;
                             initButton(pnEditMode);

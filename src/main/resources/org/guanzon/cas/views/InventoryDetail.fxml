@@ -461,7 +461,6 @@
                                                       <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                       <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
@@ -492,7 +491,6 @@
                                                       <TextField fx:id="txtField22" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                       <TextField fx:id="txtField23" disable="true" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                                       <TextField fx:id="txtField25" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                      <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="4" />
                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Section" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                                                          <font>
                                                             <Font size="14.0" />
@@ -502,6 +500,11 @@
                                                          </GridPane.margin>
                                                       </Text>
                                                       <TextField fx:id="txtField24" disable="true" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                      <Separator prefWidth="200.0" GridPane.columnSpan="7" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                                         <GridPane.margin>
+                                                            <Insets left="5.0" right="5.0" />
+                                                         </GridPane.margin>
+                                                      </Separator>
                                                    </children>
                                                 </GridPane>
                                                 <GridPane fx:id="gridFix" hgap="3.0" vgap="3.0">
@@ -595,7 +598,6 @@
                                                       <TextField fx:id="txtField32" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                                       <TextField fx:id="txtField33" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                       <TextField fx:id="txtField34" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                      <Separator prefWidth="200.0" GridPane.columnSpan="8" />
                                                    </children>
                                                 </GridPane>
                                              </children>

@@ -9,6 +9,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -28,6 +29,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -644,11 +646,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
             if(pnEditMode == EditMode.ADDNEW) txtField22.setPromptText("PRESS F3: Search");
            
-            if (chkField04.isSelected()){
-                lblStatus.setText("ACTIVE");
-            }else{
-                lblStatus.setText("INACTIVE");
-            }
+            lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
+            
             initSubItemForm();
      }
     }
@@ -674,53 +673,36 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     }
     private void InitTextFields(){
 
-        txtField01.focusedProperty().addListener(txtField_Focus);
-        txtField02.focusedProperty().addListener(txtField_Focus);
-        txtField03.focusedProperty().addListener(txtField_Focus);
-        txtField04.focusedProperty().addListener(txtField_Focus);
-        txtField05.focusedProperty().addListener(txtField_Focus);
-        txtField06.focusedProperty().addListener(txtField_Focus);
-        txtField07.focusedProperty().addListener(txtField_Focus);
-        txtField08.focusedProperty().addListener(txtField_Focus);
-        txtField09.focusedProperty().addListener(txtField_Focus);
-        txtField10.focusedProperty().addListener(txtField_Focus);
-        txtField11.focusedProperty().addListener(txtField_Focus);
-        txtField12.focusedProperty().addListener(txtField_Focus);
-        txtField13.focusedProperty().addListener(txtField_Focus);
-        txtField14.focusedProperty().addListener(txtField_Focus);
-        txtField15.focusedProperty().addListener(txtField_Focus);
-        txtField16.focusedProperty().addListener(txtField_Focus);
-        txtField17.focusedProperty().addListener(txtField_Focus);
-        txtField18.focusedProperty().addListener(txtField_Focus);
-        txtField19.focusedProperty().addListener(txtField_Focus);
-        txtField20.focusedProperty().addListener(txtField_Focus);
-        txtField21.focusedProperty().addListener(txtField_Focus);
-        txtField22.focusedProperty().addListener(txtField_Focus);
-        txtField23.focusedProperty().addListener(txtField_Focus);
-        txtField24.focusedProperty().addListener(txtField_Focus);
-        txtField25.focusedProperty().addListener(txtField_Focus);
-        txtField26.focusedProperty().addListener(txtField_Focus);
-        txtField27.focusedProperty().addListener(txtField_Focus);
-        
-        txtField06.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField07.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField08.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField09.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField10.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField11.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField12.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField22.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField23.setOnKeyPressed(this::txtField_KeyPressed);
+        // Create an array for text fields with focusedProperty listeners
+        TextField[] focusTextFields = {
+            txtField01, txtField02, txtField03, txtField04, txtField05,
+            txtField06, txtField07, txtField08, txtField09, txtField10,
+            txtField11, txtField12, txtField13, txtField14, txtField15,
+            txtField16, txtField17, txtField18, txtField19, txtField20,
+            txtField21, txtField22, txtField23, txtField24, txtField25,
+            txtField26, txtField27
+        };
+
+        // Add the listener to each text field in the focusTextFields array
+        for (TextField textField : focusTextFields) {
+            textField.focusedProperty().addListener(txtField_Focus);
+        }
+
+        // Create an array for text fields with setOnKeyPressed handlers
+        TextField[] keyPressedTextFields = {
+            txtField06, txtField07, txtField08, txtField09, txtField10,
+            txtField11, txtField12, txtField22, txtField23
+        };
+
+        // Set the same key pressed event handler for each text field in the keyPressedTextFields array
+        for (TextField textField : keyPressedTextFields) {
+            textField.setOnKeyPressed(this::txtField_KeyPressed);
+        }
         
         txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
         txtSeeks02.setOnKeyPressed(this::txtSeeks_KeyPressed);
         
-        if (chkField04.isSelected()){
-                lblStatus.setText("ACTIVE");
-            }else{
-                lblStatus.setText("INACTIVE");
-            }
-        
+        lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
 
     }
     /*Text seek/search*/
@@ -790,6 +772,20 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         if(!nv){ /*Lost Focus*/
             switch (lnIndex){
                 case 25: /*Stock ID*/
+                    UnaryOperator<TextFormatter.Change> limitText = change -> {
+                        String newText = change.getControlNewText();
+                        if (newText.length() > 5) {
+                            return null; // Disallow the change if it exceeds 5 characters
+                        }
+                        return change; // Allow the change
+                    };
+
+                    // Create a TextFormatter with the UnaryOperator
+                    TextFormatter<String> textFormatter = new TextFormatter<>(limitText);
+
+                    // Apply the TextFormatter to the TextField
+                    txtField.setTextFormatter(textFormatter);
+                    
                     oTrans.getModel().setBinNumber(Integer.parseInt(lsValue));
                     break;            
             }                  

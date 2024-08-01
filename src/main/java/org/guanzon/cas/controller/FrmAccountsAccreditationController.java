@@ -264,15 +264,6 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                         
                         initButton(pnEditMode);
                         initTabAnchor();
-                        
-                        poJSON = oTrans.updateTransaction();
-                        if ("error".equals((String) poJSON.get("result"))){
-                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-                        pnEditMode =  oTrans.getEditMode();
-                        
-                        initButton(pnEditMode);
-                        initTabAnchor();
                     break;
                 case "btnCancel":
                         if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
@@ -292,7 +283,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                             System.err.println((String) saveResult.get("message"));
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
 //                            clearAllFields();
-                            pnEditMode = oTrans.getEditMode();
+                            pnEditMode = EditMode.UNKNOWN;
                             initButton(pnEditMode);
                             initTabAnchor();
                             clearCompanyFields();
@@ -513,14 +504,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                            txtField02.setText((String) oTrans.getAccount(pnCompany, "xCompnyNm"));                           
                            txtField03.setText((String) oTrans.getAccount(pnCompany,"xCPerson1"));                                                     
                            txtField05.setText((String) oTrans.getAccount(pnCompany,"xCategrNm"));
-                           
-               
-//                           a = (String) poJson.get("sClientID");
-//                           b = (String) poJson.get("sContctID");
-//                           oTransnox = (String) poJson.get("sClientID");
-//                           txtField04.setText((String) poJson.get("xCPerson1"));                         
-//                           txtField05.setText((String) poJson.get("sMobileNo"));
-//                           txtField06.setText((String) poJson.get("sTaxIDNox"));
+                            
                         break;
                     case 05:
                         poJson = new JSONObject();
@@ -579,7 +563,6 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                 if (string != null && !string.isEmpty()) {
                     oTrans.setAccount(pnCompany,2,LocalDate.parse(string, dateFormatter).toString());
                     System.out.println("dTransact1 = " + LocalDate.parse(string, dateFormatter).toString());
-//                    txtField07.setValue(LocalDate.parse(string, dateFormatter));
                     return LocalDate.parse(string, dateFormatter);
                 } else {
                     return null;
@@ -587,7 +570,6 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
             }
         });
     }
-    
     
     final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{ 
         if (!pbLoaded) return;
@@ -600,7 +582,6 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
         if(!nv){ /*Lost Focus*/
             switch (lnIndex){
                 case 1: /*company id*/
-//                    jsonObject = oTrans.setMaster( 8,lsValue);
                    oTrans.setAccount(pnCompany, 1, lsValue);
                    System.out.print( oTrans.getAccount(1, lsValue));
                     break;
@@ -685,15 +666,6 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                     txtField03.setText((String) oTrans.getAccount(pnCompany, "xCPerson1"));
                     txtField04.setText((String) oTrans.getAccount(pnCompany, "sRemarksx"));
                     String lsValue = oTrans.getAccount(pnCompany,"cTranStat").toString();
-//                    System.err.println("lsvalue ko ng stat == " + lsValue);
-//                    int lnStatus = Integer.parseInt(oTrans.getAccount(pnCompany,"cTranStat").toString());
-//                    if(lnStatus>= 3){
-//                        lnStatus--;
-//                        System.out.println("lnStatus = " + (lnStatus));
-//                        lblStat.setText(AccountStatus.get((lnStatus)));
-//                    }else{
-//                        lblStat.setText(AccountStatus.get(lnStatus));
-//                    }
                     loadComapany();
                     StatusLabel(lsValue);
                 }

@@ -500,61 +500,38 @@ public class InventoryParamController implements Initializable,ScreenInterface {
     }
     
     private void InitTextFields(){
+       // Define arrays for text fields with focusedProperty listeners
+        TextField[] focusTextFields = {
+            txtField01, txtField02, txtField03, txtField04, txtField05,
+            txtField06, txtField07, txtField08, txtField09, txtField10,
+            txtField11, txtField12, txtField13, txtField14, txtField15,
+            txtField16, txtField17, txtField18, txtField19, txtField20,
+            txtField21, txtField22, txtField23, txtField24, txtField25,
+            txtField26, txtField27
+        };
 
-        txtField01.focusedProperty().addListener(txtField_Focus);
-        txtField02.focusedProperty().addListener(txtField_Focus);
-        txtField03.focusedProperty().addListener(txtField_Focus);
-        txtField04.focusedProperty().addListener(txtField_Focus);
-        txtField05.focusedProperty().addListener(txtField_Focus);
-        txtField06.focusedProperty().addListener(txtField_Focus);
-        txtField07.focusedProperty().addListener(txtField_Focus);
-        txtField08.focusedProperty().addListener(txtField_Focus);
-        txtField09.focusedProperty().addListener(txtField_Focus);
-        txtField10.focusedProperty().addListener(txtField_Focus);
-        txtField11.focusedProperty().addListener(txtField_Focus);
-        txtField12.focusedProperty().addListener(txtField_Focus);
-        txtField13.focusedProperty().addListener(txtField_Focus);
-        txtField14.focusedProperty().addListener(txtField_Focus);
-        txtField15.focusedProperty().addListener(txtField_Focus);
-        txtField16.focusedProperty().addListener(txtField_Focus);
-        txtField17.focusedProperty().addListener(txtField_Focus);
-        txtField18.focusedProperty().addListener(txtField_Focus);
-        txtField19.focusedProperty().addListener(txtField_Focus);
-        txtField20.focusedProperty().addListener(txtField_Focus);
-        txtField21.focusedProperty().addListener(txtField_Focus);
-        txtField22.focusedProperty().addListener(txtField_Focus);
-        txtField23.focusedProperty().addListener(txtField_Focus);
-        txtField24.focusedProperty().addListener(txtField_Focus);
-        txtField25.focusedProperty().addListener(txtField_Focus);
-        txtField26.focusedProperty().addListener(txtField_Focus);
-        txtField27.focusedProperty().addListener(txtField_Focus);
-        
-        txtField06.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField07.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField08.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField09.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField10.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField11.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField12.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField13.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField22.setOnKeyPressed(this::txtField_KeyPressed);
-        
+        // Add the listener to each text field in the focusTextFields array
+        for (TextField textField : focusTextFields) {
+            textField.focusedProperty().addListener(txtField_Focus);
+        }
+
+        // Define arrays for text fields with setOnKeyPressed handlers
+        TextField[] keyPressedTextFields = {
+            txtField06, txtField07, txtField08, txtField09, txtField10,
+            txtField11, txtField12, txtField13, txtField22
+        };
+
+        // Set the same key pressed event handler for each text field in the keyPressedTextFields array
+        for (TextField textField : keyPressedTextFields) {
+            textField.setOnKeyPressed(this::txtField_KeyPressed);
+        }
+
         txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
         txtSeeks02.setOnKeyPressed(this::txtSeeks_KeyPressed);
         
-        
-        System.out.println("Connected - " + oApp.getLogName());
-        System.out.println("Connected - " + oApp.getDivisionCode());
-        System.out.println("Connected - " + oApp.getDivisionName());
-        
-
-        if (chkField04.isSelected()){
-                lblStatus.setText("ACTIVE");
-            }else{
-                lblStatus.setText("INACTIVE");
-            }
-
+        lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");        
     }
+    
     /*textfield lost focus*/
     final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{ 
         if (!pbLoaded) return;
@@ -587,19 +564,15 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                    System.out.print( "DESC == " + oTrans.getModel().setDescription(lsValue));
                     break;
                 case 6:/*CATEGORY CODE 1*/
-//                   oTrans.getModel().setCategCd1(lsValue);
                    System.out.print( "CATEGORY 1 == " + oTrans.getModel().setCategCd1(lsValue));
                     break;
                 case 7:/*CATEGORY CODE 2*/
-//                  oTrans.getModel().setCategCd2(lsValue);
                    System.out.print( "CATEGORY 2 == " + oTrans.getModel().setCategCd2(lsValue));
                     break;
                 case 8:/*CATEGORY CODE 3*/
-//                   oTrans.getModel().setCategCd3(lsValue);
                    System.out.print( "CATEGORY 3 == " + oTrans.getModel().setCategCd3(lsValue));
                     break;
                 case 9:/*CATEGORY CODE 4*/
-//                   oTrans.getModel().setCategCd4(lsValue);
                    System.out.print( "CATEGORY 4 == " + oTrans.getModel().setCategCd4(lsValue));
                     break;
                 case 10:/*Brand*/
@@ -806,7 +779,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            txtField13.setText((String) oTrans.getMaster(41));      
                         break;
                     case 22: /*search Barrcode for sub unit*/
-                        
                         poJson = new JSONObject();
                         poJson = oTrans.SearchSubUnit(pnRow, 3, lsValue, true);
                             if ("error".equals((String) poJson.get("result"))){
@@ -960,7 +932,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             txtField12.setText((String) oTrans.getModel().getColorName());
             txtField13.setText((String) oTrans.getModel().getMeasureName());
             
-         
             txtField14.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().getDiscountLevel1().toString()), "#,##0.00"));
             txtField15.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().getDiscountLevel2().toString()), "#,##0.00"));
             txtField16.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().getDiscountLevel3().toString()), "#,##0.00"));
@@ -971,7 +942,6 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             txtField18.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().getUnitPrice().toString()), "#,##0.00"));
             txtField19.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().getSelPrice().toString()), "#,##0.00"));
             
-            
             txtField20.setText((String) oTrans.getModel().getSupersed());
             txtField21.setText(String.valueOf(oTrans.getModel().getShlfLife()));
             cmbField01.setValue(String.valueOf(oTrans.getModel().getInvTypNm()));
@@ -980,26 +950,15 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             chkField03.setSelected("1".equals(oTrans.getModel().getWthPromo()));
             chkField04.setSelected((oTrans.getModel().isActive()));
             
-            if (chkField04.isSelected()){
-                lblStatus.setText("ACTIVE");
-            }else{
-                lblStatus.setText("INACTIVE");
-            }
-            
-            System.out.println("Connected - " + oApp.getLogName());
-            System.out.println("Connected - " + oApp.getDivisionCode());
-            System.out.println("Connected - " + oApp.getDivisionName());
+            lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
+
      }
     }
     @FXML
     void chkFiled04_Clicked(MouseEvent event) {
         boolean isChecked = chkField04.isSelected();
         oTrans.getModel().setActive((isChecked));
-        if (chkField04.isSelected()){
-                lblStatus.setText("ACTIVE");
-            }else{
-                lblStatus.setText("INACTIVE");
-        }
+        lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
     }
     
     private void initTable() {
@@ -1042,3 +1001,4 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         txtField25.clear();
     }
 }
+ 

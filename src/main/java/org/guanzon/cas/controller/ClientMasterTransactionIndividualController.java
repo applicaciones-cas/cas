@@ -714,7 +714,6 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                             System.out.println("Record not saved successfully.");
                             System.out.println((String) saveResult.get("message"));
                         }
-                        
                      break;
                 
                 case "btnAddAddress":
@@ -996,7 +995,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                 case 1: /*company name*/
                                        
                      if (lsValue.matches("\\d{11}")) {
-                            oTrans.setInsContact(pnMobile, "sMobileNo", lsValue);
+                            oTrans.setMobile(pnMobile, "sMobileNo", lsValue);
                         } else {
                              ShowMessageFX.OkayCancel(null, pxeModuleName, "Contact number must be exactly 11 digits.");
                             mobileinfo.requestFocus();
@@ -1004,8 +1003,6 @@ public class ClientMasterTransactionIndividualController implements Initializabl
                         }
                         oTrans.setMobile(pnMobile, "sMobileNo", lsValue);
                     
-//                    System.out.println(pnMobile);
-//                    oTrans.setMobile(pnMobile, "sMobileNo", lsValue);
                     break;
                 
             }
@@ -1489,7 +1486,6 @@ public class ClientMasterTransactionIndividualController implements Initializabl
             cbAddress08.setSelected(((String) oTrans.getAddress(pnAddress, "cLTMSAddx")== "1")? true : false);
         }
     }
-
         
     @FXML
     private void tblMobile_Clicked(MouseEvent event) {
@@ -1505,7 +1501,7 @@ public class ClientMasterTransactionIndividualController implements Initializabl
         for (CheckBox checkbox : checkboxs) {
             checkbox.setSelected(false);
         }
-
+        
         if(oTrans.getMobileList().size()>0){    
             txtMobile01.setText((String) oTrans.getMobile(pnMobile, 3));
             cbMobileNo02.setSelected(((String) oTrans.getMobile(pnMobile, "cRecdStat") == "1")? true : false);
