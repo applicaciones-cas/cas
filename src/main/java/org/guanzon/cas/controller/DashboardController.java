@@ -197,7 +197,7 @@ public class DashboardController implements Initializable {
     //Load Main Screen if no tab remain
     public void Tabclose() {
         int tabsize = tabpane.getTabs().size();
-        if (tabsize == 1) {
+        if (tabsize == 0) {
             setScene(loadAnimateAnchor("Dashboard.fxml"));
         }
     }
@@ -276,9 +276,8 @@ public class DashboardController implements Initializable {
             
             /*INVENTORY MENU*/    
             case "/org/guanzon/cas/views/InventoryDetail.fxml":
-                return "Inventory Details";    
+                return "Inventory Details";   
                 
-            
             default:
                 return null;
         }
