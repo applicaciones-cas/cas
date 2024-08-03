@@ -341,7 +341,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                 case "btnCancel":
                         if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
                             oTrans = new InvMaster(oApp, true);
-                            oTrans.setRecordStatus("0123"); 
+                            oTrans.setRecordStatus("0123");
                             pnEditMode = EditMode.UNKNOWN;     
                             initButton(pnEditMode);
                             initTabAnchor();
@@ -353,6 +353,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                         if ("success".equals((String) saveResult.get("result"))){
                             System.err.println((String) saveResult.get("message"));
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                            oTrans = new InvMaster(oApp, true);
+                            oTrans.setRecordStatus("0123");
                             clearAllFields();
                             pnEditMode = EditMode.UNKNOWN;
                             initButton(pnEditMode);
@@ -425,8 +427,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
             // Load the main interface
             Parent parent = fxmlLoader.load();
-            parent.setStyle("-fx-background-color: rgba(0, 0, 0, 1);");
-
+            
             // Set up dragging
             parent.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
@@ -470,7 +471,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
             // Load the main interface
             Parent parent = fxmlLoader.load();
-            parent.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+           
             // Set up dragging
             parent.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
@@ -492,7 +493,6 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
-
             stage.setTitle("Inventory Ledger");
             stage.showAndWait();
 

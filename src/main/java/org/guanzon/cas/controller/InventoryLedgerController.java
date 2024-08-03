@@ -21,8 +21,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.agent.TableModel;
@@ -61,7 +63,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
     
     public static TableModel empModel;
     @FXML
-    private AnchorPane AnchorMain;
+    private AnchorPane AnchorMain,AnchorSub;
     @FXML
     private HBox hbButtons;
     @FXML
@@ -129,6 +131,8 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+            AnchorMain.setEffect(new DropShadow(50, Color.RED));
+            
             oTrans = new InvLedger(oApp, true);
             oTrans.setRecordStatus("01234");
             btnCancel.setOnAction(this::cmdButton_Click);
@@ -142,6 +146,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
             txtField04.setText(poTrans.getInvModel().getModelName());
             txtField05.setText(poTrans.getInvModel().getColorName());
             txtField06.setText(poTrans.getInvModel().getMeasureName());
+            
     }    
     
      public void cmdButton_Click(ActionEvent event) {
@@ -201,6 +206,16 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                     oTrans.getMaster(lnCtr, "nQtyInxxx").toString(),
                     (String)oTrans.getMaster(lnCtr, "nQtyOutxx").toString(), 
                     (String)oTrans.getMaster(lnCtr, "nQtyOnHnd").toString()));  
+                
+                
+                    System.out.print("\nno = " + String.valueOf(lnCtr + 1));
+                    System.out.print("\ndTransact = " + oTrans.getMaster(lnCtr, "dTransact").toString());
+                    System.out.print("\nxWHouseNm = " + (String)oTrans.getMaster(lnCtr, "xWHouseNm"));
+                    System.out.print("\nsSourceCd = " + (String)oTrans.getMaster(lnCtr, "sSourceCd"));
+                    System.out.print("\nsSourceNo = " + (String)oTrans.getMaster(lnCtr, "sSourceNo"));
+                    System.out.print("\nnQtyInxxx = " + oTrans.getMaster(lnCtr, "nQtyInxxx").toString());
+                    System.out.print("\nnQtyOutxx = " + (String)oTrans.getMaster(lnCtr, "nQtyOutxx").toString());
+                    System.out.print("\nnQtyOnHnd = " + (String)oTrans.getMaster(lnCtr, "nQtyOnHnd").toString());
 
             }
         }
