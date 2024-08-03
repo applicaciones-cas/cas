@@ -377,7 +377,7 @@ public class InvLedger implements GRecord{
                 poModel = new ArrayList<>();
                 while(loRS.next()){
                         poModel.add(new Model_Inv_Ledger(poGRider));
-                        poModel.get(poModel.size() - 1).openRecord(loRS.getString("sStockIDx"));
+                        poModel.get(poModel.size() - 1).openRecord(loRS.getString("sStockIDx"), " a.dTransact = " + SQLUtil.toSQL(loRS.getString("dTransact")));
                         
                         pnEditMode = EditMode.UPDATE;
                         lnctr++;

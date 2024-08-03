@@ -453,7 +453,7 @@ public class InvMaster implements GRecord{
                 if (loJSON != null) {
                     setMaster(fnCol, (String) loJSON.get("sLocatnCd"));
                     setMaster("xLocatnNm", (String) loJSON.get("sDescript"));
-                    setMaster("xSectnNme", (String) loJSON.get("sSectnIDx"));
+//                    setMaster("sSectnIDx", (String) loJSON.get("sSectnIDx"));
                     setMaster("sWHouseID", (String) loJSON.get("sWHouseID"));
                     setMaster("xWHouseNm", (String) loJSON.get("xWHouseNm"));
                     

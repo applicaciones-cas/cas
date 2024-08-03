@@ -162,7 +162,11 @@ public class testInventoryTrans{
         
             date = dateFormat.parse(dateString);
             System.out.println("Parsed Date: " + date);
-            record.DebitMemo("M00124000018", date, EditMode.ADDNEW);
+         loJSON =   record.DebitMemo("M00124000018", date, EditMode.ADDNEW);
+            
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
         } catch (ParseException ex) {
             Logger.getLogger(testInventoryTrans.class.getName()).log(Level.SEVERE, null, ex);
         }  

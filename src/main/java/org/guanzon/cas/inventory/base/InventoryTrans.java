@@ -253,7 +253,7 @@ public class InventoryTrans implements GTransaction{
     public JSONObject Delivery2H(String fsSourceNo,
                                     Date fdTransDate,
                                     int fnUpdateMode){
-        psSourceCd = InvConstants.ACCEPT_2H_DELIVERY;
+        psSourceCd = InvConstants.DELIVERY_2H;
         psSourceNo = fsSourceNo;
         pdTransact = fdTransDate;
         pnEditMode = fnUpdateMode;
@@ -1102,6 +1102,10 @@ public class InventoryTrans implements GTransaction{
         
         for (int lnCtr = 0; lnCtr <= poModelProcessd.size()-1; lnCtr++){
             if (psSourceCd.equals(InvConstants.ACCEPT_DELIVERY) ||
+                psSourceCd.equals(InvConstants.ACCEPT_2H_DELIVERY) ||
+                psSourceCd.equals(InvConstants.WARRANTY_RELEASE) ||
+                psSourceCd.equals(InvConstants.AUTO_DELIVERY) ||
+                psSourceCd.equals(InvConstants.AUTO_ACCEPT_DELIVERY) ||
 //                psSourceCd.equals(InvConstants.ACCEPT_DELIVERY_DISCREPANCY) ||
 //                psSourceCd.equals(InvConstants.ACCEPT_WARRANTY_TRANSFER) ||
                 psSourceCd.equals(InvConstants.BRANCH_ORDER) ||
