@@ -48,6 +48,8 @@ public class InventorySerialController implements Initializable {
     private String lsStockID;
     private InvSerial oTrans;
     
+    private InventoryDetailController parentController;
+    
     public int tbl_row = 0;
     private ObservableList<ModelInvSerial> data = FXCollections.observableArrayList();
     @FXML
@@ -108,6 +110,9 @@ public class InventorySerialController implements Initializable {
                 "Others",
                 "All"
         );
+     public void setParentController(InventoryDetailController cVal){
+        parentController =cVal;
+    }
     
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -155,9 +160,16 @@ public class InventorySerialController implements Initializable {
             Button clickedButton = (Button) source;
             unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
-                case"btnClose":
+                case "btnClose":  //Close                    
+                    appUnload.useParentController("");
                     CommonUtils.closeStage(btnClose);
                     break;
+                    
+                case "btnOkay":  //Close
+                    appUnload.useParentController("");
+                    CommonUtils.closeStage(btnOkay);
+                    break;
+                    
                 case "btnLoadSerial":
                     String UnitType = String.valueOf(cmbField01.getSelectionModel().getSelectedIndex()); 
                     poJSON = new JSONObject();

@@ -39,6 +39,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -71,8 +72,13 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     
     private InvMaster oTrans;
     
+    
+    
     @FXML
     private AnchorPane AnchorMain,AnchorTable,AnchorInput;
+    @FXML
+    public StackPane overlay;
+    
     @FXML
     private GridPane gridEditable;
     @FXML
@@ -300,6 +306,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         ClickButton();
         InitTextFields();
         pbLoaded = true;
+        overlay.setVisible(false);
+        
     }    
     
     /*Handle button click*/
@@ -341,7 +349,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                 case "btnCancel":
                         if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
                             oTrans = new InvMaster(oApp, true);
-                            oTrans.setRecordStatus("0123");
+                            oTrans.setRecordStatus("0123"); 
                             pnEditMode = EditMode.UNKNOWN;     
                             initButton(pnEditMode);
                             initTabAnchor();
@@ -353,8 +361,6 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                         if ("success".equals((String) saveResult.get("result"))){
                             System.err.println((String) saveResult.get("message"));
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                            oTrans = new InvMaster(oApp, true);
-                            oTrans.setRecordStatus("0123");
                             clearAllFields();
                             pnEditMode = EditMode.UNKNOWN;
                             initButton(pnEditMode);
@@ -368,7 +374,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                      break;
                 case "btnBrowse": 
                     String lsValue = (txtSeeks01.getText().toString().isEmpty() ?"": txtSeeks01.getText().toString());
-                       poJSON = oTrans.SearchInventory(lsValue, false);
+                       poJSON = oTrans.SearchInventory(lsValue, true);
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                             txtSeeks01.clear();
@@ -415,7 +421,9 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     private void loadSerial(String fsCode) throws SQLException {
         try {
             Stage stage = new Stage();
-
+            
+            overlay.setVisible(true);
+            
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventorySerial.fxml"));
 
@@ -427,7 +435,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
             // Load the main interface
             Parent parent = fxmlLoader.load();
-            
+            parent.setStyle("-fx-background-color: rgba(0, 0, 0, 1);");
+
             // Set up dragging
             parent.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
@@ -450,6 +459,17 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Inventory Ledger");
+            
+            // Add close request handler
+            stage.setOnCloseRequest(event -> {
+                // Perform any action needed before closing the stage
+                System.out.println("Stage is closing");
+                overlay.setVisible(false);
+                // Optionally, consume the event to prevent the stage from closing
+                // event.consume();
+            });
+            
+            stage.setOnHidden(e -> overlay.setVisible(false));
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
@@ -461,8 +481,13 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         try {
             Stage stage = new Stage();
 
+            overlay.setVisible(true);
+
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventoryLedger.fxml"));
+        
+        // Load the CSS file
+//        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
 
             InventoryLedgerController loControl = new InventoryLedgerController();
             loControl.setGRider(oApp);
@@ -471,7 +496,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
             // Load the main interface
             Parent parent = fxmlLoader.load();
-           
+//            parent.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
             // Set up dragging
             parent.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
@@ -489,13 +514,27 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             });
             // Set the main interface as the scene  
             Scene scene = new Scene(parent);
-
+//            scene.getStylesheets().add(getClass().getResource("/org/guanzon/cas/css/modal.css").toExternalForm());
+        
+            
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Inventory Ledger");
-            stage.showAndWait();
 
+            stage.setTitle("Inventory Ledger");
+            // Add close request handler
+            stage.setOnCloseRequest(event -> {
+                // Perform any action needed before closing the stage
+                System.out.println("Stage is closing");
+                overlay.setVisible(false);
+                // Optionally, consume the event to prevent the stage from closing
+                // event.consume();
+            });
+            
+            stage.setOnHidden(e -> overlay.setVisible(false));
+            stage.showAndWait();
+            
+           
         } catch (IOException e) {
             e.printStackTrace();
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
@@ -865,5 +904,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
     private Stage getStage(){
 	return (Stage) txtField01.getScene().getWindow();
+    }
+    public void setOverlay(boolean fbVal){
+        overlay.setVisible(fbVal);
     }
 }

@@ -21,10 +21,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.agent.TableModel;
@@ -56,14 +54,18 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
     private String psCode;
     private String lsStockID;
     private InvLedger oTrans;
+    private InventoryDetailController parentController;
     
     public int tbl_row = 0;
     
     private ObservableList<ModelInvLedger> data = FXCollections.observableArrayList();
+    public void setParentController(InventoryDetailController cVal){
+        parentController =cVal;
+    }
     
     public static TableModel empModel;
     @FXML
-    private AnchorPane AnchorMain,AnchorSub;
+    private AnchorPane AnchorMain;
     @FXML
     private HBox hbButtons;
     @FXML
@@ -131,8 +133,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-            AnchorMain.setEffect(new DropShadow(50, Color.RED));
-            
+        
             oTrans = new InvLedger(oApp, true);
             oTrans.setRecordStatus("01234");
             btnCancel.setOnAction(this::cmdButton_Click);
@@ -146,15 +147,18 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
             txtField04.setText(poTrans.getInvModel().getModelName());
             txtField05.setText(poTrans.getInvModel().getColorName());
             txtField06.setText(poTrans.getInvModel().getMeasureName());
-            
     }    
     
      public void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button)event.getSource()).getId();
          
-        JSONObject poJson;      
+        JSONObject poJson;    
+        unloadForm appUnload = new unloadForm();
         switch (lsButton){
            case "btnClose":  //Close
+                if(parentController != null){
+                    appUnload.useParentController("");
+                }
                 CommonUtils.closeStage(btnClose);
             break;
            case "btnLoadLedger":  //Close
@@ -183,7 +187,10 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                 }
             break;
             
-           case "btnCancel": //OK
+           case "btnCancel": //OK;
+                if(parentController != null){
+                    appUnload.useParentController("");
+                }
                 CommonUtils.closeStage(btnCancel);
             break;
             
@@ -207,15 +214,16 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                     (String)oTrans.getMaster(lnCtr, "nQtyOutxx").toString(), 
                     (String)oTrans.getMaster(lnCtr, "nQtyOnHnd").toString()));  
                 
-                
-                    System.out.print("\nno = " + String.valueOf(lnCtr + 1));
-                    System.out.print("\ndTransact = " + oTrans.getMaster(lnCtr, "dTransact").toString());
-                    System.out.print("\nxWHouseNm = " + (String)oTrans.getMaster(lnCtr, "xWHouseNm"));
-                    System.out.print("\nsSourceCd = " + (String)oTrans.getMaster(lnCtr, "sSourceCd"));
-                    System.out.print("\nsSourceNo = " + (String)oTrans.getMaster(lnCtr, "sSourceNo"));
-                    System.out.print("\nnQtyInxxx = " + oTrans.getMaster(lnCtr, "nQtyInxxx").toString());
-                    System.out.print("\nnQtyOutxx = " + (String)oTrans.getMaster(lnCtr, "nQtyOutxx").toString());
-                    System.out.print("\nnQtyOnHnd = " + (String)oTrans.getMaster(lnCtr, "nQtyOnHnd").toString());
+                System.out.println();
+                System.out.println("DATE        : " + oTrans.getMaster(lnCtr, "dTransact").toString());
+                System.out.println("WAREHOUSE   : " + oTrans.getMaster(lnCtr, "xWHouseNm").toString());
+                System.out.println("SOURCE CODE : " + oTrans.getMaster(lnCtr, "sSourceCd").toString());
+                System.out.println("SOURCE NO   : " + oTrans.getMaster(lnCtr, "sSourceNo").toString());
+                System.out.println("QTY IN      : " + oTrans.getMaster(lnCtr, "nQtyInxxx").toString());
+                System.out.println("QTY OUT     : " + oTrans.getMaster(lnCtr, "nQtyOutxx").toString());
+                System.out.println("QTY ON HAND : " + oTrans.getMaster(lnCtr, "nQtyOnHnd").toString());
+                System.out.println();
+                System.out.println("-------------------------------------------------------------------------");
 
             }
         }

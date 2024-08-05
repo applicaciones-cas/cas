@@ -79,6 +79,8 @@ public class unloadForm {
             ((FrmAccountsPayableController) parentController).loadReturn(lsValue);
         }else if (parentController instanceof FrmAccountsReceivableController) {
             ((FrmAccountsReceivableController) parentController).loadReturn(lsValue);
+        }else if (parentController instanceof InventoryDetailController) {
+            ((InventoryDetailController) parentController).setOverlay(false);
         }
     }
      
