@@ -169,6 +169,7 @@
                                           <MenuItem fx:id="mnuAccountsReceivable" mnemonicParsing="false" onAction="#mnuAccountsReceivable_Clicked" text="Accounts Receivable" />
                                           <MenuItem fx:id="mnuAccountsAccreditation" mnemonicParsing="false" onAction="#mnuAccountsAccreditation_Clicked" text="Accounts Accreditations" />
                                           <MenuItem fx:id="mnuInventoryParam" mnemonicParsing="false" onAction="#mnuInventoryParamClick" text="Inventory Param" />
+                                          <MenuItem fx:id="mnuInventorySerialParam" mnemonicParsing="false" onAction="#mnuInventorySerialParamClick" text="Inventory Serial Param" />
                                                     </items>
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="_Inventory">

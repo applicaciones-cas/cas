@@ -273,6 +273,8 @@ public class DashboardController implements Initializable {
                 return "Size";
             case "/org/guanzon/cas/views/InventoryParam.fxml":
                 return "Inventory Parameter"; 
+            case "/org/guanzon/cas/views/InventorySerialParam.fxml":
+                return "Inventory Serial Parameter"; 
             
             /*INVENTORY MENU*/    
             case "/org/guanzon/cas/views/InventoryDetail.fxml":
@@ -602,7 +604,8 @@ public class DashboardController implements Initializable {
                 return new SizeController();
             case "/org/guanzon/cas/views/InventoryParam.fxml":
                 return new InventoryParamController();
-            
+            case "/org/guanzon/cas/views/InventorySerialParam.fxml":
+                return new InventorySerialParamController();            
                 /*Inventory menu*/
                  case "/org/guanzon/cas/views/InventoryDetail.fxml":
                 return new InventoryDetailController();
@@ -943,6 +946,15 @@ public class DashboardController implements Initializable {
     @FXML
     private void mnuInventoryClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/InventoryDetail.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    @FXML
+    private void mnuInventorySerialParamClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventorySerialParam"
+                + ".fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

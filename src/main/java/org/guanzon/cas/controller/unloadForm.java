@@ -36,7 +36,8 @@ public class unloadForm {
         FrmAccountsPayable,
         FrmAccountsAccreditation,
         InventoryParam,
-        InventoryDetail
+        InventoryDetail,
+        InventorySerialParam
     }
     
     private Object parentController;
@@ -58,7 +59,10 @@ public class unloadForm {
             case "/org/guanzon/cas/views/InventoryParam.fxml":
                 return "Inventory Parameter";
             case "/org/guanzon/cas/views/InventoryDetail.fxml":
-                return "Inventory Details";
+                return "Inventory Details";            
+            case "/org/guanzon/cas/views/InventorySerialParam.fxml":
+                return "Inventory Serial Parameter";
+            
             default:
                 return null;
         }

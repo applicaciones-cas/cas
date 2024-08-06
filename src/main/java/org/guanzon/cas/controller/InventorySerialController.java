@@ -175,7 +175,7 @@ public class InventorySerialController implements Initializable {
                     poJSON = new JSONObject();
                     
                     if (UnitType.equals("7")) {
-                       poJSON = oTrans.OpenInvSerial(poTrans.getModel().getStockID());
+                       poJSON = oTrans.OpenInvSerialusingStockID(poTrans.getModel().getStockID());
                         System.out.print("\nunitype == " + UnitType);
                         System.out.println("poJson = " + poJSON.toJSONString());
                         loadSerial();
