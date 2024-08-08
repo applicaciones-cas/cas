@@ -107,11 +107,11 @@ public class testInventoryLedger{
         }
         Assert.assertEquals("M00124000004", record.getMaster().get(record.getMaster().size()-1).getStockID());
         
-        loJSON = record.getMaster().get(record.getMaster().size()-1).setSourceCode("DA");
+        loJSON = record.getMaster().get(record.getMaster().size()-1).setSourceCode("AcDl");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals("DA", record.getMaster().get(record.getMaster().size()-1).getSourceCode());
+        Assert.assertEquals("AcDl", record.getMaster().get(record.getMaster().size()-1).getSourceCode());
         
         loJSON = record.getMaster().get(record.getMaster().size()-1).setSourceNo("P0W124000018");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -235,7 +235,7 @@ public class testInventoryLedger{
 //        }
         
         Assert.assertEquals("M00124000003", record.getMaster(record.getMaster().size()-1, "sStockIDx"));
-        Assert.assertEquals("DA", record.getMaster(record.getMaster().size()-1, "sSourceCd"));
+        Assert.assertEquals("AcDl", record.getMaster(record.getMaster().size()-1, "sSourceCd"));
         Assert.assertEquals("P0W124000016", record.getMaster(record.getMaster().size()-1, "sSourceNo"));
         Assert.assertEquals("015", record.getMaster(record.getMaster().size()-1, "sWHouseID"));
         Assert.assertEquals("Building G-2F", record.getMaster(record.getMaster().size()-1, "xWHouseNm"));

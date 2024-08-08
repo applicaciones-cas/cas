@@ -307,6 +307,7 @@ public class InventoryTrans implements GTransaction{
     
     public JSONObject Purchase(String fsSourceNo,
                                     Date fdTransDate,
+//                                    String fsSupplier,
                                     int fnUpdateMode){
         psSourceCd = InvConstants.PURCHASE;
         psSourceNo = fsSourceNo;
@@ -318,28 +319,33 @@ public class InventoryTrans implements GTransaction{
     
     public JSONObject PurchaseReceiving(String fsSourceNo,
                                     Date fdTransDate,
+                                    String fsSupplier,
                                     int fnUpdateMode){
         psSourceCd = InvConstants.PURCHASE_RECEIVING;
         psSourceNo = fsSourceNo;
         pdTransact = fdTransDate;
         pnEditMode = fnUpdateMode;
+        psClientID = fsSupplier;
     
         return saveTransaction();
     }
     
     public JSONObject PurchaseReturn(String fsSourceNo,
                                     Date fdTransDate,
+                                    String fsSupplier,
                                     int fnUpdateMode){
         psSourceCd = InvConstants.PURCHASE_RETURN;
         psSourceNo = fsSourceNo;
         pdTransact = fdTransDate;
         pnEditMode = fnUpdateMode;
+        psClientID = fsSupplier;
     
         return saveTransaction();
     }
     
     public JSONObject PurchaseReplacement(String fsSourceNo,
                                     Date fdTransDate,
+                                    String fsSupplier,
                                     int fnUpdateMode){
         psSourceCd = InvConstants.PURCHASE_REPLACEMENT;
         psSourceNo = fsSourceNo;
@@ -761,6 +767,7 @@ public class InventoryTrans implements GTransaction{
                     poModelProcessd.get(lnRow).setExpiryDate(pdTransact.toString());
 
                     poModelProcessd.get(lnRow).setRecdStat(RecordStatus.ACTIVE);
+                    poModelProcessd.get(lnRow).setWareHouseID("");
                 } else {
                     try {
                         loRS.first();
@@ -771,7 +778,7 @@ public class InventoryTrans implements GTransaction{
                         poModelProcessd.get(lnRow).setResvOrdr(loRS.getDouble("nResvOrdr"));
                         poModelProcessd.get(lnRow).setFloatQty(loRS.getDouble("nFloatQty"));
                         poModelProcessd.get(lnRow).setRecdStat(loRS.getString("cRecdStat"));
-                        poModelProcessd.get(lnRow).setWareHouseID(loRS.getString("sWHouseID"));
+                        poModelProcessd.get(lnRow).setWareHouseID((loRS.getString("sWHouseID")==null)?"":loRS.getString("sWHouseID"));
 //                        poModelProcessd.get(lnRow).setExpiryDate(loRS.getDate("dExpiryxx").toString());
                         
                         if (loRS.getDate("dAcquired") != null) poModelProcessd.get(lnRow).setAcquiredDate(loRS.getDate("dAcquired"));
@@ -845,9 +852,10 @@ public class InventoryTrans implements GTransaction{
                     poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
                                                         + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
+                case InvConstants.RETAIL_ORDER:
                 case InvConstants.BRANCH_ORDER_CONFIRM:
                 case InvConstants.CUSTOMER_ORDER:
-                case InvConstants.RETAIL_ORDER:
+                case InvConstants.WHOLESALE_ORDER:
                     poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
                                                         - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
@@ -891,6 +899,7 @@ public class InventoryTrans implements GTransaction{
                                                         + Double.parseDouble(poModel.get(lnCtr).getQuantityOrder().toString()));
                     poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
                                                         + Double.parseDouble(poModel.get(lnCtr).getQuantityIssue().toString()));
+                    
                     break;
                 case InvConstants.PURCHASE_RECEIVING:
                     poModelProcessd.get(lnRow).setQuantityIn(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIn().toString())
@@ -899,6 +908,7 @@ public class InventoryTrans implements GTransaction{
                     poModelProcessd.get(lnRow).setPurchasePrice(Double.parseDouble(poModel.get(lnCtr).getPurchasePrice().toString()));
 
                     if (poModel.get(lnCtr).getReplaceID().equals("")){
+                        System.out.println("setQuantityOrder = " + poModelProcessd.get(lnRow).getQuantityOrder().toString() + " - " + poModel.get(lnCtr).getQuantity().toString());
                         poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
                                                             - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     }
@@ -924,6 +934,7 @@ public class InventoryTrans implements GTransaction{
                                                         + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
                 case InvConstants.SALES:
+                case InvConstants.BRANCH_TRANSFER:
                     poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
                                                         + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                    
@@ -942,6 +953,10 @@ public class InventoryTrans implements GTransaction{
                 case InvConstants.DEBIT_MEMO:
                     poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
 //                    poModelProcessd.get(lnRow).setDateExpire(pdTransact);
+                    break;
+                case InvConstants.SALVAGE_CANNIBALIZED:
+                    poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
 //                case InvConstants.WASTE_INV:
 //                    poModelProcessd.get(lnRow).setQuantityOut(poModelProcessd.get(lnRow).getQuantityOut()
@@ -1075,9 +1090,11 @@ public class InventoryTrans implements GTransaction{
                                                             + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                         break;
                     case InvConstants.PURCHASE_RECEIVING:
+                        System.out.println("PURCHASE_RECEIVING = " + poModelProcessd.get(lnRow).getQuantityOrder().toString() + " - " + poModel.get(lnCtr).getQuantity().toString());
                         poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
                                                             - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                         break;
+                    case InvConstants.BRANCH_TRANSFER:
                     case InvConstants.SALES:
                         poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
                                                             + Double.parseDouble(poModel.get(lnCtr).getResvOrdr().toString()));
@@ -1133,6 +1150,7 @@ public class InventoryTrans implements GTransaction{
                 lnBackOrdr = Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityOrder().toString());
                 lnResvOrdr = Math.abs(Double.parseDouble(poModelProcessd.get(lnCtr).getQuantityIssue().toString()));
                 lnLedgerNo = 1;
+                System.out.println("getExpiryDate = " + poModelProcessd.get(lnCtr).getExpiryDate());
 
                 lsMasSQL = "INSERT INTO Inv_Master SET" +
                                 "  sStockIDx = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getStockID()) +
@@ -1150,7 +1168,7 @@ public class InventoryTrans implements GTransaction{
                                 ", nResvOrdr = " + lnResvOrdr +
                                 ", nFloatQty = " + 0 +
                                 ", nLedgerNo = " + lnLedgerNo +
-                                ", dBegInvxx = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getExpiryDate()) +
+                                ", dBegInvxx = " + SQLUtil.toSQL((poModelProcessd.get(lnCtr).getExpiryDate().toString().isEmpty()?poGRider.getServerDate():poModelProcessd.get(lnCtr).getExpiryDate())) +
                                 ", cRecdStat = " + SQLUtil.toSQL("1") +
                                 ", sModified = " + SQLUtil.toSQL(poGRider.getUserID()) +
                                 ", dModified = " + SQLUtil.toSQL(poGRider.getServerDate());
@@ -1221,13 +1239,15 @@ public class InventoryTrans implements GTransaction{
                             ", nQtyOrder = " + poModelProcessd.get(lnCtr).getQuantityOrder()+
                             ", sWHouseID = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getWareHouseID())+
                             ", nQtyOnHnd = " + lnQtyOnHnd +
+                            ", nUnitPrce = " + poModel.get(lnCtr).getUnitPrice()+
+                            ", nPurPrice = " + poModel.get(lnCtr).getPurchasePrice() +
                             ", sModified = " + SQLUtil.toSQL(poGRider.getUserID()) + 
                             ", dModified = " + SQLUtil.toSQL(poGRider.getServerDate());
             
             if (psSourceCd == InvConstants.PURCHASE_RECEIVING){
                 lsLgrSQL = lsLgrSQL +
-                            ", dExpiryxx = " + SQLUtil.toSQL(poModel.get(lnCtr).getExpiryDate()) +
-                            ", nPurPrice = " + poModel.get(lnCtr).getPurchasePrice();
+                            ", dExpiryxx = " + SQLUtil.toSQL(poModel.get(lnCtr).getExpiryDate());
+//                            ", nPurPrice = " + poModel.get(lnCtr).getPurchasePrice();
             }
             System.out.println("lsMasSQL = " + lsMasSQL);
             System.out.println("lsMasSQL = " + lsLgrSQL);

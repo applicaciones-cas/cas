@@ -17,10 +17,10 @@ public class ModelInvSerial {
     public static void main (String [] args){
         String path;
         if(System.getProperty("os.name").toLowerCase().contains("win")){
-            path = "D:/GGC_Java_Systems";
+            path = "D:/GGC_Maven_Systems";
         }
         else{
-            path = "/srv/GGC_Java_Systems";
+            path = "/srv/GGC_Maven_Systems";
         }
         System.setProperty("sys.default.path.config", path);
 
@@ -53,9 +53,11 @@ public class ModelInvSerial {
                         " , b.sBarCodex xBarCodex" +
                         " , b.sDescript xDescript" +
                         " , c.sBranchNm xBranchNm " +
+                        " , d.sCompnyNm xCompanyNm " +
                         "FROM Inv_Serial a" +
                         "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Branch c ON a.sBranchCd = c.sBranchCd";
+                        "    LEFT JOIN Branch c ON a.sBranchCd = c.sBranchCd"+
+                        "    LEFT JOIN Company d ON a.sCompnyID = d.sCompnyID";
         
         
         ResultSet loRS = instance.executeQuery(lsSQL);

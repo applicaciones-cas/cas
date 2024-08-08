@@ -15,7 +15,7 @@ public class InvConstants {
     public static final String AUTO_ACCEPT_DELIVERY = "";//ok
     public static final String AUTO_DELIVERY = "";//ok
     public static final String JOB_ORDER = "BrJO";//ok
-    public static final String PURCHASE = "";//ok
+    public static final String PURCHASE = "PcOr";//ok
     public static final String PURCHASE_RECEIVING = "PcDA";//ok
     public static final String PURCHASE_RETURN = "PcRt";
     public static final String PURCHASE_REPLACEMENT = "PcRp";

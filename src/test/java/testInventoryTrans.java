@@ -92,7 +92,7 @@ public class testInventoryTrans{
         JSONObject loJSON;
         
         try {
-        String dateString = "2024-07-30"; // Example date string
+        String dateString = "2024-08-08"; // Example date string
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         
         Date date;
@@ -136,6 +136,29 @@ public class testInventoryTrans{
        
         Assert.assertEquals(5, record.getMaster(0, "nBackOrdr"));
         
+        loJSON = record.setMaster(0, "nQtyOrder", 5);
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+       
+        Assert.assertEquals(5, record.getMaster(0, "nQtyOrder"));
+        
+        
+        
+        loJSON = record.setMaster(0, "nUnitPrce", 1800.00);
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+       
+        Assert.assertEquals(1800.00, record.getMaster(0, "nUnitPrce"));
+        
+        loJSON = record.setMaster(0, "nPurPrice", 2000.00);
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+       
+        Assert.assertEquals(2000.00, record.getMaster(0, "nPurPrice"));
+        
 //        loJSON = record.setMaster(0, "nLedgerNo", record.getMaster().size());
 //        if ("error".equals((String) loJSON.get("result"))) {
 //            Assert.fail((String) loJSON.get("message"));
@@ -162,9 +185,10 @@ public class testInventoryTrans{
         
             date = dateFormat.parse(dateString);
             System.out.println("Parsed Date: " + date);
-         loJSON =   record.DebitMemo("M00124000018", date, EditMode.ADDNEW);
+         loJSON =   record.GCardRedeem("M0012400001", date, EditMode.ADDNEW);
             
         if ("error".equals((String) loJSON.get("result"))) {
+            instance.rollbackTrans();
             Assert.fail((String) loJSON.get("message"));
         }
         } catch (ParseException ex) {
