@@ -21,6 +21,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -42,6 +43,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -427,128 +429,147 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     
     }
     private void loadSerial(String fsCode) throws SQLException {
-        try {
-            Stage stage = new Stage();
-            
-            overlay.setVisible(true);
-            
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventorySerial.fxml"));
+    try {
+        Stage stage = new Stage();
 
-            InventorySerialController loControl = new InventorySerialController();
-            loControl.setGRider(oApp);
-            loControl.setFsCode(oTrans);
+        overlay.setVisible(true);
 
-            fxmlLoader.setController(loControl);
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventorySerial.fxml"));
 
-            // Load the main interface
-            Parent parent = fxmlLoader.load();
-            parent.setStyle("-fx-background-color: rgba(0, 0, 0, 1);");
+        InventorySerialController loControl = new InventorySerialController();
+        loControl.setGRider(oApp);
+        loControl.setFsCode(oTrans);
 
-            // Set up dragging
-            parent.setOnMousePressed(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    xOffset = event.getSceneX();
-                    yOffset = event.getSceneY();
-                }
-            });
-            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    stage.setX(event.getScreenX() - xOffset);
-                    stage.setY(event.getScreenY() - yOffset);
-                }
-            });
+        fxmlLoader.setController(loControl);
 
-            // Set the main interface as the scene
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Inventory Ledger");
-            
-            // Add close request handler
-            stage.setOnCloseRequest(event -> {
-                // Perform any action needed before closing the stage
-                System.out.println("Stage is closing");
-                overlay.setVisible(false);
-                // Optionally, consume the event to prevent the stage from closing
-                // event.consume();
-            });
-            
-            stage.setOnHidden(e -> overlay.setVisible(false));
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-            System.exit(1);
-        }
+        // Load the main interface
+        Parent parent = fxmlLoader.load();
+        parent.setStyle("-fx-background-color: rgba(0, 0, 0, 1);");
+
+        // Set up dragging
+        final double[] xOffset = new double[1];
+        final double[] yOffset = new double[1];
+
+        parent.setOnMousePressed(event -> {
+            xOffset[0] = event.getSceneX();
+            yOffset[0] = event.getSceneY();
+        });
+
+        parent.setOnMouseDragged(event -> {
+            double newX = event.getScreenX() - xOffset[0];
+            double newY = event.getScreenY() - yOffset[0];
+
+            // Get the screen bounds
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+            // Calculate the window bounds
+            double stageWidth = stage.getWidth();
+            double stageHeight = stage.getHeight();
+
+            // Constrain the stage position to the screen bounds
+            if (newX < 0) newX = 0;
+            if (newY < 0) newY = 0;
+            if (newX + stageWidth > screenBounds.getWidth()) newX = screenBounds.getWidth() - stageWidth;
+            if (newY + stageHeight > screenBounds.getHeight()) newY = screenBounds.getHeight() - stageHeight;
+
+            stage.setX(newX);
+            stage.setY(newY);
+        });
+
+        // Set the main interface as the scene
+        Scene scene = new Scene(parent);
+        stage.setScene(scene);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle("Inventory Serial");
+
+        // Add close request handler
+        stage.setOnCloseRequest(event -> {
+            System.out.println("Stage is closing");
+            overlay.setVisible(false);
+        });
+
+        stage.setOnHidden(e -> overlay.setVisible(false));
+        stage.showAndWait();
+    } catch (IOException e) {
+        e.printStackTrace();
+        ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+        System.exit(1);
     }
+}
+
     private void loadLedger(String fsCode) throws SQLException {
-        try {
-            Stage stage = new Stage();
+    try {
+        Stage stage = new Stage();
 
-            overlay.setVisible(true);
+        overlay.setVisible(true);
 
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventoryLedger.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventoryLedger.fxml"));
+
+        InventoryLedgerController loControl = new InventoryLedgerController();
+        loControl.setGRider(oApp);
+        loControl.setFsCode(oTrans);
+        fxmlLoader.setController(loControl);
+
+        // Load the main interface
+        Parent parent = fxmlLoader.load();
+
+        // Set up dragging
+        final double[] xOffset = new double[1];
+        final double[] yOffset = new double[1];
         
-        // Load the CSS file
-//        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
+        parent.setOnMousePressed(event -> {
+            xOffset[0] = event.getSceneX();
+            yOffset[0] = event.getSceneY();
+        });
 
-            InventoryLedgerController loControl = new InventoryLedgerController();
-            loControl.setGRider(oApp);
-            loControl.setFsCode(oTrans);
-            fxmlLoader.setController(loControl);
+        parent.setOnMouseDragged(event -> {
+            double newX = event.getScreenX() - xOffset[0];
+            double newY = event.getScreenY() - yOffset[0];
+            
+            // Get the screen bounds
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            
+            // Calculate the window bounds
+            double stageWidth = stage.getWidth();
+            double stageHeight = stage.getHeight();
+            
+            // Constrain the stage position to the screen bounds
+            if (newX < 0) newX = 0;
+            if (newY < 0) newY = 0;
+            if (newX + stageWidth > screenBounds.getWidth()) newX = screenBounds.getWidth() - stageWidth;
+            if (newY + stageHeight > screenBounds.getHeight()) newY = screenBounds.getHeight() - stageHeight;
 
-            // Load the main interface
-            Parent parent = fxmlLoader.load();
-//            parent.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-            // Set up dragging
-            parent.setOnMousePressed(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    xOffset = event.getSceneX();
-                    yOffset = event.getSceneY();
-                }
-            });
-            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    stage.setX(event.getScreenX() - xOffset);
-                    stage.setY(event.getScreenY() - yOffset);
-                }
-            });
-            // Set the main interface as the scene  
-            Scene scene = new Scene(parent);
-//            scene.getStylesheets().add(getClass().getResource("/org/guanzon/cas/css/modal.css").toExternalForm());
+            stage.setX(newX);
+            stage.setY(newY);
+        });
+
+        Scene scene = new Scene(parent);
         
-            
-            stage.setScene(scene);
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.initModality(Modality.APPLICATION_MODAL);
 
-            stage.setTitle("Inventory Ledger");
-            // Add close request handler
-            stage.setOnCloseRequest(event -> {
-                // Perform any action needed before closing the stage
-                System.out.println("Stage is closing");
-                overlay.setVisible(false);
-                // Optionally, consume the event to prevent the stage from closing
-                // event.consume();
-            });
-            
-            stage.setOnHidden(e -> overlay.setVisible(false));
-            stage.showAndWait();
-            
-           
-        } catch (IOException e) {
-            e.printStackTrace();
-            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-            System.exit(1);
-        }
+        stage.setTitle("Inventory Ledger");
+        
+        // Add close request handler
+        stage.setOnCloseRequest(event -> {
+            System.out.println("Stage is closing");
+            overlay.setVisible(false);
+        });
+        
+        stage.setOnHidden(e -> overlay.setVisible(false));
+        stage.showAndWait();
+
+    } catch (IOException e) {
+        e.printStackTrace();
+        ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+        System.exit(1);
     }
+}
+
 
     /*USE TO DISABLE ANCHOR BASE ON INITMODE*/    
     private void initTabAnchor(){

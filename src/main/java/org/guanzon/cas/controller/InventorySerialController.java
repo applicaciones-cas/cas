@@ -202,13 +202,15 @@ public class InventorySerialController implements Initializable {
     private void loadSerial(){
         int lnCtr;
         data.clear();
+        
+
         if(oTrans.getMaster()!= null){
             for (lnCtr = 0; lnCtr < oTrans.getMaster().size(); lnCtr++){
                 data.add(new ModelInvSerial(String.valueOf(lnCtr + 1),
                     (String) oTrans.getMaster(lnCtr, "sSerialID"), 
                     (String)oTrans.getMaster(lnCtr, "sSerial01"),
                     (String)oTrans.getMaster(lnCtr, "sSerial02"), 
-                    (String)oTrans.getMaster(lnCtr, "xBranchNm"), 
+                    (String)oTrans.getMaster(lnCtr, "cLocation"), 
                     (String)oTrans.getMaster(lnCtr, "cSoldStat"), 
                     (String)oTrans.getMaster(lnCtr, "cUnitType"),
               ""));  
@@ -216,7 +218,7 @@ public class InventorySerialController implements Initializable {
                     System.out.println("\nsSerialID == " + (String) oTrans.getMaster(lnCtr, "sSerialID"));
                     System.out.println("\nsSerial01 == " + (String) oTrans.getMaster(lnCtr, "sSerial01"));
                     System.out.println("\nsSerial02 == " + (String) oTrans.getMaster(lnCtr, "sSerial02"));
-                    System.out.println("\ncLocation == " + (String) oTrans.getMaster(lnCtr, "xBranchNm"));
+                    System.out.println("\ncLocation == " + (String) oTrans.getMaster(lnCtr, "cLocation"));
                     System.out.println("\ncSoldStat == " + (String) oTrans.getMaster(lnCtr, "cSoldStat"));
                     System.out.println("\ncUnitType == " + (String) oTrans.getMaster(lnCtr, "cUnitType"));
             

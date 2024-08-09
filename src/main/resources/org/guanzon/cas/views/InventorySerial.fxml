@@ -202,7 +202,7 @@
                                                       <TableColumn fx:id="index02" prefWidth="200.0" text="Serial ID" />
                                                       <TableColumn fx:id="index03" prefWidth="200.0" text="Serial 01" />
                                                       <TableColumn fx:id="index04" prefWidth="200.0" text="Serial 02" />
-                                                      <TableColumn fx:id="index05" prefWidth="250.0" text="Location" />
+                                                      <TableColumn fx:id="index05" prefWidth="150.0" text="Location" />
                                                       <TableColumn fx:id="index06" prefWidth="100.0" text="Sold" />
                                                       <TableColumn fx:id="index07" prefWidth="150.0" text="Unit Type" />
                                                    </columns>

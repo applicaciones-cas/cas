@@ -207,23 +207,23 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
             for (lnCtr = 0; lnCtr < oTrans.getMaster().size(); lnCtr++){
                 data.add(new ModelInvLedger(String.valueOf(lnCtr + 1),
                      oTrans.getMaster(lnCtr, "dTransact").toString(), 
-                    (String)oTrans.getMaster(lnCtr, "xWHouseNm"),
+                    (String)oTrans.getMaster(lnCtr, "xBranchNm"),
                     (String)oTrans.getMaster(lnCtr, "sSourceCd"), 
                     (String)oTrans.getMaster(lnCtr, "sSourceNo"), 
                     oTrans.getMaster(lnCtr, "nQtyInxxx").toString(),
                     (String)oTrans.getMaster(lnCtr, "nQtyOutxx").toString(), 
                     (String)oTrans.getMaster(lnCtr, "nQtyOnHnd").toString()));  
                 
-                System.out.println();
-                System.out.println("DATE        : " + oTrans.getMaster(lnCtr, "dTransact").toString());
-                System.out.println("WAREHOUSE   : " + oTrans.getMaster(lnCtr, "xWHouseNm").toString());
-                System.out.println("SOURCE CODE : " + oTrans.getMaster(lnCtr, "sSourceCd").toString());
-                System.out.println("SOURCE NO   : " + oTrans.getMaster(lnCtr, "sSourceNo").toString());
-                System.out.println("QTY IN      : " + oTrans.getMaster(lnCtr, "nQtyInxxx").toString());
-                System.out.println("QTY OUT     : " + oTrans.getMaster(lnCtr, "nQtyOutxx").toString());
-                System.out.println("QTY ON HAND : " + oTrans.getMaster(lnCtr, "nQtyOnHnd").toString());
-                System.out.println();
-                System.out.println("-------------------------------------------------------------------------");
+//                System.out.println();
+//                System.out.println("DATE        : " + oTrans.getMaster(lnCtr, "dTransact").toString());
+//                System.out.println("WAREHOUSE   : " + oTrans.getMaster(lnCtr, "xWHouseNm").toString());
+//                System.out.println("SOURCE CODE : " + oTrans.getMaster(lnCtr, "sSourceCd").toString());
+//                System.out.println("SOURCE NO   : " + oTrans.getMaster(lnCtr, "sSourceNo").toString());
+//                System.out.println("QTY IN      : " + oTrans.getMaster(lnCtr, "nQtyInxxx").toString());
+//                System.out.println("QTY OUT     : " + oTrans.getMaster(lnCtr, "nQtyOutxx").toString());
+//                System.out.println("QTY ON HAND : " + oTrans.getMaster(lnCtr, "nQtyOnHnd").toString());
+//                System.out.println();
+//                System.out.println("-------------------------------------------------------------------------");
 
             }
         }

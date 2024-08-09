@@ -45,6 +45,13 @@ public class ModelInvSerial {
                 "RDU",
                 "Others");
     
+    ObservableList<String> Location = FXCollections.observableArrayList("Warehouse"
+                              , "Branch"
+                              , "Supplier"
+                              , "Customer"
+                              , "On Transit"
+                              , "Service Center"
+                              , "Service Unit");
     public ModelInvSerial(String index01,
                String index02,
                String index03,
@@ -123,7 +130,8 @@ public class ModelInvSerial {
     public String getIndex04(){return index04.get();}
     public void setIndex04(String index04){this.index04.set(index04);}
     
-    public String getIndex05(){return index05.get();}
+    public String getIndex05(){ 
+        return Location.get(Integer.parseInt(index05.get()));}
     public void setIndex05(String index05){this.index05.set(index05);}
     
 //    public String getIndex06(){
