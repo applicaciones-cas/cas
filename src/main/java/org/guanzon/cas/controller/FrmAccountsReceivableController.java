@@ -337,6 +337,8 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
                         }
                         pnEditMode =  oTrans.getEditMode();
                         
+                        txtSearch02.setText(oTrans.getModel().getClientName());
+                        txtSearch01.setText(oTrans.getModel().getClientID());
                         initButton(pnEditMode);
                         initTabAnchor();
                         retrieveDetails();
@@ -757,13 +759,15 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         if(pnEditMode == EditMode.READY || 
                 pnEditMode == EditMode.ADDNEW || 
                 pnEditMode == EditMode.UPDATE){
-            if(pnEditMode == EditMode.READY){
-                txtSearch01.setText(oTrans.getModel().getClientID());
-                txtSearch02.setText(oTrans.getModel().getClientName());
-            }else{
-                txtSearch01.clear();
-                txtSearch02.clear();
-            }
+//            if(pnEditMode == EditMode.READY){
+//                txtSearch01.setText(oTrans.getModel().getClientID());
+//                txtSearch02.setText(oTrans.getModel().getClientName());
+//            }else{
+//                txtSearch01.clear();
+//                txtSearch02.clear();
+//            }
+//            txtSearch01.clear();
+//            txtSearch02.clear();
             txtField01.setText((String) oTrans.getModel().getClientID());
             txtField02.setText((String) oTrans.getModel().getClientName());
             txtField03.setText((String) oTrans.getModel().getAddress());

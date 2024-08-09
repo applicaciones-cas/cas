@@ -4,10 +4,12 @@
  */
 package org.guanzon.cas.controller;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -31,7 +34,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inventory.base.InvSerial;
-import org.guanzon.cas.inventory.base.Inventory;
+import org.guanzon.cas.inventory.base.InvSerialLedger;
+import org.guanzon.cas.model.ModelInvSerialLedger;
 import org.json.simple.JSONObject;
 
 /**
@@ -44,14 +48,15 @@ public class InventorySerialParamController implements Initializable,ScreenInter
     private GRider oApp;
     private String oTransnox = "";
     private int pnEditMode;  
-    private InvSerial oTrans;
+    private InvSerial oTrans;    
+    private InvSerialLedger poTrans;
     
     private boolean state = false;
     private boolean pbLoaded = false;
     private int pnInventory = 0; 
     private int pnRow = 0;
     
-    
+    private ObservableList<ModelInvSerialLedger> data = FXCollections.observableArrayList();
     @FXML
     private TextField txtSeeks02;
 
@@ -139,14 +144,6 @@ public class InventorySerialParamController implements Initializable,ScreenInter
     @FXML
     private TableColumn index05;
 
-    @FXML
-    private TableColumn index06;
-
-    @FXML
-    private TableColumn index07;
-
-    @FXML
-    private TableColumn index08;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -167,12 +164,15 @@ public class InventorySerialParamController implements Initializable,ScreenInter
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         oTrans = new InvSerial(oApp, true);
+        poTrans = new InvSerialLedger(oApp, true);
+        
         if (oTransnox == null || oTransnox.isEmpty()) { // Check if oTransnox is null or empty
             pnEditMode = EditMode.UNKNOWN;
         }
         oTrans.setRecordStatus("0123");
         pnEditMode = EditMode.UNKNOWN;    
-        ClickButton();
+        ClickButton();        
+        initTable();
         cmbField01.setItems(unitType);
         txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
         txtSeeks02.setOnKeyPressed(this::txtSeeks_KeyPressed);
@@ -205,11 +205,17 @@ public class InventorySerialParamController implements Initializable,ScreenInter
                             txtSeeks01.clear();
                             break;
                         }
+                        lsValue = (String) oTrans.getMaster(pnRow, "sSerialID");
+                        poJSON = poTrans.OpenInvSerialLedger(lsValue);
+                        System.out.println("poJson = " + poJSON.toJSONString());
+                        if("error".equalsIgnoreCase(poJSON.get("result").toString())){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);                              
+                        }  
                         pnEditMode = oTrans.getEditMode();
-//                        initButton(pnEditMode);
+                        clearAllFields();
                         loadSerial();
+                        loadSerialLedger();
                     break;
-                
             }
         }
     
@@ -297,15 +303,25 @@ public class InventorySerialParamController implements Initializable,ScreenInter
                     
                     case 1: /*search Barrcode*/
                         
+                    
                        poJSON = oTrans.searchRecord(lsValue, true);
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                             txtSeeks01.clear();
                             break;
                         }
+                        lsValue = (String) oTrans.getMaster(pnRow, "sSerialID");
+                        poJSON = poTrans.OpenInvSerialLedger(lsValue);
+                        System.out.println("poJson = " + poJSON.toJSONString());
+                        if("error".equalsIgnoreCase(poJSON.get("result").toString())){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);    
+                        }  
                         pnEditMode = oTrans.getEditMode();
-//                        initButton(pnEditMode);
+                        clearAllFields();
                         loadSerial();
+                        loadSerialLedger();
+                        
+//                     
                         break;
                     case 2 :
                        poJSON = oTrans.searchRecord(lsValue, false);
@@ -314,9 +330,12 @@ public class InventorySerialParamController implements Initializable,ScreenInter
                             txtSeeks01.clear();
                             break;
                         }
+                        
                         pnEditMode = oTrans.getEditMode();
 //                        initButton(pnEditMode);
                         loadSerial();
+                        
+                        loadSerialLedger();
                         break;
                 }
             case ENTER:
@@ -332,4 +351,61 @@ public class InventorySerialParamController implements Initializable,ScreenInter
             CommonUtils.SetPreviousFocus(txtSeeks);
         }
     }
+    private void loadSerialLedger(){
+        int lnCtr;
+        data.clear();
+        if(poTrans.getMaster()!= null){
+            for (lnCtr = 0; lnCtr < poTrans.getMaster().size(); lnCtr++){
+                data.add(new ModelInvSerialLedger(String.valueOf(lnCtr + 1),
+                    poTrans.getMaster(lnCtr, 4).toString(), 
+                    (String)poTrans.getModel(lnCtr).getBranchName(),
+                    (String)poTrans.getMaster(lnCtr, 5), 
+                    (String)poTrans.getMaster(lnCtr, 6), 
+                "",
+                "",
+                ""));  
+
+                System.out.println(String.valueOf(lnCtr + 1) + "-------------------------------------------------------");
+                System.out.println( poTrans.getMaster(lnCtr, 1).toString());
+                System.out.println( poTrans.getMaster(lnCtr, 2).toString());
+                System.out.println( poTrans.getMaster(lnCtr, 3).toString());
+                System.out.println( poTrans.getMaster(lnCtr, 4).toString());
+                System.out.println( poTrans.getMaster(lnCtr, 5).toString());
+                System.out.println( poTrans.getMaster(lnCtr, 6).toString());
+                System.out.println( poTrans.getMaster(lnCtr, 7).toString());
+                System.out.println( poTrans.getMaster(lnCtr, 8).toString());
+                System.out.println( poTrans.getMaster(lnCtr, 9).toString());
+                System.out.println( poTrans.getMaster(lnCtr, 10).toString());
+                System.out.println( poTrans.getMaster(lnCtr, 11).toString());
+                System.out.println( poTrans.getMaster(lnCtr, 12).toString());
+                System.out.println( poTrans.getMaster(lnCtr, 13).toString());
+                System.out.println("--------------------------------------------------------");
+                
+                
+            }
+            
+        }
+    }
+    private void initTable() {
+        index01.setStyle("-fx-alignment: CENTER;");
+        index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+
+        index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
+        index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
+        index03.setCellValueFactory(new PropertyValueFactory<>("index03"));
+        index04.setCellValueFactory(new PropertyValueFactory<>("index04"));
+        index05.setCellValueFactory(new PropertyValueFactory<>("index05"));
+        tblInventorySerialLedger.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblInventorySerialLedger.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+        tblInventorySerialLedger.setItems(data);
+        tblInventorySerialLedger.autosize();
+    }
+    
 }

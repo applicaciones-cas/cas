@@ -381,6 +381,14 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                             break;
                         }
                         pnEditMode = oTrans.getEditMode();
+                        
+                        if(pnEditMode==EditMode.READY){
+                            txtSeeks01.setText(oTrans.getModel().getBarCodex());
+                            txtSeeks02.setText(oTrans.getModel().getDescript());
+                        }else{
+                            txtSeeks01.clear();
+                            txtSeeks02.clear();
+                        }
                         initButton(pnEditMode);
                         System.out.print("\neditmode on browse == " + pnEditMode);
                         initTabAnchor();
@@ -763,6 +771,14 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                             break;
                         }
                         pnEditMode = oTrans.getEditMode();
+                        
+                        if(pnEditMode==EditMode.READY){
+                            txtSeeks01.setText(oTrans.getModel().getBarCodex());
+                            txtSeeks02.setText(oTrans.getModel().getDescript());
+                        }else{
+                            txtSeeks01.clear();
+                            txtSeeks02.clear();
+                        }
                         initButton(pnEditMode);
                         System.out.print("\neditmode on browse == " + pnEditMode);
                         initTabAnchor();
@@ -778,6 +794,13 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                         }
                          pnEditMode = oTrans.getEditMode();
                         
+                        if(pnEditMode==EditMode.READY){
+                            txtSeeks01.setText(oTrans.getModel().getBarCodex());
+                            txtSeeks02.setText(oTrans.getModel().getDescript());
+                        }else{
+                            txtSeeks01.clear();
+                            txtSeeks02.clear();
+                        }
                         initButton(pnEditMode);
                         System.out.print("\neditmode on browse == " + pnEditMode);
                         

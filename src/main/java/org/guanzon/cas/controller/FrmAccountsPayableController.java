@@ -349,9 +349,9 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                             initTabAnchor();
                         }
                     break;
-                case "btnBrowse":    
-                       
-                            poJSON =  oTrans.searchRecord(txtSearch02.getText(), false);
+                case "btnBrowse":  
+                            String lsValue = (txtSearch01.getText()==null?"":txtSearch01.getText());
+                            poJSON =  oTrans.searchRecord(lsValue, false);
                            System.out.println("poJson = " + poJSON.toJSONString());
                            if("error".equalsIgnoreCase(poJSON.get("result").toString())){
                                 ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -814,8 +814,8 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
             
             chkfield01.setSelected(("1".equals((String) oTrans.getMaster("cVatablex"))));
               loadLedger();
-              txtSearch01.clear();
-              txtSearch02.clear();
+//              txtSearch01.clear();
+//              txtSearch02.clear();
         }
     
     }

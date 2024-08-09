@@ -247,6 +247,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                             System.out.println("EDITMODE = " + pnEditMode);
                             loadComapany();
                             initTabAnchor();
+                            txtSeek01.clear();
                         }else{
                             ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                             System.out.println("Record not saved successfully.");
@@ -321,7 +322,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                     }
                     break;
                 case "btnBrowse": 
-                    String lsValue = txtSeek01.getText();
+                    String lsValue = (txtSeek01.getText()==null)?"":txtSeek01.getText();
                     oTrans.setAccountType(String.valueOf(cmbField01.getSelectionModel().getSelectedIndex()));
                         poJSON = new JSONObject();
                            poJSON =  oTrans.SearchAccredetation(lsValue, true);
@@ -330,6 +331,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
 //                               loadCompanyTransaction();
                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
+                           txtSeek01.setText(oTrans.getAccount(pnCompany, "sTransNox").toString());
                            pnEditMode = oTrans.getEditMode();
                            retrieveDetails();
                         break;
@@ -452,6 +454,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                            }
                            pnEditMode = oTrans.getEditMode();
+                           txtSeek01.setText(oTrans.getAccount(pnCompany, "sTransNox").toString());
                             retrieveDetails();
                         break;
                     case 05:
@@ -669,7 +672,7 @@ public class FrmAccountsAccreditationController implements Initializable,ScreenI
                     loadComapany();
                     StatusLabel(lsValue);
                 }
-        txtSeek01.clear();
+//        txtSeek01.clear();
         }
         private void StatusLabel(String lsValue){
                 

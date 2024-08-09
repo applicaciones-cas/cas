@@ -21,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.cas.inventory.base.InvMaster;
@@ -176,11 +177,19 @@ public class InventorySerialController implements Initializable {
                     
                     if (UnitType.equals("7")) {
                        poJSON = oTrans.OpenInvSerialusingStockID(poTrans.getModel().getStockID());
+                       if("error".equalsIgnoreCase(poJSON.get("result").toString())){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);   
+                            break;
+                        } 
                         System.out.print("\nunitype == " + UnitType);
                         System.out.println("poJson = " + poJSON.toJSONString());
                         loadSerial();
                     } else {
                         poJSON = oTrans.OpenInvSerialWithCondition(poTrans.getModel().getStockID(), " a.cUnitType = '" + UnitType + "'");
+                        if("error".equalsIgnoreCase(poJSON.get("result").toString())){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);   
+                            break;
+                        } 
                         System.out.print("\nunitype == " + UnitType);
                         System.out.println("poJson = " + poJSON.toJSONString());
                         loadSerial();
@@ -214,7 +223,7 @@ public class InventorySerialController implements Initializable {
             }
         }
     }
-      private void initTable() {
+    private void initTable() {
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");

@@ -267,7 +267,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        oTrans = new Inventory(oApp, true);
+        oTrans = new Inventory(oApp, false);
         if (oTransnox == null || oTransnox.isEmpty()) { // Check if oTransnox is null or empty
             pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
@@ -374,14 +374,18 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                      break;
 
                 case "btnBrowse": 
-//                      
-                        poJSON = oTrans.searchRecord(txtSeeks01.getText().toString(), true);
+                        String lsValue = (txtSeeks01.getText()==null)?"":txtSeeks01.getText();
+                        poJSON = oTrans.searchRecord(lsValue, true);
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                            
                             txtSeeks01.clear();
                             break;
                         }
+                        
+                        
+                        txtSeeks01.setText(oTrans.getModel().getBarcode());
+                        txtSeeks02.setText(oTrans.getModel().getDescription());
                         pnEditMode = EditMode.READY;
                         data.clear();   
                         System.out.print("\neditmode on browse == " +pnEditMode);
@@ -824,6 +828,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                             txtSeeks01.clear();
                             break;
                         }
+                        txtSeeks01.setText(oTrans.getModel().getBarcode());
+                        txtSeeks02.setText(oTrans.getModel().getDescription());
                         pnEditMode = oTrans.getEditMode();
                         loadInventory();
                         loadSubUnitData();
@@ -840,6 +846,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                         }
                         pnEditMode = oTrans.getEditMode();
                         
+                        txtSeeks01.setText(oTrans.getModel().getBarcode());
+                        txtSeeks02.setText(oTrans.getModel().getDescription());
                         System.out.print("\neditmode on browse == " +pnEditMode);
                         loadInventory();
                         loadSubUnitData();
