@@ -305,6 +305,11 @@ public class Inventory implements GRecord{
             return poJSON;
 
         }
+        poJSON = openRecordByBarrcode(poModel.getBarcode());
+        if("error".equalsIgnoreCase((String)checkData(poJSON).get("result"))){
+            if (!pbWtParent) poGRider.rollbackTrans();
+            return checkData(poJSON);
+        }
         poJSON = poModel.saveRecord();
         if("error".equalsIgnoreCase((String)checkData(poJSON).get("result"))){
             if (!pbWtParent) poGRider.rollbackTrans();
@@ -319,6 +324,28 @@ public class Inventory implements GRecord{
 
         if (!pbWtParent) poGRider.commitTrans();
 
+
+        return poJSON;
+    }
+    public JSONObject openRecordByBarrcode(String fsCondition) {
+        poJSON = new JSONObject();
+
+        String lsSQL = poModel.getSQL();
+
+        //replace the condition based on the primary key column of the record
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex = " + SQLUtil.toSQL(fsCondition));
+        if(pnEditMode == EditMode.UPDATE){
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx <> " + SQLUtil.toSQL(poModel.getStockID()));
+        }
+        System.out.print("openRecordByBarrcode == " + lsSQL + "\n");
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+        if (MiscUtil.RecordCount(loRS)>0) {
+            poJSON.put("result", "error");
+            poJSON.put("message", "Barrcode already exists.");
+        } else {
+            poJSON.put("result", "success");
+            poJSON.put("message", "Barrcode is available.");
+        }
 
         return poJSON;
     }
@@ -419,36 +446,36 @@ public class Inventory implements GRecord{
         System.out.print("this is lsSQL == " + lsSQL + "\n");
 
 
-        if(!pbWthParent){
-            lsSQL = poModel.getSQL();
-            if (fbByCode)
-                lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
-            else
-                lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
-                lsSQL += " LIMIT 1";
-
-
-            System.out.print("test lsSQL == " + lsSQL + "\n");
-            ResultSet loRS = poGRider.executeQuery(lsSQL);
-
-          try {
-                if (!loRS.next()){
-                    MiscUtil.close(loRS);
-
-                    poJSON = new JSONObject();
-                    poJSON.put("result", "error");
-                    poJSON.put("message", "No transaction found for the givern criteria.");
-                    return poJSON;
-                }
-
-                lsSQL = loRS.getString("sStockIDx");
-                MiscUtil.close(loRS);
-                return openRecord(lsSQL);
-          } catch (SQLException ex) {
-              Logger.getLogger(InvMaster.class.getName()).log(Level.SEVERE, null, ex);
-          }
-
-        }
+//        if(!pbWthParent){
+//            lsSQL = poModel.getSQL();
+//            if (fbByCode)
+//                lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
+//            else
+//                lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
+//                lsSQL += " LIMIT 1";
+//
+//
+//            System.out.print("test lsSQL == " + lsSQL + "\n");
+//            ResultSet loRS = poGRider.executeQuery(lsSQL);
+//
+//          try {
+//                if (!loRS.next()){
+//                    MiscUtil.close(loRS);
+//
+//                    poJSON = new JSONObject();
+//                    poJSON.put("result", "error");
+//                    poJSON.put("message", "No transaction found for the givern criteria.");
+//                    return poJSON;
+//                }
+//
+//                lsSQL = loRS.getString("sStockIDx");
+//                MiscUtil.close(loRS);
+//                return openRecord(lsSQL);
+//          } catch (SQLException ex) {
+//              Logger.getLogger(InvMaster.class.getName()).log(Level.SEVERE, null, ex);
+//          }
+//
+//        }
         poJSON = ShowDialogFX.Search(poGRider,
                 lsSQL,
                 fsValue,

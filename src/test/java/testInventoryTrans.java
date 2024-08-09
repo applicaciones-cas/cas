@@ -185,7 +185,7 @@ public class testInventoryTrans{
         
             date = dateFormat.parse(dateString);
             System.out.println("Parsed Date: " + date);
-         loJSON =   record.GCardRedeem("M0012400001", date, EditMode.ADDNEW);
+         loJSON =   record.BranchTransfer("M0012400001", date, EditMode.ADDNEW);
             
         if ("error".equals((String) loJSON.get("result"))) {
             instance.rollbackTrans();

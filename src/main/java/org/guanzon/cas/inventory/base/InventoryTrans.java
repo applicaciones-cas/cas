@@ -1125,6 +1125,7 @@ public class InventoryTrans implements GTransaction{
                 psSourceCd.equals(InvConstants.AUTO_ACCEPT_DELIVERY) ||
 //                psSourceCd.equals(InvConstants.ACCEPT_DELIVERY_DISCREPANCY) ||
 //                psSourceCd.equals(InvConstants.ACCEPT_WARRANTY_TRANSFER) ||
+                psSourceCd.equals(InvConstants.BRANCH_TRANSFER) ||
                 psSourceCd.equals(InvConstants.BRANCH_ORDER) ||
                 psSourceCd.equals(InvConstants.BRANCH_ORDER_CONFIRM) ||
                 psSourceCd.equals(InvConstants.CUSTOMER_ORDER) ||
@@ -1252,18 +1253,18 @@ public class InventoryTrans implements GTransaction{
             System.out.println("lsMasSQL = " + lsMasSQL);
             System.out.println("lsMasSQL = " + lsLgrSQL);
                
+           
+            if (poGRider.executeQuery(lsLgrSQL, "Inv_Ledger", psBranchCd, "") <= 0){
+                poJSON.put("result", "error");
+                poJSON.put("message", poGRider.getErrMsg() + "\n" + poGRider.getMessage());
+                return poJSON;
+            }
             if (poGRider.executeQuery(lsMasSQL, "Inv_Master", psBranchCd, "") <= 0){
                 poJSON.put("result", "error");
                 poJSON.put("message", poGRider.getErrMsg() + "\n" + poGRider.getMessage());
                 return poJSON;
             }
 
-            if (poGRider.executeQuery(lsLgrSQL, "Inv_Ledger", psBranchCd, "") <= 0){
-                poJSON.put("result", "error");
-                poJSON.put("message", poGRider.getErrMsg() + "\n" + poGRider.getMessage());
-                return poJSON;
-            }
-            
             poJSON.put("result", "success");
             poJSON.put("message", "Record saved successfully.");
 

@@ -32,7 +32,7 @@ public class ModelInvSerialLedger {
         }
 
         System.out.println("Connected");
-        System.setProperty("sys.table", "Model_Inv_Serial_Ledger");
+        System.setProperty("sys.table", "Inv_Serial_Ledger");
         System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/Model_" + System.getProperty("sys.table") + ".xml");
 //        System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/Model_Inventory.xml");
         
@@ -51,9 +51,11 @@ public class ModelInvSerialLedger {
                                 ", c.sDescript xDescript" +
                                 ", b.sSerial01 xSerial01" +
                                 ", b.sSerial02 xSerial02" +
+                                ", d.sBranchNm xBranchNm " +
                         " FROM Inv_Serial_Ledger a"+ 
                             " LEFT JOIN Inv_Serial b ON a.sSerialID = b.sSerialID" +
-                            " LEFT JOIN Inventory c ON b.sStockIDx = c.sStockIDx";
+                            " LEFT JOIN Inventory c ON b.sStockIDx = c.sStockIDx" +
+                            " LEFT JOIN Branch d ON a.sBranchCd = d.sBranchCd";
         
         
         ResultSet loRS = instance.executeQuery(lsSQL);

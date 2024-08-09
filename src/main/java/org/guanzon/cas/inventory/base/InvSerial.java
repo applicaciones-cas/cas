@@ -346,7 +346,7 @@ public class InvSerial implements GRecord{
                         "    LEFT JOIN Branch c ON a.sBranchCd = c.sBranchCd" +
                         "    LEFT JOIN Company d ON a.sCompnyID = d.sCompnyID";
         lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx  = " + SQLUtil.toSQL(fsValue));
-//        lsSQL = MiscUtil.addCondition(lsSQL, "a.sBranchCd  = " + SQLUtil.toSQL(poGRider.getBranchCode()));
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sBranchCd  = " + SQLUtil.toSQL(poGRider.getBranchCode()));
         System.out.println("open SERial SQL == \n" +lsSQL);
          ResultSet loRS = poGRider.executeQuery(lsSQL);
         poJSON = new JSONObject();

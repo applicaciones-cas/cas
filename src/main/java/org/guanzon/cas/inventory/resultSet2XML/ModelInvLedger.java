@@ -17,10 +17,10 @@ public class ModelInvLedger {
     public static void main (String [] args){
         String path;
         if(System.getProperty("os.name").toLowerCase().contains("win")){
-            path = "D:/GGC_Java_Systems";
+            path = "D:/GGC_Maven_Systems";
         }
         else{
-            path = "/srv/GGC_Java_Systems";
+            path = "/srv/GGC_Maven_Systems";
         }
         System.setProperty("sys.default.path.config", path);
 
@@ -58,10 +58,12 @@ public class ModelInvLedger {
                         " , b.sBarCodex xBarCodex" +
                         " , b.sDescript xDescript" +
                         " , c.sWHouseNm xWHouseNm" +
+                        " , d.sBranchNm xBranchNm" +
                         " FROM " + System.getProperty("sys.table") + " a" +
                         "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID";
-        
+                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID"+
+                        "    LEFT JOIN Branch d ON a.sBranchCd = d.sBranchCd";
+       
         
         ResultSet loRS = instance.executeQuery(lsSQL);
         try {
