@@ -780,7 +780,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         String lsValue = (txtSeeks.getText() == null ?"": txtSeeks.getText());
         JSONObject poJSON;
         switch (event.getCode()) {
-            case F3:
+            case F3:            
+            case ENTER:
                 switch (lnIndex){
                     
                     case 1: /*search Barrcode*/
@@ -829,7 +830,6 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                         loadInventory();
                         break;
                 }
-            case ENTER:
                 
         }
         switch (event.getCode()){

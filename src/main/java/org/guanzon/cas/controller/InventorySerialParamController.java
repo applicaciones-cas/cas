@@ -299,6 +299,7 @@ public class InventorySerialParamController implements Initializable,ScreenInter
         JSONObject poJSON;
         switch (event.getCode()) {
             case F3:
+            case ENTER:
                 switch (lnIndex){
                     
                     case 1: /*search Barrcode*/
@@ -338,7 +339,7 @@ public class InventorySerialParamController implements Initializable,ScreenInter
                         loadSerialLedger();
                         break;
                 }
-            case ENTER:
+                
                 
         }
         switch (event.getCode()){
