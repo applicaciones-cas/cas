@@ -37,27 +37,37 @@ public class ModelInvSerial {
 //        System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/Model_Inventory.xml");
         
         
-        String lsSQL = "SELECT" +
-                        "   a.sSerialID" +
-                        " , a.sBranchCd" +
-                        " , a.sSerial01" +
-                        " , a.sSerial02" +
-                        " , a.nUnitPrce" +
-                        " , a.sStockIDx" +
-                        " , a.cLocation" +
-                        " , a.cSoldStat" +
-                        " , a.cUnitType" +
-                        " , a.sCompnyID" +
-                        " , a.sWarranty" +
-                        " , a.dModified" +
-                        " , b.sBarCodex xBarCodex" +
-                        " , b.sDescript xDescript" +
-                        " , c.sBranchNm xBranchNm " +
-                        " , d.sCompnyNm xCompanyNm " +
-                        "FROM Inv_Serial a" +
-                        "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Branch c ON a.sBranchCd = c.sBranchCd"+
-                        "    LEFT JOIN Company d ON a.sCompnyID = d.sCompnyID";
+        String lsSQL = "SELECT " +
+                "     a.sSerialID " +
+                "   , a.sBranchCd " +
+                "   , a.sSerial01 " +
+                "   , a.sSerial02 " +
+                "   , a.nUnitPrce " +
+                "   , a.sStockIDx " +
+                "   , a.cLocation " +
+                "   , a.cSoldStat " +
+                "   , a.cUnitType " +
+                "   , a.sCompnyID " +
+                "   , a.sWarranty " +
+                "   , a.dModified " +
+                "   , b.sBarCodex xBarCodex " +
+                "   , b.sDescript xDescript " +
+                "   , c.sDescript xBrandNme " +
+                "   , d.sModelNme xModelNme " +
+                "   , e.sDescript xColorNme " +
+                "   , IFNULL(f.sMeasurNm,'') xMeasurNm " +
+                "   , IFNULL(g.sDescript,'') xCategrNm " +
+                "   , h.sBranchNm xBranchNm  " +
+                "   , i.sCompnyNm xCompanyNm  " +
+                "  FROM " + System.getProperty("sys.table") + " a " +
+                "      LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx " +
+                "      LEFT JOIN Brand c ON b.sBrandCde = c.sBrandCde " +
+                "      LEFT JOIN Model d ON b.sModelCde = d.sModelCde " +
+                "      LEFT JOIN Color e ON b.sColorCde = e.sColorCde " +
+                "      LEFT JOIN Measure f ON b.sMeasurID = f.sMeasurID " +
+                "      LEFT JOIN Category g ON b.sCategCd1 = g.sCategrCd"+
+                "      LEFT JOIN Branch h ON a.sBranchCd = h.sBranchCd " +
+                "      LEFT JOIN Company i ON a.sCompnyID = i.sCompnyID " ;
         
         
         ResultSet loRS = instance.executeQuery(lsSQL);

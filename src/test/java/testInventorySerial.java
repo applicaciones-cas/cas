@@ -63,6 +63,7 @@ public class testInventorySerial{
         System.out.println("Connected");
         instance = MiscUtil.Connect();
         record = new InvSerial(instance, false);
+        record.setWithUI(false);
     }
     private static boolean loadProperties() {
         try {
@@ -149,6 +150,37 @@ public class testInventorySerial{
 //            Assert.fail((String) loJSON.get("message"));
 //        }
     }
+    
+    @Test
+    public void testOpenRecord() {
+        JSONObject loJSON;
+        
+        loJSON = record.searchRecord(2,"G3J1E-0300605");
+//        loJSON = record.newRecord();
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+        
+        Assert.assertEquals("M00124000006", record.getMaster().get(record.getMaster().size()-1).getSerialID());
+        Assert.assertEquals("M001", record.getMaster().get(record.getMaster().size()-1).getBranchCode());
+        Assert.assertEquals("G3J1E-0300605", record.getMaster().get(record.getMaster().size()-1).getSerial01());
+        Assert.assertEquals("MH3SG4650J0034235", record.getMaster().get(record.getMaster().size()-1).getSerial02());
+        Assert.assertEquals(1800.00, Double.parseDouble(record.getMaster().get(record.getMaster().size()-1).getUnitPrice().toString()), 0.0);
+        Assert.assertEquals("M00124000001", record.getMaster().get(record.getMaster().size()-1).getStockID());
+        Assert.assertEquals("3", record.getMaster().get(record.getMaster().size()-1).getLocation());
+        Assert.assertEquals("1", record.getMaster().get(record.getMaster().size()-1).getSoldStat());
+        Assert.assertEquals("6", record.getMaster().get(record.getMaster().size()-1).getUnitType());
+        Assert.assertEquals("0002", record.getMaster().get(record.getMaster().size()-1).getCompnyID());
+        Assert.assertEquals("997685", record.getMaster().get(record.getMaster().size()-1).getWarranty());
+        Assert.assertEquals("230000012708", record.getMaster().get(record.getMaster().size()-1).getBarcode());
+        Assert.assertEquals("sasasasa", record.getMaster().get(record.getMaster().size()-1).getDescript());
+        Assert.assertEquals("Suzuyama", record.getMaster().get(record.getMaster().size()-1).getBrandName());
+        Assert.assertEquals("RAIDER GTR 180", record.getMaster().get(record.getMaster().size()-1).getModelName());
+        Assert.assertEquals("ORANGE", record.getMaster().get(record.getMaster().size()-1).getColorName());
+        Assert.assertEquals("", record.getMaster().get(record.getMaster().size()-1).getMeasure());
+        Assert.assertEquals("GMC Dagupan - Honda", record.getMaster().get(record.getMaster().size()-1).getBranchName());
+        Assert.assertEquals("Guanzon Merchandising Corp.", record.getMaster().get(record.getMaster().size()-1).getCompnyName());
+    }
 
     @AfterClass
     public static void tearDownClass() {
@@ -158,3 +190,4 @@ public class testInventorySerial{
 }
 
 
+    

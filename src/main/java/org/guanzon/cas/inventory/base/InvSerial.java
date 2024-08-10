@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
@@ -17,6 +19,7 @@ import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
 import org.guanzon.cas.model.inventory.Model_Inv_Serial;
+import org.guanzon.cas.model.inventory.Model_Inv_Serial_Ledger;
 import org.json.simple.JSONObject;
 
 /**
@@ -28,12 +31,16 @@ public class InvSerial implements GRecord{
 
     GRider poGRider;
     boolean pbWthParent;
+    private boolean p_bWithUI = true;
     int pnEditMode;
     String psTranStatus;
     
     ArrayList<Model_Inv_Serial> poModel;
     JSONObject poJSON;
 
+    public void setWithUI(boolean fbValue){
+        p_bWithUI = fbValue;
+    }
     public InvSerial(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
@@ -204,8 +211,8 @@ public class InvSerial implements GRecord{
 //        String lsSQL = MiscUtil.addCondition(model.getSQL(), "a.sSerialID LIKE " + SQLUtil.toSQL("%" + fsValue +"%"));
         System.out.println("lsSQL = " + lsSQL);
         poJSON = new JSONObject();
-
-        poJSON = ShowDialogFX.Search(poGRider,
+        if (p_bWithUI){
+            poJSON = ShowDialogFX.Search(poGRider,
                 lsSQL,
                 fsValue,
                 "Serial ID»Serial 01»Serial 02",
@@ -213,21 +220,130 @@ public class InvSerial implements GRecord{
                 "a.sSerialID»a.sSerial01»a.sSerial02",
                 fbByCode ? 1 : 2);
 
-        if (poJSON != null) {
-            System.out.println();
-            pnEditMode = EditMode.READY;
-            System.out.println("openREC serial == " + (String)poJSON.get("sSerialID"));
-            return openRecord((String)poJSON.get("sSerialID"));
-        } else {
-            poJSON.put("result", "error");
-            poJSON.put("message", "No record loaded to update.");
-            return poJSON;
+            if (poJSON != null) {
+                System.out.println();
+                pnEditMode = EditMode.READY;
+                System.out.println("openREC serial == " + (String)poJSON.get("sSerialID"));
+                return openRecord((String)poJSON.get("sSerialID"));
+            } else {
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded to update.");
+                return poJSON;
+            }
         }
+        
+        if (fbByCode)
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sSerial01 LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + lsCondition;
+        else {
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sSerial02 LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) +  lsCondition;
+            lsSQL += " LIMIT 1";
+        }
+        
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+        
+        try {
+            if (!loRS.next()){
+                MiscUtil.close(loRS);
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded.");
+                return poJSON;
+            }
+            
+            lsSQL = loRS.getString("sSerialID");
+            MiscUtil.close(loRS);
+        } catch (SQLException ex) {
+            Logger.getLogger(InvSerial.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        return openRecord(lsSQL);
+        
+    }
+    
+    public JSONObject searchRecord(int fnIndex, String fsValue) {
+        String lsCondition = "";
+        Model_Inv_Serial model = new Model_Inv_Serial(poGRider);
+        
+        String lsSQL = model.getSQL();
+        switch (fnIndex) {
+            case 1:
+//                add query for customer name search to be followed
+//                lsSQL = MiscUtil.addCondition(lsSQL, "sCompnyNm LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + lsCondition;
+                break;
+            case 2:
+                
+                lsSQL = MiscUtil.addCondition(lsSQL, "a.sSerial01 LIKE " + SQLUtil.toSQL("%" + fsValue + "%"));
+                break;
+            case 3:
+                lsSQL = MiscUtil.addCondition(lsSQL, "a.sSerial02 LIKE " + SQLUtil.toSQL("%" + fsValue + "%"));
+                
+                break;
+            default:
+                throw new AssertionError();
+        }
+        
+
+        System.out.println("search Record == " + lsSQL + "\n");
+        
+        
+        
+//        String lsSQL = MiscUtil.addCondition(model.getSQL(), "a.sSerialID LIKE " + SQLUtil.toSQL("%" + fsValue +"%"));
+        System.out.println("lsSQL = " + lsSQL);
+        if (p_bWithUI){
+            poJSON = ShowDialogFX.Search(poGRider,
+                lsSQL,
+                fsValue,
+                "Serial ID»Serial 01»Serial 02",
+                "sSerialID»sSerial01»sSerial02",
+                "a.sSerialID»a.sSerial01»a.sSerial02",
+                fnIndex);
+
+            if (poJSON != null) {
+                System.out.println();
+                pnEditMode = EditMode.READY;
+                System.out.println("openREC serial == " + (String)poJSON.get("sSerialID"));
+                return openRecord((String)poJSON.get("sSerialID"));
+            } else {
+                poJSON = new JSONObject();
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded to update.");
+                return poJSON;
+            }
+        }
+        
+//        if (fnIndex == 3){
+//            lsSQL = MiscUtil.addCondition(lsSQL, "a.sSerial02 LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) +  lsCondition;
+//            
+//        }
+        
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+        
+        try {
+            if (!loRS.next()){
+                MiscUtil.close(loRS);
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded.");
+                return poJSON;
+            }
+            
+            lsSQL = loRS.getString("sSerialID");
+            MiscUtil.close(loRS);
+        } catch (SQLException ex) {
+            Logger.getLogger(InvSerial.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        return openRecord(lsSQL);
+        
     }
 
     @Override
     public Model_Inv_Serial getModel() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    public Model_Inv_Serial getModel(int fnRow) {
+        return poModel.get(fnRow);
     }
     public ArrayList<Model_Inv_Serial> getMaster(){return poModel;}
     public void setMaster(ArrayList<Model_Inv_Serial> foObj){poModel = foObj;}
@@ -346,7 +462,9 @@ public class InvSerial implements GRecord{
                         "    LEFT JOIN Branch c ON a.sBranchCd = c.sBranchCd" +
                         "    LEFT JOIN Company d ON a.sCompnyID = d.sCompnyID";
         lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx  = " + SQLUtil.toSQL(fsValue));
-        lsSQL = MiscUtil.addCondition(lsSQL, "a.sBranchCd  = " + SQLUtil.toSQL(poGRider.getBranchCode()));
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sBranchCd  = " + SQLUtil.toSQL(poGRider.getBranchCode()));   
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.cLocation  <>  '3'");
+
         System.out.println("open SERial SQL == \n" +lsSQL);
          ResultSet loRS = poGRider.executeQuery(lsSQL);
         poJSON = new JSONObject();
@@ -438,6 +556,7 @@ public class InvSerial implements GRecord{
                         "    LEFT JOIN Company d ON a.sCompnyID = d.sCompnyID";
         lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx  = " + SQLUtil.toSQL(fsValue));
         lsSQL = MiscUtil.addCondition(lsSQL, "a.sBranchCd  = " + SQLUtil.toSQL(poGRider.getBranchCode()));
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.cLocation  <>  '3'");
         lsSQL = MiscUtil.addCondition(lsSQL, lsCondition);
         System.out.println("open SERial SQL with condition == \n" + lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
