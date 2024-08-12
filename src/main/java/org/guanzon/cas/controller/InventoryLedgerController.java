@@ -6,9 +6,12 @@ package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -72,6 +75,8 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
     private Button btnCancel;
     @FXML
     private Button btnClose;
+    @FXML
+    private Button btnRecalculate;
     @FXML
     private DatePicker dpField02;
     @FXML
@@ -139,6 +144,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
             btnCancel.setOnAction(this::cmdButton_Click);
             btnClose.setOnAction(this::cmdButton_Click);
             btnLoadLedger.setOnAction(this::cmdButton_Click);
+            btnRecalculate.setOnAction(this::cmdButton_Click);
             pbLoaded = true;
             initTable();
             txtField01.setText(poTrans.getModel().getBarCodex());
@@ -161,6 +167,24 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                 }
                 CommonUtils.closeStage(btnClose);
             break;
+            case "btnRecalculate":  //Rcalculate
+                if (data.isEmpty()){
+                    ShowMessageFX.Information("Please ensure the ledger is loaded before performing recalculation."
+                            + "Recalculation cannot be completed correctly without loading the ledger first.", 
+                            "Computerized Acounting System", pxeModuleName);     
+                    break;
+                }else{
+                    try {
+                        poTrans.recalculate(poTrans.getModel().getStockID());
+                        ShowMessageFX.Information("Recalculation completed succesfully", 
+                            "Computerized Acounting System", pxeModuleName); 
+                    } catch (SQLException ex) {
+                        Logger.getLogger(InventoryLedgerController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            
+            break;
+
            case "btnLoadLedger":  //Close
 //                CommonUtils.closeStage(btnClose);
                 LocalDate fromDate = dpField01.getValue();

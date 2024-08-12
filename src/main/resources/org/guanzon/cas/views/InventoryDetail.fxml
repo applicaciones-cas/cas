@@ -24,7 +24,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="AnchorMain" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="AnchorMain" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
@@ -395,9 +395,9 @@
                                                 <TextField fx:id="txtField27" prefHeight="46.0" prefWidth="203.0" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="15" />
                                                 <TextField fx:id="txtField18" prefHeight="46.0" prefWidth="203.0" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="16" />
                                                 <TextField fx:id="txtField19" prefHeight="43.0" prefWidth="203.0" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="17" />
-                                                <CheckBox fx:id="chkField01" mnemonicParsing="false" onMouseClicked="#chkFiled01_Clicked" text="Serialize" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="19" />
-                                                <CheckBox fx:id="chkField02" mnemonicParsing="false" onMouseClicked="#chkFiled02_Clicked" text="Combo" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="20" />
-                                                <CheckBox fx:id="chkField03" mnemonicParsing="false" onMouseClicked="#chkFiled03_Clicked" text="with Promo" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="21" />
+                                                <CheckBox fx:id="chkField01" mnemonicParsing="false" onMouseClicked="#chkFiled01_Clicked" text="Serialize" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="19" />
+                                                <CheckBox fx:id="chkField02" mnemonicParsing="false" onMouseClicked="#chkFiled02_Clicked" text="Combo" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="20" />
+                                                <CheckBox fx:id="chkField03" mnemonicParsing="false" onMouseClicked="#chkFiled03_Clicked" text="with Promo" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.rowIndex="21" />
                                                 <TextField fx:id="txtField20" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="19" />
                                                 <TextField fx:id="txtField21" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="20" />
                                                 <Label fx:id="lblStatus" alignment="CENTER" contentDisplay="CENTER" maxWidth="264.0" minWidth="150.0" prefHeight="37.0" prefWidth="264.0" style="-fx-background-color: FF8201;" stylesheets="@../css/StyleSheet.css" text="ACTIVE" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
@@ -408,7 +408,7 @@
                                                       <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                                    </padding>
                                                 </Label>
-                                                <CheckBox fx:id="chkField04" mnemonicParsing="false" onMouseClicked="#chkFiled04_Clicked" text="Active" GridPane.columnIndex="5" GridPane.rowIndex="22" />
+                                                <CheckBox fx:id="chkField04" mnemonicParsing="false" onMouseClicked="#chkFiled04_Clicked" text="Active" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="22" />
                                                 <Separator prefWidth="200.0" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="21" />
                                                 <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="7" />
                                                 <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="13" />
