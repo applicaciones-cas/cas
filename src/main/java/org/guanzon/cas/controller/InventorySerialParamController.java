@@ -59,7 +59,7 @@ public class InventorySerialParamController implements Initializable,ScreenInter
     private int pnRow = 0;
     
     private ObservableList<ModelInvSerialLedger> data = FXCollections.observableArrayList();
-     @FXML
+    @FXML
     private AnchorPane AnchorMain;
 
     @FXML
@@ -105,12 +105,6 @@ public class InventorySerialParamController implements Initializable,ScreenInter
     private TextField txtField05;
 
     @FXML
-    private TextField txtField06;
-
-    @FXML
-    private TextField txtField07;
-
-    @FXML
     private TextField txtField08;
 
     @FXML
@@ -133,15 +127,12 @@ public class InventorySerialParamController implements Initializable,ScreenInter
 
     @FXML
     private TextField txtField15;
-//
-//    @FXML
-//    private TextField txtField16;
 
     @FXML
     private ComboBox cmbField01;
 
     @FXML
-    private Label lblStatus;
+    private CheckBox chkField01;
 
     @FXML
     private AnchorPane AnchorInput1;
@@ -172,9 +163,6 @@ public class InventorySerialParamController implements Initializable,ScreenInter
 
     @FXML
     private Button btnClose;
-    
-    @FXML
-    private CheckBox chkField01;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -207,7 +195,6 @@ public class InventorySerialParamController implements Initializable,ScreenInter
         cmbField01.setItems(unitType);
         txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
         txtSeeks02.setOnKeyPressed(this::txtSeeks_KeyPressed);
-        lblStatus.setVisible(false);
         pbLoaded = true;
     }    
     
@@ -231,18 +218,21 @@ public class InventorySerialParamController implements Initializable,ScreenInter
                 
                 case "btnBrowse": 
                     String lsValue = (txtSeeks01.getText().toString().isEmpty() ?"": txtSeeks01.getText().toString());
-                       poJSON = oTrans.searchRecord(lsValue, true);
+                    poJSON = oTrans.searchRecord(lsValue, true);
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                             txtSeeks01.clear();
                             break;
                         }
+                        
                         lsValue = (String) oTrans.getMaster(pnRow, "sSerialID");
                         poJSON = poTrans.OpenInvSerialLedger(lsValue);
                         System.out.println("poJson = " + poJSON.toJSONString());
+                        
                         if("error".equalsIgnoreCase(poJSON.get("result").toString())){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);                              
                         }  
+                        
                         pnEditMode = oTrans.getEditMode();
                         clearAllFields();
                         data.clear();
@@ -256,62 +246,62 @@ public class InventorySerialParamController implements Initializable,ScreenInter
 
 
     private void loadSerial() {
-    if (pnEditMode == EditMode.READY || 
-        pnEditMode == EditMode.ADDNEW || 
-        pnEditMode == EditMode.UPDATE) {
+        if (pnEditMode == EditMode.READY || 
+            pnEditMode == EditMode.ADDNEW || 
+            pnEditMode == EditMode.UPDATE) {
 
-        // Set text fields from oTrans
-        txtField01.setText((String) oTrans.getModel(pnRow).getSerialID());
-        txtField02.setText((String) oTrans.getModel(pnRow).getSerial01());
-        txtField03.setText((String) oTrans.getModel(pnRow).getSerial02());
-        
-        txtField04.setText((String) oTrans.getModel(pnRow).getBarcode());
-        txtField05.setText((String) oTrans.getModel(pnRow).getDescript());
-        txtField06.setText((String) oTrans.getModel(pnRow).getWarranty());
-        
-        txtField07.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel(pnRow).getUnitPrice().toString()), "#,##0.00"));
-        txtField08.setText((String) oTrans.getModel(pnRow).getCategoryName());
-        txtField09.setText((String) oTrans.getModel(pnRow).getBrandName());
-        
-        txtField10.setText((String) oTrans.getModel(pnRow).getModelName());
-        txtField11.setText((String) oTrans.getModel(pnRow).getColorName());
-        txtField12.setText((String) oTrans.getModel(pnRow).getCompnyName());
-        
-        
-//        txtField13.setText((String) oTrans.getModel().ge);
-        txtField14.setText((String) oTrans.getModel(pnRow).getBranchName());
-        
-                // Define an array of location descriptions
-        String[] locationDescriptions = {
-            "Warehouse",       // Index 0
-            "Branch",          // Index 1
-            "Supplier",        // Index 2
-            "Customer",        // Index 3
-            "On Transit",      // Index 4
-            "Service Center",  // Index 5
-            "Service Unit"     // Index 6
-        };
+            // Set text fields from oTrans
+            txtField01.setText((String) oTrans.getModel(pnRow).getSerialID());
+            txtField02.setText((String) oTrans.getModel(pnRow).getSerial01());
+            txtField03.setText((String) oTrans.getModel(pnRow).getSerial02());
 
-        // Retrieve the location code and handle it
-        String locationCode = (String) oTrans.getModel(pnRow).getLocation();
-        int index;
-        try {
-            index = Integer.parseInt(locationCode);
-        } catch (NumberFormatException e) {
-            throw new AssertionError("Invalid location code format: " + locationCode);
-        }
+            txtField04.setText((String) oTrans.getModel(pnRow).getBarcode());
+            txtField05.setText((String) oTrans.getModel(pnRow).getDescript());
+//            txtField06.setText((String) oTrans.getModel(pnRow).getWarranty());
 
-        // Set the description or handle an invalid code
-        if (index >= 0 && index < locationDescriptions.length) {
-            txtField15.setText(locationDescriptions[index]);
-        } else {
-            throw new AssertionError("Unexpected location code: " + locationCode);
-        }
-        
-        int SoldStat = Integer.parseInt(oTrans.getModel(pnRow).getSoldStat().toString());
-        chkField01.setSelected(SoldStat == 1);
-        
-        cmbField01.getSelectionModel().select(Integer.parseInt(oTrans.getModel(pnRow).getUnitType().toString()));
+//            txtField07.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel(pnRow).getUnitPrice().toString()), "#,##0.00"));
+            txtField08.setText((String) oTrans.getModel(pnRow).getCategoryName());
+            txtField09.setText((String) oTrans.getModel(pnRow).getBrandName());
+
+            txtField10.setText((String) oTrans.getModel(pnRow).getModelName());
+            txtField11.setText((String) oTrans.getModel(pnRow).getColorName());
+            txtField12.setText((String) oTrans.getModel(pnRow).getCompnyName());
+
+
+    //        txtField13.setText((String) oTrans.getModel().ge);
+            txtField14.setText((String) oTrans.getModel(pnRow).getBranchName());
+
+                    // Define an array of location descriptions
+            String[] locationDescriptions = {
+                "Warehouse",       // Index 0
+                "Branch",          // Index 1
+                "Supplier",        // Index 2
+                "Customer",        // Index 3
+                "On Transit",      // Index 4
+                "Service Center",  // Index 5
+                "Service Unit"     // Index 6
+            };
+
+            // Retrieve the location code and handle it
+            String locationCode = (String) oTrans.getModel(pnRow).getLocation();
+            int index;
+            try {
+                index = Integer.parseInt(locationCode);
+            } catch (NumberFormatException e) {
+                throw new AssertionError("Invalid location code format: " + locationCode);
+            }
+
+            // Set the description or handle an invalid code
+            if (index >= 0 && index < locationDescriptions.length) {
+                txtField15.setText(locationDescriptions[index]);
+            } else {
+                throw new AssertionError("Unexpected location code: " + locationCode);
+            }
+
+            int SoldStat = Integer.parseInt(oTrans.getModel(pnRow).getSoldStat().toString());
+            chkField01.setSelected(SoldStat == 1);
+
+            cmbField01.getSelectionModel().select(Integer.parseInt(oTrans.getModel(pnRow).getUnitType().toString()));
     }
 }
 
@@ -320,8 +310,8 @@ public class InventorySerialParamController implements Initializable,ScreenInter
         TextField[][] allFields = {
             // Text fields related to specific sections
             {txtSeeks01, txtSeeks02, txtField01, txtField02, txtField03, txtField04,
-             txtField05, txtField06, txtField07, txtField08, txtField09,txtField10,
-             txtField11, txtField12, txtField13, txtField14, txtField15},
+             txtField05, txtField08, txtField09,txtField10, txtField11, txtField12,
+             txtField13, txtField14, txtField15},
         };
 
         cmbField01.setValue(null);
@@ -346,96 +336,35 @@ public class InventorySerialParamController implements Initializable,ScreenInter
                 System.out.println("INDEX == " + lnIndex);
                 poJSON = oTrans.searchRecord(lnIndex,lsValue);
                 System.out.println("poJSON == " + poJSON.toJSONString());
-                        if ("error".equals((String) poJSON.get("result"))){
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtSeeks01.clear();
-                            break;
-                        }
-                        lsValue = (String) oTrans.getMaster(pnRow, "sSerialID");
-                        poJSON = poTrans.OpenInvSerialLedger(lsValue);
-                        System.out.println("poJson = " + poJSON.toJSONString());
-                        if("error".equalsIgnoreCase(poJSON.get("result").toString())){
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);   
-                            
-                        }  
-                        pnEditMode = oTrans.getEditMode();
-                        clearAllFields();
-                        loadSerial();
-                        loadSerialLedger();
-                        data.clear();
+                    if ("error".equals((String) poJSON.get("result"))){
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        txtSeeks01.clear();
                         break;
-//                switch (lnIndex){
-//                    
-//                    case 1: /*search Name*/
-//                       poJSON = oTrans.searchRecord(lnIndex,lsValue);
-//                        if ("error".equals((String) poJSON.get("result"))){
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtSeeks01.clear();
-//                            break;
-//                        }
-//                        lsValue = (String) oTrans.getMaster(pnRow, "sSerialID");
-//                        poJSON = poTrans.OpenInvSerialLedger(lsValue);
-//                        System.out.println("poJson = " + poJSON.toJSONString());
-//                        if("error".equalsIgnoreCase(poJSON.get("result").toString())){
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);    
-//                        }  
-//                        pnEditMode = oTrans.getEditMode();
-//                        clearAllFields();
-//                        loadSerial();
-//                        loadSerialLedger();
-//                        data.clear();
-//                        break;
-//                        
-//                    case 2: /*search Barrcode*/
-//                       poJSON = oTrans.searchRecord(1,lsValue);
-//                        if ("error".equals((String) poJSON.get("result"))){
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtSeeks01.clear();
-//                            break;
-//                        }
-//                        lsValue = (String) oTrans.getMaster(pnRow, "sSerialID");
-//                        poJSON = poTrans.OpenInvSerialLedger(lsValue);
-//                        System.out.println("poJson = " + poJSON.toJSONString());
-//                        if("error".equalsIgnoreCase(poJSON.get("result").toString())){
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);    
-//                        }  
-//                        pnEditMode = oTrans.getEditMode();
-//                        clearAllFields();
-//                        loadSerial();
-//                        loadSerialLedger();
-//                        data.clear();
-//                        break;
-//                    case 3 :
-//                       poJSON = oTrans.searchRecord(1,lsValue);
-//                        if ("error".equals((String) poJSON.get("result"))){
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtSeeks01.clear();
-//                            break;
-//                        }
-//                        lsValue = (String) oTrans.getMaster(pnRow, "sSerialID");
-//                        poJSON = poTrans.OpenInvSerialLedger(lsValue);
-//                        System.out.println("poJson = " + poJSON.toJSONString());
-//                        if("error".equalsIgnoreCase(poJSON.get("result").toString())){
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);    
-//                        }  
-//                        pnEditMode = oTrans.getEditMode();
-//                        clearAllFields();
-//                        loadSerial();
-//                        loadSerialLedger();
-//                        data.clear();
-//                        break;
-//                }
-                
-                
+                    }
+                    lsValue = (String) oTrans.getMaster(pnRow, "sSerialID");
+                    poJSON = poTrans.OpenInvSerialLedger(lsValue);
+                    System.out.println("poJson = " + poJSON.toJSONString());
+                    
+                    if("error".equalsIgnoreCase(poJSON.get("result").toString())){
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);   
+                    }  
+                    
+                    pnEditMode = oTrans.getEditMode();
+                    clearAllFields();
+                    data.clear();
+                    loadSerial();
+                    loadSerialLedger();
+                    
+                    break;
         }
         switch (event.getCode()){
-        case ENTER:
-            CommonUtils.SetNextFocus(txtSeeks);
-        case DOWN:
-            CommonUtils.SetNextFocus(txtSeeks);
-            break;
-        case UP:
-            CommonUtils.SetPreviousFocus(txtSeeks);
+            case ENTER:
+                CommonUtils.SetNextFocus(txtSeeks);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtSeeks);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtSeeks);
         }
     }
     private void loadSerialLedger(){
@@ -466,13 +395,11 @@ public class InventorySerialParamController implements Initializable,ScreenInter
                 System.out.println( poTrans.getMaster(lnCtr, 11).toString());
                 System.out.println( poTrans.getMaster(lnCtr, 12).toString());
                 System.out.println( poTrans.getMaster(lnCtr, 13).toString());
-                System.out.println("--------------------------------------------------------");
-                
-                
-            }
-            
+                System.out.println("-------------------------------------------------------");
+            }            
         }
     }
+    
     private void initTable() {
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
@@ -494,5 +421,4 @@ public class InventorySerialParamController implements Initializable,ScreenInter
         tblInventorySerialLedger.setItems(data);
         tblInventorySerialLedger.autosize();
     }
-    
 }
