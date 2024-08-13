@@ -5,8 +5,12 @@
 package org.guanzon.cas.inventory.base;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
@@ -43,13 +47,14 @@ public class InvMaster implements GRecord{
     private Inventory poInventory;
     private InvSerial poSerial;
     private InvLedger poLedger;
+    private InvHistLedger poHistLedger;
     private Inv_Location poLocation;
 
     
     public InvMaster(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
-
+        psBranchCd = poGRider.getBranchCode();
         poModel = new Model_Inv_Master(foGRider);
         poInventory = new Inventory(foGRider, pbWthParent);
         poSerial = new InvSerial(foGRider, pbWthParent);
@@ -342,7 +347,26 @@ public class InvMaster implements GRecord{
         if ("success".equals((String) poJSON.get("result"))){
             poJSON = poModel.openRecord(poInventory.getModel().getStockID());
             if ("error".equals((String) poJSON.get("result"))){
-                 ShowMessageFX.Information("No Inventory found in your warehouse.\nPlease save the record to create.", "Computerized Acounting System", "Inventory Detail");
+                 ShowMessageFX.Information("No Inventory found in your warehouse. Please save the record to create.", "Computerized Acounting System", "Inventory Detail");
+                 poJSON = newRecord();
+            }else {
+                pnEditMode = EditMode.READY;
+            }
+            
+            poModel.setStockID(poInventory.getModel().getStockID());
+            poModel.setBranchCd(poGRider.getBranchCode());
+            poModel.setBarCodex(poInventory.getModel().getBarcode());
+            poModel.setDescript(poInventory.getModel().getDescription());
+        }      
+        return poJSON;
+    }
+    
+    public JSONObject SearchRecordByStockID(String fsValue, boolean fbByCode) {
+        poJSON = poInventory.searchRecordByStockID(fsValue, fbByCode);
+        if ("success".equals((String) poJSON.get("result"))){
+            poJSON = poModel.openRecord(poInventory.getModel().getStockID());
+            if ("error".equals((String) poJSON.get("result"))){
+                 ShowMessageFX.Information("No Inventory found in your warehouse. Please save the record to create.", "Computerized Acounting System", "Inventory Detail");
                  poJSON = newRecord();
             }else {
                 pnEditMode = EditMode.READY;
@@ -457,11 +481,6 @@ public class InvMaster implements GRecord{
                     setMaster("sWHouseID", (String) loJSON.get("sWHouseID"));
                     setMaster("xWHouseNm", (String) loJSON.get("xWHouseNm"));
                     
-//                    setMaster(6, (String) loJSON.get("sMainCatx"));
-////                    setMaster("xCategNm1", (String)loCategory.getMaster("sDescript"));
-//                    setMaster("xCategNm1", (String)loJSON.get("xMainCatx"));
-//                    setMaster("xMainCatx", (String)loJSON.get("sMainCatx"));
-//                    System.out.println("sInvTypCd = " + setMaster("sInvTypCd", (String) loJSON.get("sCategrCd")));
                     return setMaster("xSectnNme", (String) loJSON.get("xSectnNme"));
                     
                 }else {
@@ -471,22 +490,6 @@ public class InvMaster implements GRecord{
                     return loJSON;
                 }
                 
-                
-                
-                
-                
-//                Inv_Location loLocation = new Inv_Location(poGRider, false);
-//                loLocation.setRecordStatus(psTranStatus);
-//                loJSON = loLocation.searchRecord(fsValue, fbByCode);
-//                
-//                if (loJSON != null){
-//                    setMaster(fnCol, (String) loLocation.getMaster("sLocatnCd"));
-//                    return setMaster("xLocatnNm", (String) loLocation.getMaster("sDescript"));
-//                } else {
-//                    loJSON.put("result", "error");
-//                    loJSON.put("message", "No record found.");
-//                    return loJSON;
-//                }
             default:
                 return null;
                 
@@ -495,5 +498,290 @@ public class InvMaster implements GRecord{
     
     public JSONObject SearchMaster(String fsCol, String fsValue, boolean fbByCode){
         return SearchMaster(poModel.getColumn(fsCol), fsValue, fbByCode);
+    }
+    
+     public boolean recalculate(String fsStockIDx) throws SQLException {
+         poJSON = new JSONObject();
+        if (fsStockIDx == null) {
+            String lsSQL = "SELECT a.sStockIDx"
+                    + " FROM Inv_Master a"
+                    + ", Inventory b"
+                    + " WHERE a.sStockIDx = b.sStockIDx"
+                    + " AND a.sBranchCd = " + SQLUtil.toSQL(psBranchCd)
+                    + " AND a.cRecdStat = '1'"
+                    + " AND b.cRecdStat = '1'";
+
+            if (!System.getProperty("store.inventory.type").isEmpty()) {
+//                lsSQL = MiscUtil.addCondition(lsSQL, "b.sInvTypCd IN " + CommonUtils.getParameter(System.getProperty("store.inventory.type")));
+            }
+
+            ResultSet loRS = poGRider.executeQuery(lsSQL);
+
+            int lnMax = (int) MiscUtil.RecordCount(loRS);
+            if (lnMax <= 0) {
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record to recalculate.");
+                return false;
+            }
+
+            loRS.beforeFirst();
+            int lnRow = 1;
+            while (loRS.next()) {
+                poJSON = SearchRecordByStockID(loRS.getString("sStockIDx"),  true);
+                if ("error".equals((String) poJSON.get("result"))) {
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "No record found.");
+                    return false;
+                }
+
+                if (!recalculate(loRS.getString("sStockIDx"),(Date) poModel.getDBegInvxx(), Double.parseDouble(poModel.getBegQtyxx().toString()))) {
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "Unable to recalculate " + poModel.getStockID()+ ".");
+                    return false;
+                }
+
+                lnRow += 1;
+
+                System.out.println(lnRow);
+            }
+
+            return true;
+        } else {
+            if (pnEditMode != EditMode.READY) {
+                
+                poJSON = SearchRecordByStockID(fsStockIDx,  true);
+                if ("error".equals((String) poJSON.get("result"))) {
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "No record found.");
+                    return false;
+                }
+            } else {
+                if (!poModel.getStockID().equalsIgnoreCase(fsStockIDx)) {
+                    
+                    poJSON = SearchRecordByStockID(fsStockIDx,  true);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        poJSON.put("result", "error");
+                        poJSON.put("message", "No record found.");
+                        return false;
+                    }
+                }
+            }
+
+            return recalculate(fsStockIDx,(Date) poModel.getDBegInvxx(), Double.parseDouble(poModel.getBegQtyxx().toString()));
+        }
+    }
+
+    public boolean recalculate(String fsStockIDx, Date fdBegInvxx, double fnBegQtyxx) throws SQLException {
+        String lsSQL = "";
+        ResultSet loRSMaster;
+
+        //check if beginning inventory date is less than beginning inventory lock date
+        
+        if (poModel.getDBegInvxx()!= null) {
+             Date dBegInvxx = (Date) poModel.getDBegInvxx(); // Casting the object to Date
+  
+            if (dBegInvxx.before(fdBegInvxx)) {
+                poJSON.put("result", "error");
+                poJSON.put("message", "Beginning date is less than the current beginning date!");
+            }
+        }
+
+        poGRider.beginTrans();
+        ResultSet loRSLedger;
+        if (fdBegInvxx != null) {
+            //check if there are transaction before the beginning inventory date
+            //transfer to history ledger
+            lsSQL = "SELECT sSourceNo"
+                    + " FROM Inv_Ledger"
+                    + " WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx)
+                    + " AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode())
+                    + " AND dTransact <= " + SQLUtil.toSQL(fdBegInvxx);
+
+            System.out.println(lsSQL);
+            loRSLedger = poGRider.executeQuery(lsSQL);
+            if (loRSLedger.next()) {
+                //Insert into history ledger
+                   
+//                lsSQL = "INSERT INTO Inv_Hist_Ledger"
+//                        + " SELECT * FROM Inv_Ledger"
+//                        + " WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx)
+//                        + " AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode())
+//                        + " AND dTransact <= " + SQLUtil.toSQL(fdBegInvxx);
+                lsSQL = "INSERT IGNORE INTO Inv_Hist_Ledger ( " +
+                        "    sStockIDx, sBranchCd, sWHouseID, nLedgerNo, dTransact,  " +
+                        "    sSourceCd, sSourceNo, nQtyInxxx, nQtyOutxx, nQtyOrder,  " +
+                        "    nQtyIssue, nPurPrice, nUnitPrce, dExpiryxx, dAuditedx,  " +
+                        "    sModified, dModified) " +
+                        " SELECT  sStockIDx, sBranchCd, sWHouseID, nLedgerNo, dTransact,  " +
+                        "    sSourceCd, sSourceNo, nQtyInxxx, nQtyOutxx, nQtyOrder,  " +
+                        "    nQtyIssue, nPurPrice, nUnitPrce, dExpiryxx, NULL AS dAuditedx,  " +
+                        "    sModified, dModified " +
+                        " FROM Inv_Ledger "
+                        + " WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx)
+                        + " AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode())
+                        + " AND dTransact <= " + SQLUtil.toSQL(fdBegInvxx);
+//                poGRider.executeQuery(lsSQL, "Inv_Hist_Ledger", psBranchCd, "");
+                if (poGRider.executeQuery(lsSQL, "Inv_Hist_Ledger", psBranchCd, "") <= 0) {
+                    poGRider.rollbackTrans();
+                    poJSON.put("result", "error");
+                    poJSON.put("message", poGRider.getErrMsg());
+                } 
+
+                //delete transaction from inventory ledger
+//                lsSQL = "DELETE FROM Inv_Ledger"
+//                        + " WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx)
+//                        + " AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode())
+//                        + " AND dTransact <= " + SQLUtil.toSQL(fdBegInvxx);
+//                System.out.println(lsSQL);
+////                poGRider.executeQuery(lsSQL, "Inv_Ledger", psBranchCd, "");
+//                if (poGRider.executeQuery(lsSQL, "Inv_Ledger", psBranchCd, "") <= 0) {
+//                    poGRider.rollbackTrans();
+//                    poJSON.put("result", "error");
+//                    poJSON.put("message", poGRider.getErrMsg());
+//                } 
+
+            }
+
+            //check if history ledger has a transaction before inventory date
+            //if there are transactions then transfer it to the transaction ledger
+            lsSQL = "SELECT sSourceNo"
+                    + " FROM Inv_Hist_Ledger"
+                    + " WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx)
+                    + " AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode())
+                    + " AND dTransact > " + SQLUtil.toSQL(fdBegInvxx);
+
+            System.out.println(lsSQL);
+            loRSLedger = poGRider.executeQuery(lsSQL);
+            if (loRSLedger.next()) {
+                //Insert into transaction ledger
+//                lsSQL = "INSERT INTO Inv_Ledger"
+//                        + " SELECT * FROM Inv_Hist_Ledger"
+//                        + " WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx)
+//                        + " AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode())
+//                        + " AND dTransact > " + SQLUtil.toSQL(fdBegInvxx);
+                lsSQL = "UPDATE Inv_Ledger a " +
+                        "JOIN Inv_Hist_Ledger b " +
+                        "ON Inv_Ledger.sStockIDx = b.sStockIDx " +
+                        "AND Inv_Ledger.sBranchCd = b.sBranchCd " +
+                        "SET " +
+                        "    a.sWHouseID = b.sWHouseID, " +
+                        "    a.nLedgerNo = b.nLedgerNo, " +
+                        "    a.dTransact = b.dTransact, " +
+                        "    a.sSourceCd = b.sSourceCd, " +
+                        "    a.sSourceNo = b.sSourceNo, " +
+                        "    a.nQtyInxxx = b.nQtyInxxx, " +
+                        "    a.nQtyOutxx = b.nQtyOutxx, " +
+                        "    a.nQtyOrder = b.nQtyOrder, " +
+                        "    a.nQtyIssue = b.nQtyIssue, " +
+                        "    a.nPurPrice = b.nPurPrice, " +
+                        "    a.nUnitPrce = b.nUnitPrce, " +
+                        "    a.dExpiryxx = b.dExpiryxx, " +
+                        "    a.sModified = b.sModified, " +
+                        "    a.dModified = b.dModified " +
+                        "WHERE a.sStockIDx = b.sStockIDx " +
+                        "    AND a.sBranchCd = b.sBranchCd " +
+                        "    AND b.sStockIDx = " + SQLUtil.toSQL(fsStockIDx) +
+                        "    AND b.sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode()) +
+                        "    AND b.dTransact <= " + SQLUtil.toSQL(fdBegInvxx);
+//                poGRider.executeQuery(lsSQL, "Inv_Ledger", psBranchCd, "");
+                if (poGRider.executeQuery(lsSQL, "Inv_Ledger", psBranchCd, "") <= 0) {
+                    poGRider.rollbackTrans();
+                    poJSON.put("result", "error");
+                    poJSON.put("message", poGRider.getErrMsg());
+                } 
+                //delete transaction from inventory ledger
+                lsSQL = "DELETE FROM Inv_Hist_Ledger"
+                        + " WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx)
+                        + " AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode())
+                        + " AND dTransact > " + SQLUtil.toSQL(fdBegInvxx);
+                System.out.println(lsSQL);
+                
+                if (poGRider.executeQuery(lsSQL, "Inv_Hist_Ledger", psBranchCd, "") <= 0) {
+                    poGRider.rollbackTrans();
+                    poJSON.put("result", "error");
+                    poJSON.put("message", poGRider.getErrMsg());
+                } 
+            }
+
+        }
+
+        double lnQtyOnHnd = fnBegQtyxx;
+
+        int lnLedgerNo = 0;
+        lsSQL = "SELECT *"
+                + " FROM Inv_Ledger"
+                + " WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx)
+                + " AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode())
+                + " ORDER BY dTransact, nLedgerNo";
+        loRSLedger = poGRider.executeQuery(lsSQL);
+
+        while (loRSLedger.next()) {
+            StringBuilder loSQL = new StringBuilder();
+
+            lnQtyOnHnd += (loRSLedger.getFloat("nQtyInxxx") - loRSLedger.getFloat("nQtyOutxx"));
+            lnLedgerNo++;
+
+            if (lnLedgerNo != loRSLedger.getInt("nLedgerNo")) {
+                loSQL.append(", ").append("nLedgerNo = ").append(lnLedgerNo);
+            }
+
+            if (Double.compare(loRSLedger.getDouble("nQtyOnHnd"), lnQtyOnHnd) != 0) {
+                loSQL.append(", ").append("nQtyOnHnd = ").append(lnQtyOnHnd);
+            }
+
+            if (loSQL.length() > 0) {
+                lsSQL = "UPDATE Inv_Ledger"
+                        + " SET " + loSQL.toString().substring(2)
+                        + " WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx)
+                        + " AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode())
+                        + " AND sSourceCd = " + SQLUtil.toSQL(loRSLedger.getString("sSourceCd"))
+                        + " AND sSourceNo = " + SQLUtil.toSQL(loRSLedger.getString("sSourceNo"));
+                System.out.println(lsSQL);
+//                poGRider.executeQuery(lsSQL, "Inv_Ledger", psBranchCd, "");
+                if (poGRider.executeQuery(lsSQL, "Inv_Ledger", psBranchCd, "") <= 0) {
+                    poGRider.rollbackTrans();
+                    poJSON.put("result", "error");
+                    poJSON.put("message", poGRider.getErrMsg());
+                } 
+            }
+        }
+
+        StringBuilder loSQL = new StringBuilder();
+
+        if (lnLedgerNo != Integer.parseInt(poModel.getLedgerNo().toString())) {
+            loSQL.append(", ").append("nLedgerNo = ").append(lnLedgerNo);
+        }
+
+        if (Double.compare(Double.parseDouble(poModel.getQtyOnHnd().toString()), lnQtyOnHnd) != 0) {
+            loSQL.append(", ").append("nQtyOnHnd = ").append(lnQtyOnHnd);
+        }
+
+        if (poModel.getDBegInvxx()== null) {
+            loSQL.append(", ").append("dBegInvxx = ").append(SQLUtil.toSQL(fdBegInvxx));
+        } else if (!poModel.getDBegInvxx().equals(fdBegInvxx)) {
+            loSQL.append(", ").append("dBegInvxx = ").append(SQLUtil.toSQL(fdBegInvxx));
+        }
+
+        if (Double.compare(Double.parseDouble(poModel.getBegQtyxx().toString()), fnBegQtyxx) != 0) {
+            loSQL.append(", ").append("nBegQtyxx = ").append(fnBegQtyxx);
+        }
+
+        if (loSQL.length() > 0) {
+            lsSQL = "UPDATE Inv_Master"
+                    + " SET " + loSQL.toString().substring(2)
+                    + " WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx)
+                    + " AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode());
+//            poGRider.executeQuery(lsSQL, "Inv_Master", psBranchCd, "");
+
+            System.out.println(lsSQL);
+             if (poGRider.executeQuery(lsSQL, "Inv_Master", psBranchCd, "") <= 0) {
+                    poGRider.rollbackTrans();
+                    poJSON.put("result", "error");
+                    poJSON.put("message", poGRider.getErrMsg());
+                } 
+        }
+
+        poGRider.commitTrans();
+        return true;
     }
 }

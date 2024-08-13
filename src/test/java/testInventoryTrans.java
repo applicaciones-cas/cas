@@ -103,18 +103,10 @@ public class testInventoryTrans{
         }
          
 
-        loJSON = record.setMaster(record.getMaster().size() - 1, "sStockIDx", "M00124000001");
+        loJSON = record.setMaster(record.getMaster().size() - 1, "sStockIDx", "M00124000002");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        loJSON = record.setMaster(0, "nQuantity", 5);
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-       
-        Assert.assertEquals(5, record.getMaster(0, "nQuantity"));
-        
-    
         loJSON = record.setMaster(0, "nQtyOnHnd", 5);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
@@ -178,6 +170,15 @@ public class testInventoryTrans{
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
+        
+        loJSON = record.setMaster(0, "nQuantity", 12);
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+       
+        Assert.assertEquals(12, record.getMaster(0, "nQuantity"));
+        
+    
        System.out.println(date);
         Assert.assertEquals(date, record.getMaster(0, "dExpiryxx"));
        
@@ -185,7 +186,7 @@ public class testInventoryTrans{
         
             date = dateFormat.parse(dateString);
             System.out.println("Parsed Date: " + date);
-         loJSON =   record.BranchTransfer("M0012400001", date, EditMode.ADDNEW);
+         loJSON = record.Sales("M0012400002", date, EditMode.ADDNEW);
             
         if ("error".equals((String) loJSON.get("result"))) {
             instance.rollbackTrans();

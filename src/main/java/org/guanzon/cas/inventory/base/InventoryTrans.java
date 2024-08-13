@@ -238,29 +238,29 @@ public class InventoryTrans implements GTransaction{
     
         return saveTransaction();
     }
-    
-    public JSONObject Accept2HDelivery(String fsSourceNo,
-                                    Date fdTransDate,
-                                    int fnUpdateMode){
-        psSourceCd = InvConstants.ACCEPT_2H_DELIVERY;
-        psSourceNo = fsSourceNo;
-        pdTransact = fdTransDate;
-        pnEditMode = fnUpdateMode;
-    
-        return saveTransaction();
-    }
-    
-    public JSONObject Delivery2H(String fsSourceNo,
-                                    Date fdTransDate,
-                                    int fnUpdateMode){
-        psSourceCd = InvConstants.DELIVERY_2H;
-        psSourceNo = fsSourceNo;
-        pdTransact = fdTransDate;
-        pnEditMode = fnUpdateMode;
-    
-        return saveTransaction();
-    }
-    
+//    
+//    public JSONObject Accept2HDelivery(String fsSourceNo,
+//                                    Date fdTransDate,
+//                                    int fnUpdateMode){
+//        psSourceCd = InvConstants.ACCEPT_2H_DELIVERY;
+//        psSourceNo = fsSourceNo;
+//        pdTransact = fdTransDate;
+//        pnEditMode = fnUpdateMode;
+//    
+//        return saveTransaction();
+//    }
+//    
+//    public JSONObject Delivery2H(String fsSourceNo,
+//                                    Date fdTransDate,
+//                                    int fnUpdateMode){
+//        psSourceCd = InvConstants.DELIVERY_2H;
+//        psSourceNo = fsSourceNo;
+//        pdTransact = fdTransDate;
+//        pnEditMode = fnUpdateMode;
+//    
+//        return saveTransaction();
+//    }
+//    
     public JSONObject BranchTransfer(String fsSourceNo,
                                     Date fdTransDate,
                                     int fnUpdateMode){
@@ -271,28 +271,28 @@ public class InventoryTrans implements GTransaction{
     
         return saveTransaction();
     }
-    
-    public JSONObject AutoAcceptDelivery(String fsSourceNo,
-                                    Date fdTransDate,
-                                    int fnUpdateMode){
-        psSourceCd = InvConstants.AUTO_ACCEPT_DELIVERY;
-        psSourceNo = fsSourceNo;
-        pdTransact = fdTransDate;
-        pnEditMode = fnUpdateMode;
-    
-        return saveTransaction();
-    }
-    
-    public JSONObject AutoDelivery(String fsSourceNo,
-                                    Date fdTransDate,
-                                    int fnUpdateMode){
-        psSourceCd = InvConstants.AUTO_DELIVERY;
-        psSourceNo = fsSourceNo;
-        pdTransact = fdTransDate;
-        pnEditMode = fnUpdateMode;
-    
-        return saveTransaction();
-    }
+//    
+//    public JSONObject AutoAcceptDelivery(String fsSourceNo,
+//                                    Date fdTransDate,
+//                                    int fnUpdateMode){
+//        psSourceCd = InvConstants.AUTO_ACCEPT_DELIVERY;
+//        psSourceNo = fsSourceNo;
+//        pdTransact = fdTransDate;
+//        pnEditMode = fnUpdateMode;
+//    
+//        return saveTransaction();
+//    }
+//    
+//    public JSONObject AutoDelivery(String fsSourceNo,
+//                                    Date fdTransDate,
+//                                    int fnUpdateMode){
+//        psSourceCd = InvConstants.AUTO_DELIVERY;
+//        psSourceNo = fsSourceNo;
+//        pdTransact = fdTransDate;
+//        pnEditMode = fnUpdateMode;
+//    
+//        return saveTransaction();
+//    }
     
     public JSONObject JobOrder(String fsSourceNo,
                                     Date fdTransDate,
@@ -498,38 +498,38 @@ public class InventoryTrans implements GTransaction{
         return saveTransaction();
     }
     
-    public JSONObject WholesaleOrder(String fsSourceNo,
-                                    Date fdTransDate,
-                                    int fnUpdateMode){
-        psSourceCd = InvConstants.WHOLESALE_ORDER;
-        psSourceNo = fsSourceNo;
-        pdTransact = fdTransDate;
-        pnEditMode = fnUpdateMode;
-    
-        return saveTransaction();
-    }
-    
-    public JSONObject WholesaleCancelOrder(String fsSourceNo,
-                                    Date fdTransDate,
-                                    int fnUpdateMode){
-        psSourceCd = InvConstants.WHOLESALE_ORDER_CANCEL;
-        psSourceNo = fsSourceNo;
-        pdTransact = fdTransDate;
-        pnEditMode = fnUpdateMode;
-    
-        return saveTransaction();
-    }
-    
-    public JSONObject Salvage_Cannibalized(String fsSourceNo,
-                                    Date fdTransDate,
-                                    int fnUpdateMode){
-        psSourceCd = InvConstants.SALVAGE_CANNIBALIZED;
-        psSourceNo = fsSourceNo;
-        pdTransact = fdTransDate;
-        pnEditMode = fnUpdateMode;
-    
-        return saveTransaction();
-    }
+//    public JSONObject WholesaleOrder(String fsSourceNo,
+//                                    Date fdTransDate,
+//                                    int fnUpdateMode){
+//        psSourceCd = InvConstants.WHOLESALE_ORDER;
+//        psSourceNo = fsSourceNo;
+//        pdTransact = fdTransDate;
+//        pnEditMode = fnUpdateMode;
+//    
+//        return saveTransaction();
+//    }
+//    
+//    public JSONObject WholesaleCancelOrder(String fsSourceNo,
+//                                    Date fdTransDate,
+//                                    int fnUpdateMode){
+//        psSourceCd = InvConstants.WHOLESALE_ORDER_CANCEL;
+//        psSourceNo = fsSourceNo;
+//        pdTransact = fdTransDate;
+//        pnEditMode = fnUpdateMode;
+//    
+//        return saveTransaction();
+//    }
+//    
+//    public JSONObject Salvage_Cannibalized(String fsSourceNo,
+//                                    Date fdTransDate,
+//                                    int fnUpdateMode){
+//        psSourceCd = InvConstants.SALVAGE_CANNIBALIZED;
+//        psSourceNo = fsSourceNo;
+//        pdTransact = fdTransDate;
+//        pnEditMode = fnUpdateMode;
+//    
+//        return saveTransaction();
+//    }
     
     public JSONObject CreditMemo(String fsSourceNo,
                                     Date fdTransDate,
@@ -814,105 +814,38 @@ public class InventoryTrans implements GTransaction{
             }
             
             switch (psSourceCd){
-                case InvConstants.ACCEPT_DELIVERY:
-//                    poModelProcessd.get(lnRow).setQuantityIn(( poModelProcessd.get(lnRow).getQuantityIn().doubleValue()
-//                                                        +  Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                    if (pbWarehous){
-//                        if (poModel.get(lnCtr).getReplaceID().equals("")){
-//                            poModelProcessd.get(lnRow).setQtyOrder(poModelProcessd.get(lnRow).getQtyOrder().doubleValue()
-//                                                                - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                        }
-//                    } 
-                    
+                case InvConstants.ACCEPT_DELIVERY:// same transaction code ACCEPT_2H_DELIVERY   
                     poModelProcessd.get(lnRow).setQuantityIn(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIn().toString())
                                                         +  Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));//alway based on order
-                    if (pbWarehous){
-                        if (poModel.get(lnCtr).getReplaceID().equals("")){
-                            poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
-                                                                - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-                        }
-                    } 
-                    
-                    
                     break;
-//                    case InvConstants.ACCEPT_DELIVERY_DISCREPANCY:
-//                        
-//                        System.err.println("qtyin" +poModelProcessd.get(lnRow).getQuantityIn());
-//                        System.err.println("qtyinput?" +poModelProcessd.get(lnRow).getQuantity());
-//                    poModelProcessd.get(lnRow).setQuantityIn(( poModelProcessd.get(lnRow).getQuantityIn().doubleValue()
-//                                                        +  Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                    if (pbWarehous){
-//                        if (poModel.get(lnCtr).getReplaceID().equals("")){
-//                            poModelProcessd.get(lnRow).setQtyOrder(poModelProcessd.get(lnRow).getQtyOrder().doubleValue()
-//                                                                - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                        }
-//                    } 
-//                    break;
-                case InvConstants.BRANCH_ORDER:
+                case InvConstants.BRANCH_TRANSFER:
                     poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
-                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-                    break;
-                case InvConstants.RETAIL_ORDER:
-                case InvConstants.BRANCH_ORDER_CONFIRM:
-                case InvConstants.CUSTOMER_ORDER:
-                case InvConstants.WHOLESALE_ORDER:
-                    poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
                                                         - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
-                case InvConstants.CANCEL_RETAIL_ORDER:
-                case InvConstants.WHOLESALE_ORDER_CANCEL:
-                    poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
-                                                        - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-                    break;
-//                case InvConstants.DELIVERY:
-////                    poModelProcessd.get(lnRow).setDateExpire(poModel.get(lnCtr).getDateExpire());
-//                    
-//                    poModelProcessd.get(lnRow).setQuantityOut(poModelProcessd.get(lnRow).getQuantityOut()
-//                                                        - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                    
-//                    if (poModel.get(lnCtr).getReplaceID().equals("")){
-//                        poModelProcessd.get(lnRow).setQuantityIssue(poModelProcessd.get(lnRow).getQuantityIssue()
-//                                                        - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                    }
-//                    break;
-//                    case InvConstants.DELIVERY_DISCREPANCY:
-////                    poModelProcessd.get(lnRow).setDateExpire(poModel.get(lnCtr).getDateExpire());
-//                    poModelProcessd.get(lnRow).setQuantityOut((poModelProcessd.get(lnRow).getQuantityOut().doubleValue()
-//                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                    
-//                    if (poModel.get(lnCtr).getReplaceID().equals("")){
-//                        poModelProcessd.get(lnRow).setQuantityIssue(poModelProcessd.get(lnRow).getQuantityIssue().doubleValue()
-//                                                            + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                    }
-//                    break;
+                    
                 case InvConstants.JOB_ORDER:
                     poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
-                                                        - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     
                     if (poModel.get(lnCtr).getReplaceID().equals("")){
                         poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
-                                                        - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+                                                        + Double.parseDouble(poModel.get(lnCtr).getResvOrdr().toString()));
                     }      
                     break;
+                    
                 case InvConstants.PURCHASE:
                     poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
                                                         + Double.parseDouble(poModel.get(lnCtr).getQuantityOrder().toString()));
                     poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
-                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantityIssue().toString()));
-                    
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantityIssue().toString()));   
                     break;
                 case InvConstants.PURCHASE_RECEIVING:
                     poModelProcessd.get(lnRow).setQuantityIn(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIn().toString())
                                                         + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
 //                    poModelProcessd.get(lnRow).setDateExpire(poModel.get(lnCtr).getDateExpire());
                     poModelProcessd.get(lnRow).setPurchasePrice(Double.parseDouble(poModel.get(lnCtr).getPurchasePrice().toString()));
-
-                    if (poModel.get(lnCtr).getReplaceID().equals("")){
-                        System.out.println("setQuantityOrder = " + poModelProcessd.get(lnRow).getQuantityOrder().toString() + " - " + poModel.get(lnCtr).getQuantity().toString());
-                        poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
-                                                            - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-                    }
                     break;
+
                 case InvConstants.PURCHASE_RETURN:
                     poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
                                                             + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
@@ -920,7 +853,7 @@ public class InventoryTrans implements GTransaction{
                 case InvConstants.PURCHASE_REPLACEMENT:
                     poModelProcessd.get(lnRow).setQuantityIn(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIn().toString())
                                                         + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-                    break;
+                    break;   
                 case InvConstants.WHOLESALE:
                     poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
                                                         + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
@@ -933,15 +866,9 @@ public class InventoryTrans implements GTransaction{
                     poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
                                                         + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
-                case InvConstants.SALES:
-                case InvConstants.BRANCH_TRANSFER:
+                 case InvConstants.SALES:
                     poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
                                                         + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-                   
-                    /*if (!poModel.get(lnCtr).getReplaceID().equals("")){
-                        poModelProcessd.get(lnRow).setQuantityOut((poModelProcessd.get(lnRow).getQuantityOut()
-                                                            + poModel.get(lnCtr).getQuantity());
-                    }*/
                     break;
                 case InvConstants.SALES_RETURN:
                     poModelProcessd.get(lnRow).setQuantityIn(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIn().toString())
@@ -950,37 +877,38 @@ public class InventoryTrans implements GTransaction{
                 case InvConstants.SALES_REPLACEMENT:
                 case InvConstants.SALES_GIVE_AWAY:
                 case InvConstants.WARRANTY_RELEASE:
-                case InvConstants.DEBIT_MEMO:
-                    poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                    poModelProcessd.get(lnRow).setDateExpire(pdTransact);
+                    poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
                 case InvConstants.SALVAGE_CANNIBALIZED:
                     poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
                                                         + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
-//                case InvConstants.WASTE_INV:
-//                    poModelProcessd.get(lnRow).setQuantityOut(poModelProcessd.get(lnRow).getQuantityOut()
-//                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                    break;
-                case InvConstants.CREDIT_MEMO:
-                    poModelProcessd.get(lnRow).setQuantityIn(Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                    poModelProcessd.get(lnRow).setDateExpire(pdTransact);
+                case InvConstants.BRANCH_ORDER:
+                    poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                     break;
-//                case InvConstants.DAILY_PRODUCTION_IN:
-//                    poModelProcessd.get(lnRow).setDateExpire(poModel.get(lnCtr).getDateExpire());
-//                    poModelProcessd.get(lnRow).setQuantityIn(poModelProcessd.get(lnRow).getQuantityIn()
-//                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                    break;
-//                case InvConstants.DAILY_PRODUCTION_OUT:
-//                    poModelProcessd.get(lnRow).setDateExpire(pdTransact);
-//                    poModelProcessd.get(lnRow).setQuantityOut((poModelProcessd.get(lnRow).getQuantityOut().doubleValue()
-//                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                    
-//                    if (poModel.get(lnCtr).getReplaceID().equals("")){
-//                        poModelProcessd.get(lnRow).setQuantityIssue(poModelProcessd.get(lnRow).getQuantityIssue().doubleValue()
-//                                                            + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                    }
-//                    break;
+                
+                case InvConstants.BRANCH_ORDER_CONFIRM:
+                case InvConstants.CUSTOMER_ORDER:
+                case InvConstants.RETAIL_ORDER:
+                    poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
+                                                        - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+                    break;
+                case InvConstants.CANCEL_RETAIL_ORDER:
+                    poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+                    break;
+                case InvConstants.CREDIT_MEMO:
+                case InvConstants.GCARD_REDEEM:
+                    poModelProcessd.get(lnRow).setQuantityOut(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOut().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+                    break;
+                case InvConstants.DEBIT_MEMO:
+                    poModelProcessd.get(lnRow).setQuantityIn(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIn().toString())
+                                                        + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+                    break;
+                                    
             }
             
             if (!poModel.get(lnCtr).getReplaceID().equals("")){
@@ -1072,29 +1000,26 @@ public class InventoryTrans implements GTransaction{
                 }
                 
                 switch (psSourceCd){
-//                    case InvConstants.ACCEPT_DELIVERY_DISCREPANCY:
                     case InvConstants.ACCEPT_DELIVERY:
                         if (!pbWarehous){
                             poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
                                                                 - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                         }
                         break;
-//                    case InvConstants.DELIVERY:
-//                    case InvConstants.DELIVERY_DISCREPANCY:
-//                        
-//                        poModelProcessd.get(lnRow).setQuantityIssue(poModelProcessd.get(lnRow).getQuantityIssue()
-//                                                            + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
-//                        break;
+                    case InvConstants.BRANCH_TRANSFER:
+                        if (!pbWarehous){
+                            poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
+                                                                + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+                        }
+                        break;
                     case InvConstants.JOB_ORDER:
                         poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
                                                             + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                         break;
                     case InvConstants.PURCHASE_RECEIVING:
-                        System.out.println("PURCHASE_RECEIVING = " + poModelProcessd.get(lnRow).getQuantityOrder().toString() + " - " + poModel.get(lnCtr).getQuantity().toString());
                         poModelProcessd.get(lnRow).setQuantityOrder(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityOrder().toString())
-                                                            - Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
+                                                            + Double.parseDouble(poModel.get(lnCtr).getQuantity().toString()));
                         break;
-                    case InvConstants.BRANCH_TRANSFER:
                     case InvConstants.SALES:
                         poModelProcessd.get(lnRow).setQuantityIssue(Double.parseDouble(poModelProcessd.get(lnRow).getQuantityIssue().toString())
                                                             + Double.parseDouble(poModel.get(lnCtr).getResvOrdr().toString()));
