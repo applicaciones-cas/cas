@@ -304,7 +304,7 @@ public class InvLedger implements GRecord{
                         " FROM Inv_Ledger a" +
                         "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                         "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID";
-        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue));
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue) + " ORDER BY a.nLedgerNo ASC");
         System.out.println(lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
 
@@ -314,7 +314,8 @@ public class InvLedger implements GRecord{
                 poModel = new ArrayList<>();
                 while(loRS.next()){
                         poModel.add(new Model_Inv_Ledger(poGRider));
-                        poModel.get(poModel.size() - 1).openRecord(loRS.getString("sStockIDx"));
+//                        poModel.get(poModel.size() - 1).openRecord(loRS.getString("sStockIDx"));
+                        poModel.get(poModel.size() - 1).openRecord(loRS.getString("sStockIDx"), " a.nLedgerNo = " + SQLUtil.toSQL(loRS.getString("nLedgerNo")));
                         
                         pnEditMode = EditMode.UPDATE;
                         lnctr++;
@@ -366,7 +367,7 @@ public class InvLedger implements GRecord{
                         " FROM Inv_Ledger a" +
                         "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                         "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWHouseNm";
-        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue));
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue) + " ORDER BY a.nLedgerNo ASC");
         lsSQL = MiscUtil.addCondition(lsSQL, lsCondition);
         System.out.println(lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
