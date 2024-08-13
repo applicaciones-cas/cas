@@ -6,8 +6,11 @@ package org.guanzon.cas.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
 import java.util.logging.Level;
@@ -301,7 +304,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         initButton(pnEditMode);
         }
         oTrans.setRecordStatus("0123");
-        dpField01.setValue(LocalDate.now());
+//        dpField01.setValue(LocalDate.now());
         pnEditMode = EditMode.UNKNOWN;        
         initButton(pnEditMode);
         initTabAnchor();
@@ -715,7 +718,28 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             if(pnEditMode == EditMode.ADDNEW) txtField22.setPromptText("PRESS F3: Search");
            
             lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
-            
+           DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            // Get the object from the model
+            Object dbegInvxx = oTrans.getModel().getDBegInvxx();
+
+            if (dbegInvxx == null) {
+                // If the object is null, set the DatePicker to the current date
+                dpField01.setValue(LocalDate.now());
+            } else if (dbegInvxx instanceof Timestamp) {
+                // If the object is a Timestamp, convert it to LocalDate
+                Timestamp timestamp = (Timestamp) dbegInvxx;
+                LocalDate localDate = timestamp.toLocalDateTime().toLocalDate();
+                dpField01.setValue(localDate);
+            } else if (dbegInvxx instanceof Date) {
+                // If the object is a java.sql.Date, convert it to LocalDate
+                Date sqlDate = (Date) dbegInvxx;
+                LocalDate localDate = sqlDate.toLocalDate();
+                dpField01.setValue(localDate);
+            } else {
+                // Handle unexpected types or throw an exception
+                throw new IllegalArgumentException("Expected a Timestamp or Date, but got: " + dbegInvxx.getClass().getName());
+            }            
             initSubItemForm();
      }
     }
@@ -949,7 +973,17 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     private Stage getStage(){
 	return (Stage) txtField01.getScene().getWindow();
     }
-    public void setOverlay(boolean fbVal){
+//    public void setOverlay(boolean fbVal){
+//        overlay.setVisible(fbVal);
+//    }
+    public void loadResult(String fsValue, boolean fbVal){
+        JSONObject poJson = new JSONObject();
         overlay.setVisible(fbVal);
+        poJson = oTrans.openRecord(fsValue);
+        if("error".equalsIgnoreCase(poJson.get("result").toString())){
+            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
+        }
+        loadInventory();
+               
     }
 }

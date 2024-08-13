@@ -163,7 +163,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
         switch (lsButton){
            case "btnClose":  //Close
                 if(parentController != null){
-                    appUnload.useParentController("");
+                    appUnload.useParentController(poTrans.getModel().getStockID());
                 }
                 CommonUtils.closeStage(btnClose);
             break;
@@ -175,9 +175,18 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                     break;
                 }else{
                     try {
+                        LocalDate fromDate = dpField01.getValue();
+                        LocalDate thruDate = dpField02.getValue();
                         poTrans.recalculate(poTrans.getModel().getStockID());
                         ShowMessageFX.Information("Recalculation completed succesfully", 
                             "Computerized Acounting System", pxeModuleName); 
+                        poJson = new JSONObject();
+                        poJson = oTrans.OpenInvLedgerWithCondition(poTrans.getModel().getStockID(), " a.dTransact BETWEEN '" + fromDate + "' AND '" + thruDate +"'");
+                        System.out.println("poJson = " + poJson.toJSONString());
+                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
+                        }  
+                        loadLedger();
                     } catch (SQLException ex) {
                         Logger.getLogger(InventoryLedgerController.class.getName()).log(Level.SEVERE, null, ex);
                     }
