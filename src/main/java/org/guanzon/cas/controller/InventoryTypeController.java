@@ -234,9 +234,7 @@ public class InventoryTypeController implements Initializable, ScreenInterface {
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                 return;
         }
-
         initButton(pnEditMode);
-
     }
 
     @Override
@@ -245,7 +243,6 @@ public class InventoryTypeController implements Initializable, ScreenInterface {
         oTrans = new Inv_Type(oApp, false);
         oTrans.setRecordStatus("10");
         pbLoaded = true;
-
         pnEditMode = EditMode.UNKNOWN;
 
         initButton(pnEditMode);
@@ -253,7 +250,6 @@ public class InventoryTypeController implements Initializable, ScreenInterface {
         clearFields();
 
         pbLoaded = true;
-
     }
 
     @Override

@@ -6,9 +6,13 @@ package org.guanzon.cas.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -20,6 +24,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -28,6 +33,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -38,10 +44,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -72,8 +77,13 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     
     private InvMaster oTrans;
     
+    
+    
     @FXML
     private AnchorPane AnchorMain,AnchorTable,AnchorInput;
+    @FXML
+    public StackPane overlay;
+    
     @FXML
     private GridPane gridEditable;
     @FXML
@@ -278,16 +288,12 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                 "RDU",
                 "Others"
         );
-
-
-
     /**
      * Initializes the controller class.
      */
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
-        
     }
 
     @Override
@@ -298,21 +304,20 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         initButton(pnEditMode);
         }
         oTrans.setRecordStatus("0123");
-        dpField01.setValue(LocalDate.now());
+//        dpField01.setValue(LocalDate.now());
         pnEditMode = EditMode.UNKNOWN;        
         initButton(pnEditMode);
         initTabAnchor();
         ClickButton();
         InitTextFields();
         pbLoaded = true;
-
-        // TODO
+        overlay.setVisible(false);
+        
     }    
     
     /*Handle button click*/
     private void ClickButton() {
         btnCancel.setOnAction(this::handleButtonAction);
-//        btnNew.setOnAction(this::handleButtonAction);
         btnSave.setOnAction(this::handleButtonAction);
         btnUpdate.setOnAction(this::handleButtonAction);        
         btnLedger.setOnAction(this::handleButtonAction);        
@@ -357,7 +362,6 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                         }
                     break;
                 case "btnSave":
-                    
                         JSONObject saveResult = oTrans.saveRecord();
                         if ("success".equals((String) saveResult.get("result"))){
                             System.err.println((String) saveResult.get("message"));
@@ -372,24 +376,26 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                             System.out.println("Record not saved successfully.");
                             System.out.println((String) saveResult.get("message"));
                         }
-                        
                      break;
-
-                
                 case "btnBrowse": 
                     String lsValue = (txtSeeks01.getText().toString().isEmpty() ?"": txtSeeks01.getText().toString());
-                       poJSON = oTrans.SearchInventory(lsValue, false);
+                       poJSON = oTrans.SearchInventory(lsValue, true);
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                           
                             txtSeeks01.clear();
                             break;
                         }
                         pnEditMode = oTrans.getEditMode();
                         
+                        if(pnEditMode==EditMode.READY){
+                            txtSeeks01.setText(oTrans.getModel().getBarCodex());
+                            txtSeeks02.setText(oTrans.getModel().getDescript());
+                        }else{
+                            txtSeeks01.clear();
+                            txtSeeks02.clear();
+                        }
                         initButton(pnEditMode);
                         System.out.print("\neditmode on browse == " + pnEditMode);
-                        
                         initTabAnchor();
                         loadInventory();
                     break;
@@ -420,119 +426,153 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                             ShowMessageFX.Information("This Inventory is not serialize!", "Computerized Acounting System", pxeModuleName);
                         }
                     }
-                    break;
-
+                break;
+            }
         }
-    }
     
     }
     private void loadSerial(String fsCode) throws SQLException {
-        try {
-            Stage stage = new Stage();
+    try {
+        Stage stage = new Stage();
 
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventorySerial.fxml"));
+        overlay.setVisible(true);
 
-            InventorySerialController loControl = new InventorySerialController();
-            loControl.setGRider(oApp);
-            // loControl.setIncentiveObject(oTrans);
-            // loControl.setIncentiveCode(fsCode);
-            // loControl.setTableRow(fnRow);
-            loControl.setFsCode(oTrans);
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventorySerial.fxml"));
 
-            fxmlLoader.setController(loControl);
+        InventorySerialController loControl = new InventorySerialController();
+        loControl.setGRider(oApp);
+        loControl.setFsCode(oTrans);
 
-            // Load the main interface
-            Parent parent = fxmlLoader.load();
-            parent.setStyle("-fx-background-color: rgba(0, 0, 0, 1);");
+        fxmlLoader.setController(loControl);
 
-            // Set up dragging
-            parent.setOnMousePressed(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    xOffset = event.getSceneX();
-                    yOffset = event.getSceneY();
-                }
-            });
-            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    stage.setX(event.getScreenX() - xOffset);
-                    stage.setY(event.getScreenY() - yOffset);
-                }
-            });
+        // Load the main interface
+        Parent parent = fxmlLoader.load();
+        parent.setStyle("-fx-background-color: rgba(0, 0, 0, 1);");
 
-            // Set the main interface as the scene
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Inventory Ledger");
-            stage.showAndWait();
+        // Set up dragging
+        final double[] xOffset = new double[1];
+        final double[] yOffset = new double[1];
 
-            // loadDetail();
-            // loadIncentives();
-        } catch (IOException e) {
-            e.printStackTrace();
-            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-            System.exit(1);
-        }
+        parent.setOnMousePressed(event -> {
+            xOffset[0] = event.getSceneX();
+            yOffset[0] = event.getSceneY();
+        });
+
+        parent.setOnMouseDragged(event -> {
+            double newX = event.getScreenX() - xOffset[0];
+            double newY = event.getScreenY() - yOffset[0];
+
+            // Get the screen bounds
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+            // Calculate the window bounds
+            double stageWidth = stage.getWidth();
+            double stageHeight = stage.getHeight();
+
+            // Constrain the stage position to the screen bounds
+            if (newX < 0) newX = 0;
+            if (newY < 0) newY = 0;
+            if (newX + stageWidth > screenBounds.getWidth()) newX = screenBounds.getWidth() - stageWidth;
+            if (newY + stageHeight > screenBounds.getHeight()) newY = screenBounds.getHeight() - stageHeight;
+
+            stage.setX(newX);
+            stage.setY(newY);
+        });
+
+        // Set the main interface as the scene
+        Scene scene = new Scene(parent);
+        stage.setScene(scene);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle("Inventory Serial");
+
+        // Add close request handler
+        stage.setOnCloseRequest(event -> {
+            System.out.println("Stage is closing");
+            overlay.setVisible(false);
+        });
+
+        stage.setOnHidden(e -> overlay.setVisible(false));
+        stage.showAndWait();
+    } catch (IOException e) {
+        e.printStackTrace();
+        ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+        System.exit(1);
     }
+}
+
     private void loadLedger(String fsCode) throws SQLException {
-        try {
-            Stage stage = new Stage();
+    try {
+        Stage stage = new Stage();
 
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventoryLedger.fxml"));
+        overlay.setVisible(true);
 
-            InventoryLedgerController loControl = new InventoryLedgerController();
-            loControl.setGRider(oApp);
-            loControl.setFsCode(oTrans);
-            // loControl.setIncentiveObject(oTrans);
-            // loControl.setIncentiveCode(fsCode);
-            // loControl.setTableRow(fnRow);
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventoryLedger.fxml"));
 
-            fxmlLoader.setController(loControl);
+        InventoryLedgerController loControl = new InventoryLedgerController();
+        loControl.setGRider(oApp);
+        loControl.setFsCode(oTrans);
+        fxmlLoader.setController(loControl);
 
-            // Load the main interface
-            Parent parent = fxmlLoader.load();
-            parent.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-        //        parent.getChildrenUnmodifiable().add(parent);
-            // Set up dragging
-            parent.setOnMousePressed(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    xOffset = event.getSceneX();
-                    yOffset = event.getSceneY();
-                }
-            });
-            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    stage.setX(event.getScreenX() - xOffset);
-                    stage.setY(event.getScreenY() - yOffset);
-                }
-            });
+        // Load the main interface
+        Parent parent = fxmlLoader.load();
 
+        // Set up dragging
+        final double[] xOffset = new double[1];
+        final double[] yOffset = new double[1];
+        
+        parent.setOnMousePressed(event -> {
+            xOffset[0] = event.getSceneX();
+            yOffset[0] = event.getSceneY();
+        });
 
-            // Set the main interface as the scene  
-            Scene scene = new Scene(parent);
+        parent.setOnMouseDragged(event -> {
+            double newX = event.getScreenX() - xOffset[0];
+            double newY = event.getScreenY() - yOffset[0];
+            
+            // Get the screen bounds
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            
+            // Calculate the window bounds
+            double stageWidth = stage.getWidth();
+            double stageHeight = stage.getHeight();
+            
+            // Constrain the stage position to the screen bounds
+            if (newX < 0) newX = 0;
+            if (newY < 0) newY = 0;
+            if (newX + stageWidth > screenBounds.getWidth()) newX = screenBounds.getWidth() - stageWidth;
+            if (newY + stageHeight > screenBounds.getHeight()) newY = screenBounds.getHeight() - stageHeight;
 
-            stage.setScene(scene);
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setX(newX);
+            stage.setY(newY);
+        });
 
-            stage.setTitle("Inventory Ledger");
-            stage.showAndWait();
+        Scene scene = new Scene(parent);
+        
+        stage.setScene(scene);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.initModality(Modality.APPLICATION_MODAL);
 
-            // loadDetail();
-            // loadIncentives();
-        } catch (IOException e) {
-            e.printStackTrace();
-            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-            System.exit(1);
-        }
+        stage.setTitle("Inventory Ledger");
+        
+        // Add close request handler
+        stage.setOnCloseRequest(event -> {
+            System.out.println("Stage is closing");
+            overlay.setVisible(false);
+        });
+        
+        stage.setOnHidden(e -> overlay.setVisible(false));
+        stage.showAndWait();
+
+    } catch (IOException e) {
+        e.printStackTrace();
+        ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+        System.exit(1);
     }
+}
+
 
     /*USE TO DISABLE ANCHOR BASE ON INITMODE*/    
     private void initTabAnchor(){
@@ -588,8 +628,6 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     
     btnBrowse.setVisible(!lbShow);
     btnBrowse.setManaged(!lbShow);
-    
-//    cmbField01.setDisable(!lbShow);
     
     txtSeeks01.setDisable(!lbShow);
     txtSeeks02.setDisable(!lbShow);
@@ -679,13 +717,29 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
             if(pnEditMode == EditMode.ADDNEW) txtField22.setPromptText("PRESS F3: Search");
            
+            lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
+           DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-            
-            if (chkField04.isSelected()){
-                lblStatus.setText("ACTIVE");
-            }else{
-                lblStatus.setText("INACTIVE");
-            }
+            // Get the object from the model
+            Object dbegInvxx = oTrans.getModel().getDBegInvxx();
+
+            if (dbegInvxx == null) {
+                // If the object is null, set the DatePicker to the current date
+                dpField01.setValue(LocalDate.now());
+            } else if (dbegInvxx instanceof Timestamp) {
+                // If the object is a Timestamp, convert it to LocalDate
+                Timestamp timestamp = (Timestamp) dbegInvxx;
+                LocalDate localDate = timestamp.toLocalDateTime().toLocalDate();
+                dpField01.setValue(localDate);
+            } else if (dbegInvxx instanceof Date) {
+                // If the object is a java.sql.Date, convert it to LocalDate
+                Date sqlDate = (Date) dbegInvxx;
+                LocalDate localDate = sqlDate.toLocalDate();
+                dpField01.setValue(localDate);
+            } else {
+                // Handle unexpected types or throw an exception
+                throw new IllegalArgumentException("Expected a Timestamp or Date, but got: " + dbegInvxx.getClass().getName());
+            }            
             initSubItemForm();
      }
     }
@@ -695,14 +749,12 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                 case "0001":
                 case "0002":
                 case "0003":
-//                    AnchorTable.setVisible(false);
                     lblMeasure.setVisible(false);
                     lblShelf.setVisible(false);
                     txtField13.setVisible(false);
                     txtField21  .setVisible(false);
                     break;
                 case "0004":
-//                    AnchorTable.setVisible(true);
                     lblMeasure.setVisible(true);
                     lblShelf.setVisible(true);
                     txtField13.setVisible(true);
@@ -713,53 +765,36 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     }
     private void InitTextFields(){
 
-        txtField01.focusedProperty().addListener(txtField_Focus);
-        txtField02.focusedProperty().addListener(txtField_Focus);
-        txtField03.focusedProperty().addListener(txtField_Focus);
-        txtField04.focusedProperty().addListener(txtField_Focus);
-        txtField05.focusedProperty().addListener(txtField_Focus);
-        txtField06.focusedProperty().addListener(txtField_Focus);
-        txtField07.focusedProperty().addListener(txtField_Focus);
-        txtField08.focusedProperty().addListener(txtField_Focus);
-        txtField09.focusedProperty().addListener(txtField_Focus);
-        txtField10.focusedProperty().addListener(txtField_Focus);
-        txtField11.focusedProperty().addListener(txtField_Focus);
-        txtField12.focusedProperty().addListener(txtField_Focus);
-        txtField13.focusedProperty().addListener(txtField_Focus);
-        txtField14.focusedProperty().addListener(txtField_Focus);
-        txtField15.focusedProperty().addListener(txtField_Focus);
-        txtField16.focusedProperty().addListener(txtField_Focus);
-        txtField17.focusedProperty().addListener(txtField_Focus);
-        txtField18.focusedProperty().addListener(txtField_Focus);
-        txtField19.focusedProperty().addListener(txtField_Focus);
-        txtField20.focusedProperty().addListener(txtField_Focus);
-        txtField21.focusedProperty().addListener(txtField_Focus);
-        txtField22.focusedProperty().addListener(txtField_Focus);
-        txtField23.focusedProperty().addListener(txtField_Focus);
-        txtField24.focusedProperty().addListener(txtField_Focus);
-        txtField25.focusedProperty().addListener(txtField_Focus);
-        txtField26.focusedProperty().addListener(txtField_Focus);
-        txtField27.focusedProperty().addListener(txtField_Focus);
-        
-        txtField06.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField07.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField08.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField09.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField10.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField11.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField12.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField22.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField23.setOnKeyPressed(this::txtField_KeyPressed);
+        // Create an array for text fields with focusedProperty listeners
+        TextField[] focusTextFields = {
+            txtField01, txtField02, txtField03, txtField04, txtField05,
+            txtField06, txtField07, txtField08, txtField09, txtField10,
+            txtField11, txtField12, txtField13, txtField14, txtField15,
+            txtField16, txtField17, txtField18, txtField19, txtField20,
+            txtField21, txtField22, txtField23, txtField24, txtField25,
+            txtField26, txtField27
+        };
+
+        // Add the listener to each text field in the focusTextFields array
+        for (TextField textField : focusTextFields) {
+            textField.focusedProperty().addListener(txtField_Focus);
+        }
+
+        // Create an array for text fields with setOnKeyPressed handlers
+        TextField[] keyPressedTextFields = {
+            txtField06, txtField07, txtField08, txtField09, txtField10,
+            txtField11, txtField12, txtField22, txtField23
+        };
+
+        // Set the same key pressed event handler for each text field in the keyPressedTextFields array
+        for (TextField textField : keyPressedTextFields) {
+            textField.setOnKeyPressed(this::txtField_KeyPressed);
+        }
         
         txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
         txtSeeks02.setOnKeyPressed(this::txtSeeks_KeyPressed);
         
-        if (chkField04.isSelected()){
-                lblStatus.setText("ACTIVE");
-            }else{
-                lblStatus.setText("INACTIVE");
-            }
-        
+        lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
 
     }
     /*Text seek/search*/
@@ -769,7 +804,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         String lsValue = (txtSeeks.getText() == null ?"": txtSeeks.getText());
         JSONObject poJSON;
         switch (event.getCode()) {
-            case F3:
+            case F3:            
+            case ENTER:
                 switch (lnIndex){
                     
                     case 1: /*search Barrcode*/
@@ -777,15 +813,20 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                         poJSON = oTrans.SearchInventory(lsValue, true);
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                           
                             txtSeeks01.clear();
                             break;
                         }
                         pnEditMode = oTrans.getEditMode();
                         
+                        if(pnEditMode==EditMode.READY){
+                            txtSeeks01.setText(oTrans.getModel().getBarCodex());
+                            txtSeeks02.setText(oTrans.getModel().getDescript());
+                        }else{
+                            txtSeeks01.clear();
+                            txtSeeks02.clear();
+                        }
                         initButton(pnEditMode);
                         System.out.print("\neditmode on browse == " + pnEditMode);
-                        
                         initTabAnchor();
                         loadInventory();
                         
@@ -794,12 +835,18 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                          poJSON = oTrans.SearchInventory(lsValue, false);
                         if ("error".equals((String) poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                           
                             txtSeeks02.clear();
                             break;
                         }
                          pnEditMode = oTrans.getEditMode();
                         
+                        if(pnEditMode==EditMode.READY){
+                            txtSeeks01.setText(oTrans.getModel().getBarCodex());
+                            txtSeeks02.setText(oTrans.getModel().getDescript());
+                        }else{
+                            txtSeeks01.clear();
+                            txtSeeks02.clear();
+                        }
                         initButton(pnEditMode);
                         System.out.print("\neditmode on browse == " + pnEditMode);
                         
@@ -807,7 +854,6 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                         loadInventory();
                         break;
                 }
-            case ENTER:
                 
         }
         switch (event.getCode()){
@@ -833,6 +879,20 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         if(!nv){ /*Lost Focus*/
             switch (lnIndex){
                 case 25: /*Stock ID*/
+                    UnaryOperator<TextFormatter.Change> limitText = change -> {
+                        String newText = change.getControlNewText();
+                        if (newText.length() > 5) {
+                            return null; // Disallow the change if it exceeds 5 characters
+                        }
+                        return change; // Allow the change
+                    };
+
+                    // Create a TextFormatter with the UnaryOperator
+                    TextFormatter<String> textFormatter = new TextFormatter<>(limitText);
+
+                    // Apply the TextFormatter to the TextField
+                    txtField.setTextFormatter(textFormatter);
+                    
                     oTrans.getModel().setBinNumber(Integer.parseInt(lsValue));
                     break;            
             }                  
@@ -871,8 +931,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                         txtField23.setText((String) oTrans.getMaster(26));  
                         break;
                 }
-            case ENTER:
-                
+            case ENTER: 
         }
         switch (event.getCode()){
         case ENTER:
@@ -895,7 +954,6 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
              txtField17, txtField18, txtField19, txtField20, txtField21,txtField22, 
              txtField23, txtField24, txtField25, txtField26, txtField27,txtField28,txtField29, 
              txtField30, txtField31, txtField32, txtField33, txtField34},
-
         };
         chkField01.setSelected(false);
         chkField02.setSelected(false);
@@ -914,5 +972,18 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
     private Stage getStage(){
 	return (Stage) txtField01.getScene().getWindow();
+    }
+//    public void setOverlay(boolean fbVal){
+//        overlay.setVisible(fbVal);
+//    }
+    public void loadResult(String fsValue, boolean fbVal){
+        JSONObject poJson = new JSONObject();
+        overlay.setVisible(fbVal);
+        poJson = oTrans.openRecord(fsValue);
+        if("error".equalsIgnoreCase(poJson.get("result").toString())){
+            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
+        }
+        loadInventory();
+               
     }
 }

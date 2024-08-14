@@ -12,7 +12,7 @@ import javafx.collections.ObservableList;
  *
  * @author User
  */
-public class ModelInvSerial {
+public class ModelInvSerialLedger {
     
     public SimpleStringProperty index01;
     public SimpleStringProperty index02;
@@ -45,14 +45,7 @@ public class ModelInvSerial {
                 "RDU",
                 "Others");
     
-    ObservableList<String> Location = FXCollections.observableArrayList("Warehouse"
-                              , "Branch"
-                              , "Supplier"
-                              , "Customer"
-                              , "On Transit"
-                              , "Service Center"
-                              , "Service Unit");
-    public ModelInvSerial(String index01,
+    public ModelInvSerialLedger(String index01,
                String index02,
                String index03,
                String index04,
@@ -94,7 +87,7 @@ public class ModelInvSerial {
         this.index19 = new SimpleStringProperty(index19);
         this.index20 = new SimpleStringProperty(index20);
     }
-    public ModelInvSerial(String index01,
+    public ModelInvSerialLedger(String index01,
                String index02,
                String index03,
                String index04,
@@ -130,28 +123,28 @@ public class ModelInvSerial {
     public String getIndex04(){return index04.get();}
     public void setIndex04(String index04){this.index04.set(index04);}
     
-    public String getIndex05(){ 
-        return Location.get(Integer.parseInt(index05.get()));}
+    public String getIndex05(){return index05.get();}
     public void setIndex05(String index05){this.index05.set(index05);}
     
 //    public String getIndex06(){
 //        System.out.println("mdlInvSerial SoldStat == " + SoldStat.get(Integer.parseInt(index06.get())));
 //        return SoldStat.get(Integer.parseInt(index06.get()));
 //    }
-    public String getIndex06(){
-        if(!index06.get().isEmpty()){
-            return (index06.get().equals("1")?"YES":"NO");
-        }else{
-            return "";
-        }
-    }
+//    public String getIndex06(){
+//        if(!index06.get().isEmpty()){
+//            return (index06.get().equals("1")?"YES":"NO");
+//        }else{
+//            return "";
+//        }
+//    }
+    public String getIndex06(){return index06.get();}
     public void setIndex06(String index06){this.index06.set(index06);}
     
-    public String getIndex07(){
-         System.out.println("mdlInvSerial UnitType == " + UnitType.get(Integer.parseInt(index07.get())));
-        return UnitType.get(Integer.parseInt(index07.get()));
-    }
-//    public String getIndex07(){return index07.get();}
+//    public String getIndex07(){
+//         System.out.println("mdlInvSerial UnitType == " + UnitType.get(Integer.parseInt(index07.get())));
+//        return UnitType.get(Integer.parseInt(index07.get()));
+//    }
+    public String getIndex07(){return index07.get();}
     public void setIndex07(String index07){this.index07.set(index07);}
     
     public String getIndex08(){return index08.get();}

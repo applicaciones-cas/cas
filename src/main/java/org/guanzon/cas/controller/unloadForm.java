@@ -36,7 +36,8 @@ public class unloadForm {
         FrmAccountsPayable,
         FrmAccountsAccreditation,
         InventoryParam,
-        InventoryDetail
+        InventoryDetail,
+        InventorySerialParam
     }
     
     private Object parentController;
@@ -58,7 +59,10 @@ public class unloadForm {
             case "/org/guanzon/cas/views/InventoryParam.fxml":
                 return "Inventory Parameter";
             case "/org/guanzon/cas/views/InventoryDetail.fxml":
-                return "Inventory Details";
+                return "Inventory Details";            
+            case "/org/guanzon/cas/views/InventorySerialParam.fxml":
+                return "Inventory Serial Parameter";
+            
             default:
                 return null;
         }
@@ -79,6 +83,8 @@ public class unloadForm {
             ((FrmAccountsPayableController) parentController).loadReturn(lsValue);
         }else if (parentController instanceof FrmAccountsReceivableController) {
             ((FrmAccountsReceivableController) parentController).loadReturn(lsValue);
+        }else if (parentController instanceof InventoryDetailController) {
+            ((InventoryDetailController) parentController).loadResult(lsValue,false);
         }
     }
      
@@ -106,23 +112,18 @@ public class unloadForm {
                             myBox.getChildren().clear();
                             myBox.getChildren().add(getScene("/org/guanzon/cas/views/MainScreenBG.fxml", oApp));
                         }
-                        
                         if(tabName.size()>0){
                             tabName.remove(sTabTitle);
-//                            TabsStateManager.saveCurrentTab(tabName);
                         }
-//                        TabsStateManager.closeTab(sTabTitle);
                     break;
                  }
             }   
-            
-            
         }
     }
      
      public AnchorPane getScene(String fsFormName, GRider oApp){
-         ScreenInterface fxObj = new MainScreenBGController();
-         fxObj.setGRider(oApp);
+        ScreenInterface fxObj = new MainScreenBGController();
+        fxObj.setGRider(oApp);
         
         FXMLLoader fxmlLoader = new FXMLLoader();   
         fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
@@ -145,6 +146,4 @@ public class unloadForm {
         }
         return null;
     }
-     
-     
 }

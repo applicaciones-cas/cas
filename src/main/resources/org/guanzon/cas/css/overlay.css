@@ -1,3 +1,7 @@
 .overlay {
     -fx-background-color: rgba(0, 0, 0, 0.5); /* Adjust transparency as needed */
 }
+
+.anchorpane-shadow {
+    -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 5, 5);
+}

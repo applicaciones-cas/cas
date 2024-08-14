@@ -21,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.cas.inventory.base.InvMaster;
@@ -47,6 +48,8 @@ public class InventorySerialController implements Initializable {
     private String psCode;
     private String lsStockID;
     private InvSerial oTrans;
+    
+    private InventoryDetailController parentController;
     
     public int tbl_row = 0;
     private ObservableList<ModelInvSerial> data = FXCollections.observableArrayList();
@@ -108,6 +111,9 @@ public class InventorySerialController implements Initializable {
                 "Others",
                 "All"
         );
+     public void setParentController(InventoryDetailController cVal){
+        parentController =cVal;
+    }
     
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -155,20 +161,35 @@ public class InventorySerialController implements Initializable {
             Button clickedButton = (Button) source;
             unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
-                case"btnClose":
+                case "btnClose":  //Close                    
+                    appUnload.useParentController("");
                     CommonUtils.closeStage(btnClose);
                     break;
+                    
+                case "btnOkay":  //Close
+                    appUnload.useParentController("");
+                    CommonUtils.closeStage(btnOkay);
+                    break;
+                    
                 case "btnLoadSerial":
                     String UnitType = String.valueOf(cmbField01.getSelectionModel().getSelectedIndex()); 
                     poJSON = new JSONObject();
                     
                     if (UnitType.equals("7")) {
-                       poJSON = oTrans.OpenInvSerial(poTrans.getModel().getStockID());
+                       poJSON = oTrans.OpenInvSerialusingStockID(poTrans.getModel().getStockID());
+                       if("error".equalsIgnoreCase(poJSON.get("result").toString())){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);   
+                            break;
+                        } 
                         System.out.print("\nunitype == " + UnitType);
                         System.out.println("poJson = " + poJSON.toJSONString());
                         loadSerial();
                     } else {
                         poJSON = oTrans.OpenInvSerialWithCondition(poTrans.getModel().getStockID(), " a.cUnitType = '" + UnitType + "'");
+                        if("error".equalsIgnoreCase(poJSON.get("result").toString())){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);   
+                            break;
+                        } 
                         System.out.print("\nunitype == " + UnitType);
                         System.out.println("poJson = " + poJSON.toJSONString());
                         loadSerial();
@@ -181,13 +202,15 @@ public class InventorySerialController implements Initializable {
     private void loadSerial(){
         int lnCtr;
         data.clear();
+        
+
         if(oTrans.getMaster()!= null){
             for (lnCtr = 0; lnCtr < oTrans.getMaster().size(); lnCtr++){
                 data.add(new ModelInvSerial(String.valueOf(lnCtr + 1),
                     (String) oTrans.getMaster(lnCtr, "sSerialID"), 
                     (String)oTrans.getMaster(lnCtr, "sSerial01"),
                     (String)oTrans.getMaster(lnCtr, "sSerial02"), 
-                    (String)oTrans.getMaster(lnCtr, "xBranchNm"), 
+                    (String)oTrans.getMaster(lnCtr, "cLocation"), 
                     (String)oTrans.getMaster(lnCtr, "cSoldStat"), 
                     (String)oTrans.getMaster(lnCtr, "cUnitType"),
               ""));  
@@ -195,14 +218,14 @@ public class InventorySerialController implements Initializable {
                     System.out.println("\nsSerialID == " + (String) oTrans.getMaster(lnCtr, "sSerialID"));
                     System.out.println("\nsSerial01 == " + (String) oTrans.getMaster(lnCtr, "sSerial01"));
                     System.out.println("\nsSerial02 == " + (String) oTrans.getMaster(lnCtr, "sSerial02"));
-                    System.out.println("\ncLocation == " + (String) oTrans.getMaster(lnCtr, "xBranchNm"));
+                    System.out.println("\ncLocation == " + (String) oTrans.getMaster(lnCtr, "cLocation"));
                     System.out.println("\ncSoldStat == " + (String) oTrans.getMaster(lnCtr, "cSoldStat"));
                     System.out.println("\ncUnitType == " + (String) oTrans.getMaster(lnCtr, "cUnitType"));
             
             }
         }
     }
-      private void initTable() {
+    private void initTable() {
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
@@ -210,10 +233,7 @@ public class InventorySerialController implements Initializable {
         index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index07.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-//        index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        index08.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        
+
         index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
         index03.setCellValueFactory(new PropertyValueFactory<>("index03"));
@@ -228,7 +248,6 @@ public class InventorySerialController implements Initializable {
             });
         });
         tblSerialLedger.setItems(data);
-//        tblMobile.getSelectionModel().select(pnMobile + 1);
         tblSerialLedger.autosize();
     }
 }

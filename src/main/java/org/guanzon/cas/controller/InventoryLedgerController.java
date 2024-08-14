@@ -6,9 +6,12 @@ package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -54,10 +57,14 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
     private String psCode;
     private String lsStockID;
     private InvLedger oTrans;
+    private InventoryDetailController parentController;
     
     public int tbl_row = 0;
     
     private ObservableList<ModelInvLedger> data = FXCollections.observableArrayList();
+    public void setParentController(InventoryDetailController cVal){
+        parentController =cVal;
+    }
     
     public static TableModel empModel;
     @FXML
@@ -68,6 +75,8 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
     private Button btnCancel;
     @FXML
     private Button btnClose;
+    @FXML
+    private Button btnRecalculate;
     @FXML
     private DatePicker dpField02;
     @FXML
@@ -129,11 +138,13 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
             oTrans = new InvLedger(oApp, true);
             oTrans.setRecordStatus("01234");
             btnCancel.setOnAction(this::cmdButton_Click);
             btnClose.setOnAction(this::cmdButton_Click);
             btnLoadLedger.setOnAction(this::cmdButton_Click);
+            btnRecalculate.setOnAction(this::cmdButton_Click);
             pbLoaded = true;
             initTable();
             txtField01.setText(poTrans.getModel().getBarCodex());
@@ -147,11 +158,58 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
      public void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button)event.getSource()).getId();
          
-        JSONObject poJson;      
+        JSONObject poJson;    
+        unloadForm appUnload = new unloadForm();
         switch (lsButton){
            case "btnClose":  //Close
+                if(parentController != null){
+                    appUnload.useParentController(poTrans.getModel().getStockID());
+                }
                 CommonUtils.closeStage(btnClose);
             break;
+            case "btnRecalculate":  //Rcalculate
+                if (data.isEmpty()){
+                    ShowMessageFX.Information("Please ensure the ledger is loaded before performing recalculation."
+                            + "Recalculation cannot be completed correctly without loading the ledger first.", 
+                            "Computerized Acounting System", pxeModuleName);     
+                    break;
+                }else{
+                    try {
+                        
+                        LocalDate fromDate = dpField01.getValue();
+                        LocalDate thruDate = dpField02.getValue();
+                        poTrans.recalculate(poTrans.getModel().getStockID());
+                        ShowMessageFX.Information("Recalculation completed succesfully", 
+                            "Computerized Acounting System", pxeModuleName); 
+                        poJson = new JSONObject();
+                        poJson = oTrans.OpenInvLedger(poTrans.getModel().getStockID());
+                        
+                        System.out.println("poJson = " + poJson.toJSONString());
+                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
+                        }  
+                        loadLedger();
+                        
+                        
+//                        LocalDate fromDate = dpField01.getValue();
+//                        LocalDate thruDate = dpField02.getValue();
+//                        poTrans.recalculate(poTrans.getModel().getStockID());
+//                        ShowMessageFX.Information("Recalculation completed succesfully", 
+//                            "Computerized Acounting System", pxeModuleName); 
+//                        poJson = new JSONObject();
+//                        poJson = oTrans.OpenInvLedgerWithCondition(poTrans.getModel().getStockID(), " a.dTransact BETWEEN '" + fromDate + "' AND '" + thruDate +"'");
+//                        System.out.println("poJson = " + poJson.toJSONString());
+//                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
+//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
+//                        }  
+//                        loadLedger();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(InventoryLedgerController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            
+            break;
+
            case "btnLoadLedger":  //Close
 //                CommonUtils.closeStage(btnClose);
                 LocalDate fromDate = dpField01.getValue();
@@ -164,13 +222,10 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                     } else {
                         poJson = new JSONObject();
                         poJson = oTrans.OpenInvLedgerWithCondition(poTrans.getModel().getStockID(), " a.dTransact BETWEEN '" + fromDate + "' AND '" + thruDate +"'");
-//                        poJson =  oTrans.SearchMaster(7,lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if("error".equalsIgnoreCase(poJson.get("result").toString())){
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-                        }
-//                            System.out.print( "category 2 == " + oTrans.getMaster(33));
-//                           txtField07.setText((String) oTrans.getMaster(33));   
+                        }  
                         loadLedger();
                         System.out.println("From Date: " + fromDate);
                         System.out.println("Thru Date: " + thruDate);
@@ -181,7 +236,10 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                 }
             break;
             
-           case "btnCancel": //OK
+           case "btnCancel": //OK;
+                if(parentController != null){
+                    appUnload.useParentController("");
+                }
                 CommonUtils.closeStage(btnCancel);
             break;
             
@@ -198,12 +256,23 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
             for (lnCtr = 0; lnCtr < oTrans.getMaster().size(); lnCtr++){
                 data.add(new ModelInvLedger(String.valueOf(lnCtr + 1),
                      oTrans.getMaster(lnCtr, "dTransact").toString(), 
-                    (String)oTrans.getMaster(lnCtr, "xWHouseNm"),
+                    (String)oTrans.getMaster(lnCtr, "xBranchNm"),
                     (String)oTrans.getMaster(lnCtr, "sSourceCd"), 
                     (String)oTrans.getMaster(lnCtr, "sSourceNo"), 
                     oTrans.getMaster(lnCtr, "nQtyInxxx").toString(),
                     (String)oTrans.getMaster(lnCtr, "nQtyOutxx").toString(), 
                     (String)oTrans.getMaster(lnCtr, "nQtyOnHnd").toString()));  
+                
+//                System.out.println();
+//                System.out.println("DATE        : " + oTrans.getMaster(lnCtr, "dTransact").toString());
+//                System.out.println("WAREHOUSE   : " + oTrans.getMaster(lnCtr, "xWHouseNm").toString());
+//                System.out.println("SOURCE CODE : " + oTrans.getMaster(lnCtr, "sSourceCd").toString());
+//                System.out.println("SOURCE NO   : " + oTrans.getMaster(lnCtr, "sSourceNo").toString());
+//                System.out.println("QTY IN      : " + oTrans.getMaster(lnCtr, "nQtyInxxx").toString());
+//                System.out.println("QTY OUT     : " + oTrans.getMaster(lnCtr, "nQtyOutxx").toString());
+//                System.out.println("QTY ON HAND : " + oTrans.getMaster(lnCtr, "nQtyOnHnd").toString());
+//                System.out.println();
+//                System.out.println("-------------------------------------------------------------------------");
 
             }
         }
@@ -218,10 +287,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
         index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index07.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-//        index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        index08.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-//        
+        
         index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
         index03.setCellValueFactory(new PropertyValueFactory<>("index03"));
@@ -237,7 +303,6 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
             });
         });
         tblInventoryLedger.setItems(data);
-//        tblMobile.getSelectionModel().select(pnMobile + 1);
         tblInventoryLedger.autosize();
     }
      

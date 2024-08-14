@@ -20,6 +20,7 @@
 .table-view .column-header-background .label{
     -fx-background-color: transparent;
     -fx-text-fill: white;
+    -fx-pointer-events: none;
 }
 
 .table-view .filler, .table-view .column-header {
