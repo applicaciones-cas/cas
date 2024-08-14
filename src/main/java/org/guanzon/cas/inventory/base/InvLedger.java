@@ -280,6 +280,8 @@ public class InvLedger implements GRecord{
     }
     
     public JSONObject OpenInvLedger(String fsValue){
+        
+        poJSON =  new JSONObject();
         String lsSQL = "SELECT" +
                         "   a.sStockIDx" +
                         " , a.sBranchCd" +

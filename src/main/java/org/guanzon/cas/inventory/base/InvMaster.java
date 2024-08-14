@@ -613,6 +613,7 @@ public class InvMaster implements GRecord{
                        " AND sBranchCd = " + SQLUtil.toSQL(poGRider.getBranchCode()) +
                        " AND dTransact < " + SQLUtil.toSQL(fdBegInvxx) +
                        " ORDER BY nLedgerNo ASC";
+        System.out.println("calculateQtyOnHand = " +lsSQL);
         ResultSet loRSLedgerQtyOnHnd = poGRider.executeQuery(lsSQL);
         return loRSLedgerQtyOnHnd.next() ? loRSLedgerQtyOnHnd.getDouble("nQtyOnHnd") : 0.0;
     }
@@ -637,14 +638,14 @@ public class InvMaster implements GRecord{
                        "FROM Inv_Ledger " +
                        "WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx) + " " +
                        "AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode()) + " " +
-                       "AND dTransact <= " + SQLUtil.toSQL(fdBegInvxx);
+                       "AND dTransact < " + SQLUtil.toSQL(fdBegInvxx);
 
         poGRider.executeQuery(lsSQL, "Inv_Hist_Ledger", psBranchCd, "");
 
         lsSQL = "DELETE FROM Inv_Ledger " +
                 "WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx) + " " +
                 "AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode()) + " " +
-                "AND dTransact <= " + SQLUtil.toSQL(fdBegInvxx);
+                "AND dTransact < " + SQLUtil.toSQL(fdBegInvxx);
 
         poGRider.executeQuery(lsSQL, "Inv_Ledger", psBranchCd, "");
     }
@@ -653,7 +654,7 @@ public class InvMaster implements GRecord{
         String lsSQL = "SELECT sSourceNo, nLedgerNo FROM Inv_Hist_Ledger " +
                        "WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx) + " " +
                        "AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode()) + " " +
-                       "AND dTransact >= " + SQLUtil.toSQL(fdBegInvxx);
+                       "AND dTransact > " + SQLUtil.toSQL(fdBegInvxx);
 
         ResultSet loRSLedger = poGRider.executeQuery(lsSQL);
         if (loRSLedger.next()) {
@@ -666,14 +667,14 @@ public class InvMaster implements GRecord{
                     "FROM Inv_Hist_Ledger " +
                     "WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx) + " " +
                     "AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode()) + " " +
-                    "AND dTransact >= " + SQLUtil.toSQL(fdBegInvxx);
+                    "AND dTransact > " + SQLUtil.toSQL(fdBegInvxx);
 
             poGRider.executeQuery(lsSQL, "Inv_Ledger", psBranchCd, "");
 
             lsSQL = "DELETE FROM Inv_Hist_Ledger " +
                     "WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx) + " " +
                     "AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode()) + " " +
-                    "AND dTransact >= " + SQLUtil.toSQL(fdBegInvxx);
+                    "AND dTransact > " + SQLUtil.toSQL(fdBegInvxx);
 
             poGRider.executeQuery(lsSQL, "Inv_Hist_Ledger", psBranchCd, "");
         }
@@ -687,8 +688,9 @@ public class InvMaster implements GRecord{
         String lsSQL = "SELECT * FROM Inv_Ledger " +
                        "WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx) + " " +
                        "AND sBranchCD = " + SQLUtil.toSQL(poGRider.getBranchCode()) + " " +
+                       "AND dTransact >= " + SQLUtil.toSQL(fdBegInvxx) + " " +
                        "ORDER BY dTransact, nLedgerNo";
-
+        System.out.println(lsSQL);
         ResultSet loRSLedger = poGRider.executeQuery(lsSQL);
 
         while (loRSLedger.next()) {
@@ -696,9 +698,13 @@ public class InvMaster implements GRecord{
             lnLedgerNo++;
 
             loSQL.setLength(0);
+            
+            System.out.println("lnLedgerNo = " + lnLedgerNo);
+            System.out.println("nLedgerNo = " + loRSLedger.getInt("nLedgerNo"));
             if (lnLedgerNo != loRSLedger.getInt("nLedgerNo")) {
                 loSQL.append(", nLedgerNo = ").append(lnLedgerNo);
             }
+            
 
             if (Double.compare(loRSLedger.getDouble("nQtyOnHnd"), lnQtyOnHnd) != 0) {
                 System.out.println("lnQtyOnHnd = " + lnQtyOnHnd);
@@ -737,6 +743,9 @@ public class InvMaster implements GRecord{
             System.out.println("getDBegInvxx = " + poModel.getDBegInvxx() + ", fdBegInvxx = " + fdBegInvxx);
             loSQL.append(", dBegInvxx = ").append(SQLUtil.toSQL(fdBegInvxx));
         }
+        
+        System.out.println("fnBegQtyxx = " + fnBegQtyxx);
+        System.out.println("getBegQtyxx = " + poModel.getBegQtyxx().toString());
 
         if (Double.compare(Double.parseDouble(poModel.getBegQtyxx().toString()), fnBegQtyxx) != 0) {
             System.out.println(fnBegQtyxx);
