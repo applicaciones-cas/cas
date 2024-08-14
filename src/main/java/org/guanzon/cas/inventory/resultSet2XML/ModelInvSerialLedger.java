@@ -13,7 +13,7 @@ import org.guanzon.appdriver.base.MiscUtil;
  *
  * @author User
  */
-public class ModelInvLedger {
+public class ModelInvSerialLedger {
     public static void main (String [] args){
         String path;
         if(System.getProperty("os.name").toLowerCase().contains("win")){
@@ -32,38 +32,31 @@ public class ModelInvLedger {
         }
 
         System.out.println("Connected");
-        System.setProperty("sys.table", "Inv_Ledger");
+        System.setProperty("sys.table", "Inv_Serial_Ledger");
         System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/Model_" + System.getProperty("sys.table") + ".xml");
 //        System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/Model_Inventory.xml");
         
         
         String lsSQL = "SELECT" +
-                        "   a.sStockIDx" +
-                        " , a.sBranchCd" +
-                        " , a.sWHouseID" +
-                        " , a.nLedgerNo" +
-                        " , a.dTransact" +
-                        " , a.sSourceCd" +
-                        " , a.sSourceNo" +
-                        " , a.nQtyInxxx" +
-                        " , a.nQtyOutxx" +
-                        " , a.nQtyOrder" +
-                        " , a.nQtyIssue" +
-                        " , a.nPurPrice" +
-                        " , a.nUnitPrce" +
-                        " , a.nQtyOnHnd" +
-                        " , a.dExpiryxx" +
-                        " , a.sModified" +
-                        " , a.dModified" +
-                        " , b.sBarCodex xBarCodex" +
-                        " , b.sDescript xDescript" +
-                        " , c.sWHouseNm xWHouseNm" +
-                        " , d.sBranchNm xBranchNm" +
-                        " FROM " + System.getProperty("sys.table") + " a" +
-                        "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID"+
-                        "    LEFT JOIN Branch d ON a.sBranchCd = d.sBranchCd";
-       
+                            	"  a.sSerialID" +
+                                ", a.sBranchCd" +
+                                ", a.nLedgerNo" +
+                                ", a.dTransact" +
+                                ", a.sSourceCd" +
+                                ", a.sSourceNo" +
+                                ", a.cSoldStat" +
+                                ", a.cLocation" +
+                                ", a.dModified" +
+                                ", c.sBarCodex xBarCodex" +
+                                ", c.sDescript xDescript" +
+                                ", b.sSerial01 xSerial01" +
+                                ", b.sSerial02 xSerial02" +
+                                ", d.sBranchNm xBranchNm " +
+                        " FROM Inv_Serial_Ledger a"+ 
+                            " LEFT JOIN Inv_Serial b ON a.sSerialID = b.sSerialID" +
+                            " LEFT JOIN Inventory c ON b.sStockIDx = c.sStockIDx" +
+                            " LEFT JOIN Branch d ON a.sBranchCd = d.sBranchCd";
+        
         
         ResultSet loRS = instance.executeQuery(lsSQL);
         try {

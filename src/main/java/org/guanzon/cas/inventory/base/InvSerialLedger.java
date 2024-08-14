@@ -16,7 +16,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
-import org.guanzon.cas.model.inventory.Model_Inv_Ledger;
+import org.guanzon.cas.model.inventory.Model_Inv_Serial_Ledger;
 import org.guanzon.cas.validators.ValidatorFactory;
 import org.guanzon.cas.validators.ValidatorInterface;
 import org.json.simple.JSONObject;
@@ -25,7 +25,7 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class InvLedger implements GRecord{
+public class InvSerialLedger implements GRecord{
 
 
     GRider poGRider;
@@ -33,10 +33,10 @@ public class InvLedger implements GRecord{
     int pnEditMode;
     String psTranStatus;
     
-    ArrayList<Model_Inv_Ledger> poModel;
+    ArrayList<Model_Inv_Serial_Ledger> poModel;
     JSONObject poJSON;
 
-    public InvLedger(GRider foGRider, boolean fbWthParent) {
+    public InvSerialLedger(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
         pnEditMode = EditMode.UNKNOWN;
@@ -103,7 +103,7 @@ public class InvLedger implements GRecord{
         pnEditMode = EditMode.READY;
         poJSON = new JSONObject();
         
-        poJSON = OpenInvLedger(fsValue);
+        poJSON = OpenInvSerialLedger(fsValue);
         return poJSON;
     }
 
@@ -155,7 +155,7 @@ public class InvLedger implements GRecord{
                 return poJSON;
             }
             
-            Model_Inv_Ledger model = new Model_Inv_Ledger(poGRider);
+            Model_Inv_Serial_Ledger model = new Model_Inv_Serial_Ledger(poGRider);
             String lsSQL = "DELETE FROM " + model.getTable()+
                                 " WHERE sStockIDx = " + SQLUtil.toSQL(fsValue);
 
@@ -190,7 +190,7 @@ public class InvLedger implements GRecord{
     @Override
     public JSONObject searchRecord(String fsValue, boolean fbByCode) {
         String lsCondition = "";
-        Model_Inv_Ledger model = new Model_Inv_Ledger(poGRider);
+        Model_Inv_Serial_Ledger model = new Model_Inv_Serial_Ledger(poGRider);
         String lsSQL = MiscUtil.addCondition(model.getSQL(), "sStockIDx = " + SQLUtil.toSQL(fsValue));
 
         poJSON = new JSONObject();
@@ -214,7 +214,7 @@ public class InvLedger implements GRecord{
     
     public JSONObject searchRecordWithCondition(String fsValue, String condition, boolean fbByCode) {
         String lsCondition = "";
-        Model_Inv_Ledger model = new Model_Inv_Ledger(poGRider);
+        Model_Inv_Serial_Ledger model = new Model_Inv_Serial_Ledger(poGRider);
         String lsSQL = MiscUtil.addCondition(model.getSQL(), "sStockIDx = " + SQLUtil.toSQL(fsValue));
         lsSQL = MiscUtil.addCondition(lsSQL, SQLUtil.toSQL(condition));
         
@@ -239,11 +239,14 @@ public class InvLedger implements GRecord{
     }
 
     @Override
-    public Model_Inv_Ledger getModel() {
+    public Model_Inv_Serial_Ledger getModel() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    public ArrayList<Model_Inv_Ledger> getMaster(){return poModel;}
-    public void setMaster(ArrayList<Model_Inv_Ledger> foObj){poModel = foObj;}
+    public Model_Inv_Serial_Ledger getModel(int fnRow) {
+        return poModel.get(fnRow);
+    }
+    public ArrayList<Model_Inv_Serial_Ledger> getMaster(){return poModel;}
+    public void setMaster(ArrayList<Model_Inv_Serial_Ledger> foObj){poModel = foObj;}
     
     
     public void setMaster(int fnRow, int fnIndex, Object foValue){ poModel.get(fnRow).setValue(fnIndex, foValue);}
@@ -255,7 +258,7 @@ public class InvLedger implements GRecord{
     public JSONObject addLedger(){
         poJSON = new JSONObject();
         if (poModel.isEmpty()){
-            poModel.add(new Model_Inv_Ledger(poGRider));
+            poModel.add(new Model_Inv_Serial_Ledger(poGRider));
             poModel.get(0).newRecord();
             poJSON.put("result", "success");
             poJSON.put("message", "Inventory add record.");
@@ -270,7 +273,7 @@ public class InvLedger implements GRecord{
 //                poJSON.put("message", validator.getMessage());
 //                return poJSON;
 //            }
-            poModel.add(new Model_Inv_Ledger(poGRider));
+            poModel.add(new Model_Inv_Serial_Ledger(poGRider));
             poModel.get(poModel.size()-1).newRecord();
             
             poJSON.put("result", "success");
@@ -279,35 +282,26 @@ public class InvLedger implements GRecord{
         return poJSON;
     }
     
-    public JSONObject OpenInvLedger(String fsValue){
-        
-        poJSON =  new JSONObject();
+    public JSONObject OpenInvSerialLedgerz(String fsValue){
         String lsSQL = "SELECT" +
-                        "   a.sStockIDx" +
-                        " , a.sBranchCd" +
-                        " , a.sWHouseID" +
-                        " , a.nLedgerNo" +
-                        " , a.dTransact" +
-                        " , a.sSourceCd" +
-                        " , a.sSourceNo" +
-                        " , a.nQtyInxxx" +
-                        " , a.nQtyOutxx" +
-                        " , a.nQtyOrder" +
-                        " , a.nQtyIssue" +
-                        " , a.nPurPrice" +
-                        " , a.nUnitPrce" +
-                        " , a.nQtyOnHnd" +
-                        " , a.dExpiryxx" +
-                        " , a.sModified" +
-                        " , a.dModified" +
-                        " , b.sBarCodex xBarCodex" +
-                        " , b.sDescript xDescript" +
-                        " , c.sWHouseNm xWHouseNm" +
-                        " FROM Inv_Ledger a" +
-                        "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID";
-        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue) + " ORDER BY a.nLedgerNo ASC");
-        System.out.println(lsSQL);
+                            	"  a.sSerialID" +
+                                ", a.sBranchCd" +
+                                ", a.nLedgerNo" +
+                                ", a.dTransact" +
+                                ", a.sSourceCd" +
+                                ", a.sSourceNo" +
+                                ", a.cSoldStat" +
+                                ", a.cLocation" +
+                                ", a.dModified" +
+                                ", c.sBarCodex xBarCodex" +
+                                ", c.sDescript xDescript" +
+                                ", b.sSerial01 xSerial01" +
+                                ", b.sSerial02 xSerial02" +
+                        " FROM Inv_Serial_Ledger a"+ 
+                            " LEFT JOIN Inv_Serial b ON a.sSerialID = b.sSerialID" +
+                            " LEFT JOIN Inventory c ON b.sStockIDx = c.sStockIDx" ;
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sSerialID = " + SQLUtil.toSQL(fsValue));
+        System.out.println("Open Serial Ledger == " + lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
 
         try {
@@ -315,9 +309,8 @@ public class InvLedger implements GRecord{
             if (MiscUtil.RecordCount(loRS) > 0) {
                 poModel = new ArrayList<>();
                 while(loRS.next()){
-                        poModel.add(new Model_Inv_Ledger(poGRider));
-//                        poModel.get(poModel.size() - 1).openRecord(loRS.getString("sStockIDx"));
-                        poModel.get(poModel.size() - 1).openRecord(loRS.getString("sStockIDx"), " a.nLedgerNo = " + SQLUtil.toSQL(loRS.getString("nLedgerNo")));
+                        poModel.add(new Model_Inv_Serial_Ledger(poGRider));
+                        poModel.get(poModel.size() - 1).openRecord(loRS.getString("sSerialID"));
                         
                         pnEditMode = EditMode.UPDATE;
                         lnctr++;
@@ -342,36 +335,30 @@ public class InvLedger implements GRecord{
         }
         return poJSON;
     }
-    public JSONObject OpenInvLedgerWithCondition(String fsValue, String lsCondition){
+    public JSONObject OpenInvSerialLedger(String fsValue){
         
         poJSON =  new JSONObject();
         String lsSQL = "SELECT" +
-                        "   a.sStockIDx" +
-                        " , a.sBranchCd" +
-                        " , a.sWHouseID" +
-                        " , a.nLedgerNo" +
-                        " , a.dTransact" +
-                        " , a.sSourceCd" +
-                        " , a.sSourceNo" +
-                        " , a.nQtyInxxx" +
-                        " , a.nQtyOutxx" +
-                        " , a.nQtyOrder" +
-                        " , a.nQtyIssue" +
-                        " , a.nPurPrice" +
-                        " , a.nUnitPrce" +
-                        " , a.nQtyOnHnd" +
-                        " , a.dExpiryxx" +
-                        " , a.sModified" +
-                        " , a.dModified" +
-                        " , b.sBarCodex xBarCodex" +
-                        " , b.sDescript xDescript" +
-                        " , c.sWHouseNm xWHouseNm" +
-                        " FROM Inv_Ledger a" +
-                        "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWHouseNm";
-        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue) + " ORDER BY a.nLedgerNo ASC");
-        lsSQL = MiscUtil.addCondition(lsSQL, lsCondition);
-        System.out.println(lsSQL);
+                            	"  a.sSerialID" +
+                                ", a.sBranchCd" +
+                                ", a.nLedgerNo" +
+                                ", a.dTransact" +
+                                ", a.sSourceCd" +
+                                ", a.sSourceNo" +
+                                ", a.cSoldStat" +
+                                ", a.cLocation" +
+                                ", a.dModified" +
+                                ", c.sBarCodex xBarCodex" +
+                                ", c.sDescript xDescript" +
+                                ", b.sSerial01 xSerial01" +
+                                ", b.sSerial02 xSerial02" +
+                        " FROM Inv_Serial_Ledger a"+ 
+                            " LEFT JOIN Inv_Serial b ON a.sSerialID = b.sSerialID" +
+                            " LEFT JOIN Inventory c ON b.sStockIDx = c.sStockIDx" ;
+        
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sSerialID = " + SQLUtil.toSQL(fsValue) + " ORDER BY a.sSerialID, a.nLedgerNo asc");
+//        lsSQL = MiscUtil.addCondition(lsSQL, lsCondition);
+        System.out.println("" + lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
 
         try {
@@ -379,8 +366,8 @@ public class InvLedger implements GRecord{
             if (MiscUtil.RecordCount(loRS) > 0) {
                 poModel = new ArrayList<>();
                 while(loRS.next()){
-                        poModel.add(new Model_Inv_Ledger(poGRider));
-                        poModel.get(poModel.size() - 1).openRecord(loRS.getString("sStockIDx"), " a.nLedgerNo = " + SQLUtil.toSQL(loRS.getString("nLedgerNo")));
+                        poModel.add(new Model_Inv_Serial_Ledger(poGRider));
+                        poModel.get(poModel.size() - 1).openRecord(loRS.getString("sSerialID"), " nLedgerNo = " + SQLUtil.toSQL(loRS.getString("nLedgerNo")));
                         
                         pnEditMode = EditMode.UPDATE;
                         lnctr++;
@@ -395,7 +382,7 @@ public class InvLedger implements GRecord{
 //                addLedger();
                 poJSON.put("result", "error");
 //                poJSON.put("continue", true);
-                poJSON.put("message", "No record found.");
+                poJSON.put("message", "No record to load for inventory serial ledger.");
             }
             
             MiscUtil.close(loRS);
@@ -405,6 +392,8 @@ public class InvLedger implements GRecord{
         }
         return poJSON;
     }
+    
+    
     private JSONObject saveLedger(){
         
         JSONObject obj = new JSONObject();
@@ -418,7 +407,7 @@ public class InvLedger implements GRecord{
         String lsSQL;
         
         for (lnCtr = 0; lnCtr <= poModel.size() -1; lnCtr++){
-            poModel.get(lnCtr).setStockID(poModel.get(lnCtr).getStockID());
+//            poModel.get(lnCtr).setStockID(poModel.get(lnCtr).getStockID());
             poModel.get(lnCtr).setLedgerNo(lnCtr + 1);
 //            Validator_Client_Address validator = new Validator_Client_Address(paAddress.get(lnCtr));
 //            

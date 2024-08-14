@@ -13,7 +13,7 @@ import org.guanzon.appdriver.base.MiscUtil;
  *
  * @author User
  */
-public class ModelInvLedger {
+public class ModelInventoryTrans {
     public static void main (String [] args){
         String path;
         if(System.getProperty("os.name").toLowerCase().contains("win")){
@@ -32,38 +32,41 @@ public class ModelInvLedger {
         }
 
         System.out.println("Connected");
-        System.setProperty("sys.table", "Inv_Ledger");
+        System.setProperty("sys.table", "Inventory_Trans");
         System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/Model_" + System.getProperty("sys.table") + ".xml");
 //        System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/Model_Inventory.xml");
         
         
         String lsSQL = "SELECT" +
-                        "   a.sStockIDx" +
-                        " , a.sBranchCd" +
-                        " , a.sWHouseID" +
-                        " , a.nLedgerNo" +
-                        " , a.dTransact" +
-                        " , a.sSourceCd" +
-                        " , a.sSourceNo" +
-                        " , a.nQtyInxxx" +
-                        " , a.nQtyOutxx" +
-                        " , a.nQtyOrder" +
-                        " , a.nQtyIssue" +
-                        " , a.nPurPrice" +
-                        " , a.nUnitPrce" +
-                        " , a.nQtyOnHnd" +
-                        " , a.dExpiryxx" +
-                        " , a.sModified" +
-                        " , a.dModified" +
-                        " , b.sBarCodex xBarCodex" +
-                        " , b.sDescript xDescript" +
-                        " , c.sWHouseNm xWHouseNm" +
-                        " , d.sBranchNm xBranchNm" +
-                        " FROM " + System.getProperty("sys.table") + " a" +
-                        "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                        "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID"+
-                        "    LEFT JOIN Branch d ON a.sBranchCd = d.sBranchCd";
-       
+                            "  a.sStockIDx" +
+                            ", a.sBranchCd" +
+                            ", a.sWHouseID" +
+                            ", a.nQtyOnHnd nQuantity" +
+                            ", b.nQtyInxxx" +
+                            ", b.nQtyOutxx" +
+                            ", b.nQtyOrder" +
+                            ", b.nQtyIssue" +
+                            ", b.nQtyOnHnd" +
+                            ", a.nBackOrdr" +
+                            ", a.nResvOrdr" +
+                            ", a.nFloatQty" +
+                            ", a.nLedgerNo" +
+                            ", a.dAcquired" +
+                            ", a.dBegInvxx" +
+                            ", a.dLastTran" +
+                            ", b.nPurPrice" +
+                            ", b.nUnitPrce" +
+                            ", b.dExpiryxx" +
+                            ", c.cUnitType" +
+                            ", '0' cNewParts" +
+                            ", '' sReplacID" +
+                            ", c.cSerialze" +
+                            ", a.cRecdStat" +
+               
+                        " FROM Inv_Master a"+ 
+                            " LEFT JOIN Inv_Ledger b ON a.sStockIDx = b.sStockIDx AND a.sBranchCd = b.sBranchCd"+ 
+                            " LEFT JOIN Inventory c ON a.sStockIDx = c.sStockIDx";
+        
         
         ResultSet loRS = instance.executeQuery(lsSQL);
         try {

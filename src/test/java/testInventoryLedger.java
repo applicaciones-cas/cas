@@ -107,11 +107,11 @@ public class testInventoryLedger{
         }
         Assert.assertEquals("M00124000004", record.getMaster().get(record.getMaster().size()-1).getStockID());
         
-        loJSON = record.getMaster().get(record.getMaster().size()-1).setSourceCode("DA");
+        loJSON = record.getMaster().get(record.getMaster().size()-1).setSourceCode("AcDl");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals("DA", record.getMaster().get(record.getMaster().size()-1).getSourceCode());
+        Assert.assertEquals("AcDl", record.getMaster().get(record.getMaster().size()-1).getSourceCode());
         
         loJSON = record.getMaster().get(record.getMaster().size()-1).setSourceNo("P0W124000018");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -165,31 +165,31 @@ public class testInventoryLedger{
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals(5, record.getMaster().get(record.getMaster().size()-1).getQuantityIn(), 0);
+        Assert.assertEquals(5, Integer.parseInt(record.getMaster().get(record.getMaster().size()-1).getQuantityIn().toString()), 0);
         
         loJSON = record.getMaster().get(record.getMaster().size()-1).setQuantityIssue(0);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals(0, record.getMaster().get(record.getMaster().size()-1).getQuantityIssue(), 0);
+        Assert.assertEquals(0, Integer.parseInt(record.getMaster().get(record.getMaster().size()-1).getQuantityIssue().toString()), 0);
         
         loJSON = record.getMaster().get(record.getMaster().size()-1).setQuantityOnHand(30);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals(30, record.getMaster().get(record.getMaster().size()-1).getQuantityOnHand(), 0);
+        Assert.assertEquals(30, Integer.parseInt(record.getMaster().get(record.getMaster().size()-1).getQuantityOnHand().toString()), 0);
         
         loJSON = record.getMaster().get(record.getMaster().size()-1).setQuantityOrder(0);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals(0, record.getMaster().get(record.getMaster().size()-1).getQuantityOrder(), 0);
+        Assert.assertEquals(0, Integer.parseInt(record.getMaster().get(record.getMaster().size()-1).getQuantityOrder().toString()), 0);
         
         loJSON = record.getMaster().get(record.getMaster().size()-1).setQuantityOut(0);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals(0, record.getMaster().get(record.getMaster().size()-1).getQuantityOut(), 0);
+        Assert.assertEquals(0, Integer.parseInt(record.getMaster().get(record.getMaster().size()-1).getQuantityOut().toString()), 0);
         
         loJSON = record.getMaster().get(record.getMaster().size()-1).setPurchasePrice(500);
         if ("error".equals((String) loJSON.get("result"))) {
@@ -235,18 +235,18 @@ public class testInventoryLedger{
 //        }
         
         Assert.assertEquals("M00124000003", record.getMaster(record.getMaster().size()-1, "sStockIDx"));
-        Assert.assertEquals("DA", record.getMaster(record.getMaster().size()-1, "sSourceCd"));
+        Assert.assertEquals("AcDl", record.getMaster(record.getMaster().size()-1, "sSourceCd"));
         Assert.assertEquals("P0W124000016", record.getMaster(record.getMaster().size()-1, "sSourceNo"));
         Assert.assertEquals("015", record.getMaster(record.getMaster().size()-1, "sWHouseID"));
         Assert.assertEquals("Building G-2F", record.getMaster(record.getMaster().size()-1, "xWHouseNm"));
 //        Assert.assertEquals("M00124000003", record.getMaster().get(record.getMaster().size()-1).getStockID());
 
         Assert.assertEquals(1, record.getMaster().get(record.getMaster().size()-1).getLedgerNo(), 0);
-        Assert.assertEquals(5, record.getMaster().get(record.getMaster().size()-1).getQuantityIn(), 0);
-        Assert.assertEquals(0, record.getMaster().get(record.getMaster().size()-1).getQuantityIssue(), 0);
-        Assert.assertEquals(30, record.getMaster().get(record.getMaster().size()-1).getQuantityOnHand(), 0);
-        Assert.assertEquals(0, record.getMaster().get(record.getMaster().size()-1).getQuantityOrder(), 0);
-        Assert.assertEquals(0, record.getMaster().get(record.getMaster().size()-1).getQuantityOut(), 0);
+        Assert.assertEquals(5, Integer.parseInt(record.getMaster().get(record.getMaster().size()-1).getQuantityIn().toString()), 0);
+        Assert.assertEquals(0, Integer.parseInt(record.getMaster().get(record.getMaster().size()-1).getQuantityIssue().toString()), 0);
+        Assert.assertEquals(30, Integer.parseInt(record.getMaster().get(record.getMaster().size()-1).getQuantityOnHand().toString()), 0);
+        Assert.assertEquals(0, Integer.parseInt(record.getMaster().get(record.getMaster().size()-1).getQuantityOrder().toString()), 0);
+        Assert.assertEquals(0, Integer.parseInt(record.getMaster().get(record.getMaster().size()-1).getQuantityOut().toString()), 0);
         Assert.assertEquals(500.00, Double.parseDouble(record.getMaster().get(record.getMaster().size()-1).getPurchasePrice().toString()), 0.00);
         Assert.assertEquals(400.00, Double.parseDouble(record.getMaster().get(record.getMaster().size()-1).getUnitPrice().toString()), 0.00);
         Assert.assertEquals("M001", record.getMaster().get(record.getMaster().size()-1).getBranchCode());
