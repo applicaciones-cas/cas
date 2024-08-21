@@ -175,9 +175,9 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                     break;
                 }else{ 
                     try {
-                        
-                         LocalDate fromDate = dpField01.getValue();
-                        LocalDate thruDate = dpField02.getValue();
+
+                        dpField01.setValue(null);
+                        dpField02.setValue(null);
                         poJson = poTrans.recalculate(poTrans.getModel().getStockID());
                         if("error".equalsIgnoreCase(poJson.get("result").toString())){
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
@@ -192,53 +192,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
                         }  
                         loadLedger();
-//<<<<<<< Updated upstream
-//                        
-//=======
-//                        poJson = new JSONObject();
-//>>>>>>> Stashed changes
-//                        LocalDate fromDate = dpField01.getValue();
-//                        LocalDate thruDate = dpField02.getValue();
-//                        poJson = poTrans.recalculate(poTrans.getModel().getStockID());
-//                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                        }  
-//                        ShowMessageFX.Information("Recalculation completed succesfully", 
-//                            "Computerized Acounting System", pxeModuleName); 
-//<<<<<<< Updated upstream
-//                        poJson = new JSONObject();
-//                        poJson = oTrans.OpenInvLedger(poTrans.getModel().getStockID());
-//                        
-//=======
-//                        
-//                        poJson = poTrans.openRecord(poTrans.getModel().getStockID());
-//                        System.out.println("poJson = " + poJson.toJSONString());
-//                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                        }  
-//                        System.out.println("getBegQtyxx = " + poTrans.getModel().getBegQtyxx());
-//                        
-//                        poJson = oTrans.OpenInvLedger(poTrans.getModel().getStockID());
-//>>>>>>> Stashed changes
-//                        System.out.println("poJson = " + poJson.toJSONString());
-//                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                        }  
-//                        loadLedger();
-                        
-                        
-//                        LocalDate fromDate = dpField01.getValue();
-//                        LocalDate thruDate = dpField02.getValue();
-//                        poTrans.recalculate(poTrans.getModel().getStockID());
-//                        ShowMessageFX.Information("Recalculation completed succesfully", 
-//                            "Computerized Acounting System", pxeModuleName); 
-//                        poJson = new JSONObject();
-//                        poJson = oTrans.OpenInvLedgerWithCondition(poTrans.getModel().getStockID(), " a.dTransact BETWEEN '" + fromDate + "' AND '" + thruDate +"'");
-//                        System.out.println("poJson = " + poJson.toJSONString());
-//                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                        }  
-//                        loadLedger();
+
                     } catch (SQLException ex) {
                         Logger.getLogger(InventoryLedgerController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -248,30 +202,35 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
 
            case "btnLoadLedger":  //Close
 //                CommonUtils.closeStage(btnClose);
-                LocalDate fromDate = dpField01.getValue();
-                LocalDate thruDate = dpField02.getValue();
-                
-                if (fromDate != null && thruDate != null) {
-                    if (fromDate.isAfter(thruDate)) {
-                        ShowMessageFX.Information("Invalid Date Range: 'From Date' should not be after 'Thru Date'", "Computerized Acounting System", pxeModuleName);     
-                        System.out.println("Invalid Date Range: 'From Date' should not be after 'Thru Date'");
-                    } else {
-                        poJson = new JSONObject();
+                    LocalDate fromDate = dpField01.getValue();
+                    LocalDate thruDate = dpField02.getValue();
+                    
+                    
+                    poJson = new JSONObject();
                         data.clear();
-//                        poJson = oTrans.OpenInvLedger(poTrans.getModel().getStockID());
-                        poJson = oTrans.OpenInvLedgerWithCondition(poTrans.getModel().getStockID(),"a.dTransact BETWEEN '" + fromDate + "' AND '" + thruDate + "'");
-                        System.out.println("poJson = " + poJson.toJSONString());
-                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-                        }
-                        loadLedger();
-                        System.out.println("From Date: " + fromDate);
-                        System.out.println("Thru Date: " + thruDate);
-                    }
-                } else {
-                    System.out.println("Please select both dates.");
-                    ShowMessageFX.Information("Please select both dates.", "Computerized Acounting System", pxeModuleName);    
-                }
+
+                        // Check for null dates
+//                        boolean isDateRangeEmpty = (fromDate == null || thruDate == null);
+                        boolean isFromDateNull = (fromDate == null);
+                        boolean isThruDateNull = (thruDate == null);
+                        
+                         if (isFromDateNull && isThruDateNull) {
+                            poJson = oTrans.OpenInvLedger(poTrans.getModel().getStockID());
+                         } else { 
+                             if (isFromDateNull || isThruDateNull){
+                                ShowMessageFX.Information("Invalid Date Range: Please Check your Date From and Date Thru", "Computerized Accounting System", pxeModuleName);
+                                return;
+                             }
+                             
+                             if (fromDate.isAfter(thruDate)) {
+                                ShowMessageFX.Information("Invalid Date Range: 'From Date' should not be after 'Thru Date'.", "Computerized Accounting System", pxeModuleName);
+                                return;
+                             }
+                             
+                             String condition = "a.dTransact BETWEEN '" + fromDate + "' AND '" + thruDate + "'";
+                             poJson = oTrans.OpenInvLedgerWithCondition(poTrans.getModel().getStockID(), condition);
+                         }
+                          loadLedger();  
             break;
             
            case "btnCancel": //OK;
