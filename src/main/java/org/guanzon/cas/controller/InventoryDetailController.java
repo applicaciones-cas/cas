@@ -514,6 +514,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         InventoryLedgerController loControl = new InventoryLedgerController();
         loControl.setGRider(oApp);
         loControl.setFsCode(oTrans);
+        loControl.setStockID(fsCode);
+        loControl.setParentController(this);
         fxmlLoader.setController(loControl);
 
         // Load the main interface
@@ -563,7 +565,11 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             overlay.setVisible(false);
         });
         
-        stage.setOnHidden(e -> overlay.setVisible(false));
+        stage.setOnHidden(e -> {
+            System.out.println("Stage is hidden");
+            overlay.setVisible(false);
+            loadResult(oTrans.getMaster("sStockIDx").toString(), false);
+        });
         stage.showAndWait();
 
     } catch (IOException e) {
@@ -614,14 +620,14 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     btnCancel.setVisible(lbShow);
     btnCancel.setManaged(lbShow);
     
-    btnLedger.setVisible(true);
-    btnLedger.setManaged(true);
+    btnLedger.setVisible(!lbShow);
+    btnLedger.setManaged(!lbShow);
     
-    btnSerial.setVisible(true);
-    btnSerial.setManaged(true);
+    btnSerial.setVisible(!lbShow);
+    btnSerial.setManaged(!lbShow);
     
-    btnClose.setVisible(true);
-    btnClose.setManaged(true);
+    btnClose.setVisible(!lbShow);
+    btnClose.setManaged(!lbShow);
     
     btnUpdate.setVisible(!lbShow);
     btnUpdate.setManaged(!lbShow);
@@ -642,9 +648,9 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         btnUpdate.setManaged(false);
         btnBrowse.setManaged(false);
         btnCancel.setManaged(true);
-        btnLedger.setManaged(true);
-        btnSerial.setManaged(true);
-        btnClose.setManaged(true);
+        btnLedger.setManaged(false);
+        btnSerial.setManaged(false);
+        btnClose.setManaged(false);
     } else {
         txtSeeks01.setDisable(false);
         txtSeeks02.setDisable(false);
@@ -983,6 +989,9 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         if("error".equalsIgnoreCase(poJson.get("result").toString())){
             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
         }
+        initButton(pnEditMode);
+        System.out.print("\neditmode on browse == " + pnEditMode);
+        initTabAnchor();
         loadInventory();
                
     }

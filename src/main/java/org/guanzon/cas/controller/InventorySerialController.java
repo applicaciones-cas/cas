@@ -172,12 +172,14 @@ public class InventorySerialController implements Initializable {
                     break;
                     
                 case "btnLoadSerial":
+                    
                     String UnitType = String.valueOf(cmbField01.getSelectionModel().getSelectedIndex()); 
                     poJSON = new JSONObject();
                     
                     if (UnitType.equals("7")) {
-                       poJSON = oTrans.OpenInvSerialusingStockID(poTrans.getModel().getStockID());
-                       if("error".equalsIgnoreCase(poJSON.get("result").toString())){
+                        data.clear();
+                        poJSON = oTrans.OpenInvSerialusingStockID(poTrans.getModel().getStockID());
+                        if("error".equalsIgnoreCase(poJSON.get("result").toString())){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);   
                             break;
                         } 
@@ -185,6 +187,7 @@ public class InventorySerialController implements Initializable {
                         System.out.println("poJson = " + poJSON.toJSONString());
                         loadSerial();
                     } else {
+                        data.clear();
                         poJSON = oTrans.OpenInvSerialWithCondition(poTrans.getModel().getStockID(), " a.cUnitType = '" + UnitType + "'");
                         if("error".equalsIgnoreCase(poJSON.get("result").toString())){
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);   
