@@ -574,7 +574,7 @@ public class InvMaster implements GRecord{
     }
     public JSONObject recalculate(String fsStockIDx, Date fdBegInvxx, double fnBegQtyxx) throws SQLException {
         double lnQtyOnHnd = fnBegQtyxx;
-
+        double calculated_qty = 0.0;
         // Check if beginning inventory date is less than the current beginning date
         if (poModel.getDBegInvxx() != null && ((Date) poModel.getDBegInvxx()).before(fdBegInvxx)) {
             return createErrorResponse("Beginning date is less than the current beginning date!");
@@ -585,14 +585,20 @@ public class InvMaster implements GRecord{
         }
         
         // Calculate quantity on hand before the beginning inventory date
-        lnQtyOnHnd += calculateQtyOnHand(fsStockIDx, fdBegInvxx);
-
+        calculated_qty = calculateQtyOnHand(fsStockIDx, fdBegInvxx);
+        
+        // Add calculate quantity on hand before the beginning inventory date
+        lnQtyOnHnd += calculated_qty;
+        
+        // Add calculated quantity to beginning quantity
+        fnBegQtyxx += calculated_qty;
         // Transfer transactions before the beginning inventory date to history ledger
         transferToHistoryLedger(fsStockIDx, fdBegInvxx);
 
         // Restore transactions after the beginning inventory date from history ledger
         restoreFromHistoryLedger(fsStockIDx, fdBegInvxx);
-
+        
+//        
         // Update inventory ledger and master records
         updateLedgerAndMasterRecords(fsStockIDx, lnQtyOnHnd, fdBegInvxx, fnBegQtyxx);
 
@@ -613,17 +619,15 @@ public class InvMaster implements GRecord{
                        " AND sBranchCd = " + SQLUtil.toSQL(poGRider.getBranchCode()) +
                        " AND dTransact < " + SQLUtil.toSQL(fdBegInvxx) +
                        " ORDER BY nLedgerNo ASC";
-        System.out.println("calculateQtyOnHand = " +lsSQL);
         ResultSet loRSLedgerQtyOnHnd = poGRider.executeQuery(lsSQL);
-        return loRSLedgerQtyOnHnd.next() ? loRSLedgerQtyOnHnd.getDouble("nQtyOnHnd") : 0.0;
+        return (loRSLedgerQtyOnHnd.next() ? loRSLedgerQtyOnHnd.getDouble("nQtyOnHnd") : 0.0);
     }
     private double calculateQtyOnHandByLedgerNo(String fsStockIDx, Date fdBegInvxx, int ledgerNo) throws SQLException {
         String lsSQL = "SELECT SUM(nQtyInxxx - nQtyOutxx) AS nQtyOnHnd " +
                        " FROM Inv_Ledger " +
                        " WHERE sStockIDx = " + SQLUtil.toSQL(fsStockIDx) +
                        " AND sBranchCd = " + SQLUtil.toSQL(poGRider.getBranchCode()) +
-                       " AND nLedgerNo = " + SQLUtil.toSQL(ledgerNo) ;
-        System.out.println("calculateQtyOnHandByLedgerNo = " +lsSQL);
+                       " AND nLedgerNo = " + SQLUtil.toSQL(ledgerNo);
         ResultSet loRSLedgerQtyOnHnd = poGRider.executeQuery(lsSQL);
         return loRSLedgerQtyOnHnd.next() ? loRSLedgerQtyOnHnd.getDouble("nQtyOnHnd") : 0.0;
     }
@@ -682,7 +686,7 @@ public class InvMaster implements GRecord{
 
     private void updateLedgerAndMasterRecords(String fsStockIDx, double lnQtyOnHnd, Date fdBegInvxx, double fnBegQtyxx) throws SQLException {
         StringBuilder loSQL = new StringBuilder();
-
+         
         // Update ledger records
         int lnLedgerNo = 0;
         String lsSQL = "SELECT * FROM Inv_Ledger " +
@@ -708,6 +712,7 @@ public class InvMaster implements GRecord{
 
             if (Double.compare(loRSLedger.getDouble("nQtyOnHnd"), lnQtyOnHnd) != 0) {
                 System.out.println("lnQtyOnHnd = " + lnQtyOnHnd);
+                System.out.println("loRSLedger = " + loRSLedger.getDouble("nQtyOnHnd"));
                 loSQL.append(", nQtyOnHnd = ").append(lnQtyOnHnd);
             }
 
@@ -767,6 +772,7 @@ public class InvMaster implements GRecord{
     }
 
     private JSONObject createErrorResponse(String message) {
+        poJSON = new JSONObject();
         poJSON.put("result", "error");
         poJSON.put("message", message);
         return poJSON;
