@@ -18,8 +18,8 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
-import org.guanzon.cas.model.inventory.Model_Inv_Serial;
-import org.guanzon.cas.model.inventory.Model_Inv_Serial_Ledger;
+import org.guanzon.cas.inventory.models.Model_Inv_Serial;
+import org.guanzon.cas.inventory.models.Model_Inv_Serial_Ledger;
 import org.json.simple.JSONObject;
 
 /**

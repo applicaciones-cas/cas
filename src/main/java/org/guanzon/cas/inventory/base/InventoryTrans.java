@@ -19,7 +19,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.RecordStatus;
 import org.guanzon.appdriver.iface.GTransaction;
 import org.guanzon.cas.inventory.constant.InvConstants;
-import org.guanzon.cas.model.inventory.Model_Inventory_Trans;
+import org.guanzon.cas.inventory.models.Model_Inventory_Trans;
 import org.json.simple.JSONObject;
 
 /**

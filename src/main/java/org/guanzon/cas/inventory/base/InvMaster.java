@@ -18,10 +18,10 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
-import org.guanzon.cas.model.inventory.Model_Inv_Ledger;
-import org.guanzon.cas.model.inventory.Model_Inv_Master;
-import org.guanzon.cas.model.inventory.Model_Inv_Serial;
-import org.guanzon.cas.model.inventory.Model_Inventory;
+import org.guanzon.cas.inventory.models.Model_Inv_Ledger;
+import org.guanzon.cas.inventory.models.Model_Inv_Master;
+import org.guanzon.cas.inventory.models.Model_Inv_Serial;
+import org.guanzon.cas.inventory.models.Model_Inventory;
 import org.guanzon.cas.model.parameters.Model_Inv_Location;
 import org.guanzon.cas.parameters.Inv_Location;
 import org.guanzon.cas.parameters.Warehouse;
@@ -403,9 +403,6 @@ public class InvMaster implements GRecord{
     }
     
     public JSONObject SearchMaster(int fnCol, String fsValue, boolean fbByCode){
-        String lsHeader = "";
-        String lsColName = "";
-        String lsColCrit = "";
         String lsSQL = "";
         JSONObject loJSON;
         
@@ -422,6 +419,7 @@ public class InvMaster implements GRecord{
                     setMaster(fnCol, (String) loWarehouse.getMaster("sWHouseID"));
                     return setMaster("xWHouseNm", (String) loWarehouse.getMaster("sWHouseNm"));
                 } else {
+                    loJSON = new JSONObject();
                     loJSON.put("result", "error");
                     loJSON.put("message", "No record found.");
                     return loJSON;
