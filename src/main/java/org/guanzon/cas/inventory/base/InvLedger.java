@@ -369,8 +369,8 @@ public class InvLedger implements GRecord{
                         " FROM Inv_Ledger a" +
                         "    LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                         "    LEFT JOIN Warehouse c ON a.sWhouseID = c.sWHouseNm";
-        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue) + " ORDER BY a.nLedgerNo ASC");
-        lsSQL = MiscUtil.addCondition(lsSQL, lsCondition);
+        lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue));
+        lsSQL = MiscUtil.addCondition(lsSQL, lsCondition  + " ORDER BY a.nLedgerNo ASC");
         System.out.println(lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
 
