@@ -34,7 +34,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.model.ModelPOQuotationRequest;
-import org.guanzon.cas.model.inventory.PO_Quotation_Request;
+import org.guanzon.cas.inventory.base.PO_Quotation_Request;
 import org.json.simple.JSONObject;
 
 /**
@@ -58,7 +58,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
     private int pnDetailRow;
 
     @FXML
-    private AnchorPane MainAnchorPain, apButton, apTable, apDetail, apTextField;
+    private AnchorPane MainAnchorPain, apBrowse, apMaster, apButton, apTable, apDetail;
 
     @FXML
     private Button btnNew, btnBrowse, btnCancel, btnSave, btnClose, btnUpdate, btnConfirm, btnVoid;
@@ -304,21 +304,24 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         btnSave.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
 
+        btnBrowse.setManaged(!lbShow);
         btnNew.setManaged(!lbShow);
         btnUpdate.setManaged(!lbShow);
-        btnBrowse.setManaged(!lbShow);
+        btnConfirm.setManaged(!lbShow);
+        btnVoid.setManaged(!lbShow);
+        btnClose.setManaged(!lbShow);
 
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
         btnUpdate.setVisible(!lbShow);
         btnConfirm.setVisible(!lbShow);
+        btnVoid.setVisible(!lbShow);
         btnClose.setVisible(!lbShow);
 
-        txtField01.setDisable(lbShow);
-        txtField02.setEditable(lbShow);
-        txtField03.setEditable(lbShow);
-
-        txtField02.requestFocus();
+        apBrowse.setDisable(lbShow);
+        apMaster.setDisable(!lbShow);
+        apDetail.setDisable(!lbShow);
+        apTable.setDisable(!lbShow);
 
     }
 
@@ -327,7 +330,6 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
         txtField03.focusedProperty().addListener(txtField_Focus);
-        txtField01.focusedProperty().addListener(txtField_Focus);
         txtField04.focusedProperty().addListener(txtField_Focus);
         txtField05.focusedProperty().addListener(txtField_Focus);
         txtField06.focusedProperty().addListener(txtField_Focus);
@@ -545,36 +547,35 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
     };
 
     private void loadRecord() {
-        int lnActive = oTrans.getMasterModel().getTransactionStatus();
-        
-        
-        switch (lnActive){
-            case 0: 
-            lblStatus.setText("OPEN");
-            break;
-            case 1: 
-            lblStatus.setText("CLOSED");
-            break;
-            case 2: 
-            lblStatus.setText("POSTED");
-            break;
-            case 3: 
-            lblStatus.setText("CANCELLED");
-            break;
-            default: 
-            lblStatus.setText("UNKNOWN");
-            break;
-            
+        String lsActive = oTrans.getMasterModel().getTransactionStatus();
+
+        switch (lsActive) {
+            case "0":
+                lblStatus.setText("OPEN");
+                break;
+            case "1":
+                lblStatus.setText("CLOSED");
+                break;
+            case "2":
+                lblStatus.setText("POSTED");
+                break;
+            case "3":
+                lblStatus.setText("CANCELLED");
+                break;
+            default:
+                lblStatus.setText("UNKNOWN");
+                break;
+
         }
 
         psPrimary = oTrans.getMasterModel().getTransactionNumber();
         txtField01.setText(psPrimary);
         txtField02.setText(oApp.getServerDate().toString());
-        txtField03.setText(oTrans.getMasterModel().getCategoryName());
-        txtField04.setText(oTrans.getMasterModel().getReferenceNumber());
-        txtField05.setText(oTrans.getMasterModel().getDestination());
+        txtField03.setText(oApp.getServerDate().toString());
+        txtField04.setText(oApp.getServerDate().toString());
+        txtField05.setText(oApp.getServerDate().toString());
         txtField06.setText(oApp.getServerDate().toString());
-        
+        txtField07.setText(oApp.getServerDate().toString());
 
         loadTableDetail();
 
@@ -584,15 +585,28 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         txtField01.clear();
         txtField02.clear();
         txtField03.clear();
-
+        txtField04.clear();
+        txtField05.clear();
+        txtField06.clear();
+        txtField07.clear();
+        
+        txtDetail01.clear();
+        txtDetail02.clear();
+        txtDetail03.clear();
+        txtDetail04.clear();
+        txtDetail05.clear();
+        txtDetail06.clear();
+        txtDetail07.clear();
+        
+        
         psPrimary = "";
-        btnConfirm.setText("Activate");
+        lblStatus.setText("UNKNOWN");
+        
         pnDetailRow = -1;
         pnIndex = -1;
 
     }
 
-    
     private void loadTableDetail() {
         int lnCtr;
         data.clear();
@@ -634,4 +648,5 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         txtDetail07.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("nQuantity"));
 
     }
+
 }
