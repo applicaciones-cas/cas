@@ -23,16 +23,6 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
-<!--          <dependency>
-               <groupId>org.guanzon.cas.inventory.models</groupId>
-               <artifactId>cas-inventory-models</artifactId>
-               <version>1.0-SNAPSHOT</version>
-          </dependency>-->
-          <dependency>
-                <groupId>org.guanzon</groupId>
-                <artifactId>cas-model-inventory</artifactId>
-                <version>0.1-SNAPSHOT</version>
-          </dependency>
           
           <dependency>
                <groupId>org.guanzon</groupId>
@@ -45,6 +35,11 @@
                <version>5.7.2</version>
                <scope>test</scope>
                <type>jar</type>
+          </dependency>
+          <dependency>
+               <groupId>org.guanzon</groupId>
+               <artifactId>cas-model-inventory</artifactId>
+               <version>0.1-SNAPSHOT</version>
           </dependency>
      </dependencies>
    <build>
