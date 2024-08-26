@@ -33,6 +33,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.model.ModelPOQuotationRequest;
 import org.guanzon.cas.inventory.base.PO_Quotation_Request;
 import org.json.simple.JSONObject;
@@ -69,7 +70,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
     private Label lblStatus;
 
     @FXML
-    private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06;
+    private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField99, txtField98;
     @FXML
     private TextArea txtField07;
     @FXML
@@ -333,7 +334,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         txtField04.focusedProperty().addListener(txtField_Focus);
         txtField05.focusedProperty().addListener(txtField_Focus);
         txtField06.focusedProperty().addListener(txtField_Focus);
-        txtField07.focusedProperty().addListener(txtField_Focus);
+        txtField07.focusedProperty().addListener(txtArea_Focus);
 
         txtDetail01.focusedProperty().addListener(txtDetail_Focus);
         txtDetail02.focusedProperty().addListener(txtDetail_Focus);
@@ -343,11 +344,17 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         txtDetail06.focusedProperty().addListener(txtDetail_Focus);
         txtDetail07.focusedProperty().addListener(txtDetail_Focus);
 
-
         /*textFields KeyPressed PROPERTY*/
-        txtField01.setOnKeyPressed(this::txtField_KeyPressed);//transaction browse
-        txtField01.setOnKeyPressed(this::txtDetail_KeyPressed);//barcode
-        txtField02.setOnKeyPressed(this::txtDetail_KeyPressed);//description
+        txtField01.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField03.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField05.setOnKeyPressed(this::txtField_KeyPressed);
+
+        txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField98.setOnKeyPressed(this::txtField_KeyPressed);
+
+        txtDetail01.setOnKeyPressed(this::txtDetail_KeyPressed);//barcode
+        txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);
+//        txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);//description for clarification
 //        txtField10.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
@@ -360,10 +367,31 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
+                    case 98:/*Browse Primary*/
+                    case 99:
+                        poJSON = oTrans.searchTransaction("sTransNox", lsValue, lnIndex == 99);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
-                    case 01:
-                        /*Browse Primary*/
-                        poJSON = oTrans.openTransaction(lsValue);
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField01.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+
+                    case 3:
+                        /*sDestinat*/
+                        poJSON = oTrans.searchMaster(4, lsValue, false);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField01.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+                    case 5:/*sCategCd*/
+                        poJSON = oTrans.searchMaster(8, lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -399,9 +427,8 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                 switch (lnIndex) {
                     case 1:
                         /* Barcode & Description */
-
-                        poJSON = oTrans.searchDetail(pnDetailRow, lnIndex, lsValue, true);
-                        System.out.println("poJson Result = " + poJSON.toJSONString());
+                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, true);
+//                        System.out.println("poJson Result = " + poJSON.toJSONString());
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
@@ -410,7 +437,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                     case 2:
                         /* Barcode & Description */
                         poJSON = oTrans.searchDetail(pnDetailRow, lnIndex, lsValue, false);
-                        System.out.println("poJson Result = " + poJSON.toJSONString());
+//                        System.out.println("poJson Result = " + poJSON.toJSONString());
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
@@ -418,6 +445,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                         break;
 
                 }
+                loadTableDetail();
                 break;
         }
         switch (event.getCode()) {
@@ -524,22 +552,48 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
+                case 2:
+                    String lsStockID = (String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx");
+                    if (lsStockID != null && !lsStockID.isEmpty()) {
+                        if (txtField.getText().length() > 128) {
+                            ShowMessageFX.Warning("Max characters for `Descript` exceeds the limit.", pxeModuleName, "Please verify your entry.");
+                            txtField.requestFocus();
+                            return;
+                        }
+                        poJSON = oTrans.getDetailModel(pnDetailRow).setValue("sDescript", lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            return;
+                        }
+                    }
+                    break;
+
                 case 7:
-                    poJSON = oTrans.getMasterModel().setValue("nQuantity", lsValue);
+                    /*this must be numeric*/
+                    int x = 0;
+                    try {
+
+                        x = Integer.valueOf(lsValue);
+                        if (x > 999999) {
+                            x = 0;
+
+                            ShowMessageFX.Warning("Please input not greater than 999999", pxeModuleName, "");
+                            txtField.requestFocus();
+                        }
+                    } catch (Exception e) {
+                        ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
+                        txtField.requestFocus();
+                    }
+
+                    poJSON = oTrans.getDetailModel(pnDetailRow).setValue("nQuantity", x);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
                     }
                     break;
-//                case 5:
-//                    poJSON = oTrans.getMasterModel().setDestination(lsValue);
-//                    if ("error".equals((String) poJSON.get("result"))) {
-//                        System.err.println((String) poJSON.get("message"));
-//                        return;
-//                    }
-//                    break;
 
             }
+            loadTableDetail();
         } else {
             txtField.selectAll();
         }
@@ -570,12 +624,12 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
 
         psPrimary = oTrans.getMasterModel().getTransactionNumber();
         txtField01.setText(psPrimary);
-        txtField02.setText(oApp.getServerDate().toString());
-        txtField03.setText(oApp.getServerDate().toString());
-        txtField04.setText(oApp.getServerDate().toString());
-        txtField05.setText(oApp.getServerDate().toString());
-        txtField06.setText(oApp.getServerDate().toString());
-        txtField07.setText(oApp.getServerDate().toString());
+        txtField02.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
+        txtField03.setText(oTrans.getMasterModel().getDestinationName());
+        txtField04.setText(oTrans.getMasterModel().getReferenceNumber());
+        txtField05.setText(oTrans.getMasterModel().getCategoryName());
+        txtField06.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getExpectedPurchaseDate()));
+        txtField07.setText(oTrans.getMasterModel().getRemarks());
 
         loadTableDetail();
 
@@ -589,7 +643,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         txtField05.clear();
         txtField06.clear();
         txtField07.clear();
-        
+
         txtDetail01.clear();
         txtDetail02.clear();
         txtDetail03.clear();
@@ -597,11 +651,10 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         txtDetail05.clear();
         txtDetail06.clear();
         txtDetail07.clear();
-        
-        
+
         psPrimary = "";
         lblStatus.setText("UNKNOWN");
-        
+
         pnDetailRow = -1;
         pnIndex = -1;
 
@@ -612,40 +665,71 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         data.clear();
 
         int lnItem = oTrans.getItemCount();
-        if (lnItem > 0) {
+        if (lnItem < 0) {
             return;
         }
-
+        Inventory loInventory;
         for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
-            data.add(new ModelPOQuotationRequest(String.valueOf(lnCtr + 1),
-                    (String) oTrans.getDetailModel(lnCtr).getValue("sBarCodex"),//if doesnot load create setter and getter on model
-                    (String) oTrans.getDetailModel(lnCtr).getValue("sDescript"),//oTrans.getDetailModel(lnCtr).getBarcode() or something
-                    (String) oTrans.getDetailModel(lnCtr).getValue("xModelNme"),
-                    (String) oTrans.getDetailModel(lnCtr).getValue("xColorNme"),
-                    (String) oTrans.getDetailModel(lnCtr).getValue("xMeasurNm"),
-                    oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()));
+            String lsStockIDx = (String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx");
+            
+            if (lsStockIDx != null && !lsStockIDx.equals("")) {
+                loInventory = oTrans.GetInventory(lsStockIDx, true);
 
-            //display fetched detail on console
-            System.out.println("\nNo == " + String.valueOf(lnCtr + 1));
-            System.out.println("\nsBarCodex == " + (String) oTrans.getDetailModel(lnCtr).getValue("sBarCodex"));
-            System.out.println("\nsDescript == " + (String) oTrans.getDetailModel(lnCtr).getValue("sDescript"));
-            System.out.println("\nxModelNme == " + (String) oTrans.getDetailModel(lnCtr).getValue("xModelNme"));
-            System.out.println("\nxColorNme == " + (String) oTrans.getDetailModel(lnCtr).getValue("xColorNme"));
-            System.out.println("\nxMeasurNm == " + (String) oTrans.getDetailModel(lnCtr).getValue("xMeasurNm"));
-            System.out.println("\nQuantity == " + oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString());
+                data.add(new ModelPOQuotationRequest(String.valueOf(lnCtr + 1),
+                        (String) loInventory.getMaster("sBarCodex"),
+                        (String) loInventory.getMaster("sDescript"),
+                        (String) loInventory.getMaster("xModelNme"),
+                        (String) loInventory.getMaster("xColorNme"),
+                        (String) loInventory.getMaster("xMeasurNm"),
+                        oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()));
+
+                //display fetched detail on console
+                System.out.println("\nNo == " + String.valueOf(lnCtr + 1));
+                System.out.println("\nsBarCodex == " + (String) loInventory.getMaster("sBarCodex"));
+                System.out.println("\nsDescript == " + (String) loInventory.getMaster("sDescript"));
+                System.out.println("\nxModelNme == " + (String) loInventory.getMaster("xModelNme"));
+                System.out.println("\nxColorNme == " + (String) loInventory.getMaster("xColorNme"));
+                System.out.println("\nxMeasurNm == " + (String) loInventory.getMaster("xMeasurNm"));
+                System.out.println("\nQuantity == " + oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString());
+
+            } else {
+                data.add(new ModelPOQuotationRequest(String.valueOf(lnCtr + 1),
+                        "",
+                        (String) oTrans.getDetailModel(lnCtr).getValue("sDescript"),
+                        "",
+                        "",
+                        "",
+                        oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()));
+            }
 
         }
+        /*FOCUS ON FIRST ROW*/
+        if (pnDetailRow < 0 || pnDetailRow >= data.size()) {
+            if (!data.isEmpty()) {
+                /* FOCUS ON FIRST ROW */
+                tblDetails.getSelectionModel().select(0);
+                tblDetails.getFocusModel().focus(0);
+                pnDetailRow = tblDetails.getSelectionModel().getSelectedIndex();
+            }
+            setSelectedDetail();
+        } else {
+            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+            tblDetails.getSelectionModel().select(pnDetailRow);
+            tblDetails.getFocusModel().focus(pnDetailRow);
+            setSelectedDetail();
+        }
+        initDetailsGrid();
     }
 
     private void setSelectedDetail() {
+        txtDetail01.setText((String) data.get(pnDetailRow).getIndex02());
+        txtDetail02.setText((String) data.get(pnDetailRow).getIndex03());
+        txtDetail04.setText((String) data.get(pnDetailRow).getIndex04());
+        txtDetail05.setText((String) data.get(pnDetailRow).getIndex05());
+        txtDetail06.setText((String) data.get(pnDetailRow).getIndex06());
+        txtDetail07.setText((String) data.get(pnDetailRow).getIndex07());
 
-        txtDetail01.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("sBarCodex"));
-        txtDetail02.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("sDescript"));
-        txtDetail03.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("sDescript"));//category ito
-        txtDetail04.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("xModelNme"));
-        txtDetail05.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("xColorNme"));
-        txtDetail06.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("xMeasurNm"));
-        txtDetail07.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("nQuantity"));
+        txtDetail03.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("xCategrNm"));
 
     }
 
