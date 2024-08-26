@@ -16,7 +16,9 @@ import org.guanzon.cas.model.inventory.Model_PO_Quotation_Request_Master;
 
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Category_Level2;
+import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Inv_Type;
+import org.guanzon.cas.parameters.Measure;
 
 import org.json.simple.JSONObject;
 
@@ -48,13 +50,16 @@ public class PO_Quotation_Request implements GTranDet {
     @Override
     public JSONObject newTransaction() {
         poModelMaster = new Model_PO_Quotation_Request_Master(poGRider);
-
+        poModelDetail = new ArrayList<Model_PO_Quotation_Request_Detail>();
         poModelMaster.newRecord();
         //set the transaction no.
         poModelMaster.setTransactionNo(MiscUtil.getNextCode(poModelMaster.getTable(), "sTransNox",
                 true, poGRider.getConnection(), poGRider.getBranchCode()));
 
-        poModelDetail = new ArrayList<Model_PO_Quotation_Request_Detail>();
+        Model_PO_Quotation_Request_Detail loNewEntity = new Model_PO_Quotation_Request_Detail(poGRider);
+        loNewEntity.newRecord();
+        loNewEntity.setQuantity(0);
+        poModelDetail.add(loNewEntity);
 
         poJSON = new JSONObject();
         poJSON.put("result", "success");
@@ -70,7 +75,7 @@ public class PO_Quotation_Request implements GTranDet {
         if ("error".equals((String) poJSON.get("result"))) {
             return poJSON;
         }
-        //set the master
+        //set the master openrecord ito
         poJSON = searchMaster("sBranchCd", poModelMaster.getBranchCd(), true);
 
         openTransactionDetail(poModelMaster.getTransactionNumber());
@@ -135,8 +140,8 @@ public class PO_Quotation_Request implements GTranDet {
             return poJSON;
         }
 
-        poModelMaster.setEntryNumber(poModelDetail.size();
-        
+        poModelMaster.setEntryNumber(poModelDetail.size());
+
         poJSON = poModelMaster.saveRecord();
         if ("success".equals((String) poJSON.get("result"))) {
             if (!pbWthParent) {
@@ -271,55 +276,22 @@ public class PO_Quotation_Request implements GTranDet {
         JSONObject loJSON;
 
         switch (fsColumn) {
-
+            case "sDescript": //sDescript
             case "sStockIDx": //3 //8-xCategrNm //9-xInvTypNm
                 Inventory loInventory = new Inventory(poGRider, true);
                 loInventory.setRecordStatus(psTranStatus);
                 loJSON = loInventory.searchRecord(fsValue, fbByCode);
 
                 if (loJSON != null) {
+                    System.out.println((String) loInventory.getMaster("sStockIDx"));
                     setDetail(fnRow, "sStockIDx", (String) loInventory.getMaster("sStockIDx"));
-                    searchDetail(fnRow, "xCategrNm", (String) loInventory.getMaster("sCategCd2"), fbByCode);
-                    searchDetail(fnRow, "xInvTypNm", (String) loInventory.getMaster("sInvTypCd"), fbByCode);
+                    setDetail(fnRow, "xCategrNm", (String) loInventory.getMaster("xCategNm2"));
+                    setDetail(fnRow, "sDescript", (String) loInventory.getMaster("sDescript"));
+                    loJSON = setDetail(fnRow, "xInvTypNm", (String) loInventory.getMaster("xInvTypNm"));
 
                     return loJSON;
 
                 } else {
-                    loJSON = new JSONObject();
-                    loJSON.put("result", "error");
-                    loJSON.put("message", "No record found.");
-                    return loJSON;
-                }
-
-            case "xCategrNm": //8
-
-                Category_Level2 loCategory2 = new Category_Level2(poGRider, true);
-                loCategory2.setRecordStatus("01");
-                loJSON = loCategory2.searchRecord(fsValue, fbByCode);
-
-                if (loJSON != null) {
-                    setDetail(fnRow, 8, (String) loCategory2.getMaster("sDescript"));
-                    return loJSON;
-
-                } else {
-
-                    loJSON = new JSONObject();
-                    loJSON.put("result", "error");
-                    loJSON.put("message", "No record found.");
-                    return loJSON;
-                }
-
-            case "xInvTypNm": //
-                Inv_Type loInvType = new Inv_Type(poGRider, true);
-                loInvType.setRecordStatus("01");
-                loJSON = loInvType.searchRecord(fsValue, fbByCode);
-
-                if (loJSON != null) {
-                    setMaster(9, (String) loInvType.getMaster("sDescript"));
-                    return loJSON;
-
-                } else {
-
                     loJSON = new JSONObject();
                     loJSON.put("result", "error");
                     loJSON.put("message", "No record found.");
@@ -334,74 +306,8 @@ public class PO_Quotation_Request implements GTranDet {
 
     @Override
     public JSONObject searchDetail(int fnRow, int fnColumn, String fsValue, boolean fbByCode) {
+        return searchDetail(fnRow, poModelDetail.get(fnRow).getColumn(fnColumn), fsValue, fbByCode);
 
-        String lsHeader = "";
-        String lsColName = "";
-        String lsColCrit = "";
-        String lsSQL = "";
-        String lsCondition = "";
-        JSONObject loJSON;
-
-        switch (fnColumn) {
-
-            case 3: //sStockIDx //8-xCategrNm //9-xInvTypNm
-                Inventory loInventory = new Inventory(poGRider, true);
-                loInventory.setRecordStatus(psTranStatus);
-                loJSON = loInventory.searchRecord(fsValue, fbByCode);
-
-                if (loJSON != null) {
-                    setDetail(fnRow, 3, (String) loInventory.getMaster("sStockIDx"));
-                    searchDetail(fnRow, 8, (String) loInventory.getMaster("sCategCd2"), fbByCode);
-                    searchDetail(fnRow, 9, (String) loInventory.getMaster("sInvTypCd"), fbByCode);
-
-                    return loJSON;
-
-                } else {
-                    loJSON = new JSONObject();
-                    loJSON.put("result", "error");
-                    loJSON.put("message", "No record found.");
-                    return loJSON;
-                }
-
-            case 8: //xCategrNm
-
-                Category_Level2 loCategory2 = new Category_Level2(poGRider, true);
-                loCategory2.setRecordStatus("01");
-                loJSON = loCategory2.searchRecord(fsValue, fbByCode);
-
-                if (loJSON != null) {
-                    setDetail(fnRow, 8, (String) loCategory2.getMaster("sDescript"));
-                    return loJSON;
-
-                } else {
-
-                    loJSON = new JSONObject();
-                    loJSON.put("result", "error");
-                    loJSON.put("message", "No record found.");
-                    return loJSON;
-                }
-
-            case 9: //xInvTypNm
-                Inv_Type loInvType = new Inv_Type(poGRider, true);
-                loInvType.setRecordStatus("01");
-                loJSON = loInvType.searchRecord(fsValue, fbByCode);
-
-                if (loJSON != null) {
-                    setMaster(9, (String) loInvType.getMaster("sDescript"));
-                    return loJSON;
-
-                } else {
-
-                    loJSON = new JSONObject();
-                    loJSON.put("result", "error");
-                    loJSON.put("message", "No record found.");
-                    return loJSON;
-                }
-
-            default:
-                return null;
-
-        }
     }
 
     @Override
@@ -410,7 +316,7 @@ public class PO_Quotation_Request implements GTranDet {
     }
 
     @Override
-    public JSONObject searchTransaction(String fsColumn, String fsValue, boolean fbByCode) {
+    public JSONObject searchTransaction(String fsColNme, String fsValue, boolean fbByCode) {
         String lsCondition = "";
         String lsFilter = "";
 
@@ -419,19 +325,12 @@ public class PO_Quotation_Request implements GTranDet {
                 lsCondition += ", " + SQLUtil.toSQL(Character.toString(psTranStatus.charAt(lnCtr)));
             }
 
-            lsCondition = fsColumn + " IN (" + lsCondition.substring(2) + ")";
+            lsCondition = "cTranStat" + " IN (" + lsCondition.substring(2) + ")";
         } else {
-            lsCondition = fsColumn + " = " + SQLUtil.toSQL(psTranStatus);
+            lsCondition = "cTranStat" + " = " + SQLUtil.toSQL(psTranStatus);
         }
 
-        if (!fbByCode) {
-            lsFilter = fsColumn + " LIKE " + SQLUtil.toSQL(fsValue);
-        } else {
-            lsFilter = fsColumn + " = " + SQLUtil.toSQL(fsValue);
-        }
-
-        String lsSQL = MiscUtil.addCondition(poModelMaster.makeSelectSQL(), " sTransNox LIKE "
-                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition);
+        String lsSQL = MiscUtil.addCondition(poModelMaster.makeSelectSQL(), lsCondition);
 
         poJSON = new JSONObject();
 
@@ -466,38 +365,8 @@ public class PO_Quotation_Request implements GTranDet {
 
         switch (fsColNme) {
             case "sTransNox": // 1
-                lsHeader = "Transaction No»Date»Refer No";
-                lsColName = "sTransNox»dTransact»sReferNox";
-                lsColCrit = "sTransNox»dTransact»sReferNox";
+                return searchTransaction(fsColNme, fsValue, fbByCode);
 
-                if (psTranStatus.length() > 1) {
-                    for (int lnCtr = 0; lnCtr <= psTranStatus.length() - 1; lnCtr++) {
-                        lsCondition += ", " + SQLUtil.toSQL(Character.toString(psTranStatus.charAt(lnCtr)));
-                    }
-
-                    lsCondition = "cRecdStat IN (" + lsCondition.substring(2) + ")";
-                } else {
-                    lsCondition = "cRecdStat = " + SQLUtil.toSQL(psTranStatus);
-                }
-
-                lsSQL = MiscUtil.addCondition(poModelMaster.makeSelectSQL(), " sTransNox LIKE "
-                        + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition);
-
-                poJSON = ShowDialogFX.Search(poGRider,
-                        lsSQL,
-                        fsValue,
-                        lsHeader,
-                        lsColName,
-                        lsColCrit,
-                        fbByCode ? 0 : 1);
-
-                if (poJSON != null) {
-                    return poModelMaster.openRecord((String) poJSON.get("sTransNox"));
-                } else {
-                    poJSON.put("result", "error");
-                    poJSON.put("message", "No record loaded to update.");
-                    return poJSON;
-                }
 //            case "sBranchCd": //2 //15-xBranchNm
 //                Branch loBranch = new Branch(poGRider, true);
 //                loBranch.setRecordStatus(psTranStatus);
@@ -539,29 +408,14 @@ public class PO_Quotation_Request implements GTranDet {
                 loCategory2.setRecordStatus("01");
                 loJSON = loCategory2.searchRecord(fsValue, fbByCode);
 
+                Inv_Type loInvType = new Inv_Type(poGRider, true);
+                loInvType.setRecordStatus("01");
+
                 if (loJSON != null) {
                     setMaster("sCategrCd", (String) loCategory2.getMaster("sCategrCd"));
                     setMaster("xCategrNm", (String) loCategory2.getMaster("sDescript"));
 
-                    return searchMaster("xInvTypNm", (String) loCategory2.getMaster("sInvTypCd"), fbByCode);
-
-                } else {
-
-                    loJSON = new JSONObject();
-                    loJSON.put("result", "error");
-                    loJSON.put("message", "No record found.");
-                    return loJSON;
-                }
-
-            case "xInvTypNm": //18
-
-                Inv_Type loInvType = new Inv_Type(poGRider, true);
-                loInvType.setRecordStatus("01");
-                loJSON = loInvType.searchRecord(fsValue, fbByCode);
-
-                if (loJSON != null) {
-                    setMaster("xInvTypNm", (String) loInvType.getMaster("sDescript"));
-                    return loJSON;
+                    return loInvType.openRecord((String) loCategory2.getMaster("sInvTypCd"));
 
                 } else {
 
@@ -578,125 +432,7 @@ public class PO_Quotation_Request implements GTranDet {
 
     @Override
     public JSONObject searchMaster(int fnCol, String fsValue, boolean fbByCode) {
-
-        String lsHeader = "";
-        String lsColName = "";
-        String lsColCrit = "";
-        String lsSQL = "";
-        String lsCondition = "";
-        JSONObject loJSON;
-
-        switch (fnCol) {
-            case 1: // Transaction No.
-                lsHeader = "Transaction No»Date»Refer No";
-                lsColName = "sTransNox»dTransact»sReferNox";
-                lsColCrit = "sTransNox»dTransact»sReferNox";
-
-                if (psTranStatus.length() > 1) {
-                    for (int lnCtr = 0; lnCtr <= psTranStatus.length() - 1; lnCtr++) {
-                        lsCondition += ", " + SQLUtil.toSQL(Character.toString(psTranStatus.charAt(lnCtr)));
-                    }
-
-                    lsCondition = "cRecdStat IN (" + lsCondition.substring(2) + ")";
-                } else {
-                    lsCondition = "cRecdStat = " + SQLUtil.toSQL(psTranStatus);
-                }
-
-                lsSQL = MiscUtil.addCondition(poModelMaster.makeSelectSQL(), " sTransNox LIKE "
-                        + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition);
-
-                poJSON = ShowDialogFX.Search(poGRider,
-                        lsSQL,
-                        fsValue,
-                        lsHeader,
-                        lsColName,
-                        lsColCrit,
-                        fbByCode ? 0 : 1);
-
-                if (poJSON != null) {
-                    return poModelMaster.openRecord((String) poJSON.get("sTransNox"));
-                } else {
-                    poJSON.put("result", "error");
-                    poJSON.put("message", "No record loaded to update.");
-                    return poJSON;
-                }
-//uncomment if parameter for branch 
-//            case 2: //sBranchCd //15-xBranchNm
-//                Branch loBranch = new Branch(poGRider, true);
-//                loBranch.setRecordStatus(psTranStatus);
-//                loJSON = loBranch.searchRecord(fsValue, fbByCode);
-//
-//                if (loJSON != null) {
-//                    setMaster(2, (String) loBranch.getMaster("sBranchCd"));
-//                    setMaster(15, (String) loBranch.getMaster("sBranchNm"));
-//
-//                    return loJSON;
-//
-//                } else {
-//                    loJSON = new JSONObject();
-//                    loJSON.put("result", "error");
-//                    loJSON.put("message", "No record found.");
-//                    return loJSON;
-//                }
-//
-//            case 4: //sDestinat //16-xDestinat
-//                Branch loDestinat = new Branch(poGRider, true);
-//                loDestinat.setRecordStatus(psTranStatus);
-//                loJSON = loDestinat.searchRecord(fsValue, fbByCode);
-//
-//                if (loJSON != null) {
-//                    setMaster(4, (String) loDestinat.getMaster("sBranchCd"));
-//                    setMaster(16, (String) loDestinat.getMaster("sBranchNm"));
-//
-//                    return loJSON;
-//
-//                } else {
-//                    loJSON = new JSONObject();
-//                    loJSON.put("result", "error");
-//                    loJSON.put("message", "No record found.");
-//                    return loJSON;
-//                }
-            case 8: //sCategCd //17xCategrNm
-
-                Category_Level2 loCategory2 = new Category_Level2(poGRider, true);
-                loCategory2.setRecordStatus("01");
-                loJSON = loCategory2.searchRecord(fsValue, fbByCode);
-
-                if (loJSON != null) {
-                    setMaster(8, (String) loCategory2.getMaster("sCategrCd"));
-                    setMaster(17, (String) loCategory2.getMaster("sDescript"));
-
-                    return searchMaster(18, (String) loCategory2.getMaster("sInvTypCd"), fbByCode);
-
-                } else {
-
-                    loJSON = new JSONObject();
-                    loJSON.put("result", "error");
-                    loJSON.put("message", "No record found.");
-                    return loJSON;
-                }
-
-            case 18: //xInvTypNm
-
-                Inv_Type loInvType = new Inv_Type(poGRider, true);
-                loInvType.setRecordStatus("01");
-                loJSON = loInvType.searchRecord(fsValue, fbByCode);
-
-                if (loJSON != null) {
-                    setMaster(18, (String) loInvType.getMaster("sDescript"));
-                    return loJSON;
-
-                } else {
-
-                    loJSON = new JSONObject();
-                    loJSON.put("result", "error");
-                    loJSON.put("message", "No record found.");
-                    return loJSON;
-                }
-
-            default:
-                return null;
-        }
+        return searchMaster(fnCol, poModelMaster.getColumn(fnCol), fbByCode);
     }
 
     @Override
@@ -762,7 +498,7 @@ public class PO_Quotation_Request implements GTranDet {
             poModelDetail.add(new Model_PO_Quotation_Request_Detail(poGRider));
             poModelDetail.get(poModelDetail.size() - 1).newRecord();
             poModelDetail.get(poModelDetail.size() - 1).setTransactionNo(poModelMaster.getTransactionNumber());
-
+            poModelDetail.get(poModelDetail.size() - 1).setQuantity(0);
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "Information");
@@ -776,6 +512,27 @@ public class PO_Quotation_Request implements GTranDet {
     public void RemoveModelDetail(int fnRow) {
         poModelDetail.remove(fnRow - 1);
 
+    }
+
+    public Inventory GetInventory(String fsPrimaryKey, boolean fbByCode) {
+        Inventory instance = new Inventory(poGRider, fbByCode);
+        instance.setRecordStatus("10");
+        instance.openRecord(fsPrimaryKey);
+        return instance;
+    }
+
+    public Color GetColor(String fsPrimaryKey, boolean fbByCode) {
+        Color instance = new Color(poGRider, fbByCode);
+        instance.setRecordStatus("10");
+        instance.openRecord(fsPrimaryKey);
+        return instance;
+    }
+
+    public Measure GetMeasure(String fsPrimaryKey, boolean fbByCode) {
+        Measure instance = new Measure(poGRider, fbByCode);
+        instance.setRecordStatus("10");
+        instance.openRecord(fsPrimaryKey);
+        return instance;
     }
 
 }
