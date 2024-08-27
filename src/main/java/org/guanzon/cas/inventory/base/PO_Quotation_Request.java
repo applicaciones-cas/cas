@@ -56,6 +56,7 @@ public class PO_Quotation_Request implements GTranDet {
         Model_PO_Quotation_Request_Detail loNewEntity = new Model_PO_Quotation_Request_Detail(poGRider);
         loNewEntity.newRecord();
         loNewEntity.setQuantity(0);
+        loNewEntity.setUnitPrice(0.0);
         poModelDetail.add(loNewEntity);
 
         poJSON = new JSONObject();
@@ -94,7 +95,7 @@ public class PO_Quotation_Request implements GTranDet {
 
         poJSON = loCatLevel2.openRecord(poModelMaster.getCategoryCode());
         poJSON = loInvType.openRecord((String) loCatLevel2.getMaster("sInvTypCd"));
-        
+
         poModelMaster.setCategoryName((String) loCatLevel2.getMaster("xCategrNm"));
         poModelMaster.setCategoryName((String) loCatLevel2.getMaster("xInvTypNm"));
         if ("error".equals(
@@ -145,7 +146,9 @@ public class PO_Quotation_Request implements GTranDet {
 
         if (getItemCount() >= 1) {
             for (int lnCtr = 0; lnCtr <= getItemCount() - 1; lnCtr++) {
+                poModelDetail.get(lnCtr).setTransactionNo(poModelMaster.getTransactionNumber());
                 poModelDetail.get(lnCtr).setEntryNo(lnCtr + 1);
+
                 poJSON = poModelDetail.get(lnCtr).saveRecord();
 
                 if ("error".equals((String) poJSON.get("result"))) {
@@ -164,7 +167,8 @@ public class PO_Quotation_Request implements GTranDet {
         }
 
         poModelMaster.setEntryNumber(poModelDetail.size());
-
+        poModelMaster.setBranchCd(poGRider.getBranchCode());
+        poModelMaster.setPreparedDate(null);
         poJSON = poModelMaster.saveRecord();
         if ("success".equals((String) poJSON.get("result"))) {
             if (!pbWthParent) {
@@ -294,12 +298,29 @@ public class PO_Quotation_Request implements GTranDet {
 
     @Override
     public JSONObject setDetail(int fnRow, int fnCol, Object foData) {
-        return poModelDetail.get(fnRow).setValue(fnCol, foData);
+        return setDetail(fnRow, poModelDetail.get(fnRow).getColumn(fnCol), foData);
     }
 
     @Override
     public JSONObject setDetail(int fnRow, String fsCol, Object foData) {
-        return poModelDetail.get(fnRow).setValue(fsCol, foData);
+        poJSON = new JSONObject();
+
+        switch (fsCol) {
+            case "nQuantity":
+            case "sDescript":
+                poJSON = poModelDetail.get(fnRow).setValue(fsCol, foData);
+                if ("error".equals((String) poJSON.get("result"))) {
+                    return poJSON;
+                }
+
+                if (poModelDetail.get(fnRow).getQuantity() > 0
+                        && (!poModelDetail.get(fnRow).getDescript().isEmpty() || !poModelDetail.get(fnRow).getStockID().isEmpty())) {
+                    AddModelDetail();
+                }
+            default:
+                return poModelDetail.get(fnRow).setValue(fsCol, foData);
+        }
+
     }
 
     @Override
@@ -439,7 +460,7 @@ public class PO_Quotation_Request implements GTranDet {
 //                    loJSON.put("message", "No record found.");
 //                    return loJSON;
 //                }
-            case "sCategCd": //8 //17-xCategrNm
+            case "sCategrCd": //9 //17-xCategrNm
 
                 Category_Level2 loCategory2 = new Category_Level2(poGRider, true);
                 loCategory2.setRecordStatus("01");
@@ -468,7 +489,7 @@ public class PO_Quotation_Request implements GTranDet {
 
     @Override
     public JSONObject searchMaster(int fnCol, String fsValue, boolean fbByCode) {
-        return searchMaster(fnCol, poModelMaster.getColumn(fnCol), fbByCode);
+        return searchMaster(poModelMaster.getColumn(fnCol), fsValue, fbByCode);
     }
 
     @Override
@@ -529,17 +550,17 @@ public class PO_Quotation_Request implements GTranDet {
     }
 
     public JSONObject AddModelDetail() {
-        String lsModelRequired = poModelDetail.get(poModelDetail.size() - 1).getStockID();
-        if (!lsModelRequired.isEmpty()) {
+        boolean lsModelRequired = poModelDetail.get(poModelDetail.size() - 1).getQuantity() > 0;
+        if (lsModelRequired) {
             poModelDetail.add(new Model_PO_Quotation_Request_Detail(poGRider));
             poModelDetail.get(poModelDetail.size() - 1).newRecord();
             poModelDetail.get(poModelDetail.size() - 1).setTransactionNo(poModelMaster.getTransactionNumber());
             poModelDetail.get(poModelDetail.size() - 1).setQuantity(0);
+            poModelDetail.get(poModelDetail.size() - 1).setUnitPrice(0.0);
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "Information");
             poJSON.put("message", "Please Fill up Required Record Fist!");
-
         }
 
         return poJSON;
