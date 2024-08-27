@@ -3,6 +3,8 @@ package org.guanzon.cas.inventory.stock;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
@@ -10,6 +12,8 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.iface.GTranDet;
+import org.guanzon.cas.inventory.base.InvMaster;
+import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Master;
 import org.json.simple.JSONObject;
@@ -25,11 +29,15 @@ public class InvStockRequest implements GTranDet {
     int pnEditMode;
     String psTranStatus;
 
+    private boolean p_bWithUI = true;
     Model_Inv_Stock_Request_Master poModelMaster;
     ArrayList<Model_Inv_Stock_Request_Detail> poModelDetail;
 
     JSONObject poJSON;
 
+    public void setWithUI(boolean fbValue){
+        p_bWithUI = fbValue;
+    }
     public InvStockRequest(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
@@ -125,7 +133,7 @@ public class InvStockRequest implements GTranDet {
             poJSON.put("message", "Unable to Save empty Transaction.");
             return poJSON;
         }
-
+        poModelMaster.setEntryNumber(poModelDetail.size());
         poJSON = poModelMaster.saveRecord();
         if ("success".equals((String) poJSON.get("result"))) {
             if (!pbWthParent) {
@@ -241,6 +249,12 @@ public class InvStockRequest implements GTranDet {
         return poModelDetail.size();
     }
 
+
+    @Override
+    public Model_Inv_Stock_Request_Detail getDetailModel(int fnRow) {
+        return poModelDetail.get(fnRow);
+
+    }
 //    @Override
     public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModel() {
         return poModelDetail;
@@ -253,17 +267,56 @@ public class InvStockRequest implements GTranDet {
 
     @Override
     public JSONObject setDetail(int fnRow, String fsCol, Object foData) {
-        return poModelDetail.get(fnRow).setValue(fsCol, foData);
+        return setDetail(fnRow, poModelDetail.get(fnRow).getColumn(fsCol), foData);
     }
 
     @Override
-    public JSONObject searchDetail(int i, String string, String string1, boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public JSONObject searchDetail(int fnRow, String fsCol, String fsValue, boolean fbByCode) {
+        return searchDetail(fnRow, poModelDetail.get(fnRow).getColumn(fsCol), fsValue, fbByCode);
     }
 
     @Override
-    public JSONObject searchDetail(int i, int i1, String string, boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public JSONObject searchDetail(int fnRow, int fnCol, String fsValue, boolean fbByCode) {
+        poJSON = new JSONObject();
+
+        switch (fnCol) {
+
+            case 3: //sBarCodex
+                Inventory loInventory = new Inventory(poGRider, true);
+                loInventory.setRecordStatus(psTranStatus);
+                loInventory.setWithUI(p_bWithUI);
+                poJSON = loInventory.searchRecordByStockID(fsValue, fbByCode);
+
+                if (poJSON != null) {
+                    setDetail(fnRow, 3, (String) loInventory.getModel().getStockID());
+                    setDetail(fnRow, "xBarCodex", (String) loInventory.getModel().getBarcode());
+                    setDetail(fnRow, "xDescript", (String) loInventory.getModel().getDescription());
+                    setDetail(fnRow, "xCategr01", (String) loInventory.getModel().getCategName1());
+                    setDetail(fnRow, "xCategr02", (String) loInventory.getModel().getCategName2());
+                    setDetail(fnRow, "xInvTypNm", (String) loInventory.getModel().getInvTypNm());
+                    InvMaster loInvMaster = new InvMaster(poGRider, true);
+                    loInvMaster.setRecordStatus(psTranStatus);
+                    loInvMaster.setWithUI(p_bWithUI);
+                    poJSON = loInvMaster.openRecord(loInventory.getModel().getStockID());
+                    
+                    if (poJSON != null) {
+                        setDetail(fnRow, "cClassify", (String) loInvMaster.getModel().getClassify());
+                        setDetail(fnRow, "nQtyOnHnd", (int) loInvMaster.getModel().getQtyOnHnd());
+                        setDetail(fnRow, "nResvOrdr", (int) loInvMaster.getModel().getResvOrdr());
+                        setDetail(fnRow, "nBackOrdr", (int) loInvMaster.getModel().getBackOrdr());
+                        setDetail(fnRow, "nAvgMonSl", (int) loInvMaster.getModel().getAvgMonSl());
+                        setDetail(fnRow, "nMaxLevel", (int) loInvMaster.getModel().getMaxLevel());
+                    }
+                    return poJSON;
+
+                } else {
+                    poJSON = new JSONObject();
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "No record found.");
+                    return poJSON;
+                }
+        }
+        return poJSON;
     }
 
     @Override
@@ -297,22 +350,50 @@ public class InvStockRequest implements GTranDet {
 
         poJSON = new JSONObject();
 
-        poJSON = ShowDialogFX.Search(poGRider,
-                lsSQL,
-                fsValue,
-                "Transaction No»Date»Refer No",
-                "sTransNox»dTransact»sReferNox",
-                "sTransNox»dTransact»sReferNox",
-                fbByCode ? 0 : 1);
+        if (p_bWithUI){
+            poJSON = ShowDialogFX.Search(poGRider,
+                    lsSQL,
+                    fsValue,
+                    "Transaction No»Date»Refer No",
+                    "sTransNox»dTransact»sReferNox",
+                    "sTransNox»dTransact»sReferNox",
+                    fbByCode ? 0 : 1);
 
-        if (poJSON != null) {
-            return openTransaction((String) poJSON.get("sTransNox"));
+            if (poJSON != null) {
+                return openTransaction((String) poJSON.get("sTransNox"));
 
-        } else {
-            poJSON.put("result", "error");
-            poJSON.put("message", "No record loaded to update.");
-            return poJSON;
+            } else {
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded to update.");
+                return poJSON;
+            }
         }
+        //use for testing 
+        if (fbByCode)
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sTransNox = " + SQLUtil.toSQL(fsValue)) + lsCondition;
+        else {
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sTransNox LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) +  lsCondition;
+            lsSQL += " LIMIT 1";
+        }
+        
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+        
+        try {
+            if (!loRS.next()){
+                MiscUtil.close(loRS);
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded.");
+                return poJSON;
+            }
+            
+            lsSQL = loRS.getString("sTransNox");
+            MiscUtil.close(loRS);
+        } catch (SQLException ex) {
+            Logger.getLogger(InvStockRequest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        return openTransaction(lsSQL);
     }
 
     @Override
@@ -402,10 +483,4 @@ public class InvStockRequest implements GTranDet {
         poModelDetail.remove(fnRow - 1);
 
     }
-
-    @Override
-    public Object getDetailModel(int i) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
 }

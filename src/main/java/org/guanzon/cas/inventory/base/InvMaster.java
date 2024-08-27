@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -39,6 +41,7 @@ public class InvMaster implements GRecord{
     boolean pbWtParent;     
     public JSONObject poJSON;
     
+    private boolean p_bWithUI = true;
     int pnEditMode;
     String psMessagex;
     String psTranStatus;
@@ -51,6 +54,9 @@ public class InvMaster implements GRecord{
     private Inv_Location poLocation;
 
     
+    public void setWithUI(boolean fbValue){
+        p_bWithUI = fbValue;
+    }
     public InvMaster(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
@@ -320,7 +326,8 @@ public class InvMaster implements GRecord{
 
     
 
-        poJSON = ShowDialogFX.Search(poGRider,
+        if(p_bWithUI){
+            poJSON = ShowDialogFX.Search(poGRider,
                 lsSQL,
                 fsValue,
                 "Stock ID»Barcode»Name",
@@ -328,14 +335,40 @@ public class InvMaster implements GRecord{
                 "sStockIDx»sBarCodex»sDescript",
                 fbByCode ? 0 : 1);
 
-        if (poJSON
-                != null) {
-            return poModel.openRecord((String) poJSON.get("sStockIDx"));
-        } else {
-            poJSON.put("result", "error");
-            poJSON.put("message", "No record loaded to update.");
-            return poJSON;
+            if (poJSON != null) {
+                return poModel.openRecord((String) poJSON.get("sStockIDx"));
+            } else {
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded to update.");
+                return poJSON;
+            }
         }
+        
+         if (fbByCode)
+            lsSQL = MiscUtil.addCondition(lsSQL, "sStockIDx = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
+        else
+            lsSQL = MiscUtil.addCondition(lsSQL, "sDescript = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
+            lsSQL += " LIMIT 1";
+            
+        System.out.println(lsSQL);
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+        
+        try {
+            if (!loRS.next()){
+                MiscUtil.close(loRS);
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded.");
+                return poJSON;
+            }
+            
+            lsSQL = loRS.getString("sStockIDx");
+            MiscUtil.close(loRS);
+        } catch (SQLException ex) {
+            Logger.getLogger(Inventory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        return openRecord(lsSQL);
     }
     @Override
     public Model_Inv_Master getModel() {
