@@ -1,6 +1,5 @@
 package org.guanzon.cas.inventory.base;
 
-import java.math.BigDecimal;
 import org.guanzon.appdriver.iface.GTranDet;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,10 +10,8 @@ import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
-import org.guanzon.cas.model.inventory.Model_PO_Quotation_Request_Detail;
-import org.guanzon.cas.model.inventory.Model_PO_Quotation_Request_Master;
-
-import org.guanzon.cas.parameters.Category;
+import org.guanzon.cas.inventory.models.Model_PO_Quotation_Request_Detail;
+import org.guanzon.cas.inventory.models.Model_PO_Quotation_Request_Master;
 import org.guanzon.cas.parameters.Category_Level2;
 import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Inv_Type;
@@ -69,16 +66,43 @@ public class PO_Quotation_Request implements GTranDet {
     @Override
     public JSONObject openTransaction(String fsValue) {
 
-        poModelMaster = new Model_PO_Quotation_Request_Master(poGRider);
+        Model_PO_Quotation_Request_Master poModelMaster = new Model_PO_Quotation_Request_Master(poGRider);
+//        Branch loBranch = new Branch(poGRider, true);
+        Category_Level2 loCatLevel2 = new Category_Level2(poGRider, true);
+        Inv_Type loInvType = new Inv_Type(poGRider, true);
 
+        //open the master table
         poModelMaster.openRecord(SQLUtil.toSQL(fsValue));
         if ("error".equals((String) poJSON.get("result"))) {
             return poJSON;
         }
+
+        //open and set the affected table dummy column
         //set the master openrecord ito
         poJSON = searchMaster("sBranchCd", poModelMaster.getBranchCd(), true);
+        if ("error".equals(
+                (String) poJSON.get("result"))) {
+            return poJSON;
+        }
 
-        openTransactionDetail(poModelMaster.getTransactionNumber());
+        poJSON = searchMaster("sDestinat", poModelMaster.getDestination(), true);
+
+        if ("error".equals(
+                (String) poJSON.get("result"))) {
+            return poJSON;
+        }
+
+        poJSON = loCatLevel2.openRecord(poModelMaster.getCategoryCode());
+        poJSON = loInvType.openRecord((String) loCatLevel2.getMaster("sInvTypCd"));
+        
+        poModelMaster.setCategoryName((String) loCatLevel2.getMaster("xCategrNm"));
+        poModelMaster.setCategoryName((String) loCatLevel2.getMaster("xInvTypNm"));
+        if ("error".equals(
+                (String) poJSON.get("result"))) {
+            return poJSON;
+        }
+
+        poJSON = openTransactionDetail(poModelMaster.getTransactionNumber());
         if (poModelMaster.getEntryNumber() != poModelDetail.size()) {
             poJSON.put("result", "success");
             poJSON.put("message", "Record loaded successfully.");
@@ -88,7 +112,6 @@ public class PO_Quotation_Request implements GTranDet {
                 (String) poJSON.get("result"))) {
             return poJSON;
         }
-        poJSON = searchMaster("sDestinat", poModelMaster.getDestination(), true);
 
         if ("error".equals(
                 (String) poJSON.get("result"))) {
@@ -164,8 +187,12 @@ public class PO_Quotation_Request implements GTranDet {
     }
 
     @Override
-    public JSONObject closeTransaction(String fsValue) {
+    public JSONObject closeTransaction(String fsTransNox) {
         poJSON = new JSONObject();
+        openTransaction(fsTransNox);
+        if ("error".equals((String) poJSON.get("result"))) {
+            return poJSON;
+        }
         if (poModelMaster.getEditMode() == EditMode.READY || poModelMaster.getEditMode() == EditMode.UPDATE) {
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_CLOSED);
             if ("error".equals((String) poJSON.get("result"))) {
@@ -182,9 +209,12 @@ public class PO_Quotation_Request implements GTranDet {
     }
 
     @Override
-    public JSONObject postTransaction(String fsValue) {
+    public JSONObject postTransaction(String fsTransNox) {
         poJSON = new JSONObject();
-
+        openTransaction(fsTransNox);
+        if ("error".equals((String) poJSON.get("result"))) {
+            return poJSON;
+        }
         if (poModelMaster.getEditMode() == EditMode.READY
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
 
@@ -203,9 +233,12 @@ public class PO_Quotation_Request implements GTranDet {
     }
 
     @Override
-    public JSONObject voidTransaction(String string) {
+    public JSONObject voidTransaction(String fsTransNox) {
         poJSON = new JSONObject();
-
+        openTransaction(fsTransNox);
+        if ("error".equals((String) poJSON.get("result"))) {
+            return poJSON;
+        }
         if (poModelMaster.getEditMode() == EditMode.READY
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_VOID);
@@ -227,6 +260,10 @@ public class PO_Quotation_Request implements GTranDet {
     public JSONObject cancelTransaction(String fsTransNox) {
         poJSON = new JSONObject();
 
+        openTransaction(fsTransNox);
+        if ("error".equals((String) poJSON.get("result"))) {
+            return poJSON;
+        }
         if (poModelMaster.getEditMode() == EditMode.READY
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_CANCELLED);
@@ -409,13 +446,12 @@ public class PO_Quotation_Request implements GTranDet {
                 loJSON = loCategory2.searchRecord(fsValue, fbByCode);
 
                 Inv_Type loInvType = new Inv_Type(poGRider, true);
-                loInvType.setRecordStatus("01");
+                loInvType.openRecord((String) loCategory2.getMaster("sInvTypCd"));
 
                 if (loJSON != null) {
                     setMaster("sCategrCd", (String) loCategory2.getMaster("sCategrCd"));
                     setMaster("xCategrNm", (String) loCategory2.getMaster("sDescript"));
-
-                    return loInvType.openRecord((String) loCategory2.getMaster("sInvTypCd"));
+                    return setMaster("xInvTypNm", (String) loCategory2.getMaster("xInvTypNm"));
 
                 } else {
 
@@ -510,27 +546,24 @@ public class PO_Quotation_Request implements GTranDet {
     }
 
     public void RemoveModelDetail(int fnRow) {
-        poModelDetail.remove(fnRow - 1);
+        poModelDetail.remove(fnRow);
 
     }
 
     public Inventory GetInventory(String fsPrimaryKey, boolean fbByCode) {
         Inventory instance = new Inventory(poGRider, fbByCode);
-        instance.setRecordStatus("10");
         instance.openRecord(fsPrimaryKey);
         return instance;
     }
 
     public Color GetColor(String fsPrimaryKey, boolean fbByCode) {
         Color instance = new Color(poGRider, fbByCode);
-        instance.setRecordStatus("10");
         instance.openRecord(fsPrimaryKey);
         return instance;
     }
 
     public Measure GetMeasure(String fsPrimaryKey, boolean fbByCode) {
         Measure instance = new Measure(poGRider, fbByCode);
-        instance.setRecordStatus("10");
         instance.openRecord(fsPrimaryKey);
         return instance;
     }
