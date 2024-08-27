@@ -391,7 +391,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                         }
                         break;
                     case 5:/*sCategCd*/
-                        poJSON = oTrans.searchMaster(8, lsValue, false);
+                        poJSON = oTrans.searchMaster(9, lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -554,13 +554,13 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
             switch (lnIndex) {
                 case 2:
                     String lsStockID = (String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx");
-                    if (lsStockID != null && !lsStockID.isEmpty()) {
+                    if (lsStockID != null || !lsStockID.isEmpty()) {
                         if (txtField.getText().length() > 128) {
                             ShowMessageFX.Warning("Max characters for `Descript` exceeds the limit.", pxeModuleName, "Please verify your entry.");
                             txtField.requestFocus();
                             return;
                         }
-                        poJSON = oTrans.getDetailModel(pnDetailRow).setValue("sDescript", lsValue);
+                        poJSON = oTrans.setDetail(pnDetailRow, "sDescript", lsValue);
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             return;
@@ -585,7 +585,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                         txtField.requestFocus();
                     }
 
-                    poJSON = oTrans.getDetailModel(pnDetailRow).setValue("nQuantity", x);
+                    poJSON = oTrans.setDetail(pnDetailRow, "nQuantity", x);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -655,8 +655,10 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         psPrimary = "";
         lblStatus.setText("UNKNOWN");
 
-        pnDetailRow = -1;
+        pnDetailRow = -1;   
         pnIndex = -1;
+
+        data.clear();
 
     }
 
@@ -671,7 +673,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         Inventory loInventory;
         for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
             String lsStockIDx = (String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx");
-            
+
             if (lsStockIDx != null && !lsStockIDx.equals("")) {
                 loInventory = oTrans.GetInventory(lsStockIDx, true);
 
