@@ -9,6 +9,7 @@ org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestMaster.class
 org\guanzon\cas\inventory\base\InvTransfer.class
 org\guanzon\cas\inventory\resultSet2XML\ModelCategory3.class
 org\guanzon\cas\inventory\base\InvLedger.class
+org\guanzon\cas\inventory\stock\InvStockReqCancel.class
 org\guanzon\cas\inventory\base\Inventory.class
 org\guanzon\cas\inventory\constant\InvConstants.class
 org\guanzon\cas\inventory\base\InventoryTrans1.class

@@ -16,6 +16,8 @@ import org.guanzon.cas.inventory.base.InvMaster;
 import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Master;
+import org.guanzon.cas.parameters.Category;
+import org.guanzon.cas.parameters.Inv_Type;
 import org.json.simple.JSONObject;
 
 /**
@@ -43,7 +45,7 @@ public class InvStockRequest implements GTranDet {
         pbWthParent = fbWthParent;
 
         poModelMaster = new Model_Inv_Stock_Request_Master(foGRider);
-        poModelDetail = new ArrayList<Model_Inv_Stock_Request_Detail>();
+        poModelDetail = new ArrayList<>();
         poModelDetail.add(new Model_Inv_Stock_Request_Detail(foGRider));
         pnEditMode = EditMode.UNKNOWN;
     }
@@ -59,6 +61,36 @@ public class InvStockRequest implements GTranDet {
             poJSON.put("message", "No record to load.");
             return poJSON;
         }
+        Category loCateg = new Category(poGRider, true);
+        switch (poGRider.getDivisionCode()) {
+            case "0"://mobilephone
+                loCateg.openRecord("0002");
+                break;
+
+            case "1"://motorycycle
+                loCateg.openRecord("0001");
+                break;
+
+            case "2"://Auto Group - Honda Cars
+            case "5"://Auto Group - Nissan
+            case "6"://Auto Group - Any
+                loCateg.openRecord("0003");
+                break;
+
+            case "3"://Hospitality
+            case "4"://Pedritos Group
+                loCateg.openRecord("0004");
+                break;
+
+            case "7"://Guanzon Services Office
+                 break;
+
+            case "8"://Main Office
+                break;
+        }
+        poModelMaster.setCategoryCode((String) loCateg.getMaster("sCategrCd"));
+        poModelMaster.setCategoryName((String) loCateg.getMaster("sDescript"));
+
 
         poJSON = new JSONObject();
 
@@ -282,10 +314,15 @@ public class InvStockRequest implements GTranDet {
         switch (fnCol) {
 
             case 3: //sBarCodex
+                if(poModelMaster.getCategoryCode().isEmpty()){
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "Please choose a category first..");
+                    return poJSON;
+                }
                 Inventory loInventory = new Inventory(poGRider, true);
                 loInventory.setRecordStatus(psTranStatus);
                 loInventory.setWithUI(p_bWithUI);
-                poJSON = loInventory.searchRecordByStockID(fsValue, fbByCode);
+                poJSON = loInventory.searchRecordWithContition(fsValue, "sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()), fbByCode);
 
                 if (poJSON != null) {
                     setDetail(fnRow, 3, (String) loInventory.getModel().getStockID());
@@ -298,7 +335,7 @@ public class InvStockRequest implements GTranDet {
                     loInvMaster.setRecordStatus(psTranStatus);
                     loInvMaster.setWithUI(p_bWithUI);
                     poJSON = loInvMaster.openRecord(loInventory.getModel().getStockID());
-                    
+
                     if (poJSON != null) {
                         setDetail(fnRow, "cClassify", (String) loInvMaster.getModel().getClassify());
                         setDetail(fnRow, "nQtyOnHnd", (int) loInvMaster.getModel().getQtyOnHnd());
@@ -328,15 +365,14 @@ public class InvStockRequest implements GTranDet {
     public JSONObject searchTransaction(String fsColumn, String fsValue, boolean fbByCode) {
         String lsCondition = "";
         String lsFilter = "";
-
         if (psTranStatus.length() > 1) {
             for (int lnCtr = 0; lnCtr <= psTranStatus.length() - 1; lnCtr++) {
                 lsCondition += ", " + SQLUtil.toSQL(Character.toString(psTranStatus.charAt(lnCtr)));
             }
 
-            lsCondition = fsColumn + " IN (" + lsCondition.substring(2) + ")";
+            lsCondition = "cTranStat IN (" + lsCondition.substring(2) + ")";
         } else {
-            lsCondition = fsColumn + " = " + SQLUtil.toSQL(psTranStatus);
+            lsCondition = "cTranStat = " + SQLUtil.toSQL(psTranStatus);
         }
 
         if (!fbByCode) {
@@ -369,13 +405,8 @@ public class InvStockRequest implements GTranDet {
             }
         }
         //use for testing 
-        if (fbByCode)
-            lsSQL = MiscUtil.addCondition(lsSQL, "a.sTransNox = " + SQLUtil.toSQL(fsValue)) + lsCondition;
-        else {
-            lsSQL = MiscUtil.addCondition(lsSQL, "a.sTransNox LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) +  lsCondition;
-            lsSQL += " LIMIT 1";
-        }
-        
+        lsSQL += " LIMIT 1";
+        System.out.println(lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
         
         try {
@@ -397,13 +428,50 @@ public class InvStockRequest implements GTranDet {
     }
 
     @Override
-    public JSONObject searchMaster(String string, String string1, boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public JSONObject searchMaster(String fsCol, String fsVal, boolean fbByCode) {
+        return searchMaster(poModelMaster.getColumn(fsCol), fsVal, fbByCode);
     }
 
     @Override
-    public JSONObject searchMaster(int i, String string, boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public JSONObject searchMaster(int fnColumn, String fsValue, boolean fbByCode) {
+        poJSON = new JSONObject();
+        switch(fnColumn){
+            case 3: //sCategrCd
+                Category loCategory = new Category(poGRider, true);
+                loCategory.setRecordStatus(psTranStatus);
+                poJSON = loCategory.searchRecord(fsValue, fbByCode);
+
+                if (poJSON != null){
+                    setMaster(fnColumn, (String) loCategory.getMaster("sCategrCd"));
+                    return setMaster("xCategrNm", (String)loCategory.getMaster("sDescript"));
+                } else {
+                    
+                    poJSON = new JSONObject();
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "No record found.");
+                    return poJSON;
+                }
+            case 4: //sInvTypCd
+                Inv_Type loType = new Inv_Type(poGRider, true);
+                loType.setRecordStatus(psTranStatus);
+                poJSON = loType.searchRecord(fsValue, fbByCode);
+
+                if (poJSON != null){
+
+                    setMaster(fnColumn, (String) loType.getMaster("sInvTypCd"));
+                    return setMaster("xInvTypNm", (String)loType.getMaster("sDescript"));
+                } else {
+                    
+                    poJSON = new JSONObject();
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "No record found.");
+                    return poJSON;
+                }
+                
+            default:
+                return null;
+                
+        }
     }
 
     @Override
@@ -434,13 +502,41 @@ public class InvStockRequest implements GTranDet {
     public JSONObject OpenModelDetail(String fsTransNo) {
 
         try {
-            String lsSQL = MiscUtil.addCondition(poModelDetail.get(0).makeSQL(), "sTransNox = " + SQLUtil.toSQL(fsTransNo));
+            String lsSQL = MiscUtil.addCondition(new Model_Inv_Stock_Request_Detail(poGRider).makeSelectSQL(), "sTransNox = " + SQLUtil.toSQL(fsTransNo));
             ResultSet loRS = poGRider.executeQuery(lsSQL);
-
+            poModelDetail = new ArrayList<>();
             while (loRS.next()) {
 
                 poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
                 poJSON = poModelDetail.get(poModelDetail.size() - 1).openRecord(loRS.getString("sTransNox"), loRS.getString("sStockIDx"));
+                if ("error".equals((String) poJSON.get("result"))) {
+                    return poJSON;
+                }
+            }
+
+            return poJSON;
+
+        } catch (SQLException ex) {
+            poJSON = new JSONObject();
+            poJSON.put("result", "error");
+            poJSON.put("message", ex.getMessage());
+
+            return poJSON;
+        }
+    }
+    
+
+    public JSONObject SearchDetailRequest(String fsTransNo, String fsStockID) {
+
+        try {
+            String lsSQL = MiscUtil.addCondition(poModelDetail.get(0).makeSQL(), "sTransNox = " + SQLUtil.toSQL(fsTransNo));
+            lsSQL = MiscUtil.addCondition(lsSQL, "sStockIDx = " + SQLUtil.toSQL(fsStockID));
+            ResultSet loRS = poGRider.executeQuery(lsSQL);
+            poModelDetail =  new ArrayList<>();
+            while (loRS.next()) {
+
+                poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
+                poJSON = poModelDetail.get(poModelDetail.size() - 1).openRecord(loRS.getString("sTransNox"));
                 if ("error".equals((String) poJSON.get("result"))) {
                     return poJSON;
                 } else {
@@ -451,6 +547,40 @@ public class InvStockRequest implements GTranDet {
                 }
             }
 
+            return poJSON;
+
+        } catch (SQLException ex) {
+            poJSON = new JSONObject();
+            poJSON.put("result", "error");
+            poJSON.put("message", ex.getMessage());
+
+            return poJSON;
+        }
+    }
+    
+
+    //process for inventory stock request
+    /* This function use for browsing Inventory Stock Request 
+     * fetching inventory request detail and set data for Inventory Stock Request Cancel
+     * fetching detail by stock id
+    */
+    public JSONObject OpenModelDetailByStockID(String fsTransNo, String fsStockID) {
+
+        try {
+            String lsSQL = MiscUtil.addCondition(new Model_Inv_Stock_Request_Detail(poGRider).makeSelectSQL(), "sTransNox = " + SQLUtil.toSQL(fsTransNo));
+            lsSQL = MiscUtil.addCondition(lsSQL, "sStockIDx = " + SQLUtil.toSQL(fsStockID));
+            System.out.println(lsSQL);
+            ResultSet loRS = poGRider.executeQuery(lsSQL);
+            poModelDetail =  new ArrayList<>();
+            while (loRS.next()) {
+
+                poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
+                poJSON = poModelDetail.get(poModelDetail.size() - 1).openRecord(loRS.getString("sTransNox"), loRS.getString("sStockIDx"));
+                if ("error".equals((String) poJSON.get("result"))) {
+                    return poJSON;
+                }
+            }
+            
             return poJSON;
 
         } catch (SQLException ex) {
