@@ -515,7 +515,7 @@ public class PO_Quotation_Request implements GTranDet {
                 "Transaction No»Date»Refer No",
                 "sTransNox»dTransact»sReferNox",
                 "sTransNox»dTransact»sReferNox",
-                fbByCode ? 0 : 3);
+                fbByCode ? 0 : 2);
 
         if (poJSON != null) {
             return openTransaction((String) poJSON.get("sTransNox"));
