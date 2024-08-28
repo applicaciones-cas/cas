@@ -597,7 +597,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
             switch (lnIndex) {
                 case 2:
                     String lsStockID = (String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx");
-                    if (lsStockID != null || !lsStockID.isEmpty()) {
+                    if (lsStockID == null || lsStockID.isEmpty()) {
                         if (txtField.getText().length() > 128) {
                             ShowMessageFX.Warning("Max characters for `Descript` exceeds the limit.", pxeModuleName, "Please verify your entry.");
                             txtField.requestFocus();
