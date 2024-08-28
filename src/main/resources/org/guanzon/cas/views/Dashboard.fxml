@@ -141,6 +141,7 @@
                                                 <MenuItem fx:id="mnuParameterBanks" mnemonicParsing="false" onAction="#mnuParameterBanksClick" text="Banks" />
                                                 <MenuItem fx:id="mnuParameterBanks_Branches" mnemonicParsing="false" onAction="#mnuParameterBanksBranchesClick" text="Banks Branches" />
                                                 <MenuItem fx:id="mnuParameterBarangay" mnemonicParsing="false" onAction="#mnuParameterBarangayClick" text="Barangay" />
+                                                <MenuItem fx:id="mnuParameterBranch" mnemonicParsing="false" onAction="#mnuParameterBranchClick" text="Branch" />
                                                 <MenuItem fx:id="mnuParameterBrand" mnemonicParsing="false" onAction="#mnuParameterBrandClick" text="Brand" />
                                                 <MenuItem fx:id="mnuParameterCategory" mnemonicParsing="false" onAction="#mnuParameterCategoryClick" text="Category" />
                                                 <MenuItem fx:id="mnuParameterCategoryLevel2" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel2Click" text="Category Level 2" />

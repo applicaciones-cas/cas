@@ -60,7 +60,7 @@ public class BranchController implements Initializable, ScreenInterface{
     private TableView tblList;
 
     @FXML
-    private TextField txtField99, txtField01, txtField02, txtField03, txtField04, txtField05, txtField06;
+    private TextField txtField99, txtField01, txtField02, txtField03, txtField05, txtField06;
 
     @FXML
     private Button btnBrowse, btnNew, btnSave, btnUpdate, btnCancel, btnActivate, btnClose;
@@ -126,6 +126,21 @@ public class BranchController implements Initializable, ScreenInterface{
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
+                poJSON = oTrans.getModel().setDescription(txtField03.getText());
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                poJSON = oTrans.getModel().setBranchNm(txtField02.getText());
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                
                 poJSON = oTrans.saveRecord();
 
                 pnEditMode = oTrans.getModel().getEditMode();
@@ -277,6 +292,9 @@ public class BranchController implements Initializable, ScreenInterface{
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
         txtField03.setEditable(lbShow);
+//        txtField04.setEditable(lbShow);
+        txtField05.setEditable(lbShow);
+        txtField06.setEditable(lbShow);
 
         txtField02.requestFocus();
     }
@@ -355,6 +373,10 @@ public class BranchController implements Initializable, ScreenInterface{
             return;
         }
         
+        if ("txtField01".equals(txtField.getId()) && lsValue.length() > 4) {
+            txtField.setText(lsValue.substring(0, 4));
+        }
+        
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
@@ -376,11 +398,19 @@ public class BranchController implements Initializable, ScreenInterface{
     
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
-
+//        psPrimary = (String) poJSON.get("value");
         psPrimary = oTrans.getModel().getBranchCd();
         txtField01.setText(psPrimary);
-        txtField02.setText(oTrans.getModel().getDescription());
-        txtField03.setText(oTrans.getModel().getBranchNm());
+        txtField03.setText(oTrans.getModel().getDescription());
+        txtField02.setText(oTrans.getModel().getBranchNm());
+//        txtField04.setText(oTrans.getModel().getBranchNm());
+        if (oTrans.getModel().getContact() == null){
+            txtField05.setText(oTrans.getModel().getTeleNum());
+        } else {
+            txtField05.setText(oTrans.getModel().getContact());
+        }
+        
+        txtField06.setText(oTrans.getModel().getAddress());
 
         cbActive.setSelected(oTrans.getModel().isActive());
 
@@ -398,6 +428,9 @@ public class BranchController implements Initializable, ScreenInterface{
         txtField01.clear();
         txtField02.clear();
         txtField03.clear();
+//        txtField04.clear();
+        txtField05.clear();
+        txtField06.clear();
 
         psPrimary = "";
         btnActivate.setText("Activate");

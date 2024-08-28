@@ -72,6 +72,9 @@ public class DashboardController implements Initializable {
     @FXML
     private MenuItem mnuPOTest;
     
+    @FXML
+    private MenuItem mnuParameterBranch;
+    
 
     @FXML
     private TabPane tabpane;
@@ -235,6 +238,8 @@ public class DashboardController implements Initializable {
                 return "Banks Branches";
             case "/org/guanzon/cas/views/Barangay.fxml":
                 return "Barangay";
+            case "/org/guanzon/cas/views/Branch.fxml":
+                return "Branch";
             case "/org/guanzon/cas/views/Brand.fxml":
                 return "Brand";
             case "/org/guanzon/cas/views/Category.fxml":
@@ -596,6 +601,8 @@ public class DashboardController implements Initializable {
                 return new BankBranchesController();
             case "/org/guanzon/cas/views/Barangay.fxml":
                 return new BarangayController();
+            case "/org/guanzon/cas/views/Branch.fxml":
+                return new BranchController();
             case "/org/guanzon/cas/views/Brand.fxml":
                 return new BrandController();
             case "/org/guanzon/cas/views/Category.fxml":
@@ -748,6 +755,15 @@ public class DashboardController implements Initializable {
     @FXML
     private void mnuParameterBarangayClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/Barangay.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    @FXML
+    private void mnuParameterBranchClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Branch.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
