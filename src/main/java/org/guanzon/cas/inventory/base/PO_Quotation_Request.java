@@ -70,15 +70,14 @@ public class PO_Quotation_Request implements GTranDet {
             return poJSON;
         }
         poModelDetail = openTransactionDetail(poModelMaster.getTransactionNumber());
-        
-        if ((Integer)poModelMaster.getEntryNumber() == poModelDetail.size()) {
+
+        if ((Integer) poModelMaster.getEntryNumber() == poModelDetail.size()) {
             poJSON.put("result", "success");
             poJSON.put("message", "Record loaded successfully.");
-        }else{
+        } else {
             poJSON.put("result", "error");
             poJSON.put("message", "Unable to load, Transaction seems having discrepancy");
         }
-
 
         return poJSON;
 
@@ -425,11 +424,23 @@ public class PO_Quotation_Request implements GTranDet {
         switch (fsCol) {
             case "nQuantity":
             case "sDescript":
-                poJSON = poModelDetail.get(fnRow).setValue(fsCol, foData);
+               
                 if ("error".equals((String) poJSON.get("result"))) {
                     return poJSON;
                 }
 
+                String newDescript = foData.toString();
+                for (int i = 0; i < poModelDetail.size(); i++) {
+                    if (i == fnRow) {
+                        continue;
+                    }
+                    String existingDescript = (String) poModelDetail.get(i).getValue("sDescript");
+                    if (newDescript.equals(existingDescript)) {
+                        int currentQuantity = (Integer) poModelDetail.get(i).getValue("nQuantity");
+                        return poModelDetail.get(i).setValue("nQuantity", currentQuantity + 1);
+                    }
+                }
+                 poJSON = poModelDetail.get(fnRow).setValue(fsCol, foData);
                 if (poModelDetail.get(fnRow).getQuantity() > 0
                         && (!poModelDetail.get(fnRow).getDescript().isEmpty() || !poModelDetail.get(fnRow).getStockID().isEmpty())) {
                     AddModelDetail();
@@ -451,18 +462,38 @@ public class PO_Quotation_Request implements GTranDet {
         JSONObject loJSON;
 
         switch (fsColumn) {
-            case "sDescript": //sDescript
-            case "sStockIDx": //3 //8-xCategrNm //9-xInvTypNm
+
+            case "sDescript": // sDescript
+            case "sStockIDx": // 3 // 8-xCategrNm // 9-xInvTypNm
                 Inventory loInventory = new Inventory(poGRider, true);
                 loInventory.setRecordStatus(psTranStatus);
                 loJSON = loInventory.searchRecord(fsValue, fbByCode);
 
                 if (loJSON != null) {
-                    System.out.println((String) loInventory.getMaster("sStockIDx"));
-                    setDetail(fnRow, "sStockIDx", (String) loInventory.getMaster("sStockIDx"));
-                    setDetail(fnRow, "xCategrNm", (String) loInventory.getMaster("xCategNm2"));
-                    setDetail(fnRow, "sDescript", (String) loInventory.getMaster("sDescript"));
-                    loJSON = setDetail(fnRow, "xInvTypNm", (String) loInventory.getMaster("xInvTypNm"));
+                    //check descript instead of stockid if blank
+                    //pwede sila mag freetext sa descript if wlaa pa sa inventory ung item
+                    String newStockID = (String) loInventory.getMaster("sStockIDx");
+
+                    boolean isDuplicate = false;
+
+                    for (int i = 0; i < poModelDetail.size(); i++) {
+                        String existingStockID = (String) poModelDetail.get(i).getValue("sStockIDx");
+                        if (newStockID.equals(existingStockID)) {
+                            // Duplicate found, increment quantity by 1
+                            int currentQuantity = (Integer) poModelDetail.get(i).getValue("nQuantity");
+                            poModelDetail.get(i).setValue("nQuantity", currentQuantity + 1);
+                            isDuplicate = true;
+                            break;
+                        }
+                    }
+
+                    if (!isDuplicate) {
+                        // No duplicate found, add new details
+                        setDetail(fnRow, "sStockIDx", (String) loInventory.getMaster("sStockIDx"));
+                        setDetail(fnRow, "xCategrNm", (String) loInventory.getMaster("xCategNm2"));
+                        setDetail(fnRow, "sDescript", (String) loInventory.getMaster("sDescript"));
+                        loJSON = setDetail(fnRow, "xInvTypNm", (String) loInventory.getMaster("xInvTypNm"));
+                    }
 
                     return loJSON;
 
