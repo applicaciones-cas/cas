@@ -1,9 +1,7 @@
 package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import java.math.BigDecimal;
 import java.net.URL;
-import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -219,7 +217,10 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                 break;
 
             case "btnBrowse":
-                poJSON = oTrans.searchTransaction("sTransNox", txtField01.getText(), false);
+                if (pnIndex < 98) {
+                    pnIndex = 99;
+                }
+                poJSON = oTrans.searchTransaction("sTransNox", txtField01.getText(), pnIndex == 99);
                 pnEditMode = EditMode.READY;
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
@@ -334,6 +335,8 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         txtField04.focusedProperty().addListener(txtField_Focus);
         txtField05.focusedProperty().addListener(txtField_Focus);
         txtField06.focusedProperty().addListener(txtField_Focus);
+        txtField99.focusedProperty().addListener(txtField_Focus);
+        txtField98.focusedProperty().addListener(txtField_Focus);
         txtField07.focusedProperty().addListener(txtArea_Focus);
 
         txtDetail01.focusedProperty().addListener(txtDetail_Focus);
@@ -483,6 +486,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                         System.err.println((String) poJSON.get("message"));
                         return;
                     }
+                    txtField.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
                     break;
                 case 4://referno
                     poJSON = oTrans.getMasterModel().setReferenceNumber(lsValue);
@@ -504,29 +508,29 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         } else {
 
             switch (lnIndex) {
-                case 02:
-            txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getTransactionDate(), "yyyy-MM-dd"));
+                case 2:
+                    txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getTransactionDate(), "yyyy-MM-dd"));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
                     }
                     break;
-                case 06:
-            txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getExpectedPurchaseDate(), "yyyy-MM-dd"));
+                case 6:
+                    txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getExpectedPurchaseDate(), "yyyy-MM-dd"));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
                     }
                     break;
+            }
+
         }
 
-    }
+        txtField.selectAll();
+        pnIndex = lnIndex;
+    };
 
-    txtField.selectAll ();
-    pnIndex  = lnIndex;
-};
-
-final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
+    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
         if (!pbLoaded) {
             return;
         }
@@ -675,7 +679,7 @@ final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
         psPrimary = "";
         lblStatus.setText("UNKNOWN");
 
-        pnDetailRow = -1;   
+        pnDetailRow = -1;
         pnIndex = -1;
 
         data.clear();
