@@ -367,8 +367,8 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
-                    case 98:/*Browse Primary*/
-                    case 99:
+                    case 98:/*Browse Destination*/
+                    case 99:/*Browse Primary*/
                         poJSON = oTrans.searchTransaction("sTransNox", lsValue, lnIndex == 99);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
@@ -497,16 +497,36 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                         System.err.println((String) poJSON.get("message"));
                         return;
                     }
+                    txtField.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getExpectedPurchaseDate()));
                     break;
 
             }
         } else {
-            txtField.selectAll();
-        }
-        pnIndex = lnIndex;
-    };
 
-    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
+            switch (lnIndex) {
+                case 02:
+            txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getTransactionDate(), "yyyy-MM-dd"));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+                case 06:
+            txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getExpectedPurchaseDate(), "yyyy-MM-dd"));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+        }
+
+    }
+
+    txtField.selectAll ();
+    pnIndex  = lnIndex;
+};
+
+final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
         if (!pbLoaded) {
             return;
         }
