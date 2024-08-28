@@ -179,9 +179,9 @@
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="_Purchasing">
                                                     <items>
-                                          <Menu mnemonicParsing="false" text="_PO Quotation">
+                                          <Menu mnemonicParsing="false" text="PO Quotation">
                                              <items>
-                                                <MenuItem fx:id="mnuPOQuotationRequest" mnemonicParsing="false" onAction="#mnuPOTest" text="PO Qoutation Reqiest " />
+                                                <MenuItem fx:id="mnuPOQuotationRequest" mnemonicParsing="false" onAction="#mnuPOQuotationRequestClick" text="PO Qoutation Reqiest " />
                                                 <MenuItem mnemonicParsing="false" text="About" />
                                              </items>
                                           </Menu>

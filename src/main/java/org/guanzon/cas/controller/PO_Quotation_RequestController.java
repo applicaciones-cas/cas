@@ -59,7 +59,8 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
     private AnchorPane MainAnchorPane, apBrowse, apMaster, apButton, apTable, apDetail;
 
     @FXML
-    private Button btnNew, btnBrowse, btnCancel, btnSave, btnClose, btnUpdate, btnConfirm, btnVoid;
+    private Button btnNew, btnBrowse, btnCancel, btnSave, btnClose, btnUpdate,
+            btnConfirm, btnVoid, btnSearch, btnDelDetail;
 
     @FXML
     private HBox hbButtons;
@@ -204,8 +205,8 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
             case "btnClose":
                 unloadForm appUnload = new unloadForm();
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-                        appUnload.unloadForm(MainAnchorPane, oApp, pxeModuleName);
-                        
+                    appUnload.unloadForm(MainAnchorPane, oApp, pxeModuleName);
+
                 } else {
                     return;
                 }
@@ -227,6 +228,31 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                 } else {
                     loadRecord();
                 }
+                break;
+
+            case "btnSearch":
+                if (pnIndex > 3 || pnIndex < 1) {
+                    pnIndex = 1;
+                }
+                switch (pnIndex) {
+                    case 1:
+                    case 2:
+                        /* Barcode & Description */
+                        poJSON = oTrans.searchDetail(pnDetailRow, 3, (pnIndex == 1) ? txtDetail01.getText() : "", pnIndex == 1);
+//                        System.out.println("poJson Result = " + poJSON.toJSONString());
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+
+                        loadTableDetail();
+                        break;
+                }
+                break;
+
+            case "btnDelDetail":
+                oTrans.RemoveModelDetail(pnDetailRow);
+                loadTableDetail();
+
                 break;
 
             default:
@@ -297,10 +323,14 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
+        btnSearch.setVisible(lbShow);
         btnSave.setVisible(lbShow);
+        btnDelDetail.setVisible(lbShow);
         btnCancel.setVisible(lbShow);
 
+        btnSearch.setManaged(lbShow);
         btnSave.setManaged(lbShow);
+        btnDelDetail.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
 
         btnBrowse.setManaged(!lbShow);
@@ -426,17 +456,9 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
             case F3:
                 switch (lnIndex) {
                     case 1:
-                        /* Barcode & Description */
-                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, true);
-//                        System.out.println("poJson Result = " + poJSON.toJSONString());
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-
-                        break;
                     case 2:
                         /* Barcode & Description */
-                        poJSON = oTrans.searchDetail(pnDetailRow, lnIndex, lsValue, false);
+                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, lnIndex == 1);
 //                        System.out.println("poJson Result = " + poJSON.toJSONString());
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -565,7 +587,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(9, 11));
         String lsValue = txtField.getText();
-
+        pnIndex = lnIndex;
         if (lsValue == null) {
             return;
         }
@@ -587,6 +609,8 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                             return;
                         }
                     }
+
+                    loadTableDetail();
                     break;
 
                 case 7:
@@ -611,14 +635,15 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                         System.err.println((String) poJSON.get("message"));
                         return;
                     }
+
+                    loadTableDetail();
                     break;
 
             }
-            loadTableDetail();
         } else {
             txtField.selectAll();
         }
-        pnIndex = lnIndex;
+
     };
 
     private void loadRecord() {
@@ -664,7 +689,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         txtField05.clear();
         txtField06.clear();
         txtField07.clear();
-        
+
         txtField99.clear();
         txtField98.clear();
 
@@ -758,17 +783,17 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         txtDetail03.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("xCategrNm"));
 
     }
-    
-    public void loadResult(String fsValue, boolean fbVal){
+
+    public void loadResult(String fsValue, boolean fbVal) {
         JSONObject poJson = new JSONObject();
 //        overlay.setVisible(fbVal);
         poJson = oTrans.openTransaction(fsValue);
-        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
+        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
         }
         initButton(pnEditMode);
         loadRecord();
-               
+
     }
 
 }

@@ -70,7 +70,7 @@ public class DashboardController implements Initializable {
     private MenuItem mnuNewCustomer;
     
     @FXML
-    private MenuItem mnuPOTest;
+    private MenuItem mnuPOQuotationRequest;
     
     @FXML
     private MenuItem mnuParameterBranch;
@@ -1013,7 +1013,7 @@ public class DashboardController implements Initializable {
     }
     
     @FXML
-    private void mnuPOQuotationRequest(ActionEvent event) {
+    private void mnuPOQuotationRequestClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/PO_Quotation_Request.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {

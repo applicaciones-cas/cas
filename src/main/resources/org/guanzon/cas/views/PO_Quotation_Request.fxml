@@ -42,6 +42,14 @@
                                           <Blend />
                                        </effect>
                                     </Button>
+                                    <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" layoutX="465.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Search">
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="SEARCH" size="20" />
+                                       </graphic>
+                                       <effect>
+                                          <Blend />
+                                       </effect>
+                                    </Button>
                                     <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="New">
                                        <graphic>
                                           <FontAwesomeIconView glyphName="FILE" size="20" />
@@ -77,6 +85,14 @@
                                     <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Save">
                                        <graphic>
                                           <FontAwesomeIconView glyphName="SAVE" size="20" />
+                                       </graphic>
+                                       <effect>
+                                          <Blend />
+                                       </effect>
+                                    </Button>
+                                    <Button fx:id="btnDelDetail" contentDisplay="TOP" ellipsisString="" layoutX="540.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Del.Detail">
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="DEDENT" size="20" />
                                        </graphic>
                                        <effect>
                                           <Blend />
