@@ -59,54 +59,26 @@ public class PO_Quotation_Request implements GTranDet {
     @Override
     public JSONObject openTransaction(String fsValue) {
 
-        Model_PO_Quotation_Request_Master poModelMaster = new Model_PO_Quotation_Request_Master(poGRider);
+        poModelMaster = new Model_PO_Quotation_Request_Master(poGRider);
 //        Branch loBranch = new Branch(poGRider, true);
 //        Category_Level2 loCatLevel2 = new Category_Level2(poGRider, true);
 //        Inv_Type loInvType = new Inv_Type(poGRider, true);
 
         //open the master table
-        poModelMaster.openRecord(SQLUtil.toSQL(fsValue));
+        poJSON = poModelMaster.openRecord(fsValue);
         if ("error".equals((String) poJSON.get("result"))) {
             return poJSON;
         }
-
-        //open and set the affected table dummy column
-        //set the master openrecord ito
-//        poJSON = searchMaster("sBranchCd", poModelMaster.getBranchCd(), true);
-//        if ("error".equals(
-//                (String) poJSON.get("result"))) {
-//            return poJSON;
-//        }
-//        poJSON = searchMaster("sDestinat", poModelMaster.getDestination(), true);
-//
-//        if ("error".equals(
-//                (String) poJSON.get("result"))) {
-//            return poJSON;
-//        }
-//        poJSON = loCatLevel2.openRecord(poModelMaster.getCategoryCode());
-//        poJSON = loInvType.openRecord((String) loCatLevel2.getMaster("sInvTypCd"));
-//
-//        poModelMaster.setCategoryName((String) loCatLevel2.getMaster("xCategrNm"));
-//        poModelMaster.setCategoryName((String) loCatLevel2.getMaster("xInvTypNm"));
-//        if ("error".equals(
-//                (String) poJSON.get("result"))) {
-//            return poJSON;
-//        }
         poModelDetail = openTransactionDetail(poModelMaster.getTransactionNumber());
-        if (poModelMaster.getEntryNumber() != poModelDetail.size()) {
+        
+        if ((Integer)poModelMaster.getEntryNumber() == poModelDetail.size()) {
             poJSON.put("result", "success");
             poJSON.put("message", "Record loaded successfully.");
+        }else{
+            poJSON.put("result", "error");
+            poJSON.put("message", "Unable to load, Transaction seems having discrepancy");
         }
 
-        if ("error".equals(
-                (String) poJSON.get("result"))) {
-            return poJSON;
-        }
-
-        if ("error".equals(
-                (String) poJSON.get("result"))) {
-            return poJSON;
-        }
 
         return poJSON;
 
@@ -672,7 +644,7 @@ public class PO_Quotation_Request implements GTranDet {
 
             while (loRS.next()) {
                 Model_PO_Quotation_Request_Detail detail = new Model_PO_Quotation_Request_Detail(poGRider);
-                detail.openRecord(loRS.getString("sTransNox"), loRS.getString("sStockIDx"));
+                detail.openRecord(loRS.getString("sTransNox"), loRS.getString("nEntryNox"));
                 loDetail.add(detail);
             }
 
@@ -690,11 +662,12 @@ public class PO_Quotation_Request implements GTranDet {
     }
 
     public JSONObject AddModelDetail() {
-        boolean lsModelRequired = poModelDetail.get(poModelDetail.size() - 1).getQuantity() > 0;
         if (poModelDetail.isEmpty()) {
             poModelDetail.add(new Model_PO_Quotation_Request_Detail(poGRider));
             poModelDetail.get(poModelDetail.size() - 1).setTransactionNo(poModelMaster.getTransactionNumber());
         } else {
+
+            boolean lsModelRequired = poModelDetail.get(poModelDetail.size() - 1).getQuantity() > 0;
             if (lsModelRequired) {
                 poModelDetail.add(new Model_PO_Quotation_Request_Detail(poGRider));
                 poModelDetail.get(poModelDetail.size() - 1).setTransactionNo(poModelMaster.getTransactionNumber());
@@ -702,7 +675,7 @@ public class PO_Quotation_Request implements GTranDet {
             } else {
                 poJSON = new JSONObject();
                 poJSON.put("result", "Information");
-                poJSON.put("message", "Please Fill up Required Record Fist!");
+                poJSON.put("message", "Please Fill up Required Record First!");
             }
         }
 
