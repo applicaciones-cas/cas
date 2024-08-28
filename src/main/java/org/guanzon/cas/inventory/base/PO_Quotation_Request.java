@@ -49,15 +49,7 @@ public class PO_Quotation_Request implements GTranDet {
         poModelMaster = new Model_PO_Quotation_Request_Master(poGRider);
         poModelDetail = new ArrayList<Model_PO_Quotation_Request_Detail>();
         poModelMaster.newRecord();
-        //set the transaction no.
-        poModelMaster.setTransactionNo(MiscUtil.getNextCode(poModelMaster.getTable(), "sTransNox",
-                true, poGRider.getConnection(), poGRider.getBranchCode()));
-
-        Model_PO_Quotation_Request_Detail loNewEntity = new Model_PO_Quotation_Request_Detail(poGRider);
-        loNewEntity.newRecord();
-        loNewEntity.setQuantity(0);
-        loNewEntity.setUnitPrice(0.0);
-        poModelDetail.add(loNewEntity);
+        AddModelDetail();
 
         poJSON = new JSONObject();
         poJSON.put("result", "success");
@@ -69,8 +61,8 @@ public class PO_Quotation_Request implements GTranDet {
 
         Model_PO_Quotation_Request_Master poModelMaster = new Model_PO_Quotation_Request_Master(poGRider);
 //        Branch loBranch = new Branch(poGRider, true);
-        Category_Level2 loCatLevel2 = new Category_Level2(poGRider, true);
-        Inv_Type loInvType = new Inv_Type(poGRider, true);
+//        Category_Level2 loCatLevel2 = new Category_Level2(poGRider, true);
+//        Inv_Type loInvType = new Inv_Type(poGRider, true);
 
         //open the master table
         poModelMaster.openRecord(SQLUtil.toSQL(fsValue));
@@ -80,30 +72,27 @@ public class PO_Quotation_Request implements GTranDet {
 
         //open and set the affected table dummy column
         //set the master openrecord ito
-        poJSON = searchMaster("sBranchCd", poModelMaster.getBranchCd(), true);
-        if ("error".equals(
-                (String) poJSON.get("result"))) {
-            return poJSON;
-        }
-
-        poJSON = searchMaster("sDestinat", poModelMaster.getDestination(), true);
-
-        if ("error".equals(
-                (String) poJSON.get("result"))) {
-            return poJSON;
-        }
-
-        poJSON = loCatLevel2.openRecord(poModelMaster.getCategoryCode());
-        poJSON = loInvType.openRecord((String) loCatLevel2.getMaster("sInvTypCd"));
-
-        poModelMaster.setCategoryName((String) loCatLevel2.getMaster("xCategrNm"));
-        poModelMaster.setCategoryName((String) loCatLevel2.getMaster("xInvTypNm"));
-        if ("error".equals(
-                (String) poJSON.get("result"))) {
-            return poJSON;
-        }
-
-        poJSON = openTransactionDetail(poModelMaster.getTransactionNumber());
+//        poJSON = searchMaster("sBranchCd", poModelMaster.getBranchCd(), true);
+//        if ("error".equals(
+//                (String) poJSON.get("result"))) {
+//            return poJSON;
+//        }
+//        poJSON = searchMaster("sDestinat", poModelMaster.getDestination(), true);
+//
+//        if ("error".equals(
+//                (String) poJSON.get("result"))) {
+//            return poJSON;
+//        }
+//        poJSON = loCatLevel2.openRecord(poModelMaster.getCategoryCode());
+//        poJSON = loInvType.openRecord((String) loCatLevel2.getMaster("sInvTypCd"));
+//
+//        poModelMaster.setCategoryName((String) loCatLevel2.getMaster("xCategrNm"));
+//        poModelMaster.setCategoryName((String) loCatLevel2.getMaster("xInvTypNm"));
+//        if ("error".equals(
+//                (String) poJSON.get("result"))) {
+//            return poJSON;
+//        }
+        poModelDetail = openTransactionDetail(poModelMaster.getTransactionNumber());
         if (poModelMaster.getEntryNumber() != poModelDetail.size()) {
             poJSON.put("result", "success");
             poJSON.put("message", "Record loaded successfully.");
@@ -132,7 +121,7 @@ public class PO_Quotation_Request implements GTranDet {
             loJSON.put("message", "Edit mode has changed to update.");
         } else {
             loJSON.put("result", "error");
-            loJSON.put("message", "No record loaded to update.");
+            loJSON.put("message", "No Transaction loaded to update.");
         }
 
         return loJSON;
@@ -140,35 +129,69 @@ public class PO_Quotation_Request implements GTranDet {
 
     @Override
     public JSONObject saveTransaction() {
-        if (!pbWthParent) {
-            poGRider.beginTrans();
-        }
-
-        if (getItemCount() >= 1) {
-            for (int lnCtr = 0; lnCtr <= getItemCount() - 1; lnCtr++) {
-                poModelDetail.get(lnCtr).setTransactionNo(poModelMaster.getTransactionNumber());
-                poModelDetail.get(lnCtr).setEntryNo(lnCtr + 1);
-
-                poJSON = poModelDetail.get(lnCtr).saveRecord();
-
-                if ("error".equals((String) poJSON.get("result"))) {
-                    if (!pbWthParent) {
-                        poGRider.rollbackTrans();
-                    }
-                    return poJSON;
-                }
-
-            }
-
-        } else {
+        poJSON = new JSONObject();
+        if (getItemCount() <= 0) {
             poJSON.put("result", "error");
             poJSON.put("message", "Unable to Save empty Transaction.");
             return poJSON;
         }
+        int lnCtr;
+        String lsSQL;
+        if (!pbWthParent) {
+            poGRider.beginTrans();
+        }
 
+        //delete empty detail
+        if (poModelDetail.get(getItemCount() - 1).getStockID().equals("") && poModelDetail.get(getItemCount() - 1).getDescript().equals("")) {
+            RemoveModelDetail(getItemCount() - 1);
+        }
+
+        for (lnCtr = 0; lnCtr <= getItemCount() - 1; lnCtr++) {
+
+            poModelDetail.get(lnCtr).setTransactionNo(poModelMaster.getTransactionNumber());
+            poModelDetail.get(lnCtr).setEntryNo(lnCtr + 1);
+
+            poJSON = poModelDetail.get(lnCtr).saveRecord();
+
+            if ("error".equals((String) poJSON.get("result"))) {
+                if (!pbWthParent) {
+                    poGRider.rollbackTrans();
+                }
+                return poJSON;
+            }
+
+        }
+        if (poModelMaster.getEditMode() == EditMode.UPDATE) {
+            ArrayList<Model_PO_Quotation_Request_Detail> laOldTransaction = openTransactionDetail(poModelMaster.getTransactionNumber());
+
+            if (laOldTransaction != null && !laOldTransaction.isEmpty()) {
+                for (int lnCtr2 = lnCtr; lnCtr2 <= laOldTransaction.size() - 1; lnCtr2++) {
+                    Model_PO_Quotation_Request_Detail detail = laOldTransaction.get(lnCtr2);
+
+                    lsSQL = "DELETE FROM " + detail.getTable()
+                            + " WHERE sStockIDx = " + SQLUtil.toSQL(detail.getStockID())
+                            + " AND nEntryNox = " + SQLUtil.toSQL(detail.getEntryNo());
+
+                    if (!lsSQL.isEmpty()) {
+                        if (poGRider.executeQuery(lsSQL, detail.getTable(), "", "") == 0) {
+                            if (!pbWthParent) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "No Transaction loaded to update.");
+                                poGRider.rollbackTrans();
+                                return poJSON;
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
         poModelMaster.setEntryNumber(poModelDetail.size());
         poModelMaster.setBranchCd(poGRider.getBranchCode());
-        poModelMaster.setPreparedDate(null);
+        poModelMaster.setPreparedDate(poGRider.getServerDate());
+        poModelMaster.setPreparedBy(poGRider.getUserID());
+        poModelMaster.setModifiedBy(poGRider.getUserID());
+        poModelMaster.setModifiedDate(poGRider.getServerDate());
         poJSON = poModelMaster.saveRecord();
         if ("success".equals((String) poJSON.get("result"))) {
             if (!pbWthParent) {
@@ -186,8 +209,52 @@ public class PO_Quotation_Request implements GTranDet {
     }
 
     @Override
-    public JSONObject deleteTransaction(String fsValue) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public JSONObject deleteTransaction(String fsTransNox) {
+        poJSON = new JSONObject();
+        openTransaction(fsTransNox);
+        if ("error".equals((String) poJSON.get("result"))) {
+            return poJSON;
+        }
+        if (poModelMaster.getEditMode() == EditMode.READY || poModelMaster.getEditMode() == EditMode.UPDATE) {
+
+            if (!pbWthParent) {
+                poGRider.beginTrans();
+            }
+            String lsSQL = "DELETE FROM " + poModelMaster.getTable()
+                    + " WHERE sTransNox = " + SQLUtil.toSQL(fsTransNox);
+
+            if (!lsSQL.isEmpty()) {
+                if (poGRider.executeQuery(lsSQL, poModelMaster.getTable(), poGRider.getBranchCode(), "") > 0) {
+                    poJSON.put("result", "success");
+                    poJSON.put("message", "Transaction saved successfully.");
+                } else {
+                    poJSON.put("result", "error");
+                    poJSON.put("message", poGRider.getErrMsg());
+                }
+
+                if ("success".equals((String) poJSON.get("result"))) {
+                    if (!pbWthParent) {
+                        poGRider.commitTrans();
+                        poJSON.put("result", "success");
+                        poJSON.put("message", "Transaction saved successfully.");
+                    }
+                } else {
+                    if (!pbWthParent) {
+                        poGRider.rollbackTrans();
+                    }
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "Unable to Delete Transaction.");
+                }
+            } else {
+                poJSON.put("result", "error");
+                poJSON.put("message", "Unable to Delete Transaction.");
+            }
+        } else {
+            poJSON = new JSONObject();
+            poJSON.put("result", "error");
+            poJSON.put("message", "No Transaction loaded to update.");
+        }
+        return poJSON;
     }
 
     @Override
@@ -198,16 +265,36 @@ public class PO_Quotation_Request implements GTranDet {
             return poJSON;
         }
         if (poModelMaster.getEditMode() == EditMode.READY || poModelMaster.getEditMode() == EditMode.UPDATE) {
+
+            poModelMaster.setModifiedBy(poGRider.getUserID());
+            poModelMaster.setModifiedDate(poGRider.getServerDate());
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_CLOSED);
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
             }
 
+            if (!pbWthParent) {
+                poGRider.beginTrans();
+            }
             poJSON = poModelMaster.saveRecord();
+
+            if ("success".equals((String) poJSON.get("result"))) {
+                if (!pbWthParent) {
+                    poGRider.commitTrans();
+                    poJSON.put("result", "success");
+                    poJSON.put("message", "Transaction saved successfully.");
+                }
+            } else {
+                if (!pbWthParent) {
+                    poGRider.rollbackTrans();
+                }
+                poJSON.put("result", "error");
+                poJSON.put("message", "Unable to Closed Transaction.");
+            }
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "error");
-            poJSON.put("message", "No record loaded to update.");
+            poJSON.put("message", "No Transaction loaded to update.");
         }
         return poJSON;
     }
@@ -222,16 +309,34 @@ public class PO_Quotation_Request implements GTranDet {
         if (poModelMaster.getEditMode() == EditMode.READY
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
 
+            poModelMaster.setModifiedBy(poGRider.getUserID());
+            poModelMaster.setModifiedDate(poGRider.getServerDate());
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_POSTED);
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
             }
+            if (!pbWthParent) {
+                poGRider.beginTrans();
+            }
 
             poJSON = poModelMaster.saveRecord();
+            if ("success".equals((String) poJSON.get("result"))) {
+                if (!pbWthParent) {
+                    poGRider.commitTrans();
+                    poJSON.put("result", "success");
+                    poJSON.put("message", "Transaction Posted successfully.");
+                }
+            } else {
+                if (!pbWthParent) {
+                    poGRider.rollbackTrans();
+                }
+                poJSON.put("result", "error");
+                poJSON.put("message", "Unable to Post Transaction.");
+            }
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "error");
-            poJSON.put("message", "No record loaded to update.");
+            poJSON.put("message", "No Transaction loaded to update.");
         }
         return poJSON;
     }
@@ -245,17 +350,37 @@ public class PO_Quotation_Request implements GTranDet {
         }
         if (poModelMaster.getEditMode() == EditMode.READY
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
+
+            poModelMaster.setModifiedBy(poGRider.getUserID());
+            poModelMaster.setModifiedDate(poGRider.getServerDate());
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_VOID);
 
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
             }
 
+            if (!pbWthParent) {
+                poGRider.beginTrans();
+            }
+
             poJSON = poModelMaster.saveRecord();
+            if ("success".equals((String) poJSON.get("result"))) {
+                if (!pbWthParent) {
+                    poGRider.commitTrans();
+                    poJSON.put("result", "success");
+                    poJSON.put("message", "Transaction saved successfully.");
+                }
+            } else {
+                if (!pbWthParent) {
+                    poGRider.rollbackTrans();
+                }
+                poJSON.put("result", "error");
+                poJSON.put("message", "Unable to Delete Transaction.");
+            }
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "error");
-            poJSON.put("message", "No record loaded to update.");
+            poJSON.put("message", "No Transaction loaded to update.");
         }
         return poJSON;
     }
@@ -270,17 +395,37 @@ public class PO_Quotation_Request implements GTranDet {
         }
         if (poModelMaster.getEditMode() == EditMode.READY
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
+            poModelMaster.setModifiedBy(poGRider.getUserID());
+            poModelMaster.setModifiedDate(poGRider.getServerDate());
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_CANCELLED);
 
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
             }
 
+            if (!pbWthParent) {
+                poGRider.beginTrans();
+            }
+
             poJSON = poModelMaster.saveRecord();
+
+            if ("success".equals((String) poJSON.get("result"))) {
+                if (!pbWthParent) {
+                    poGRider.commitTrans();
+                    poJSON.put("result", "success");
+                    poJSON.put("message", "Transaction saved successfully.");
+                }
+            } else {
+                if (!pbWthParent) {
+                    poGRider.rollbackTrans();
+                }
+                poJSON.put("result", "error");
+                poJSON.put("message", "Unable to Delete Transaction.");
+            }
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "error");
-            poJSON.put("message", "No record loaded to update.");
+            poJSON.put("message", "No Transaction loaded to update.");
         }
         return poJSON;
     }
@@ -352,7 +497,7 @@ public class PO_Quotation_Request implements GTranDet {
                 } else {
                     loJSON = new JSONObject();
                     loJSON.put("result", "error");
-                    loJSON.put("message", "No record found.");
+                    loJSON.put("message", "No Transaction found.");
                     return loJSON;
                 }
 
@@ -398,14 +543,14 @@ public class PO_Quotation_Request implements GTranDet {
                 "Transaction No»Date»Refer No",
                 "sTransNox»dTransact»sReferNox",
                 "sTransNox»dTransact»sReferNox",
-                fbByCode ? 0 : 1);
+                fbByCode ? 0 : 3);
 
         if (poJSON != null) {
             return openTransaction((String) poJSON.get("sTransNox"));
 
         } else {
             poJSON.put("result", "error");
-            poJSON.put("message", "No record loaded to update.");
+            poJSON.put("message", "No Transaction loaded to update.");
             return poJSON;
         }
     }
@@ -439,7 +584,7 @@ public class PO_Quotation_Request implements GTranDet {
 //                } else {
 //                    loJSON = new JSONObject();
 //                    loJSON.put("result", "error");
-//                    loJSON.put("message", "No record found.");
+//                    loJSON.put("message", "No Transaction found.");
 //                    return loJSON;
 //                }
 //
@@ -457,7 +602,7 @@ public class PO_Quotation_Request implements GTranDet {
 //                } else {
 //                    loJSON = new JSONObject();
 //                    loJSON.put("result", "error");
-//                    loJSON.put("message", "No record found.");
+//                    loJSON.put("message", "No Transaction found.");
 //                    return loJSON;
 //                }
             case "sCategrCd": //9 //17-xCategrNm
@@ -478,7 +623,7 @@ public class PO_Quotation_Request implements GTranDet {
 
                     loJSON = new JSONObject();
                     loJSON.put("result", "error");
-                    loJSON.put("message", "No record found.");
+                    loJSON.put("message", "No Transaction found.");
                     return loJSON;
                 }
 
@@ -517,50 +662,48 @@ public class PO_Quotation_Request implements GTranDet {
         psTranStatus = fsValue;
     }
 
-    public JSONObject openTransactionDetail(String fsTransNo) {
+    public ArrayList<Model_PO_Quotation_Request_Detail> openTransactionDetail(String fsTransNo) {
+        ArrayList<Model_PO_Quotation_Request_Detail> loDetail = new ArrayList<>();
 
-        poModelDetail = new ArrayList<Model_PO_Quotation_Request_Detail>();
         try {
-            String lsSQL = MiscUtil.addCondition(poModelDetail.get(0).makeSQL(), "sTransNox = " + SQLUtil.toSQL(fsTransNo));
+            Model_PO_Quotation_Request_Detail placeholder = new Model_PO_Quotation_Request_Detail(poGRider);
+            String lsSQL = MiscUtil.addCondition(placeholder.makeSelectSQL(), "sTransNox = " + SQLUtil.toSQL(fsTransNo));
             ResultSet loRS = poGRider.executeQuery(lsSQL);
 
             while (loRS.next()) {
-                poModelDetail.get(poModelDetail.size() - 1).openRecord(loRS.getString("sTransNox"), loRS.getString("sStockIDx"));
-
-                if ("success".equals((String) poJSON.get("success"))) {
-                    AddModelDetail();
-                    return poJSON;
-                } else {
-                    poJSON = new JSONObject();
-                    poJSON.put("result", "error");
-                    poJSON.put("message", "No record loaded to Detail.");
-
-                }
+                Model_PO_Quotation_Request_Detail detail = new Model_PO_Quotation_Request_Detail(poGRider);
+                detail.openRecord(loRS.getString("sTransNox"), loRS.getString("sStockIDx"));
+                loDetail.add(detail);
             }
 
-            return poJSON;
+            if (loDetail.isEmpty()) {
+                new ArrayList<>();
+            }
+
+            return loDetail;
 
         } catch (SQLException ex) {
-            poJSON = new JSONObject();
-            poJSON.put("result", "error");
-            poJSON.put("message", ex.getMessage());
-
-            return poJSON;
+            // Handle exceptions by returning an empty list or logging the error
+            ex.printStackTrace();
+            return new ArrayList<>();
         }
     }
 
     public JSONObject AddModelDetail() {
         boolean lsModelRequired = poModelDetail.get(poModelDetail.size() - 1).getQuantity() > 0;
-        if (lsModelRequired) {
+        if (poModelDetail.isEmpty()) {
             poModelDetail.add(new Model_PO_Quotation_Request_Detail(poGRider));
-            poModelDetail.get(poModelDetail.size() - 1).newRecord();
             poModelDetail.get(poModelDetail.size() - 1).setTransactionNo(poModelMaster.getTransactionNumber());
-            poModelDetail.get(poModelDetail.size() - 1).setQuantity(0);
-            poModelDetail.get(poModelDetail.size() - 1).setUnitPrice(0.0);
         } else {
-            poJSON = new JSONObject();
-            poJSON.put("result", "Information");
-            poJSON.put("message", "Please Fill up Required Record Fist!");
+            if (lsModelRequired) {
+                poModelDetail.add(new Model_PO_Quotation_Request_Detail(poGRider));
+                poModelDetail.get(poModelDetail.size() - 1).setTransactionNo(poModelMaster.getTransactionNumber());
+
+            } else {
+                poJSON = new JSONObject();
+                poJSON.put("result", "Information");
+                poJSON.put("message", "Please Fill up Required Record Fist!");
+            }
         }
 
         return poJSON;
