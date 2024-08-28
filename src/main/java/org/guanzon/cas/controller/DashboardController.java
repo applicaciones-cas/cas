@@ -293,7 +293,7 @@ public class DashboardController implements Initializable {
                
             /*PURCHASE ORDER QUOTATION MENU*/    
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
-                return "POtest";  
+                return "Purchase Quotation Request";  
             
             default:
                 return null;
@@ -1013,7 +1013,7 @@ public class DashboardController implements Initializable {
     }
     
     @FXML
-    private void mnuPOTest(ActionEvent event) {
+    private void mnuPOQuotationRequest(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/PO_Quotation_Request.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {

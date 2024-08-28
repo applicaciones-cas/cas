@@ -43,7 +43,7 @@ import org.json.simple.JSONObject;
  */
 public class PO_Quotation_RequestController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "PO_Quotation";
+    private final String pxeModuleName = "Purchase Quotation Request";
     private GRider oApp;
     private PO_Quotation_Request oTrans;
     private JSONObject poJSON;
@@ -51,13 +51,12 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
 
     private String psPrimary = "";
 
-    private boolean state = false;
     private boolean pbLoaded = false;
     private int pnIndex;
     private int pnDetailRow;
 
     @FXML
-    private AnchorPane MainAnchorPain, apBrowse, apMaster, apButton, apTable, apDetail;
+    private AnchorPane MainAnchorPane, apBrowse, apMaster, apButton, apTable, apDetail;
 
     @FXML
     private Button btnNew, btnBrowse, btnCancel, btnSave, btnClose, btnUpdate, btnConfirm, btnVoid;
@@ -203,13 +202,10 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                 break;
 
             case "btnClose":
+                unloadForm appUnload = new unloadForm();
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-//                        if (unload != null) {
-//                            unload.unloadForm(AnchorMain, oApp, "Size");
-//                        } else {
-//                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
-//                        }
-//                        break;
+                        appUnload.unloadForm(MainAnchorPane, oApp, pxeModuleName);
+                        
                 } else {
                     return;
                 }
@@ -286,6 +282,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
 
         initTextFields();
         initDetailsGrid();
+        clearFields();
 
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
@@ -667,6 +664,9 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
         txtField05.clear();
         txtField06.clear();
         txtField07.clear();
+        
+        txtField99.clear();
+        txtField98.clear();
 
         txtDetail01.clear();
         txtDetail02.clear();
@@ -757,6 +757,18 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
 
         txtDetail03.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("xCategrNm"));
 
+    }
+    
+    public void loadResult(String fsValue, boolean fbVal){
+        JSONObject poJson = new JSONObject();
+//        overlay.setVisible(fbVal);
+        poJson = oTrans.openTransaction(fsValue);
+        if("error".equalsIgnoreCase(poJson.get("result").toString())){
+            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
+        }
+        initButton(pnEditMode);
+        loadRecord();
+               
     }
 
 }
