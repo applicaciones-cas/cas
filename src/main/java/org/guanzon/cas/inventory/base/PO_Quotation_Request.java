@@ -12,6 +12,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.cas.inventory.models.Model_PO_Quotation_Request_Detail;
 import org.guanzon.cas.inventory.models.Model_PO_Quotation_Request_Master;
+import org.guanzon.cas.parameters.Branch;
 import org.guanzon.cas.parameters.Category_Level2;
 import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Inv_Type;
@@ -591,23 +592,24 @@ public class PO_Quotation_Request implements GTranDet {
 //                    return loJSON;
 //                }
 //
-//            case "sDestinat": //4 //16-xDestinat
-//                Branch loDestinat = new Branch(poGRider, true);
-//                loDestinat.setRecordStatus(psTranStatus);
-//                loJSON = loDestinat.searchRecord(fsValue, fbByCode);
-//
-//                if (loJSON != null) {
-//                    setMaster("sDestinat", (String) loDestinat.getMaster("sBranchCd"));
-//                    setMaster("xDestinat", (String) loDestinat.getMaster("sBranchNm"));
-//
-//                    return loJSON;
-//
-//                } else {
-//                    loJSON = new JSONObject();
-//                    loJSON.put("result", "error");
-//                    loJSON.put("message", "No Transaction found.");
-//                    return loJSON;
-//                }
+            case "sDestinat": //4 //16-xDestinat
+                Branch loDestinat = new Branch(poGRider, true);
+                loDestinat.setRecordStatus(psTranStatus);
+                loJSON = loDestinat.searchRecord(fsValue, fbByCode);
+
+                if (loJSON != null) {
+                    setMaster("sDestinat", (String) loDestinat.getMaster("sBranchCd"));
+                    setMaster("xDestinat", (String) loDestinat.getMaster("sBranchNm"));
+
+                    return loJSON;
+
+                } else {
+                    loJSON = new JSONObject();
+                    loJSON.put("result", "error");
+                    loJSON.put("message", "No Transaction found.");
+                    return loJSON;
+                }
+                
             case "sCategrCd": //9 //17-xCategrNm
 
                 Category_Level2 loCategory2 = new Category_Level2(poGRider, true);
