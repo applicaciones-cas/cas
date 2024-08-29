@@ -17,6 +17,8 @@ import org.guanzon.cas.parameters.Category_Level2;
 import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Inv_Type;
 import org.guanzon.cas.parameters.Measure;
+import org.guanzon.cas.validators.poquotation.Validator_PO_Quotation_Request_Detail;
+import org.guanzon.cas.validators.poquotation.Validator_PO_Quotation_Request_Master;
 
 import org.json.simple.JSONObject;
 
@@ -33,6 +35,8 @@ public class PO_Quotation_Request implements GTranDet {
 
     Model_PO_Quotation_Request_Master poModelMaster;
     ArrayList<Model_PO_Quotation_Request_Detail> poModelDetail;
+    
+    
 
     JSONObject poJSON;
 
@@ -109,10 +113,14 @@ public class PO_Quotation_Request implements GTranDet {
         }
         int lnCtr;
         String lsSQL;
+        
         if (!pbWthParent) {
             poGRider.beginTrans();
         }
-
+        
+        
+        
+        
         //delete empty detail
         if (poModelDetail.get(getItemCount() - 1).getStockID().equals("") && poModelDetail.get(getItemCount() - 1).getDescript().equals("")) {
             RemoveModelDetail(getItemCount() - 1);
@@ -164,6 +172,20 @@ public class PO_Quotation_Request implements GTranDet {
         poModelMaster.setPreparedBy(poGRider.getUserID());
         poModelMaster.setModifiedBy(poGRider.getUserID());
         poModelMaster.setModifiedDate(poGRider.getServerDate());
+        Validator_PO_Quotation_Request_Detail ValidateDetails = new Validator_PO_Quotation_Request_Detail(poModelDetail);
+        Validator_PO_Quotation_Request_Master ValidateMasters = new Validator_PO_Quotation_Request_Master(poModelMaster);
+        if (!ValidateDetails.isEntryOkay()){
+            poJSON.put("result", "error");
+            poJSON.put("message", ValidateDetails.getMessage());
+            return poJSON;
+
+        }
+        if (!ValidateMasters.isEntryOkay()){
+            poJSON.put("result", "error");
+            poJSON.put("message", ValidateMasters.getMessage());
+            return poJSON;
+
+        }
         poJSON = poModelMaster.saveRecord();
         if ("success".equals((String) poJSON.get("result"))) {
             if (!pbWthParent) {
@@ -592,6 +614,10 @@ public class PO_Quotation_Request implements GTranDet {
 //                    return loJSON;
 //                }
 //
+                
+         
+                
+                
             case "sDestinat": //4 //16-xDestinat
                 Branch loDestinat = new Branch(poGRider, true);
                 loDestinat.setRecordStatus(psTranStatus);
