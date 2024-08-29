@@ -35,8 +35,6 @@ public class PO_Quotation_Request implements GTranDet {
 
     Model_PO_Quotation_Request_Master poModelMaster;
     ArrayList<Model_PO_Quotation_Request_Detail> poModelDetail;
-    
-    
 
     JSONObject poJSON;
 
@@ -105,22 +103,33 @@ public class PO_Quotation_Request implements GTranDet {
 
     @Override
     public JSONObject saveTransaction() {
-        poJSON = new JSONObject();
-        if (getItemCount() <= 0) {
-            poJSON.put("result", "error");
-            poJSON.put("message", "Unable to Save empty Transaction.");
-            return poJSON;
-        }
         int lnCtr;
         String lsSQL;
         
-        if (!pbWthParent) {
-            poGRider.beginTrans();
+        Validator_PO_Quotation_Request_Detail ValidateDetails = new Validator_PO_Quotation_Request_Detail(poModelDetail);
+        if (!ValidateDetails.isEntryOkay()) {
+            poJSON.put("result", "error");
+            poJSON.put("message", ValidateDetails.getMessage());
+            return poJSON;
+
+        }
+        
+        Validator_PO_Quotation_Request_Master ValidateMasters = new Validator_PO_Quotation_Request_Master(poModelMaster);
+        if (!ValidateMasters.isEntryOkay()) {
+            poJSON.put("result", "error");
+            poJSON.put("message", ValidateMasters.getMessage());
+            return poJSON;
+
         }
         
         
         
-        
+
+        if (!pbWthParent) {
+            poGRider.beginTrans();
+        }
+
+        poJSON = new JSONObject();
         //delete empty detail
         if (poModelDetail.get(getItemCount() - 1).getStockID().equals("") && poModelDetail.get(getItemCount() - 1).getDescript().equals("")) {
             RemoveModelDetail(getItemCount() - 1);
@@ -172,20 +181,7 @@ public class PO_Quotation_Request implements GTranDet {
         poModelMaster.setPreparedBy(poGRider.getUserID());
         poModelMaster.setModifiedBy(poGRider.getUserID());
         poModelMaster.setModifiedDate(poGRider.getServerDate());
-        Validator_PO_Quotation_Request_Detail ValidateDetails = new Validator_PO_Quotation_Request_Detail(poModelDetail);
-        Validator_PO_Quotation_Request_Master ValidateMasters = new Validator_PO_Quotation_Request_Master(poModelMaster);
-        if (!ValidateDetails.isEntryOkay()){
-            poJSON.put("result", "error");
-            poJSON.put("message", ValidateDetails.getMessage());
-            return poJSON;
-
-        }
-        if (!ValidateMasters.isEntryOkay()){
-            poJSON.put("result", "error");
-            poJSON.put("message", ValidateMasters.getMessage());
-            return poJSON;
-
-        }
+        
         poJSON = poModelMaster.saveRecord();
         if ("success".equals((String) poJSON.get("result"))) {
             if (!pbWthParent) {
@@ -447,7 +443,7 @@ public class PO_Quotation_Request implements GTranDet {
         switch (fsCol) {
             case "nQuantity":
             case "sDescript":
-               
+
                 if ("error".equals((String) poJSON.get("result"))) {
                     return poJSON;
                 }
@@ -463,7 +459,7 @@ public class PO_Quotation_Request implements GTranDet {
                         return poModelDetail.get(i).setValue("nQuantity", currentQuantity + 1);
                     }
                 }
-                 poJSON = poModelDetail.get(fnRow).setValue(fsCol, foData);
+                poJSON = poModelDetail.get(fnRow).setValue(fsCol, foData);
                 if (poModelDetail.get(fnRow).getQuantity() > 0
                         && (!poModelDetail.get(fnRow).getDescript().isEmpty() || !poModelDetail.get(fnRow).getStockID().isEmpty())) {
                     AddModelDetail();
@@ -614,10 +610,6 @@ public class PO_Quotation_Request implements GTranDet {
 //                    return loJSON;
 //                }
 //
-                
-         
-                
-                
             case "sDestinat": //4 //16-xDestinat
                 Branch loDestinat = new Branch(poGRider, true);
                 loDestinat.setRecordStatus(psTranStatus);
@@ -635,7 +627,7 @@ public class PO_Quotation_Request implements GTranDet {
                     loJSON.put("message", "No Transaction found.");
                     return loJSON;
                 }
-                
+
             case "sCategrCd": //9 //17-xCategrNm
 
                 Category_Level2 loCategory2 = new Category_Level2(poGRider, true);
