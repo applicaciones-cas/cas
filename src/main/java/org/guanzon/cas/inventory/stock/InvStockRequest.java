@@ -22,7 +22,7 @@ import org.json.simple.JSONObject;
 
 /**
  *
- * @author Maynard
+ * @author Unclejo
  */
 public class InvStockRequest implements GTranDet {
 
@@ -195,6 +195,7 @@ public class InvStockRequest implements GTranDet {
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
             }
+            
 
             poJSON = poModelMaster.saveRecord();
         } else {
@@ -212,14 +213,6 @@ public class InvStockRequest implements GTranDet {
         if (poModelMaster.getEditMode() == EditMode.READY
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
 
-            poJSON = poModelMaster.setModifiedBy(poGRider.getUserID());
-            if ("error".equals((String) poJSON.get("result"))) {
-                return poJSON;
-            }
-            poJSON = poModelMaster.setModifiedDate(poGRider.getServerDate());
-            if ("error".equals((String) poJSON.get("result"))) {
-                return poJSON;
-            }
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_POSTED);
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
@@ -370,18 +363,18 @@ public class InvStockRequest implements GTranDet {
                 lsCondition += ", " + SQLUtil.toSQL(Character.toString(psTranStatus.charAt(lnCtr)));
             }
 
-            lsCondition = "cTranStat IN (" + lsCondition.substring(2) + ")";
+            lsCondition = "a.cTranStat IN (" + lsCondition.substring(2) + ")";
         } else {
-            lsCondition = "cTranStat = " + SQLUtil.toSQL(psTranStatus);
+            lsCondition = "a.cTranStat = " + SQLUtil.toSQL(psTranStatus);
         }
 
-        if (!fbByCode) {
-            lsFilter = fsColumn + " LIKE " + SQLUtil.toSQL(fsValue);
-        } else {
-            lsFilter = fsColumn + " = " + SQLUtil.toSQL(fsValue);
-        }
+//        if (!fbByCode) {
+//            lsFilter = fsColumn + " LIKE " + SQLUtil.toSQL(fsValue);
+//        } else {
+//            lsFilter = fsColumn + " = " + SQLUtil.toSQL(fsValue);
+//        }  
 
-        String lsSQL = MiscUtil.addCondition(poModelMaster.makeSelectSQL(), " sTransNox LIKE "
+        String lsSQL = MiscUtil.addCondition(poModelMaster.getSQL(), " a.sTransNox LIKE "
                 + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition);
 
         poJSON = new JSONObject();
