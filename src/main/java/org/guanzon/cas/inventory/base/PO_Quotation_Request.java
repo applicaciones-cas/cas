@@ -239,7 +239,7 @@ public class PO_Quotation_Request implements GTranDet {
 
             poModelMaster.setModifiedBy(poGRider.getUserID());
             poModelMaster.setModifiedDate(poGRider.getServerDate());
-            poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_CLOSED);
+            poJSON = poModelMaster.setTranStatus(TransactionStatus.STATE_CLOSED);
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
             }
@@ -282,7 +282,7 @@ public class PO_Quotation_Request implements GTranDet {
 
             poModelMaster.setModifiedBy(poGRider.getUserID());
             poModelMaster.setModifiedDate(poGRider.getServerDate());
-            poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_POSTED);
+            poJSON = poModelMaster.setTranStatus(TransactionStatus.STATE_POSTED);
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
             }
@@ -324,7 +324,7 @@ public class PO_Quotation_Request implements GTranDet {
 
             poModelMaster.setModifiedBy(poGRider.getUserID());
             poModelMaster.setModifiedDate(poGRider.getServerDate());
-            poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_VOID);
+            poJSON = poModelMaster.setTranStatus(TransactionStatus.STATE_VOID);
 
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
@@ -368,7 +368,7 @@ public class PO_Quotation_Request implements GTranDet {
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
             poModelMaster.setModifiedBy(poGRider.getUserID());
             poModelMaster.setModifiedDate(poGRider.getServerDate());
-            poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_CANCELLED);
+            poJSON = poModelMaster.setTranStatus(TransactionStatus.STATE_CANCELLED);
 
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
