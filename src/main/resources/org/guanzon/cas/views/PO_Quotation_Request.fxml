@@ -22,7 +22,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" fx:id="MainAnchorPane" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="MainAnchorPane" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -170,7 +170,7 @@
                                                                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                                </GridPane.margin>
                                                             </Label>
-                                                            <TextField fx:id="txtField01" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.valignment="BOTTOM" />
+                                                            <TextField fx:id="txtField01" editable="false" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.valignment="BOTTOM" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
@@ -331,10 +331,10 @@
                                                             </Text>
                                                             <TextField fx:id="txtDetail01" prefHeight="25.0" promptText="Press F3 to Search." styleClass="text-field" GridPane.columnIndex="1" />
                                                             <TextField fx:id="txtDetail02" prefHeight="25.0" promptText="Press F3 to Search." styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                            <TextField fx:id="txtDetail03" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                            <TextField fx:id="txtDetail04" prefHeight="25.0" GridPane.columnIndex="3" />
-                                                            <TextField fx:id="txtDetail05" prefHeight="25.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                                            <TextField fx:id="txtDetail06" prefHeight="25.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                            <TextField fx:id="txtDetail03" editable="false" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                            <TextField fx:id="txtDetail04" editable="false" prefHeight="25.0" GridPane.columnIndex="3" />
+                                                            <TextField fx:id="txtDetail05" editable="false" prefHeight="25.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                            <TextField fx:id="txtDetail06" editable="false" prefHeight="25.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                                                             <TextField fx:id="txtDetail07" alignment="CENTER_RIGHT" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                          </children>
                                                       </GridPane>

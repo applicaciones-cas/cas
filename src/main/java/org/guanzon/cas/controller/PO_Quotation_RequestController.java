@@ -115,6 +115,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
+                
                 poJSON = oTrans.saveTransaction();
 
                 pnEditMode = oTrans.getMasterModel().getEditMode();
