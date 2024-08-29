@@ -102,10 +102,12 @@
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                                            <TextField fx:id="txtField01" editable="false" GridPane.columnIndex="1">
+                                                            <TextField fx:id="txtField01" GridPane.columnIndex="1">
                                                                 <GridPane.margin>
                                                                     <Insets />
                                                                 </GridPane.margin>
@@ -147,7 +149,7 @@
                                                                     <Insets left="10.0" />
                                                                 </GridPane.margin>
                                                             </Label>
-                                                            <CheckBox fx:id="cbActive" disable="true" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="7" GridPane.valignment="BOTTOM">
+                                                            <CheckBox fx:id="cbActive" disable="true" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="9" GridPane.valignment="BOTTOM">
                                                                 <font>
                                                                     <Font size="14.0" />
                                                                 </font>
@@ -190,7 +192,7 @@
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
                                           </Label>
-                                          <TextField fx:id="txtField05" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                                          <TextField fx:id="txtField04" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -198,7 +200,7 @@
                                                 <Insets left="5.0" />
                                              </padding>
                                           </TextField>
-                                          <Label contentDisplay="RIGHT" text="Address" GridPane.rowIndex="4">
+                                          <Label contentDisplay="RIGHT" text="Address" GridPane.rowIndex="6">
                                              <graphic>
                                                 <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
                                                    <font>
@@ -210,11 +212,59 @@
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
                                           </Label>
-                                          <TextField fx:id="txtField06" maxHeight="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" GridPane.rowSpan="2">
+                                          <TextField fx:id="txtField07" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6" GridPane.rowSpan="2">
                                              <GridPane.margin>
                                                 <Insets top="5.0" />
                                              </GridPane.margin>
                                           </TextField>
+                                          <Label contentDisplay="RIGHT" text="Company" GridPane.rowIndex="4">
+                                             <graphic>
+                                                <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
+                                                   <font>
+                                                      <Font name="Rockwell" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </graphic>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
+                                          </Label>
+                                          <Label contentDisplay="RIGHT" text="Town" GridPane.rowIndex="5">
+                                             <graphic>
+                                                <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
+                                                   <font>
+                                                      <Font name="Rockwell" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </graphic>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
+                                          </Label>
+                                          <TextField fx:id="txtField05" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                             <padding>
+                                                <Insets left="5.0" />
+                                             </padding>
+                                          </TextField>
+                                          <TextField fx:id="txtField06" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                             <padding>
+                                                <Insets left="5.0" />
+                                             </padding>
+                                          </TextField>
+                                          <CheckBox fx:id="cbWareHouse" disable="true" mnemonicParsing="false" selected="true" text="Warehouse" GridPane.columnIndex="2" GridPane.rowIndex="9">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                             <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </padding>
+                                          </CheckBox>
                                        </children>
                                     </GridPane>
                                  </children>
