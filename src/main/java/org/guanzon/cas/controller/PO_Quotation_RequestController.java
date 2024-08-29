@@ -90,7 +90,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                 poJSON = oTrans.newTransaction();
                 loadRecord();
                 pnEditMode = oTrans.getMasterModel().getEditMode();
-                oTrans.setTransactionStatus("1");
+                oTrans.setTransactionStatus("12340");
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
 
@@ -127,7 +127,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                 } else {
                     oTrans = new PO_Quotation_Request(oApp, true);
                     pbLoaded = true;
-                    oTrans.setTransactionStatus("1");
+                    oTrans.setTransactionStatus("12340");
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
                     ShowMessageFX.Information(null, pxeModuleName, "Transaction successful Saved!");
@@ -149,7 +149,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                     oTrans = new PO_Quotation_Request(oApp, true);
-                    oTrans.setTransactionStatus("1");
+                    oTrans.setTransactionStatus("12340");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
@@ -171,7 +171,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new PO_Quotation_Request(oApp, false);
-                                oTrans.setTransactionStatus("1");
+                                oTrans.setTransactionStatus("12340");
                                 pbLoaded = true;
 
                             }
@@ -189,7 +189,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
                                 oTrans = new PO_Quotation_Request(oApp, false);
-                                oTrans.setTransactionStatus("1");
+                                oTrans.setTransactionStatus("12340");
                                 pbLoaded = true;
 
                             }
