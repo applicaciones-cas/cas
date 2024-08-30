@@ -21,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="ChildAnchorPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="MainAnchorPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane layoutX="107.0" layoutY="129.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -177,9 +177,9 @@
                                        <center>
                                           <AnchorPane prefHeight="500.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                              <children>
-                                                                    <TableView fx:id="tblList" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                    <TableView fx:id="tblList" onMouseClicked="#tblList_Clicked" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                         <columns>
-                                                                            <TableColumn fx:id="index01" editable="false" maxWidth="1.7976931348623157E308" prefWidth="120.0" resizable="false" sortable="false" text="ID" />
+                                                                            <TableColumn fx:id="index01" editable="false" maxWidth="1.7976931348623157E308" prefWidth="120.0" resizable="false" sortable="false" text="CODE" />
                                                                             <TableColumn fx:id="index02" editable="false" maxWidth="1.7976931348623157E308" prefWidth="433.0" resizable="false" sortable="false" text="Company Name" />
                                                                         </columns>
                                                    <columnResizePolicy>
