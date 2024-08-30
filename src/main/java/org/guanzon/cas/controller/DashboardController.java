@@ -68,6 +68,13 @@ public class DashboardController implements Initializable {
 
     @FXML
     private MenuItem mnuNewCustomer;
+    
+    @FXML
+    private MenuItem mnuPOQuotationRequest;
+    
+    @FXML
+    private MenuItem mnuParameterBranch;
+    
 
     @FXML
     private TabPane tabpane;
@@ -138,7 +145,9 @@ public class DashboardController implements Initializable {
         if (tabpane.getTabs().isEmpty()) {
             tabpane = new TabPane();
         }
+
         setTabPane();
+
         ScreenInterface fxObj = getController(fsFormName);
         fxObj.setGRider(oApp);
 
@@ -172,6 +181,7 @@ public class DashboardController implements Initializable {
                 } else {
                     event.consume();
                 }
+
             });
 
             newTab.setOnSelectionChanged(event -> {
@@ -185,6 +195,7 @@ public class DashboardController implements Initializable {
                         break;
                     }
                 }
+
             });
             return (TabPane) tabpane;
         } catch (IOException e) {
@@ -197,7 +208,7 @@ public class DashboardController implements Initializable {
     //Load Main Screen if no tab remain
     public void Tabclose() {
         int tabsize = tabpane.getTabs().size();
-        if (tabsize == 0) {
+        if (tabsize == 1) {
             setScene(loadAnimateAnchor("Dashboard.fxml"));
         }
     }
@@ -227,6 +238,8 @@ public class DashboardController implements Initializable {
                 return "Banks Branches";
             case "/org/guanzon/cas/views/Barangay.fxml":
                 return "Barangay";
+            case "/org/guanzon/cas/views/Branch.fxml":
+                return "Branch";
             case "/org/guanzon/cas/views/Brand.fxml":
                 return "Brand";
             case "/org/guanzon/cas/views/Category.fxml":
@@ -273,13 +286,15 @@ public class DashboardController implements Initializable {
                 return "Size";
             case "/org/guanzon/cas/views/InventoryParam.fxml":
                 return "Inventory Parameter"; 
-            case "/org/guanzon/cas/views/InventorySerialParam.fxml":
-                return "Inventory Serial Parameter"; 
             
             /*INVENTORY MENU*/    
             case "/org/guanzon/cas/views/InventoryDetail.fxml":
-                return "Inventory Details";   
-                
+                return "Inventory Details";    
+               
+            /*PURCHASE ORDER QUOTATION MENU*/    
+            case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
+                return "Purchase Quotation Request";  
+            
             default:
                 return null;
         }
@@ -347,6 +362,7 @@ public class DashboardController implements Initializable {
 //        if (ShowMessageFX.YesNo(null, "Close All Tabs", "Are you sure, do you want to close all tabs?") == true) {
         if (showMessage()) {
             tabName.clear();
+//            TabsStateManager.saveCurrentTab(tabName);
             // Close all tabs using your TabsStateManager
             for (Tab tab : tabPane.getTabs()) {
                 String formName = tab.getText();
@@ -526,6 +542,33 @@ public class DashboardController implements Initializable {
 
         return null;
     }
+
+//    private AnchorPane loadAnimate(String fsFormName){
+//        ScreenInterface fxObj = getController(fsFormName);
+//        fxObj.setGRider(oApp);
+//       
+//        FXMLLoader fxmlLoader = new FXMLLoader();
+//        fxmlLoader.setLocation(fxObj.getClass().getResource( fsFormName));
+//        fxmlLoader.setController(fxObj);    
+//        
+//        AnchorPane root;
+//        try {
+//            root = (AnchorPane) fxmlLoader.load();
+//            FadeTransition ft = new FadeTransition(Duration.millis(1500));
+//            ft.setNode(root);
+//            ft.setFromValue(1);
+//            ft.setToValue(1);
+//            ft.setCycleCount(1);
+//            ft.setAutoReverse(false);
+//            ft.play();
+//
+//            return root;
+//        } catch (IOException ex) {
+//            System.err.println(ex.getMessage());
+//            
+//        }
+//        return null;
+//    }
     private ScreenInterface getController(String fsValue) {
         switch (fsValue) {
             case "/org/guanzon/cas/views/ClientMasterParameter.fxml":
@@ -558,6 +601,8 @@ public class DashboardController implements Initializable {
                 return new BankBranchesController();
             case "/org/guanzon/cas/views/Barangay.fxml":
                 return new BarangayController();
+            case "/org/guanzon/cas/views/Branch.fxml":
+                return new BranchController();
             case "/org/guanzon/cas/views/Brand.fxml":
                 return new BrandController();
             case "/org/guanzon/cas/views/Category.fxml":
@@ -604,13 +649,17 @@ public class DashboardController implements Initializable {
                 return new SizeController();
             case "/org/guanzon/cas/views/InventoryParam.fxml":
                 return new InventoryParamController();
-            case "/org/guanzon/cas/views/InventorySerialParam.fxml":
-                return new InventorySerialParamController();            
+            
                 /*Inventory menu*/
                  case "/org/guanzon/cas/views/InventoryDetail.fxml":
                 return new InventoryDetailController();
                 
-                 
+            
+            /*For Testing*/    
+            case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
+                return new PO_Quotation_RequestController();
+                
+                
             default:
                 return null;
         }
@@ -673,6 +722,8 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
+    
+    
 
     @FXML
     private void mnuParameterAffiliatedClick(ActionEvent event) {
@@ -704,6 +755,15 @@ public class DashboardController implements Initializable {
     @FXML
     private void mnuParameterBarangayClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/Barangay.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    @FXML
+    private void mnuParameterBranchClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Branch.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -951,16 +1011,31 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
+    
     @FXML
-    private void mnuInventorySerialParamClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InventorySerialParam"
-                + ".fxml";
+    private void mnuPOQuotationRequestClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/PO_Quotation_Request.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
     }
+
     
+   
+//    @FXML
+//    private void mnuClientParameterClick(ActionEvent event) {
+//        setScene(loadAnimate("/com/rmj/guanzongroup/cas/maven/views/ClientMasterParameter.fxml"));
+//    } 
+//    @FXML
+//    private void mnuClientTransactionCompanyClick(ActionEvent event) {
+//        setScene(loadAnimate("/com/rmj/guanzongroup/cas/maven/views/ClientMasterTransactionCompany.fxml"));
+//    } 
+//    @FXML
+//    private void mnuClientTransactionIndividualClick(ActionEvent event) {
+//        setScene(loadAnimate("/com/rmj/guanzongroup/cas/maven/views/ClientMasterTransactionCompany.fxml"));
+//    } 
+
     private boolean showMessage() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
@@ -978,4 +1053,5 @@ public class DashboardController implements Initializable {
         // Handle the user's response
         return result == buttonTypeYes;
     }
+
 }
