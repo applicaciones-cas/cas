@@ -111,7 +111,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                 poJSON = oTrans.getMasterModel().setModifiedDate(oApp.getServerDate());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
@@ -121,7 +121,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                 pnEditMode = oTrans.getMasterModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                     pnEditMode = EditMode.UNKNOWN;
                     return;
 
@@ -141,7 +141,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                 pnEditMode = oTrans.getMasterModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
@@ -166,6 +166,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                             poJSON = oTrans.postTransaction(psPrimary);
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
+                                
                                 return;
                             } else {
                                 clearFields();
@@ -184,6 +185,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                             poJSON = oTrans.cancelTransaction(psPrimary);
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
+                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;
                             } else {
                                 clearFields();
@@ -416,6 +418,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                             txtField01.requestFocus();
                         } else {
                             loadRecord();
@@ -426,6 +429,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                             txtField01.requestFocus();
                         } else {
                             loadRecord();
@@ -504,6 +508,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                     poJSON = oTrans.getMasterModel().setTransactionDate(SQLUtil.toDate(lsValue, "yyyy-MM-dd"));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
                     txtField.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
@@ -512,6 +517,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                     poJSON = oTrans.getMasterModel().setReferenceNumber(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
                     break;
@@ -519,6 +525,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                     poJSON = oTrans.getMasterModel().setExpectedPurchaseDate(SQLUtil.toDate(lsValue, "yyyy-MM-dd"));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
                     txtField.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getExpectedPurchaseDate()));
@@ -532,6 +539,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                     txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getTransactionDate(), "yyyy-MM-dd"));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
                     break;
@@ -539,6 +547,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                     txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getExpectedPurchaseDate(), "yyyy-MM-dd"));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
                     break;
@@ -634,6 +643,7 @@ public class PO_Quotation_RequestController implements Initializable, ScreenInte
                     poJSON = oTrans.setDetail(pnDetailRow, "nQuantity", x);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
 
