@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import org.guanzon.appdriver.agent.ShowDialogFX;
+import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
@@ -110,6 +111,7 @@ public class PO_Quotation_Request implements GTranDet {
         if (!ValidateDetails.isEntryOkay()) {
             poJSON.put("result", "error");
             poJSON.put("message", ValidateDetails.getMessage());
+            
             return poJSON;
 
         }
@@ -118,6 +120,7 @@ public class PO_Quotation_Request implements GTranDet {
         if (!ValidateMasters.isEntryOkay()) {
             poJSON.put("result", "error");
             poJSON.put("message", ValidateMasters.getMessage());
+            
             return poJSON;
 
         }
