@@ -1,8 +1,8 @@
 testInventoryLedger.class
+testInvStockRequest.class
 testInventoryTrans.class
 testInventory.class
 testInventorySerial.class
 testInventorySubItem.class
 testInventoryMaster.class
-testInvStockRequestCancel.class
 testInventoryHistLedger.class

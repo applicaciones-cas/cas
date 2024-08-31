@@ -111,7 +111,7 @@ public class InvStockRequest implements GTranDet {
     public JSONObject openTransaction(String fsValue) {
         
         poJSON = new JSONObject();
-        poModelMaster.openRecord("sTransNox = " + SQLUtil.toSQL(fsValue));
+        poModelMaster.openRecord(fsValue);
         if ("error".equals((String) poJSON.get("result"))) {
             return poJSON;
         }
@@ -521,6 +521,7 @@ public class InvStockRequest implements GTranDet {
 
     public JSONObject SearchDetailRequest(String fsTransNo, String fsStockID) {
 
+        poJSON = new JSONObject();
         try {
             String lsSQL = MiscUtil.addCondition(poModelDetail.get(0).makeSQL(), "sTransNox = " + SQLUtil.toSQL(fsTransNo));
             lsSQL = MiscUtil.addCondition(lsSQL, "sStockIDx = " + SQLUtil.toSQL(fsStockID));
@@ -532,12 +533,10 @@ public class InvStockRequest implements GTranDet {
                 poJSON = poModelDetail.get(poModelDetail.size() - 1).openRecord(loRS.getString("sTransNox"));
                 if ("error".equals((String) poJSON.get("result"))) {
                     return poJSON;
-                } else {
-                    poJSON = new JSONObject();
-                    poJSON.put("result", "error");
-                    poJSON.put("message", "No record loaded to Detail.");
-
                 }
+                
+                poJSON.put("result", "success");
+                poJSON.put("message", "Record successfully loaded to Detail.");
             }
 
             return poJSON;
