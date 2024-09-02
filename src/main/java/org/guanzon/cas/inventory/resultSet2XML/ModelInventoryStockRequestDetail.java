@@ -62,7 +62,7 @@ public class ModelInventoryStockRequestDetail {
                             ", b.sDescript xDescript" +
                             ", c.sDescript xCategr01" +
                             ", d.sDescript xCategr02" +
-                            ", d.sDescript xInvTypNm" +
+                            ", e.sDescript xInvTypNm" +
                         " FROM " + System.getProperty("sys.table") + " a" + 
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                             " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +

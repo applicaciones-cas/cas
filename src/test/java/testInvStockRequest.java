@@ -208,6 +208,13 @@ public class testInvStockRequest {
         Assert.assertEquals(instance.getServerDate(), record.getMasterModel().getModifiedDate());
         
         //set detail information
+        
+        
+        
+        loJSON = record.searchDetail(0, 3, "93210-448G4", true);
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
         loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setTransactionNumber(record.getMasterModel().getTransactionNumber());
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
@@ -220,11 +227,6 @@ public class testInvStockRequest {
         }
         Assert.assertEquals(record.getDetailModel().size(), record.getDetailModel().get(record.getDetailModel().size()-1).getEntryNumber());
         
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setStockID("M00124000004");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals("M00124000004", record.getDetailModel().get(record.getDetailModel().size()-1).getStockID());
         
         loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setQuantity(5);
         if ("error".equals((String) loJSON.get("result"))) {
@@ -232,52 +234,18 @@ public class testInvStockRequest {
         }
         Assert.assertEquals(5, record.getDetailModel().get(record.getDetailModel().size()-1).getQuantity());
         
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setClassify("F");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
         loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setRecordOrder(5);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
         Assert.assertEquals(5, record.getDetailModel().get(record.getDetailModel().size()-1).getRecordOrder());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setQuantityOnHand(146);
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals(146, record.getDetailModel().get(record.getDetailModel().size()-1).getQuantityOnHand());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setReservedOrder(0);
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getReservedOrder());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setBackOrder(5);
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals(5, record.getDetailModel().get(record.getDetailModel().size()-1).getBackOrder());
-        
+                
         loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setOnTransit(0);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
         Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getOnTransit());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setAverageMonthlySalary(0);
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getAverageMonthlySalary());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setMaximumLevel(0);
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getMaximumLevel());
-        
+                
         loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setApproved(0);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
@@ -326,38 +294,26 @@ public class testInvStockRequest {
         }
         Assert.assertEquals(instance.getServerDate(), record.getDetailModel().get(record.getDetailModel().size()-1).getModifiedDate());
         
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setBarcode("5MX-E2119-00-00");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals("5MX-E2119-00-00", record.getDetailModel().get(record.getDetailModel().size()-1).getBarcode());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setDescription("SEAL, VALVE STEM");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals("SEAL, VALVE STEM", record.getDetailModel().get(record.getDetailModel().size()-1).getDescription());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setCategoryName("Motorcycle");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
+        Assert.assertEquals("M00124000005", record.getDetailModel().get(record.getDetailModel().size()-1).getStockID());
+        Assert.assertEquals("F", record.getDetailModel().get(record.getDetailModel().size()-1).getClassify());
+        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getQuantityOnHand());
+        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getReservedOrder());
+        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getBackOrder());
+        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getAverageMonthlySalary());
+        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getMaximumLevel());
+        Assert.assertEquals("93210-448G4", record.getDetailModel().get(record.getDetailModel().size()-1).getBarcode());
+        Assert.assertEquals("tuppet  oring", record.getDetailModel().get(record.getDetailModel().size()-1).getDescription());
         Assert.assertEquals("Motorcycle", record.getDetailModel().get(record.getDetailModel().size()-1).getCategoryName());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setCategoryName2("Spare Parts");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
         Assert.assertEquals("Spare Parts", record.getDetailModel().get(record.getDetailModel().size()-1).getCategoryName2());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setCategoryType("Finished Products");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
         Assert.assertEquals("Finished Products", record.getDetailModel().get(record.getDetailModel().size()-1).getCategoryType());
         
         //set detail 2 information
         loJSON = record.AddModelDetail();
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+        
+        loJSON = record.searchDetail(1, 3, "93210-71462-10", true);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
@@ -374,11 +330,6 @@ public class testInvStockRequest {
         }
         Assert.assertEquals(record.getDetailModel().size(), record.getDetailModel().get(record.getDetailModel().size()-1).getEntryNumber());
         
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setStockID("M00124000004");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals("M00124000004", record.getDetailModel().get(record.getDetailModel().size()-1).getStockID());
         
         loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setQuantity(5);
         if ("error".equals((String) loJSON.get("result"))) {
@@ -386,52 +337,18 @@ public class testInvStockRequest {
         }
         Assert.assertEquals(5, record.getDetailModel().get(record.getDetailModel().size()-1).getQuantity());
         
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setClassify("F");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
         loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setRecordOrder(5);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
         Assert.assertEquals(5, record.getDetailModel().get(record.getDetailModel().size()-1).getRecordOrder());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setQuantityOnHand(146);
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals(146, record.getDetailModel().get(record.getDetailModel().size()-1).getQuantityOnHand());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setReservedOrder(0);
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getReservedOrder());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setBackOrder(5);
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals(5, record.getDetailModel().get(record.getDetailModel().size()-1).getBackOrder());
-        
+                
         loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setOnTransit(0);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
         Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getOnTransit());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setAverageMonthlySalary(0);
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getAverageMonthlySalary());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setMaximumLevel(0);
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getMaximumLevel());
-        
+                
         loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setApproved(0);
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
@@ -468,7 +385,7 @@ public class testInvStockRequest {
         }
         Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getReceived());
         
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setNotes("This is detail 02 notes entry 2.");
+        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setNotes("This is detail 01 notes entry 1.");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
@@ -479,37 +396,19 @@ public class testInvStockRequest {
             Assert.fail((String) loJSON.get("message"));
         }
         Assert.assertEquals(instance.getServerDate(), record.getDetailModel().get(record.getDetailModel().size()-1).getModifiedDate());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setBarcode("5MX-E2119-00-00");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals("5MX-E2119-00-00", record.getDetailModel().get(record.getDetailModel().size()-1).getBarcode());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setDescription("SEAL, VALVE STEM");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
-        Assert.assertEquals("SEAL, VALVE STEM", record.getDetailModel().get(record.getDetailModel().size()-1).getDescription());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setCategoryName("Motorcycle");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
+       
+        Assert.assertEquals("M00124000006", record.getDetailModel().get(record.getDetailModel().size()-1).getStockID());
+        Assert.assertEquals("F", record.getDetailModel().get(record.getDetailModel().size()-1).getClassify());
+        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getQuantityOnHand());
+        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getReservedOrder());
+        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getBackOrder());
+        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getAverageMonthlySalary());
+        Assert.assertEquals(0, record.getDetailModel().get(record.getDetailModel().size()-1).getMaximumLevel());
+        Assert.assertEquals("93210-71462-10", record.getDetailModel().get(record.getDetailModel().size()-1).getBarcode());
+        Assert.assertEquals("O-RING", record.getDetailModel().get(record.getDetailModel().size()-1).getDescription());
         Assert.assertEquals("Motorcycle", record.getDetailModel().get(record.getDetailModel().size()-1).getCategoryName());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setCategoryName2("Spare Parts");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
         Assert.assertEquals("Spare Parts", record.getDetailModel().get(record.getDetailModel().size()-1).getCategoryName2());
-        
-        loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setCategoryType("Finished Products");
-        if ("error".equals((String) loJSON.get("result"))) {
-            Assert.fail((String) loJSON.get("message"));
-        }
         Assert.assertEquals("Finished Products", record.getDetailModel().get(record.getDetailModel().size()-1).getCategoryType());
-//        
         
         loJSON = record.saveTransaction();
         if ("error".equals((String) loJSON.get("result"))) {

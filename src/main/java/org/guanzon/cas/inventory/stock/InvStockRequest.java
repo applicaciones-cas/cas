@@ -318,6 +318,14 @@ public class InvStockRequest implements GTranDet {
                 poJSON = loInventory.searchRecordWithContition(fsValue, "sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()), fbByCode);
 
                 if (poJSON != null) {
+                    for(int lnCtr = 0; lnCtr < poModelDetail.size(); lnCtr++){
+                        if(poModelDetail.get(lnCtr).getStockID().equalsIgnoreCase((String) loInventory.getModel().getStockID())){
+                            poJSON = new JSONObject();
+                            poJSON.put("result", "error");
+                            poJSON.put("message", "Inventory item request already added.");
+                            return poJSON;
+                        }
+                    }
                     setDetail(fnRow, 3, (String) loInventory.getModel().getStockID());
                     setDetail(fnRow, "xBarCodex", (String) loInventory.getModel().getBarcode());
                     setDetail(fnRow, "xDescript", (String) loInventory.getModel().getDescription());
