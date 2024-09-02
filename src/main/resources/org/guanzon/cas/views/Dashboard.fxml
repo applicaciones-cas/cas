@@ -131,45 +131,88 @@
                                             <menus>
                                                 <Menu mnemonicParsing="false" text="_Files">
                                                     <items>
-                                                        <MenuItem fx:id="mnuClientParameter" mnemonicParsing="false" onAction="#mnuClientParameterClick" text="Client Parameters" />
-                                                        <MenuItem fx:id="mnuClientTransactionCompany" mnemonicParsing="false" onAction="#mnuClientTransactionCompanyClick" text="Client Transactions Company" />
-                                                        <MenuItem fx:id="mnuClientTransactionIndividual" mnemonicParsing="false" onAction="#mnuClientTransactionIndividualClick" text="Client Transactions Individual" />
-                                                        <MenuItem fx:id="mnuNewCustomer" mnemonicParsing="false" onAction="#mnuNewCustomerClick" text="New Customer" />
+                                          <Menu mnemonicParsing="false" text="Accounts">
+                                            <items>
+                                                <MenuItem fx:id="mnuAccountsPayable" mnemonicParsing="false" onAction="#mnuAccountsPayable_Clicked" text="Accounts Payable" />
+                                                <MenuItem fx:id="mnuAccountsReceivable" mnemonicParsing="false" onAction="#mnuAccountsReceivable_Clicked" text="Accounts Receivable" />
+                                            </items>
+                                          </Menu>
+                                          <Menu mnemonicParsing="false" text="Clients">
+                                            <items>
+                                                              <MenuItem fx:id="mnuClientParameter" mnemonicParsing="false" onAction="#mnuClientParameterClick" text="Client Parameters" />
+                                                              <MenuItem fx:id="mnuClientTransactionCompany" mnemonicParsing="false" onAction="#mnuClientTransactionCompanyClick" text="Client Transactions Company" />
+                                                              <MenuItem fx:id="mnuClientTransactionIndividual" mnemonicParsing="false" onAction="#mnuClientTransactionIndividualClick" text="Client Transactions Individual" />
+                                                              <MenuItem fx:id="mnuNewCustomer" mnemonicParsing="false" onAction="#mnuNewCustomerClick" text="New Customer" />
+                                            </items>
+                                          </Menu>
+                                          <Menu mnemonicParsing="false" text="Inventory's">
+                                            <items>
+                                                <MenuItem fx:id="mnuInventoryParam" mnemonicParsing="false" onAction="#mnuInventoryParamClick" text="Inventory Param" />
+                                                <MenuItem fx:id="mnuInventorySerialParam" mnemonicParsing="false" onAction="#mnuInventorySerialParamClick" text="Inventory Serial Param" />
+                                            </items>
+                                          </Menu>
                                                         <Menu mnemonicParsing="false" text="Parameter">
                                                             <items>
-                                                <MenuItem fx:id="mnuParameterAffiliated" mnemonicParsing="false" onAction="#mnuParameterAffiliatedClick" text="Affiliated Company" />
-                                                <MenuItem fx:id="mnuParameterBanks" mnemonicParsing="false" onAction="#mnuParameterBanksClick" text="Banks" />
-                                                <MenuItem fx:id="mnuParameterBanks_Branches" mnemonicParsing="false" onAction="#mnuParameterBanksBranchesClick" text="Banks Branches" />
-                                                <MenuItem fx:id="mnuParameterBarangay" mnemonicParsing="false" onAction="#mnuParameterBarangayClick" text="Barangay" />
-                                                <MenuItem fx:id="mnuParameterBranch" mnemonicParsing="false" onAction="#mnuParameterBranchClick" text="Branch" />
-                                                <MenuItem fx:id="mnuParameterBrand" mnemonicParsing="false" onAction="#mnuParameterBrandClick" text="Brand" />
-                                                <MenuItem fx:id="mnuParameterCategory" mnemonicParsing="false" onAction="#mnuParameterCategoryClick" text="Category" />
-                                                <MenuItem fx:id="mnuParameterCategoryLevel2" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel2Click" text="Category Level 2" />
-                                                <MenuItem fx:id="mnuParameterCategoryLevel3" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel3Click" text="Category Level 3" />
-                                                <MenuItem fx:id="mnuParameterCategoryLevel4" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel4Click" text="Category Level 4" />
-                                                <MenuItem fx:id="mnuParameterColor" mnemonicParsing="false" onAction="#mnuParameterColorClick" text="Color" />
-                                                <MenuItem fx:id="mnuParameterColorDetail" mnemonicParsing="false" onAction="#mnuParameterColorDetailClick" text="Color Detail" />
-                                                <MenuItem fx:id="mnuParameterCompany" mnemonicParsing="false" onAction="#mnuParameterCompanyClick" text="Company" />
-                                                <MenuItem fx:id="mnuParameterCountry" mnemonicParsing="false" onAction="#mnuParameterCountryClick" text="Country" />
-                                                                <MenuItem fx:id="mnuParameterDepartment" mnemonicParsing="false" onAction="#mnuParameterDepartmentClick" text="Department" />
-                                                                <MenuItem fx:id="mnuParameterInvLocation" mnemonicParsing="false" onAction="#mnuParameterInvLocationClick" text="Inventory Location" />
-                                                                <MenuItem fx:id="mnuParameterInvType" mnemonicParsing="false" onAction="#mnuParameterInvTypeClick" text="Inventory Type" />
-                                                                <MenuItem fx:id="mnuParameterLabor" mnemonicParsing="false" onAction="#mnuParameterLaborClick" text="Labor" />
-                                                                <MenuItem fx:id="mnuParameterLaborCategory" mnemonicParsing="false" onAction="#mnuParameterLaborCategoryClick" text="Labor Category" />
-                                                                <MenuItem fx:id="mnuParameterLaborModel" mnemonicParsing="false" onAction="#mnuParameterLaborModelClick" text="Labor Model" />
-                                                                <MenuItem fx:id="mnuParameterMade" mnemonicParsing="false" onAction="#mnuParameterMadeClick" text="Made" />
-                                                                <MenuItem fx:id="mnuParameterModel" mnemonicParsing="false" onAction="#mnuParameterModelClick" text="Model" />
-                                                                <MenuItem fx:id="mnuParameterProvince" mnemonicParsing="false" onAction="#mnuParameterProvinceClick" text="Province" />
-                                                                <MenuItem fx:id="mnuParameterRegion" mnemonicParsing="false" onAction="#mnuParameterRegionClick" text="Region" />
-                                                                <MenuItem fx:id="mnuParameterRelationship" mnemonicParsing="false" onAction="#mnuParameterRelationshipClick" text="Relationship" />
-                                                                <MenuItem fx:id="mnuParameterSalesman" mnemonicParsing="false" onAction="#mnuParameterSalesmanClick" text="Salesman" />
-                                                                <MenuItem fx:id="mnuParameterSize" mnemonicParsing="false" onAction="#mnuParameterSizeClick" text="Size" />
+                                                <Menu mnemonicParsing="false" text="Address">
+                                                  <items>
+                                                      <MenuItem fx:id="mnuParameterBarangay" mnemonicParsing="false" onAction="#mnuParameterBarangayClick" text="Barangay" />
+                                                      <MenuItem fx:id="mnuParameterCountry" mnemonicParsing="false" onAction="#mnuParameterCountryClick" text="Country" />
+                                                                      <MenuItem fx:id="mnuParameterProvince" mnemonicParsing="false" onAction="#mnuParameterProvinceClick" text="Province" />
+                                                                      <MenuItem fx:id="mnuParameterRegion" mnemonicParsing="false" onAction="#mnuParameterRegionClick" text="Region" />
+                                                  </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="Banks">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuParameterBanks" mnemonicParsing="false" onAction="#mnuParameterBanksClick" text="Banks" />
+                                                      <MenuItem fx:id="mnuParameterBanks_Branches" mnemonicParsing="false" onAction="#mnuParameterBanksBranchesClick" text="Banks Branches" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="Category">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuParameterCategory" mnemonicParsing="false" onAction="#mnuParameterCategoryClick" text="Category" />
+                                                      <MenuItem fx:id="mnuParameterCategoryLevel2" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel2Click" text="Category Level 2" />
+                                                      <MenuItem fx:id="mnuParameterCategoryLevel3" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel3Click" text="Category Level 3" />
+                                                      <MenuItem fx:id="mnuParameterCategoryLevel4" mnemonicParsing="false" onAction="#mnuParameterCategoryLevel4Click" text="Category Level 4" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="Color">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuParameterColor" mnemonicParsing="false" onAction="#mnuParameterColorClick" text="Color" />
+                                                      <MenuItem fx:id="mnuParameterColorDetail" mnemonicParsing="false" onAction="#mnuParameterColorDetailClick" text="Color Detail" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="Company">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuParameterAffiliated" mnemonicParsing="false" onAction="#mnuParameterAffiliatedClick" text="Affiliated Company" />
+                                                      <MenuItem fx:id="mnuParameterCompany" mnemonicParsing="false" onAction="#mnuParameterCompanyClick" text="Company" />
+                                                                      <MenuItem fx:id="mnuParameterDepartment" mnemonicParsing="false" onAction="#mnuParameterDepartmentClick" text="Department" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="Inventory">
+                                                   <items>
+                                                                      <MenuItem fx:id="mnuParameterInvLocation" mnemonicParsing="false" onAction="#mnuParameterInvLocationClick" text="Inventory Location" />
+                                                                      <MenuItem fx:id="mnuParameterInvType" mnemonicParsing="false" onAction="#mnuParameterInvTypeClick" text="Inventory Type" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="Labor">
+                                                   <items>
+                                                                      <MenuItem fx:id="mnuParameterLabor" mnemonicParsing="false" onAction="#mnuParameterLaborClick" text="Labor" />
+                                                                      <MenuItem fx:id="mnuParameterLaborCategory" mnemonicParsing="false" onAction="#mnuParameterLaborCategoryClick" text="Labor Category" />
+                                                                      <MenuItem fx:id="mnuParameterLaborModel" mnemonicParsing="false" onAction="#mnuParameterLaborModelClick" text="Labor Model" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="Others">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuParameterBrand" mnemonicParsing="false" onAction="#mnuParameterBrandClick" text="Brand" />
+                                                                      <MenuItem fx:id="mnuParameterMade" mnemonicParsing="false" onAction="#mnuParameterMadeClick" text="Made" />
+                                                                      <MenuItem fx:id="mnuParameterModel" mnemonicParsing="false" onAction="#mnuParameterModelClick" text="Model" />
+                                                                      <MenuItem fx:id="mnuParameterRelationship" mnemonicParsing="false" onAction="#mnuParameterRelationshipClick" text="Relationship" />
+                                                                      <MenuItem fx:id="mnuParameterSalesman" mnemonicParsing="false" onAction="#mnuParameterSalesmanClick" text="Salesman" />
+                                                                      <MenuItem fx:id="mnuParameterSize" mnemonicParsing="false" onAction="#mnuParameterSizeClick" text="Size" />
+                                                   </items>
+                                                </Menu>
                                                             </items>
                                                         </Menu>
-                                          <MenuItem fx:id="mnuAccountsPayable" mnemonicParsing="false" onAction="#mnuAccountsPayable_Clicked" text="Accounts Payable" />
-                                          <MenuItem fx:id="mnuAccountsReceivable" mnemonicParsing="false" onAction="#mnuAccountsReceivable_Clicked" text="Accounts Receivable" />
-                                          <MenuItem fx:id="mnuAccountsAccreditation" mnemonicParsing="false" onAction="#mnuAccountsAccreditation_Clicked" text="Accounts Accreditations" />
-                                          <MenuItem fx:id="mnuInventoryParam" mnemonicParsing="false" onAction="#mnuInventoryParamClick" text="Inventory Param" />
                                                     </items>
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="_Inventory">
@@ -179,12 +222,7 @@
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="_Purchasing">
                                                     <items>
-                                          <Menu mnemonicParsing="false" text="PO Quotation">
-                                             <items>
-                                                <MenuItem fx:id="mnuPOQuotationRequest" mnemonicParsing="false" onAction="#mnuPOQuotationRequestClick" text="PO Qoutation Reqiest " />
-                                                <MenuItem mnemonicParsing="false" text="About" />
-                                             </items>
-                                          </Menu>
+                                          <MenuItem fx:id="mnuAccountsAccreditation" mnemonicParsing="false" onAction="#mnuAccountsAccreditation_Clicked" text="Accounts Accreditations" />
                                                     </items>
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="_Others">

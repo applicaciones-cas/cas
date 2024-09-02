@@ -62,8 +62,6 @@ public class unloadForm {
                 return "Inventory Details";            
             case "/org/guanzon/cas/views/InventorySerialParam.fxml":
                 return "Inventory Serial Parameter";
-            case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
-                return "Purchase Quotation Request";
             
             default:
                 return null;
@@ -87,8 +85,6 @@ public class unloadForm {
             ((FrmAccountsReceivableController) parentController).loadReturn(lsValue);
         }else if (parentController instanceof InventoryDetailController) {
             ((InventoryDetailController) parentController).loadResult(lsValue,false);
-        }else if (parentController instanceof PO_Quotation_RequestController) {
-            ((PO_Quotation_RequestController) parentController).loadResult(lsValue,false);
         }
     }
      
