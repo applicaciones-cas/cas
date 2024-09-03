@@ -260,6 +260,7 @@ public class CategoryController implements Initializable, ScreenInterface {
 
         initButton(pnEditMode);
         initTextFields();
+        clearFields();
 
         pbLoaded = true;
 

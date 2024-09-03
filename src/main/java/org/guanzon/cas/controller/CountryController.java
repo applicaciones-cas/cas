@@ -261,6 +261,7 @@ public class CountryController implements Initializable, ScreenInterface {
 
         initButton(pnEditMode);
         initTextFields();
+        clearFields();
 
         pbLoaded = true;
 

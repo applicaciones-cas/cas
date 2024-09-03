@@ -270,6 +270,7 @@ public class BankBranchesController implements Initializable, ScreenInterface {
 
         initButton(pnEditMode);
         initTextFields();
+        clearFields();
 
         pbLoaded = true;
 

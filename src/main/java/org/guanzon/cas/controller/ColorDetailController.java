@@ -264,7 +264,8 @@ public class ColorDetailController implements Initializable, ScreenInterface {
 
         initButton(pnEditMode);
         initTextFields();
-
+        clearFields();
+        
         pbLoaded = true;
 
     }

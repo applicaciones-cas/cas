@@ -260,6 +260,7 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
 
         initButton(pnEditMode);
         initTextFields();
+        clearFields();
 
         pbLoaded = true;
 

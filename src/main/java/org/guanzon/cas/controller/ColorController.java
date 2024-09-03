@@ -263,6 +263,7 @@ public class ColorController implements Initializable, ScreenInterface {
 
         initButton(pnEditMode);
         initTextFields();
+        clearFields();
 
         pbLoaded = true;
 

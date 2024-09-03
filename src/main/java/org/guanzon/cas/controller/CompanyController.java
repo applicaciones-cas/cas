@@ -262,6 +262,7 @@ public class CompanyController implements Initializable, ScreenInterface {
 
         initButton(pnEditMode);
         initTextFields();
+        clearFields();
 
         pbLoaded = true;
 

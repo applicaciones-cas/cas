@@ -260,7 +260,8 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
 
         initButton(pnEditMode);
         initTextFields();
-
+        clearFields();
+        
         pbLoaded = true;
 
     }

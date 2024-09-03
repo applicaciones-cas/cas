@@ -262,6 +262,7 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
 
         initButton(pnEditMode);
         initTextFields();
+        clearFields();
 
         pbLoaded = true;
 

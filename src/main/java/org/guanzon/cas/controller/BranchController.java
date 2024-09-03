@@ -104,6 +104,7 @@ public class BranchController implements Initializable, ScreenInterface {
 
         initButton(pnEditMode);
         initTextFields();
+        clearFields();
 
         pbLoaded = true;
         textFieldLimits.put(txtField01, 4); // txtField01 limit is 4 characters
