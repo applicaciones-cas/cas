@@ -266,7 +266,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
         initButton(pnEditMode);
         initTextFields();
         clearFields();
-        
+
         pbLoaded = true;
 
     }
@@ -312,6 +312,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField03.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -332,6 +333,19 @@ public class ColorDetailController implements Initializable, ScreenInterface {
                             txtField99.requestFocus();
                         } else {
                             loadRecord();
+                        }
+                        break;
+                    case 3:
+                        /*search bank */
+                        if (!psPrimary.isEmpty()) {
+                            poJSON = oTrans.searchMaster("sColorCde", lsValue, false);
+                            if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtField03.requestFocus();
+                            } else {
+                                loadRecord();
+                            }
                         }
                         break;
                 }
@@ -376,13 +390,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
                         return;
                     }
                     break;
-                case 3:
-                    poJSON = oTrans.getModel().setDescript(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
+
             }
         } else {
             txtField.selectAll();
@@ -396,6 +404,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getColorID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
+        txtField03.setText(oTrans.getModel().getColorNmeMain());
 
         cbActive.setSelected(oTrans.getModel().isActive());
 
@@ -440,7 +449,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
 
         for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
             ListData.add(new ModelParameter(
-                    (String) oTrans.getModelList().get(lnCtr).getColorCode(),
+                    (String) oTrans.getModelList().get(lnCtr).getColorID(),
                     (String) oTrans.getModelList().get(lnCtr).getDescription(),
                     "",
                     "",

@@ -81,6 +81,8 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
     @FXML
     private TextField txtField03;
     @FXML
+    private TextField txtField04;
+    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
@@ -295,10 +297,13 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
         txtField03.focusedProperty().addListener(txtField_Focus);
+        txtField04.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField03.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField04.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -319,6 +324,32 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
                             txtField99.requestFocus();
                         } else {
                             loadRecord();
+                        }
+                        break;
+                    case 3:
+                        /*search warehouse */
+                        if (!psPrimary.isEmpty()) {
+                            poJSON = oTrans.searchMaster("sWHouseID", lsValue, false);
+                            if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtField03.requestFocus();
+                            } else {
+                                loadRecord();
+                            }
+                        }
+                        break;
+                    case 4:
+                        /*search section */
+                        if (!psPrimary.isEmpty()) {
+                            poJSON = oTrans.searchMaster("sSectnIDx", lsValue, false);
+                            if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtField04.requestFocus();
+                            } else {
+                                loadRecord();
+                            }
                         }
                         break;
                 }
@@ -375,6 +406,8 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
         psPrimary = oTrans.getModel().getLocationCode();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
+        txtField03.setText(oTrans.getModel().getWarehouseName());
+        txtField04.setText(oTrans.getModel().getSectionName());
 
         cbActive.setSelected(lbActive);
 
@@ -391,6 +424,7 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
         txtField01.clear();
         txtField02.clear();
         txtField03.clear();
+        txtField04.clear();
         txtField99.clear();
 
         psPrimary = "";

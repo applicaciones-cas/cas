@@ -2,7 +2,6 @@ package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -394,7 +393,7 @@ public class LaborController implements Initializable, ScreenInterface {
                     break;
 
                 case 3:
-                    poJSON = oTrans.getModel().setPriceLevel1(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    poJSON = oTrans.getModel().setPriceLevel1(Double.parseDouble(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -402,7 +401,7 @@ public class LaborController implements Initializable, ScreenInterface {
                     break;
 
                 case 4:
-                    poJSON = oTrans.getModel().setPriceLevel2(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    poJSON = oTrans.getModel().setPriceLevel2(Double.parseDouble(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -410,7 +409,7 @@ public class LaborController implements Initializable, ScreenInterface {
                     break;
 
                 case 5:
-                    poJSON = oTrans.getModel().setPriceLevel3(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    poJSON = oTrans.getModel().setPriceLevel3(Double.parseDouble(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -429,9 +428,9 @@ public class LaborController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getLaborID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getLaborName());
-        txtField03.setText(oTrans.getModel().getPriceLevel1());
-        txtField04.setText(oTrans.getModel().getPriceLevel2());
-        txtField05.setText(oTrans.getModel().getPriceLevel3());
+        txtField03.setText(oTrans.getModel().getPriceLevel1().toString());
+        txtField04.setText(oTrans.getModel().getPriceLevel2().toString());
+        txtField05.setText(oTrans.getModel().getPriceLevel3().toString());
 
         cbActive.setSelected(lbActive);
 

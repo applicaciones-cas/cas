@@ -448,7 +448,7 @@ public class CompanyController implements Initializable, ScreenInterface {
 
         for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
             ListData.add(new ModelParameter(
-                    (String) oTrans.getModelList().get(lnCtr).getCompanyCode(),
+                    (String) oTrans.getModelList().get(lnCtr).getCompanyID(),
                     (String) oTrans.getModelList().get(lnCtr).getCompanyName(),
                     "",
                     "",

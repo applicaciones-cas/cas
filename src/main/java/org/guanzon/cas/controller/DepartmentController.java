@@ -108,6 +108,7 @@ public class DepartmentController implements Initializable, ScreenInterface {
         switch (lsButton) {
 
             case "btnNew":
+                clearFields();
                 poJSON = oTrans.newRecord();
                 loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
@@ -429,15 +430,6 @@ public class DepartmentController implements Initializable, ScreenInterface {
                         return;
                     }
                     break;
-
-                case 3:
-                    poJSON = oTrans.getModel().setDepartmentHead(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-
                 case 4:
                     poJSON = oTrans.getModel().setDepartmentCode(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -461,22 +453,6 @@ public class DepartmentController implements Initializable, ScreenInterface {
                         return;
                     }
                     break;
-
-                case 7:
-                    poJSON = oTrans.getModel().setHeadAssignID(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-
-                case 8:
-                    poJSON = oTrans.getModel().setSupervisorAssignID(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
             }
         } else {
             txtField.selectAll();
@@ -490,7 +466,7 @@ public class DepartmentController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getDepartmentID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDepartmentName());
-        txtField03.setText(oTrans.getModel().getDepartmentHead());
+        txtField03.setText(oTrans.getModel().getDeptHeadNme());
         txtField04.setText(oTrans.getModel().getDepartmentCode());
         txtField05.setText(oTrans.getModel().getMobileNumber());
         txtField06.setText(oTrans.getModel().getEmailAddress());
@@ -545,7 +521,7 @@ public class DepartmentController implements Initializable, ScreenInterface {
 
         for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
             ListData.add(new ModelParameter(
-                    (String) oTrans.getModelList().get(lnCtr).getDepartmentCode(),
+                    (String) oTrans.getModelList().get(lnCtr).getDepartmentID(),
                     (String) oTrans.getModelList().get(lnCtr).getDepartmentName(),
                     "",
                     "",

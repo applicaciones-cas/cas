@@ -340,7 +340,7 @@ public class ProvinceController implements Initializable, ScreenInterface {
                             if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                                 ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                                txtField99.requestFocus();
+                                txtField03.requestFocus();
                             } else {
                                 loadRecord();
                             }
