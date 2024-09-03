@@ -4,6 +4,7 @@
  */
 package org.guanzon.cas.controller;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.HashMap;
@@ -12,6 +13,9 @@ import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,18 +25,20 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
-import static org.guanzon.cas.GriderGui.oApp;
+import org.guanzon.cas.model.ModelParameter;
 import org.guanzon.cas.parameters.Branch;
 import org.guanzon.cas.parameters.Company;
 import org.guanzon.cas.parameters.Province;
@@ -42,10 +48,10 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author user
+ * @author Luke
  */
-public class BranchController implements Initializable, ScreenInterface{
-    
+public class BranchController implements Initializable, ScreenInterface {
+
     private final String pxeModuleName = "Branch";
     private GRider oApp;
     private Branch oTrans;
@@ -57,6 +63,9 @@ public class BranchController implements Initializable, ScreenInterface{
     private boolean state = false;
     private boolean pbLoaded = false;
     private int pnIndex;
+    private int pnListRow;
+
+    private ObservableList<ModelParameter> ListData = FXCollections.observableArrayList();
 
     @FXML
     private AnchorPane ChildAnchorPane;
@@ -79,9 +88,8 @@ public class BranchController implements Initializable, ScreenInterface{
 
     @FXML
     private TableColumn index01, index02;
-    
-    private Map<TextField, Integer> textFieldLimits = new HashMap<>();
 
+    private Map<TextField, Integer> textFieldLimits = new HashMap<>();
 
     /**
      * Initializes the controller class.
@@ -100,13 +108,11 @@ public class BranchController implements Initializable, ScreenInterface{
         pbLoaded = true;
         textFieldLimits.put(txtField01, 4); // txtField01 limit is 4 characters
         textFieldLimits.put(txtField02, 50);
-        textFieldLimits.put(txtField03, 50); 
+        textFieldLimits.put(txtField03, 50);
         textFieldLimits.put(txtField07, 50);
-        
-        
-        
+
         textFieldLimits.forEach(this::setTextFieldFormatter);
-    }    
+    }
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -170,10 +176,7 @@ public class BranchController implements Initializable, ScreenInterface{
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-                
-                
 
-                
                 poJSON = oTrans.saveRecord();
 
                 pnEditMode = oTrans.getModel().getEditMode();
@@ -302,7 +305,7 @@ public class BranchController implements Initializable, ScreenInterface{
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
-    
+
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
@@ -330,8 +333,9 @@ public class BranchController implements Initializable, ScreenInterface{
         txtField06.setEditable(lbShow);
 
         txtField02.requestFocus();
+        tblList.setDisable(lbShow);
     }
-    
+
     private void initTextFields() {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
@@ -345,14 +349,14 @@ public class BranchController implements Initializable, ScreenInterface{
         txtField06.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
-    
+
     private void txtField_KeyPressed(KeyEvent event) {
         TextField textField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
         String lsValue = textField.getText();
-        if (lsValue == null){
+        if (lsValue == null) {
             lsValue = "";
-        } 
+        }
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
@@ -405,12 +409,11 @@ public class BranchController implements Initializable, ScreenInterface{
 
         pnIndex = lnIndex;
     }
-    
+
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         if (!pbLoaded) {
             return;
         }
-        
 
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
@@ -419,9 +422,7 @@ public class BranchController implements Initializable, ScreenInterface{
         if (lsValue == null) {
             return;
         }
-        
-        
-        
+
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
@@ -432,7 +433,7 @@ public class BranchController implements Initializable, ScreenInterface{
                         return;
                     }
                     break;
-                
+
                 case 2:
                     poJSON = oTrans.getModel().setBranchNm(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -440,7 +441,7 @@ public class BranchController implements Initializable, ScreenInterface{
                         return;
                     }
                     break;
-                    
+
                 case 3:
                     poJSON = oTrans.getModel().setDescription(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -475,7 +476,7 @@ public class BranchController implements Initializable, ScreenInterface{
         }
         pnIndex = lnIndex;
     };
-    
+
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 //        psPrimary = (String) poJSON.get("value");
@@ -483,35 +484,28 @@ public class BranchController implements Initializable, ScreenInterface{
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getBranchNm());
         txtField03.setText(oTrans.getModel().getDescription());
-        
+
 //        txtField04.setText(oTrans.getModel().getBranchNm());
-        if (oTrans.getModel().getContact() == null){
+        if (oTrans.getModel().getContact() == null) {
             txtField04.setText(oTrans.getModel().getTeleNum());
         } else {
             txtField04.setText(oTrans.getModel().getContact());
         }
-        
-        
-            Company loCompany;
-            String lsCompnyID = (String) oTrans.getModel().getCompanyID();
-            loCompany = oTrans.GetCompanyID(lsCompnyID, true);
 
-            txtField05.setText((String) loCompany.getMaster("sCompnyNm"));
-            
-            Province loProvince;
-            String lsTownIDxx = (String) oTrans.getModel().getValue("sTownIDxx");
-            loProvince = oTrans.GetTownID(lsTownIDxx, true);
+        Company loCompany;
+        String lsCompnyID = (String) oTrans.getModel().getCompanyID();
+        loCompany = oTrans.GetCompanyID(lsCompnyID, true);
 
-            txtField06.setText((String) loProvince.getMaster("sProvName"));
-     
-        
-        
-        
-        
+        txtField05.setText((String) loCompany.getMaster("sCompnyNm"));
+
+        Province loProvince;
+        String lsTownIDxx = (String) oTrans.getModel().getValue("sTownIDxx");
+        loProvince = oTrans.GetTownID(lsTownIDxx, true);
+
+        txtField06.setText((String) loProvince.getMaster("sProvName"));
+
         txtField07.setText(oTrans.getModel().getAddress());
-        
-        
-        
+
         cbActive.setSelected(oTrans.getModel().isActive());
 
         if (lbActive) {
@@ -522,6 +516,15 @@ public class BranchController implements Initializable, ScreenInterface{
             faActivate.setGlyphName("CHECK");
         }
 
+    }
+
+    private void setTextFieldFormatter(TextField textField, int limit) {
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String newText = change.getControlNewText();
+            return newText.length() > limit ? null : change; // Reject change if it exceeds the limit
+        };
+        TextFormatter<String> formatter = new TextFormatter<>(filter);
+        textField.setTextFormatter(formatter);
     }
 
     private void clearFields() {
@@ -537,14 +540,64 @@ public class BranchController implements Initializable, ScreenInterface{
         btnActivate.setText("Activate");
         cbActive.setSelected(false);
 
+        loadTableDetail();
     }
-    
-    private void setTextFieldFormatter(TextField textField, int limit) {
-        UnaryOperator<TextFormatter.Change> filter = change -> {
-            String newText = change.getControlNewText();
-            return newText.length() > limit ? null : change; // Reject change if it exceeds the limit
-        };
-        TextFormatter<String> formatter = new TextFormatter<>(filter);
-        textField.setTextFormatter(formatter);
+
+    private void loadTableDetail() {
+        int lnCtr;
+        ListData.clear();
+
+        poJSON = oTrans.loadModelList();
+        if ("error".equals((String) poJSON.get("result"))) {
+            System.err.println((String) poJSON.get("message"));
+            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
+            return;
+        }
+
+        int lnItem = oTrans.getModelList().size();
+        if (lnItem <= 0) {
+            return;
+        }
+
+        for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
+            ListData.add(new ModelParameter(
+                    (String) oTrans.getModelList().get(lnCtr).getBranchCd(),
+                    (String) oTrans.getModelList().get(lnCtr).getBranchNm(),
+                    "",
+                    "",
+                    ""));
+
+        }
+
+        initListGrid();
     }
+
+    public void initListGrid() {
+        index01.setStyle("-fx-alignment: CENTER;");
+        index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+
+        index01.setCellValueFactory(new PropertyValueFactory<ModelParameter, String>("index01"));
+        index02.setCellValueFactory(new PropertyValueFactory<ModelParameter, String>("index02"));
+
+        tblList.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblList.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
+        tblList.setItems(ListData);
+
+    }
+
+    @FXML
+    void tblList_Clicked(MouseEvent event) {
+        pnListRow = tblList.getSelectionModel().getSelectedIndex();
+        if (pnListRow >= 0) {
+            oTrans.openRecord(ListData.get(pnListRow).getIndex01());
+            loadRecord();
+        }
+    }
+
 }

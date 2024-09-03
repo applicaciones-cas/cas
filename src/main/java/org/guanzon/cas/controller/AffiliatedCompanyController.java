@@ -302,7 +302,6 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
         txtField02.setEditable(lbShow);
 
         txtField02.requestFocus();
-        
         tblList.setDisable(lbShow);
     }
 
@@ -433,7 +432,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
         }
 
         int lnItem = oTrans.getModelList().size();
-        if (lnItem < 0) {
+        if (lnItem <= 0) {
             return;
         }
 
