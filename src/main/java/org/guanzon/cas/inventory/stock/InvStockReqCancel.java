@@ -15,6 +15,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.appdriver.constant.RecordStatus;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.iface.GTranDet;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Req_Cancel_Detail;
@@ -214,7 +215,26 @@ public class InvStockReqCancel implements GTranDet {
                     poJSON.put("result", "success");
                     poJSON.put("message", "Record save successfully");
 
-            }
+                }
+                poJSON = poRequest.openTransaction(poModelMaster.getOrderNumber());
+                if ("error".equals((String) poJSON.get("result"))) {
+                    if (!pbWthParent) {
+                        poGRider.rollbackTrans();
+                    }
+                    return poJSON;
+                }
+                if(getItemCount()==poRequest.getItemCount()){
+                    poRequest.getMasterModel().setTransactionStatus(TransactionStatus.STATE_CANCELLED);
+                    poJSON = poRequest.getMasterModel().saveRecord();
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        if (!pbWthParent) {
+                            poGRider.rollbackTrans();
+                        }
+                        return poJSON;
+                    }  
+                }
+                
+                
 
         } else {
             poJSON.put("result", "error");
@@ -646,79 +666,39 @@ public class InvStockReqCancel implements GTranDet {
                     setDetail(lnCtr, "sNotesxxx", (String) poRequest.getDetailModel().get(lnCtr).getNotes());
                     setDetail(lnCtr, "xBarCodex", (String) poRequest.getDetailModel().get(lnCtr).getBarcode());
                     setDetail(lnCtr, "xDescript", (String) poRequest.getDetailModel().get(lnCtr).getDescription());
+                    setDetail(lnCtr, "xCategr01", (String) poRequest.getDetailModel().get(lnCtr).getCategoryName());
+                    setDetail(lnCtr, "xCategr02", (String) poRequest.getDetailModel().get(lnCtr).getCategoryName2());
+                    setDetail(lnCtr, "xInvTypNm", (String) poRequest.getDetailModel().get(lnCtr).getCategoryType());
                 }
             }
-        }else{
             poModelDetail = new ArrayList<>();
             poJSON = AddModelDetail();
+        }else{
+            poModelDetail = new ArrayList<>();
+//            This code assume that user click no in ShowMessageFX;
+//            poJSON = AddModelDetail();
             
-//            System.out.println(poRequest.getDetailModel().size()-1);
-//            for(int lnCtr = 0; lnCtr <= poRequest.getDetailModel().size()-1; lnCtr++){
-//                poModelDetail.add(new Model_Inv_Stock_Req_Cancel_Detail(poGRider));
-//                poModelDetail.get(lnCtr).newRecord();
-//                setDetail(lnCtr, "nEntryNox", (int) poRequest.getDetailModel().get(lnCtr).getEntryNumber());
-//                setDetail(lnCtr, "sOrderNox", (String) poRequest.getDetailModel().get(lnCtr).getTransactionNumber());
-//                setDetail(lnCtr, "sStockIDx", (String) poRequest.getDetailModel().get(lnCtr).getStockID());
-//                setDetail(lnCtr, "nQuantity", (int) poRequest.getDetailModel().get(lnCtr).getQuantity());
-//                setDetail(lnCtr, "sNotesxxx", (String) poRequest.getDetailModel().get(lnCtr).getNotes());
-//                setDetail(lnCtr, "xBarCodex", (String) poRequest.getDetailModel().get(lnCtr).getBarcode());
-//                setDetail(lnCtr, "xDescript", (String) poRequest.getDetailModel().get(lnCtr).getDescription());
-//                System.out.println("poRequest.getStockID() " + lnCtr + " = " + (String) poRequest.getDetailModel().get(lnCtr).getStockID());
-//            }
+//            This code assume that user click yes in ShowMessageFX;
+//            set all request detail to request detail cancel;
+            for(int lnCtr = 0; lnCtr <= poRequest.getDetailModel().size()-1; lnCtr++){
+                poModelDetail.add(new Model_Inv_Stock_Req_Cancel_Detail(poGRider));
+                poModelDetail.get(lnCtr).newRecord();
+                setDetail(lnCtr, "nEntryNox", (int) poRequest.getDetailModel().get(lnCtr).getEntryNumber());
+                setDetail(lnCtr, "sOrderNox", (String) poRequest.getDetailModel().get(lnCtr).getTransactionNumber());
+                setDetail(lnCtr, "sStockIDx", (String) poRequest.getDetailModel().get(lnCtr).getStockID());
+                setDetail(lnCtr, "nQuantity", (int) poRequest.getDetailModel().get(lnCtr).getQuantity());
+                setDetail(lnCtr, "sNotesxxx", (String) poRequest.getDetailModel().get(lnCtr).getNotes());
+                setDetail(lnCtr, "xBarCodex", (String) poRequest.getDetailModel().get(lnCtr).getBarcode());
+                setDetail(lnCtr, "xDescript", (String) poRequest.getDetailModel().get(lnCtr).getDescription());
+                setDetail(lnCtr, "xCategr01", (String) poRequest.getDetailModel().get(lnCtr).getCategoryName());
+                setDetail(lnCtr, "xCategr02", (String) poRequest.getDetailModel().get(lnCtr).getCategoryName2());
+                setDetail(lnCtr, "xInvTypNm", (String) poRequest.getDetailModel().get(lnCtr).getCategoryType());
+                
+            }
         }
         return poJSON;
     }
-    //process for inventory stock request
-    /*This function use for browsing Inventory Stock Request 
-    //fetching inventory request detail and set data for Inventory Stock Request Cancel
-    */
-    public JSONObject BrowseRequestDetail(int fnRow, int fnCol, String fsValue, boolean fbByCode){
-        poJSON = new JSONObject();
-//        poJSON = poRequest.searchTransaction(fsColumn, fsValue, fbByCode);
-        switch (fnCol) {
-
-            case 3: //sBarCodex
-                String lsSQL = new Model_Inv_Stock_Request_Detail(poGRider).getSQL();
-//                lsSQL =  MiscUtil.addCondition(lsSQL, fsValue);
-                lsSQL = MiscUtil.addCondition(lsSQL, "a.sTransNox = " + SQLUtil.toSQL(poModelMaster.getOrderNumber()));
-                lsSQL = MiscUtil.addCondition(lsSQL, "b.sBarCodex LIKE " + SQLUtil.toSQL("%" +fsValue + "%"));
-
-
-                if (p_bWithUI){
-                    poJSON = ShowDialogFX.Search(poGRider,
-                            lsSQL,
-                            fsValue,
-                            "Stock ID»Barcode»Name",
-                            "sTransNox»xBarCodex»xDescript",
-                            "a.sStockIDx»b.sBarCodex»b.sDescript",
-                            fbByCode ? 1 : 2);
-
-                    if (poJSON != null) {
-                        poJSON = poRequest.OpenModelDetailByStockID(fsValue, lsSQL);
-                        
-                        if (poJSON != null) {
-                            setDetail(fnRow, "sStockIDx", (String) poRequest.getDetailModel().get(poRequest.getDetailModel().size()-1).getStockID());
-                            setDetail(fnRow, "xBarCodex", (String) poRequest.getDetailModel().get(poRequest.getDetailModel().size()-1).getBarcode());
-                            setDetail(fnRow, "xDescript", (String) poRequest.getDetailModel().get(poRequest.getDetailModel().size()-1).getDescription());
-                            setDetail(fnRow, "nQuantity", (int) poRequest.getDetailModel().get(poRequest.getDetailModel().size()-1).getQuantity());
-                            setDetail(fnRow, "sNotesxxx", (String) poRequest.getDetailModel().get(poRequest.getDetailModel().size()-1).getNotes());
-                        }else{
-                            
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "No record loaded to update.");
-                            return poJSON;
-                        }
-
-                    } else {
-                        poJSON.put("result", "error");
-                        poJSON.put("message", "No record loaded to update.");
-                        return poJSON;
-                    }
-                }
-        }
-//        poModelMaster.sett
-        return poJSON;
-    }
+    
     private JSONObject updateRequestDetail(String lsStockID){
         poJSON = poRequest.OpenModelDetailByStockID(poModelMaster.getOrderNumber(), lsStockID);
                

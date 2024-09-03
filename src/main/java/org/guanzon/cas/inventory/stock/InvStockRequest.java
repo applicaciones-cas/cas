@@ -290,7 +290,7 @@ public class InvStockRequest implements GTranDet {
         return poModelDetail.get(fnRow).setValue(fnCol, foData);
     }
 
-    @Override
+    @Override     
     public JSONObject setDetail(int fnRow, String fsCol, Object foData) {
         return setDetail(fnRow, poModelDetail.get(fnRow).getColumn(fsCol), foData);
     }
@@ -503,7 +503,7 @@ public class InvStockRequest implements GTranDet {
     public JSONObject OpenModelDetail(String fsTransNo) {
 
         try {
-            String lsSQL = MiscUtil.addCondition(new Model_Inv_Stock_Request_Detail(poGRider).makeSelectSQL(), "sTransNox = " + SQLUtil.toSQL(fsTransNo));
+            String lsSQL = MiscUtil.addCondition(new Model_Inv_Stock_Request_Detail(poGRider).getSQL(), "a.sTransNox = " + SQLUtil.toSQL(fsTransNo));
             ResultSet loRS = poGRider.executeQuery(lsSQL);
             poModelDetail = new ArrayList<>();
             while (loRS.next()) {
@@ -523,7 +523,7 @@ public class InvStockRequest implements GTranDet {
             poJSON.put("message", ex.getMessage());
 
             return poJSON;
-        }
+        } 
     }
     
 
