@@ -100,6 +100,8 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
         switch (lsButton) {
 
             case "btnNew":
+                
+                clearFields();
                 poJSON = oTrans.newRecord();
                 loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
@@ -338,24 +340,28 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
                         break;
                     case 3:
                         /*search Inventory Type*/
-                        poJSON = oTrans.searchRecord(lsValue, false);
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                        if (!psPrimary.isEmpty()) {
+                            poJSON = oTrans.searchMaster("sInvTypCd", lsValue, false);
+                            if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtField99.requestFocus();
-                        } else {
-                            loadRecord();
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtField99.requestFocus();
+                            } else {
+                                loadRecord();
+                            }
                         }
                         break;
                     case 4:
                         /*search Main Category*/
-                        poJSON = oTrans.searchRecord(lsValue, false);
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                        if (!psPrimary.isEmpty()) {
+                            poJSON = oTrans.searchMaster("sMainCatx", lsValue, false);
+                            if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtField99.requestFocus();
-                        } else {
-                            loadRecord();
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtField99.requestFocus();
+                            } else {
+                                loadRecord();
+                            }
                         }
                         break;
                 }

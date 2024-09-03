@@ -79,8 +79,6 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
     @FXML
     private TextField txtField02;
     @FXML
-    private TextField txtField03;
-    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
@@ -98,6 +96,8 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
         switch (lsButton) {
 
             case "btnNew":
+                
+                clearFields();
                 poJSON = oTrans.newRecord();
                 loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
@@ -292,7 +292,6 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
 
         txtField99.setDisable(lbShow);
         txtField02.setEditable(lbShow);
-        txtField03.setEditable(lbShow);
 
         txtField02.requestFocus();
         tblList.setDisable(lbShow);
@@ -303,13 +302,10 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
-        txtField03.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
-
-        txtField03.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -331,18 +327,6 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
                         } else {
                             loadRecord();
                         }
-                        break;
-
-                    case 3:
-                        /*search Main Category*/
-//                        poJSON = oTrans.searchRecord(lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-//
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtField03.requestFocus();
-//                        } else {
-//                            loadRecord();
-//                        }
                         break;
 
                 }
@@ -418,7 +402,6 @@ public class CategoryLevel3Controller implements Initializable, ScreenInterface 
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
-        txtField03.clear();
 
         psPrimary = "";
         btnActivate.setText("Activate");

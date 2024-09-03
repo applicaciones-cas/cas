@@ -93,6 +93,8 @@ public class BankBranchesController implements Initializable, ScreenInterface {
     @FXML
     private TextField txtField08;
     @FXML
+    private TextField txtField09;
+    @FXML
     private TextField txtField99;
     @FXML
     private CheckBox cbActive;
@@ -108,7 +110,9 @@ public class BankBranchesController implements Initializable, ScreenInterface {
         switch (lsButton) {
 
             case "btnNew":
+                clearFields();
                 poJSON = oTrans.newRecord();
+                
                 loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
@@ -323,10 +327,13 @@ public class BankBranchesController implements Initializable, ScreenInterface {
         txtField06.focusedProperty().addListener(txtField_Focus);
         txtField07.focusedProperty().addListener(txtField_Focus);
         txtField08.focusedProperty().addListener(txtField_Focus);
+        txtField09.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField04.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField07.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -349,20 +356,22 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                             loadRecord();
                         }
                         break;
-                    case 3:
+                    case 4:
                         /*search bank */
-//                        poJSON = oTrans.searchRecord(lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-//
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtField99.requestFocus();
-//                        } else {
-//                            loadRecord();
-//                        }
+                        if(!psPrimary.isEmpty()){
+                        poJSON = oTrans.searchMaster("sBankIDxx", lsValue, false);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField99.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        }
                         break;
-                    case 6:
+                    case 7:
                         /*search town*/
-//                        poJSON = oTrans.searchRecord(lsValue, false);
+////                        poJSON = oTrans.searchMaster("sTownIDxx", lsValue, false);
 //                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 //
 //                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -413,50 +422,36 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                         return;
                     }
                     break;
-                case 4:
-                    poJSON = oTrans.getModel().setContactPerson(lsValue);
+                case 3:
+                    poJSON = oTrans.getModel().setBranchesBanksName(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
                     }
                     break;
                 case 5:
+                    poJSON = oTrans.getModel().setContactPerson(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+                case 6:
                     poJSON = oTrans.getModel().setAddress(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
                     }
                     break;
-                case 7:
+                case 8:
                     poJSON = oTrans.getModel().setTelephoneNumber(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
                     }
                     break;
-                case 8:
-                    poJSON = oTrans.getModel().setFaxNumber(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
                 case 9:
-                    poJSON = oTrans.getModel().setBankName(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-                case 10:
-                    poJSON = oTrans.getModel().setBankCode(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-                case 11:
-                    poJSON = oTrans.getModel().setTownName(lsValue);
+                    poJSON = oTrans.getModel().setFaxNumber(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -475,12 +470,14 @@ public class BankBranchesController implements Initializable, ScreenInterface {
 
         psPrimary = oTrans.getModel().getBranchesBanksID();
         txtField01.setText(psPrimary);
-        txtField02.setText(oTrans.getModel().getBranchesBanksName());
-        txtField04.setText(oTrans.getModel().getContactPerson());
-        txtField05.setText(oTrans.getModel().getAddress());
-        txtField06.setText(oTrans.getModel().getTownName());
-        txtField07.setText(oTrans.getModel().getTelephoneNumber());
-        txtField08.setText(oTrans.getModel().getFaxNumber());
+        txtField02.setText(oTrans.getModel().getBranchesBanksCode());
+        txtField03.setText(oTrans.getModel().getBranchesBanksName());
+        txtField04.setText(oTrans.getModel().getBankName());
+        txtField05.setText(oTrans.getModel().getContactPerson());
+        txtField06.setText(oTrans.getModel().getAddress());
+        txtField07.setText(oTrans.getModel().getTownName());
+        txtField08.setText(oTrans.getModel().getTelephoneNumber());
+        txtField09.setText(oTrans.getModel().getFaxNumber());
         cbActive.setSelected(oTrans.getModel().isActive());
 
         if (lbActive) {
@@ -502,6 +499,7 @@ public class BankBranchesController implements Initializable, ScreenInterface {
         txtField06.clear();
         txtField07.clear();
         txtField08.clear();
+        txtField09.clear();
 
         psPrimary = "";
         btnActivate.setText("Activate");
@@ -528,7 +526,7 @@ public class BankBranchesController implements Initializable, ScreenInterface {
 
         for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
             ListData.add(new ModelParameter(
-                    (String) oTrans.getModelList().get(lnCtr).getBranchesBanksCode(),
+                    (String) oTrans.getModelList().get(lnCtr).getBranchesBanksID(),
                     (String) oTrans.getModelList().get(lnCtr).getBranchesBanksName(),
                     "",
                     "",

@@ -122,6 +122,8 @@ public class BranchController implements Initializable, ScreenInterface {
         switch (lsButton) {
 
             case "btnNew":
+                
+                clearFields();
                 poJSON = oTrans.newRecord();
                 loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
@@ -149,35 +151,6 @@ public class BranchController implements Initializable, ScreenInterface {
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-                poJSON = oTrans.getModel().setDescription(txtField03.getText());
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
-                poJSON = oTrans.getModel().setBranchNm(txtField02.getText());
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
-                poJSON = oTrans.getModel().setContact(txtField04.getText());
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
-                poJSON = oTrans.getModel().setAddress(txtField07.getText());
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
-
                 poJSON = oTrans.saveRecord();
 
                 pnEditMode = oTrans.getModel().getEditMode();

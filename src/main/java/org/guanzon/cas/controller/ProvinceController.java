@@ -98,6 +98,8 @@ public class ProvinceController implements Initializable, ScreenInterface {
         switch (lsButton) {
 
             case "btnNew":
+                
+                clearFields();
                 poJSON = oTrans.newRecord();
                 loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
@@ -110,13 +112,7 @@ public class ProvinceController implements Initializable, ScreenInterface {
                 break;
 
             case "btnSave":
-                poJSON = oTrans.getModel().setRegionID("1");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
+               
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -338,16 +334,18 @@ public class ProvinceController implements Initializable, ScreenInterface {
                         break;
 
                     case 3:
-                    /*search region*/
-//                        poJSON = oTrans.searchRecord(lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-//
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtField03.requestFocus();
-//                        } else {
-//                            loadRecord();
-//                        }
-//                        break;
+                        /*search region*/
+                        if (!psPrimary.isEmpty()) {
+                            poJSON = oTrans.searchMaster("sRegionID", lsValue, false);
+                            if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtField99.requestFocus();
+                            } else {
+                                loadRecord();
+                            }
+                        }
+                        break;
                 }
             case ENTER:
                 switch (lnIndex) {
@@ -384,14 +382,6 @@ public class ProvinceController implements Initializable, ScreenInterface {
             switch (lnIndex) {
                 case 2:
                     poJSON = oTrans.getModel().setProvinceName(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-
-                case 3:
-                    poJSON = oTrans.getModel().setRegionID(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;

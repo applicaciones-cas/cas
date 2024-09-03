@@ -98,6 +98,8 @@ public class BanksController implements Initializable, ScreenInterface {
         switch (lsButton) {
 
             case "btnNew":
+                
+                clearFields();
                 poJSON = oTrans.newRecord();
                 loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
@@ -436,7 +438,7 @@ public class BanksController implements Initializable, ScreenInterface {
 
         for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
             ListData.add(new ModelParameter(
-                    (String) oTrans.getModelList().get(lnCtr).getBankCode(),
+                    (String) oTrans.getModelList().get(lnCtr).getBankID(),
                     (String) oTrans.getModelList().get(lnCtr).getBankName(),
                     "",
                     "",

@@ -101,6 +101,7 @@ public class ColorController implements Initializable, ScreenInterface {
         switch (lsButton) {
 
             case "btnNew":
+                clearFields();
                 poJSON = oTrans.newRecord();
                 loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();

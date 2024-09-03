@@ -206,7 +206,7 @@ public class DashboardController implements Initializable {
     //Load Main Screen if no tab remain
     public void Tabclose() {
         int tabsize = tabpane.getTabs().size();
-        if (tabsize == 1) {
+        if (tabsize == 0) {
             setScene(loadAnimateAnchor("Dashboard.fxml"));
         }
     }
