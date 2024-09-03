@@ -2,7 +2,6 @@ package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -382,16 +381,8 @@ public class LaborCategoryController implements Initializable, ScreenInterface {
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
-                case 2:
-                    poJSON = oTrans.getModel().setCategoryCode(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-
                 case 3:
-                    poJSON = oTrans.getModel().setAmount(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    poJSON = oTrans.getModel().setAmount(Double.valueOf(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;
@@ -410,7 +401,7 @@ public class LaborCategoryController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getLaborID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getCategoryName());
-        txtField03.setText(oTrans.getModel().getAmount());
+        txtField03.setText(oTrans.getModel().getAmount().toString());
 
         cbActive.setSelected(lbActive);
 
