@@ -407,10 +407,10 @@ public class testInvStockRequest {
         Assert.assertEquals("Spare Parts", record.getDetailModel().get(record.getDetailModel().size()-1).getCategoryName2());
         Assert.assertEquals("Finished Products", record.getDetailModel().get(record.getDetailModel().size()-1).getCategoryType());
         
-//        loJSON = record.saveTransaction();
-//        if ("error".equals((String) loJSON.get("result"))) {
-//            Assert.fail((String) loJSON.get("message"));
-//        }
+        loJSON = record.saveTransaction();
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
     }
     
     @Test
@@ -487,6 +487,232 @@ public class testInvStockRequest {
         Assert.assertEquals(5, record.getDetailModel().get(2).getQuantity());
         
         loJSON = record.saveTransaction();
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+        
+    }
+    
+    
+    @Test
+    public void testCloseTransaction() {
+         JSONObject loJSON;
+        loJSON = record.openTransaction("M00124000001");
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+        if(record.getDetailModel().size()>0){
+            for(int lnCtr = 0; lnCtr < record.getDetailModel().size(); lnCtr++){
+                
+                Assert.assertEquals("M00124000001", record.getDetailModel().get(lnCtr).getTransactionNumber());
+                switch(lnCtr){
+                    case 0:
+                        Assert.assertEquals(1, record.getDetailModel().get(lnCtr).getEntryNumber());
+                        Assert.assertEquals("M00124000001", record.getDetailModel().get(lnCtr).getStockID());
+                        Assert.assertEquals(3, record.getDetailModel().get(lnCtr).getQuantity());
+                        Assert.assertEquals("230000012708", record.getDetailModel().get(lnCtr).getBarcode());
+                        Assert.assertEquals("sasasasa", record.getDetailModel().get(lnCtr).getDescription());
+                        Assert.assertEquals("Motorcycle", record.getDetailModel().get(lnCtr).getCategoryName());
+                        Assert.assertEquals("Sports", record.getDetailModel().get(lnCtr).getCategoryName2());
+                        Assert.assertEquals("Finished Products", record.getDetailModel().get(lnCtr).getCategoryType());
+                        Assert.assertEquals("This is detail 01 notes entry 1.", record.getDetailModel().get(lnCtr).getNotes());
+                        break;
+                    case 1:
+                        Assert.assertEquals(2, record.getDetailModel().get(lnCtr).getEntryNumber());
+                        Assert.assertEquals("M00124000002", record.getDetailModel().get(lnCtr).getStockID());
+                        Assert.assertEquals(4, record.getDetailModel().get(lnCtr).getQuantity());
+                        Assert.assertEquals("5TL-E4170-00-00", record.getDetailModel().get(lnCtr).getBarcode());
+                        Assert.assertEquals("DIAPHRAGM ASS'Y", record.getDetailModel().get(lnCtr).getDescription());
+                        Assert.assertEquals("Motorcycle", record.getDetailModel().get(lnCtr).getCategoryName());
+                        Assert.assertEquals("Spare Parts", record.getDetailModel().get(lnCtr).getCategoryName2());
+                        Assert.assertEquals("Finished Products", record.getDetailModel().get(lnCtr).getCategoryType());
+                        Assert.assertEquals("This is detail 02 notes entry 2.", record.getDetailModel().get(lnCtr).getNotes());
+                        break;
+                    case 2:
+                        Assert.assertEquals(3, record.getDetailModel().get(lnCtr).getEntryNumber());
+                        Assert.assertEquals("M00124000003", record.getDetailModel().get(lnCtr).getStockID());
+                        Assert.assertEquals(5, record.getDetailModel().get(lnCtr).getQuantity());
+                        Assert.assertEquals("5LW-E1351-00-00", record.getDetailModel().get(lnCtr).getBarcode());
+                        Assert.assertEquals("GASKET,CYLINDER 1", record.getDetailModel().get(lnCtr).getDescription());
+                        Assert.assertEquals("Motorcycle", record.getDetailModel().get(lnCtr).getCategoryName());
+                        Assert.assertEquals("Spare Parts", record.getDetailModel().get(lnCtr).getCategoryName2());
+                        Assert.assertEquals("Finished Products", record.getDetailModel().get(lnCtr).getCategoryType());
+                        Assert.assertEquals("This is detail 03 notes entry 3.", record.getDetailModel().get(lnCtr).getNotes());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        loJSON = record.closeTransaction("M00124000001");
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+        
+    }
+    @Test
+    public void testPostTransaction() {
+         JSONObject loJSON;
+        loJSON = record.openTransaction("M00124000001");
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+        if(record.getDetailModel().size()>0){
+            for(int lnCtr = 0; lnCtr < record.getDetailModel().size(); lnCtr++){
+                
+                Assert.assertEquals("M00124000001", record.getDetailModel().get(lnCtr).getTransactionNumber());
+                switch(lnCtr){
+                    case 0:
+                        Assert.assertEquals(1, record.getDetailModel().get(lnCtr).getEntryNumber());
+                        Assert.assertEquals("M00124000001", record.getDetailModel().get(lnCtr).getStockID());
+                        Assert.assertEquals(3, record.getDetailModel().get(lnCtr).getQuantity());
+                        Assert.assertEquals("230000012708", record.getDetailModel().get(lnCtr).getBarcode());
+                        Assert.assertEquals("sasasasa", record.getDetailModel().get(lnCtr).getDescription());
+                        Assert.assertEquals("Motorcycle", record.getDetailModel().get(lnCtr).getCategoryName());
+                        Assert.assertEquals("Sports", record.getDetailModel().get(lnCtr).getCategoryName2());
+                        Assert.assertEquals("Finished Products", record.getDetailModel().get(lnCtr).getCategoryType());
+                        Assert.assertEquals("This is detail 01 notes entry 1.", record.getDetailModel().get(lnCtr).getNotes());
+                        break;
+                    case 1:
+                        Assert.assertEquals(2, record.getDetailModel().get(lnCtr).getEntryNumber());
+                        Assert.assertEquals("M00124000002", record.getDetailModel().get(lnCtr).getStockID());
+                        Assert.assertEquals(4, record.getDetailModel().get(lnCtr).getQuantity());
+                        Assert.assertEquals("5TL-E4170-00-00", record.getDetailModel().get(lnCtr).getBarcode());
+                        Assert.assertEquals("DIAPHRAGM ASS'Y", record.getDetailModel().get(lnCtr).getDescription());
+                        Assert.assertEquals("Motorcycle", record.getDetailModel().get(lnCtr).getCategoryName());
+                        Assert.assertEquals("Spare Parts", record.getDetailModel().get(lnCtr).getCategoryName2());
+                        Assert.assertEquals("Finished Products", record.getDetailModel().get(lnCtr).getCategoryType());
+                        Assert.assertEquals("This is detail 02 notes entry 2.", record.getDetailModel().get(lnCtr).getNotes());
+                        break;
+                    case 2:
+                        Assert.assertEquals(3, record.getDetailModel().get(lnCtr).getEntryNumber());
+                        Assert.assertEquals("M00124000003", record.getDetailModel().get(lnCtr).getStockID());
+                        Assert.assertEquals(5, record.getDetailModel().get(lnCtr).getQuantity());
+                        Assert.assertEquals("5LW-E1351-00-00", record.getDetailModel().get(lnCtr).getBarcode());
+                        Assert.assertEquals("GASKET,CYLINDER 1", record.getDetailModel().get(lnCtr).getDescription());
+                        Assert.assertEquals("Motorcycle", record.getDetailModel().get(lnCtr).getCategoryName());
+                        Assert.assertEquals("Spare Parts", record.getDetailModel().get(lnCtr).getCategoryName2());
+                        Assert.assertEquals("Finished Products", record.getDetailModel().get(lnCtr).getCategoryType());
+                        Assert.assertEquals("This is detail 03 notes entry 3.", record.getDetailModel().get(lnCtr).getNotes());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        loJSON = record.postTransaction("M00124000001");
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+        
+    }
+    @Test
+    public void testVoidTransaction() {
+         JSONObject loJSON;
+        loJSON = record.openTransaction("M00124000001");
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+        if(record.getDetailModel().size()>0){
+            for(int lnCtr = 0; lnCtr < record.getDetailModel().size(); lnCtr++){
+                
+                Assert.assertEquals("M00124000001", record.getDetailModel().get(lnCtr).getTransactionNumber());
+                switch(lnCtr){
+                    case 0:
+                        Assert.assertEquals(1, record.getDetailModel().get(lnCtr).getEntryNumber());
+                        Assert.assertEquals("M00124000001", record.getDetailModel().get(lnCtr).getStockID());
+                        Assert.assertEquals(3, record.getDetailModel().get(lnCtr).getQuantity());
+                        Assert.assertEquals("230000012708", record.getDetailModel().get(lnCtr).getBarcode());
+                        Assert.assertEquals("sasasasa", record.getDetailModel().get(lnCtr).getDescription());
+                        Assert.assertEquals("Motorcycle", record.getDetailModel().get(lnCtr).getCategoryName());
+                        Assert.assertEquals("Sports", record.getDetailModel().get(lnCtr).getCategoryName2());
+                        Assert.assertEquals("Finished Products", record.getDetailModel().get(lnCtr).getCategoryType());
+                        Assert.assertEquals("This is detail 01 notes entry 1.", record.getDetailModel().get(lnCtr).getNotes());
+                        break;
+                    case 1:
+                        Assert.assertEquals(2, record.getDetailModel().get(lnCtr).getEntryNumber());
+                        Assert.assertEquals("M00124000002", record.getDetailModel().get(lnCtr).getStockID());
+                        Assert.assertEquals(4, record.getDetailModel().get(lnCtr).getQuantity());
+                        Assert.assertEquals("5TL-E4170-00-00", record.getDetailModel().get(lnCtr).getBarcode());
+                        Assert.assertEquals("DIAPHRAGM ASS'Y", record.getDetailModel().get(lnCtr).getDescription());
+                        Assert.assertEquals("Motorcycle", record.getDetailModel().get(lnCtr).getCategoryName());
+                        Assert.assertEquals("Spare Parts", record.getDetailModel().get(lnCtr).getCategoryName2());
+                        Assert.assertEquals("Finished Products", record.getDetailModel().get(lnCtr).getCategoryType());
+                        Assert.assertEquals("This is detail 02 notes entry 2.", record.getDetailModel().get(lnCtr).getNotes());
+                        break;
+                    case 2:
+                        Assert.assertEquals(3, record.getDetailModel().get(lnCtr).getEntryNumber());
+                        Assert.assertEquals("M00124000003", record.getDetailModel().get(lnCtr).getStockID());
+                        Assert.assertEquals(5, record.getDetailModel().get(lnCtr).getQuantity());
+                        Assert.assertEquals("5LW-E1351-00-00", record.getDetailModel().get(lnCtr).getBarcode());
+                        Assert.assertEquals("GASKET,CYLINDER 1", record.getDetailModel().get(lnCtr).getDescription());
+                        Assert.assertEquals("Motorcycle", record.getDetailModel().get(lnCtr).getCategoryName());
+                        Assert.assertEquals("Spare Parts", record.getDetailModel().get(lnCtr).getCategoryName2());
+                        Assert.assertEquals("Finished Products", record.getDetailModel().get(lnCtr).getCategoryType());
+                        Assert.assertEquals("This is detail 03 notes entry 3.", record.getDetailModel().get(lnCtr).getNotes());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        loJSON = record.voidTransaction("M00124000001");
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+        
+    }
+    @Test
+    public void testCancelTransaction() {
+         JSONObject loJSON;
+        loJSON = record.openTransaction("M00124000001");
+        if ("error".equals((String) loJSON.get("result"))) {
+            Assert.fail((String) loJSON.get("message"));
+        }
+        if(record.getDetailModel().size()>0){
+            for(int lnCtr = 0; lnCtr < record.getDetailModel().size(); lnCtr++){
+                
+                Assert.assertEquals("M00124000001", record.getDetailModel().get(lnCtr).getTransactionNumber());
+                switch(lnCtr){
+                    case 0:
+                        Assert.assertEquals(1, record.getDetailModel().get(lnCtr).getEntryNumber());
+                        Assert.assertEquals("M00124000001", record.getDetailModel().get(lnCtr).getStockID());
+                        Assert.assertEquals(3, record.getDetailModel().get(lnCtr).getQuantity());
+                        Assert.assertEquals("230000012708", record.getDetailModel().get(lnCtr).getBarcode());
+                        Assert.assertEquals("sasasasa", record.getDetailModel().get(lnCtr).getDescription());
+                        Assert.assertEquals("Motorcycle", record.getDetailModel().get(lnCtr).getCategoryName());
+                        Assert.assertEquals("Sports", record.getDetailModel().get(lnCtr).getCategoryName2());
+                        Assert.assertEquals("Finished Products", record.getDetailModel().get(lnCtr).getCategoryType());
+                        Assert.assertEquals("This is detail 01 notes entry 1.", record.getDetailModel().get(lnCtr).getNotes());
+                        break;
+                    case 1:
+                        Assert.assertEquals(2, record.getDetailModel().get(lnCtr).getEntryNumber());
+                        Assert.assertEquals("M00124000002", record.getDetailModel().get(lnCtr).getStockID());
+                        Assert.assertEquals(4, record.getDetailModel().get(lnCtr).getQuantity());
+                        Assert.assertEquals("5TL-E4170-00-00", record.getDetailModel().get(lnCtr).getBarcode());
+                        Assert.assertEquals("DIAPHRAGM ASS'Y", record.getDetailModel().get(lnCtr).getDescription());
+                        Assert.assertEquals("Motorcycle", record.getDetailModel().get(lnCtr).getCategoryName());
+                        Assert.assertEquals("Spare Parts", record.getDetailModel().get(lnCtr).getCategoryName2());
+                        Assert.assertEquals("Finished Products", record.getDetailModel().get(lnCtr).getCategoryType());
+                        Assert.assertEquals("This is detail 02 notes entry 2.", record.getDetailModel().get(lnCtr).getNotes());
+                        break;
+                    case 2:
+                        Assert.assertEquals(3, record.getDetailModel().get(lnCtr).getEntryNumber());
+                        Assert.assertEquals("M00124000003", record.getDetailModel().get(lnCtr).getStockID());
+                        Assert.assertEquals(5, record.getDetailModel().get(lnCtr).getQuantity());
+                        Assert.assertEquals("5LW-E1351-00-00", record.getDetailModel().get(lnCtr).getBarcode());
+                        Assert.assertEquals("GASKET,CYLINDER 1", record.getDetailModel().get(lnCtr).getDescription());
+                        Assert.assertEquals("Motorcycle", record.getDetailModel().get(lnCtr).getCategoryName());
+                        Assert.assertEquals("Spare Parts", record.getDetailModel().get(lnCtr).getCategoryName2());
+                        Assert.assertEquals("Finished Products", record.getDetailModel().get(lnCtr).getCategoryType());
+                        Assert.assertEquals("This is detail 03 notes entry 3.", record.getDetailModel().get(lnCtr).getNotes());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        loJSON = record.cancelTransaction("M00124000001");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }

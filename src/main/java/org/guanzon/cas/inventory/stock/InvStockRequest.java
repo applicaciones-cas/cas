@@ -191,6 +191,15 @@ public class InvStockRequest implements GTranDet {
     public JSONObject closeTransaction(String fsValue) {
         poJSON = new JSONObject();
         if (poModelMaster.getEditMode() == EditMode.READY || poModelMaster.getEditMode() == EditMode.UPDATE) {
+            
+            if (poModelMaster.getTransactionStatus().equalsIgnoreCase(TransactionStatus.STATE_CLOSED)){
+                poJSON.put("result", "error");
+                poJSON.put("message", "This transaction was already close.");
+                return poJSON;
+            }
+            if ("error".equals((String) isProcessed("close").get("result"))) {
+                return poJSON;
+            }
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_CLOSED);
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
@@ -212,7 +221,9 @@ public class InvStockRequest implements GTranDet {
 
         if (poModelMaster.getEditMode() == EditMode.READY
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
-
+            if ("error".equals((String) isProcessed("post").get("result"))) {
+                return poJSON;
+            }
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_POSTED);
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
@@ -233,6 +244,9 @@ public class InvStockRequest implements GTranDet {
 
         if (poModelMaster.getEditMode() == EditMode.READY
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
+            if ("error".equals((String) isProcessed("void").get("result"))) {
+                return poJSON;
+            }
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_VOID);
 
             if ("error".equals((String) poJSON.get("result"))) {
@@ -254,6 +268,9 @@ public class InvStockRequest implements GTranDet {
 
         if (poModelMaster.getEditMode() == EditMode.READY
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
+            if ("error".equals((String) isProcessed("cancel").get("result"))) {
+                return poJSON;
+            }
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_CANCELLED);
 
             if ("error".equals((String) poJSON.get("result"))) {
@@ -266,6 +283,20 @@ public class InvStockRequest implements GTranDet {
             poJSON.put("result", "error");
             poJSON.put("message", "No record loaded to update.");
         }
+        return poJSON;
+    }
+    private JSONObject isProcessed(String lsMessage){
+        poJSON = new JSONObject();
+        if (poModelMaster.getTransactionStatus().equalsIgnoreCase(TransactionStatus.STATE_POSTED)
+            || poModelMaster.getTransactionStatus().equalsIgnoreCase(TransactionStatus.STATE_CANCELLED)
+            || poModelMaster.getTransactionStatus().equalsIgnoreCase(TransactionStatus.STATE_VOID)) {
+            
+            poJSON.put("result", "error");
+            poJSON.put("message","Unable to " + lsMessage + " proccesed transaction.");
+            return poJSON;
+        }
+        poJSON.put("result", "success");
+        poJSON.put("message","Okay.");
         return poJSON;
     }
 
@@ -375,12 +406,6 @@ public class InvStockRequest implements GTranDet {
         } else {
             lsCondition = "a.cTranStat = " + SQLUtil.toSQL(psTranStatus);
         }
-
-//        if (!fbByCode) {
-//            lsFilter = fsColumn + " LIKE " + SQLUtil.toSQL(fsValue);
-//        } else {
-//            lsFilter = fsColumn + " = " + SQLUtil.toSQL(fsValue);
-//        }  
 
         String lsSQL = MiscUtil.addCondition(poModelMaster.getSQL(), " a.sTransNox LIKE "
                 + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition);
@@ -613,4 +638,5 @@ public class InvStockRequest implements GTranDet {
         poModelDetail.remove(fnRow - 1);
 
     }
+    
 }
