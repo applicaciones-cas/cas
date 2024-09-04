@@ -107,6 +107,7 @@ public class LaborController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -117,6 +118,7 @@ public class LaborController implements Initializable, ScreenInterface {
                 poJSON = oTrans.getModel().setInHouse("1");
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -124,6 +126,7 @@ public class LaborController implements Initializable, ScreenInterface {
                 poJSON = oTrans.getModel().setLaborType("1");
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -131,6 +134,7 @@ public class LaborController implements Initializable, ScreenInterface {
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -138,6 +142,7 @@ public class LaborController implements Initializable, ScreenInterface {
                 poJSON = oTrans.getModel().setModifiedDate(oApp.getServerDate());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -147,6 +152,7 @@ public class LaborController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -167,6 +173,7 @@ public class LaborController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -192,6 +199,8 @@ public class LaborController implements Initializable, ScreenInterface {
                             poJSON = oTrans.activateRecord(psPrimary);
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
                                 return;
                             } else {
                                 clearFields();
@@ -210,6 +219,8 @@ public class LaborController implements Initializable, ScreenInterface {
                             poJSON = oTrans.deactivateRecord(psPrimary);
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
                                 return;
                             } else {
                                 clearFields();
@@ -385,6 +396,8 @@ public class LaborController implements Initializable, ScreenInterface {
                     poJSON = oTrans.getModel().setLaborName(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                               
                         return;
                     }
                     break;
@@ -393,6 +406,8 @@ public class LaborController implements Initializable, ScreenInterface {
                     poJSON = oTrans.getModel().setPriceLevel1(Double.parseDouble(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                               
                         return;
                     }
                     break;
@@ -401,6 +416,8 @@ public class LaborController implements Initializable, ScreenInterface {
                     poJSON = oTrans.getModel().setPriceLevel2(Double.parseDouble(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                               
                         return;
                     }
                     break;
@@ -409,6 +426,8 @@ public class LaborController implements Initializable, ScreenInterface {
                     poJSON = oTrans.getModel().setPriceLevel3(Double.parseDouble(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                               
                         return;
                     }
                     break;

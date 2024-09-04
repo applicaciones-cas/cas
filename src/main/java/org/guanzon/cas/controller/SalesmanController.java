@@ -107,6 +107,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -117,6 +118,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
                 poJSON = oTrans.getModel().setBranchCode("1");
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -124,6 +126,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -131,6 +134,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
                 poJSON = oTrans.getModel().setModifiedDate(oApp.getServerDate());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -140,6 +144,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -160,6 +165,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -185,6 +191,8 @@ public class SalesmanController implements Initializable, ScreenInterface {
                             poJSON = oTrans.activateRecord(psPrimary);
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
                                 return;
                             } else {
                                 clearFields();
@@ -203,6 +211,8 @@ public class SalesmanController implements Initializable, ScreenInterface {
                             poJSON = oTrans.deactivateRecord(psPrimary);
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
                                 return;
                             } else {
                                 clearFields();
@@ -391,6 +401,8 @@ public class SalesmanController implements Initializable, ScreenInterface {
                     poJSON = oTrans.getModel().setBranchCode(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
                         return;
                     }
                     break;
@@ -399,6 +411,8 @@ public class SalesmanController implements Initializable, ScreenInterface {
                     poJSON = oTrans.getModel().setLastName(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
                         return;
                     }
                     break;
@@ -407,6 +421,8 @@ public class SalesmanController implements Initializable, ScreenInterface {
                     poJSON = oTrans.getModel().setFristName(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
                         return;
                     }
                     break;
@@ -415,6 +431,8 @@ public class SalesmanController implements Initializable, ScreenInterface {
                     poJSON = oTrans.getModel().setMiddleName(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
                         return;
                     }
                     break;
