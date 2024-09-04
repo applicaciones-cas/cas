@@ -114,27 +114,6 @@ public class ModelController implements Initializable, ScreenInterface {
                 break;
 
             case "btnSave":
-                poJSON = oTrans.getModel().setCategoryCode("12345");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
-                poJSON = oTrans.getModel().setBrandCode("12345");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
-                poJSON = oTrans.getModel().setEndOfLife("1");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -360,16 +339,18 @@ public class ModelController implements Initializable, ScreenInterface {
                         break;
 
                     case 2:
-                    /*search Model*/
-//                        poJSON = oTrans.searchRecord(lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-//
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtField02.requestFocus();
-//                        } else {
-//                            loadRecord();
-//                        }
-//                        break;
+                        /*search Model*/
+                        if (!psPrimary.isEmpty()) {
+                            poJSON = oTrans.searchMaster("sBrandCde", lsValue, false);
+                            if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtField03.requestFocus();
+                            } else {
+                                loadRecord();
+                            }
+                        }
+                        break;
                 }
             case ENTER:
                 switch (lnIndex) {
@@ -404,13 +385,6 @@ public class ModelController implements Initializable, ScreenInterface {
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
-                case 2:
-                    poJSON = oTrans.getModel().setCategoryCode(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
 
                 case 3:
                     poJSON = oTrans.getModel().setModelName(lsValue);

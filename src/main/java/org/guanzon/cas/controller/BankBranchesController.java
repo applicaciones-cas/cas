@@ -112,7 +112,7 @@ public class BankBranchesController implements Initializable, ScreenInterface {
             case "btnNew":
                 clearFields();
                 poJSON = oTrans.newRecord();
-                
+
                 loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
@@ -358,15 +358,15 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                         break;
                     case 4:
                         /*search bank */
-                        if(!psPrimary.isEmpty()){
-                        poJSON = oTrans.searchMaster("sBankIDxx", lsValue, false);
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                        if (!psPrimary.isEmpty()) {
+                            poJSON = oTrans.searchMaster("sBankIDxx", lsValue, false);
+                            if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtField04.requestFocus();
-                        } else {
-                            loadRecord();
-                        }
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtField04.requestFocus();
+                            } else {
+                                loadRecord();
+                            }
                         }
                         break;
                     case 7:

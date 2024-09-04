@@ -98,7 +98,7 @@ public class BrandController implements Initializable, ScreenInterface {
         switch (lsButton) {
 
             case "btnNew":
-                
+
                 clearFields();
                 poJSON = oTrans.newRecord();
                 loadRecord();
@@ -334,14 +334,16 @@ public class BrandController implements Initializable, ScreenInterface {
                         break;
                     case 3:
                         /*search Brand*/
-//                        poJSON = oTrans.searchRecord(lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-//
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtField99.requestFocus();
-//                        } else {
-//                            loadRecord();
-//                        }
+                        if (!psPrimary.isEmpty()) {
+                            poJSON = oTrans.searchMaster("sCategrCd", lsValue, false);
+                            if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtField03.requestFocus();
+                            } else {
+                                loadRecord();
+                            }
+                        }
                         break;
                 }
             case ENTER:
