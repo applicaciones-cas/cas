@@ -112,7 +112,7 @@
                                                                 <Insets left="5.0" />
                                                             </padding>
                                                         </TextField>
-                                                        <TextField fx:id="txtField02" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                                        <TextField fx:id="txtField02" promptText="Press F3: Search" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
                                                             <GridPane.margin>
                                                                 <Insets />
                                                             </GridPane.margin>

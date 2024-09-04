@@ -111,13 +111,7 @@ public class LaborModelController implements Initializable, ScreenInterface {
                 break;
 
             case "btnSave":
-                poJSON = oTrans.getModel().setModelID("12345");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
+               
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -339,15 +333,17 @@ public class LaborModelController implements Initializable, ScreenInterface {
 
                     case 2:
                         /*search model name*/
-                        poJSON = oTrans.searchRecord(lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-//
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtField02.requestFocus();
-//                        } else {
-//                            loadRecord();
-//                        }
-//                        break;
+                        if (btnSave.isVisible()) {
+                            poJSON = oTrans.searchMaster("sModelIDx", lsValue, false);
+                            if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtField03.requestFocus();
+                            } else {
+                                loadRecord();
+                            }
+                        }
+                        break;
                 }
             case ENTER:
                 switch (lnIndex) {
@@ -410,7 +406,7 @@ public class LaborModelController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getLaborID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getModelName());
-        txtField03.setText(oTrans.getModel().getAmount());
+        txtField03.setText(oTrans.getModel().getAmount().toString());
 
         cbActive.setSelected(lbActive);
 
