@@ -334,7 +334,7 @@ public class BrandController implements Initializable, ScreenInterface {
                         break;
                     case 3:
                         /*search Brand*/
-                        if (!psPrimary.isEmpty()) {
+                        if (btnSave.isVisible()) {
                             poJSON = oTrans.searchMaster("sCategrCd", lsValue, false);
                             if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 

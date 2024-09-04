@@ -336,8 +336,8 @@ public class ColorDetailController implements Initializable, ScreenInterface {
                         }
                         break;
                     case 3:
-                        /*search bank */
-                        if (!psPrimary.isEmpty()) {
+                        /*search color */
+                        if (btnSave.isVisible()) {
                             poJSON = oTrans.searchMaster("sColorCde", lsValue, false);
                             if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 

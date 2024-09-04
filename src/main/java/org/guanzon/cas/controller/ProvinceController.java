@@ -335,7 +335,7 @@ public class ProvinceController implements Initializable, ScreenInterface {
 
                     case 3:
                         /*search region*/
-                        if (!psPrimary.isEmpty()) {
+                        if (btnSave.isVisible()) {
                             poJSON = oTrans.searchMaster("sRegionID", lsValue, false);
                             if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 

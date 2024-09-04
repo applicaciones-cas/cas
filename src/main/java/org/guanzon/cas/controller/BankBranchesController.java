@@ -358,7 +358,7 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                         break;
                     case 4:
                         /*search bank */
-                        if (!psPrimary.isEmpty()) {
+                        if (btnSave.isVisible()) {
                             poJSON = oTrans.searchMaster("sBankIDxx", lsValue, false);
                             if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 

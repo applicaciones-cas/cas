@@ -340,7 +340,7 @@ public class ModelController implements Initializable, ScreenInterface {
 
                     case 2:
                         /*search Model*/
-                        if (!psPrimary.isEmpty()) {
+                        if (btnSave.isVisible()) {
                             poJSON = oTrans.searchMaster("sBrandCde", lsValue, false);
                             if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
