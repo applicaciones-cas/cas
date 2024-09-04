@@ -70,9 +70,15 @@ public class DashboardController implements Initializable {
     private MenuItem mnuNewCustomer;
 
     @FXML
+    private MenuItem mnuPOQuotationRequest;
+
+    @FXML
+    private MenuItem mnuParameterBranch;
+
+    @FXML
     private TabPane tabpane;
     @FXML
-     StackPane workingSpace;
+    StackPane workingSpace;
 
     @FXML
     private Label AppBranch;
@@ -131,14 +137,15 @@ public class DashboardController implements Initializable {
 //        }
         AppUserInfo.setText(oApp.getLogName() + " || " + oApp.getDivisionName());
     }
-    
 
     public TabPane loadAnimate(String fsFormName) {
         //set fxml controller class
         if (tabpane.getTabs().isEmpty()) {
             tabpane = new TabPane();
         }
+
         setTabPane();
+
         ScreenInterface fxObj = getController(fsFormName);
         fxObj.setGRider(oApp);
 
@@ -167,11 +174,12 @@ public class DashboardController implements Initializable {
             newTab.setOnCloseRequest(event -> {
                 if (showMessage()) {
                     tabName.remove(newTab.getText());
-                    
+
                     Tabclose();
                 } else {
                     event.consume();
                 }
+
             });
 
             newTab.setOnSelectionChanged(event -> {
@@ -185,6 +193,7 @@ public class DashboardController implements Initializable {
                         break;
                     }
                 }
+
             });
             return (TabPane) tabpane;
         } catch (IOException e) {
@@ -204,7 +213,13 @@ public class DashboardController implements Initializable {
 
     public String SetTabTitle(String menuaction) {
         switch (menuaction) {
-            /*Files Menu*/
+            /*Files Menu > Accounts*/
+            case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
+                return "Accounts Payable Clients";
+            case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
+                return "Accounts Receivable Clients";
+
+            /*Files Menu > Clients*/
             case "/org/guanzon/cas/views/ClientMasterParameter.fxml":
                 return "Client Parameter";
             case "/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml":
@@ -213,12 +228,17 @@ public class DashboardController implements Initializable {
                 return "Client Transactions Individual";
             case "/org/guanzon/cas/views/NewCustomer.fxml":
                 return "Client Transactions Standard";
-            case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
-                return "Accounts Payable Clients";
-            case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
-                return "Accounts Receivable Clients";
+
+            /*Files Menu > Inventory*/
+            case "/org/guanzon/cas/views/InventoryParam.fxml":
+                return "Inventory Parameter";
+            case "/org/guanzon/cas/views/InventorySerialParam.fxml":
+                return "Inventory Serial Parameter";
+
             case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
                 return "Accounts Accreditation";
+
+            /*Files Menu > Parameters*/
             case "/org/guanzon/cas/views/AffiliatedCompany.fxml":
                 return "Affiliated Company";
             case "/org/guanzon/cas/views/Banks.fxml":
@@ -227,6 +247,8 @@ public class DashboardController implements Initializable {
                 return "Banks Branches";
             case "/org/guanzon/cas/views/Barangay.fxml":
                 return "Barangay";
+            case "/org/guanzon/cas/views/Branch.fxml":
+                return "Branch";
             case "/org/guanzon/cas/views/Brand.fxml":
                 return "Brand";
             case "/org/guanzon/cas/views/Category.fxml":
@@ -259,6 +281,8 @@ public class DashboardController implements Initializable {
                 return "Labor Model";
             case "/org/guanzon/cas/views/Made.fxml":
                 return "Made";
+            case "/org/guanzon/cas/views/Measure.fxml":
+                return "Measure";
             case "/org/guanzon/cas/views/Model.fxml":
                 return "Model";
             case "/org/guanzon/cas/views/Province.fxml":
@@ -269,17 +293,24 @@ public class DashboardController implements Initializable {
                 return "Relationship";
             case "/org/guanzon/cas/views/Salesman.fxml":
                 return "Salesman";
+            case "/org/guanzon/cas/views/Section.fxml":
+                return "Section";
             case "/org/guanzon/cas/views/Size.fxml":
                 return "Size";
-            case "/org/guanzon/cas/views/InventoryParam.fxml":
-                return "Inventory Parameter"; 
-            case "/org/guanzon/cas/views/InventorySerialParam.fxml":
-                return "Inventory Serial Parameter"; 
-            
-            /*INVENTORY MENU*/    
+            case "/org/guanzon/cas/views/Term.fxml":
+                return "Term";
+            case "/org/guanzon/cas/views/Warehouse.fxml":
+                return "Warehouse";
+
+
+            /*INVENTORY MENU*/
             case "/org/guanzon/cas/views/InventoryDetail.fxml":
-                return "Inventory Details";   
-                
+                return "Inventory Details";
+
+            /*PURCHASE ORDER QUOTATION MENU*/
+            case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
+                return "Purchase Quotation Request";
+
             default:
                 return null;
         }
@@ -347,6 +378,7 @@ public class DashboardController implements Initializable {
 //        if (ShowMessageFX.YesNo(null, "Close All Tabs", "Are you sure, do you want to close all tabs?") == true) {
         if (showMessage()) {
             tabName.clear();
+//            TabsStateManager.saveCurrentTab(tabName);
             // Close all tabs using your TabsStateManager
             for (Tab tab : tabPane.getTabs()) {
                 String formName = tab.getText();
@@ -354,7 +386,7 @@ public class DashboardController implements Initializable {
             }
             tabPane.getTabs().clear();
 //            unloadForm unload = new unloadForm();
-            StackPane myBox = (StackPane) tabpane.getParent(); 
+            StackPane myBox = (StackPane) tabpane.getParent();
             myBox.getChildren().clear();
 //            myBox.getChildren().add(unload.getScene("FXMLMainScreen.fxml", oApp));
         }
@@ -526,29 +558,52 @@ public class DashboardController implements Initializable {
 
         return null;
     }
+
+//    private AnchorPane loadAnimate(String fsFormName){
+//        ScreenInterface fxObj = getController(fsFormName);
+//        fxObj.setGRider(oApp);
+//       
+//        FXMLLoader fxmlLoader = new FXMLLoader();
+//        fxmlLoader.setLocation(fxObj.getClass().getResource( fsFormName));
+//        fxmlLoader.setController(fxObj);    
+//        
+//        AnchorPane root;
+//        try {
+//            root = (AnchorPane) fxmlLoader.load();
+//            FadeTransition ft = new FadeTransition(Duration.millis(1500));
+//            ft.setNode(root);
+//            ft.setFromValue(1);
+//            ft.setToValue(1);
+//            ft.setCycleCount(1);
+//            ft.setAutoReverse(false);
+//            ft.play();
+//
+//            return root;
+//        } catch (IOException ex) {
+//            System.err.println(ex.getMessage());
+//            
+//        }
+//        return null;
+//    }
     private ScreenInterface getController(String fsValue) {
         switch (fsValue) {
             case "/org/guanzon/cas/views/ClientMasterParameter.fxml":
                 return new ClientMasterParameterController();
-
             case "/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml":
                 return new ClientMasterTransactionCompanyController();
-
             case "/org/guanzon/cas/views/ClientMasterTransactionIndividual.fxml":
                 return new ClientMasterTransactionIndividualController();
-
             case "/org/guanzon/cas/views/NewCustomer.fxml":
                 return new NewCustomerController();
-            
+
             case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
                 return new FrmAccountsPayableController();
-                
             case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
                 return new FrmAccountsReceivableController();
-                
+
             case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
                 return new FrmAccountsAccreditationController();
-                
+
             //Parameter MenuControllers
             case "/org/guanzon/cas/views/AffiliatedCompany.fxml":
                 return new AffiliatedCompanyController();
@@ -558,6 +613,8 @@ public class DashboardController implements Initializable {
                 return new BankBranchesController();
             case "/org/guanzon/cas/views/Barangay.fxml":
                 return new BarangayController();
+            case "/org/guanzon/cas/views/Branch.fxml":
+                return new BranchController();
             case "/org/guanzon/cas/views/Brand.fxml":
                 return new BrandController();
             case "/org/guanzon/cas/views/Category.fxml":
@@ -590,6 +647,8 @@ public class DashboardController implements Initializable {
                 return new LaborModelController();
             case "/org/guanzon/cas/views/Made.fxml":
                 return new MadeController();
+            case "/org/guanzon/cas/views/Measure.fxml":
+                return new MeasureController();
             case "/org/guanzon/cas/views/Model.fxml":
                 return new ModelController();
             case "/org/guanzon/cas/views/Province.fxml":
@@ -600,17 +659,27 @@ public class DashboardController implements Initializable {
                 return new RelationshipController();
             case "/org/guanzon/cas/views/Salesman.fxml":
                 return new SalesmanController();
+            case "/org/guanzon/cas/views/Section.fxml":
+                return new SectionController();
             case "/org/guanzon/cas/views/Size.fxml":
                 return new SizeController();
+            case "/org/guanzon/cas/views/Term.fxml":
+                return new TermController();
+            case "/org/guanzon/cas/views/Warehouse.fxml":
+                return new WarehouseController();
+
+            /*Inventory menu*/
             case "/org/guanzon/cas/views/InventoryParam.fxml":
                 return new InventoryParamController();
             case "/org/guanzon/cas/views/InventorySerialParam.fxml":
-                return new InventorySerialParamController();            
-                /*Inventory menu*/
-                 case "/org/guanzon/cas/views/InventoryDetail.fxml":
+                return new InventorySerialParamController();
+            case "/org/guanzon/cas/views/InventoryDetail.fxml":
                 return new InventoryDetailController();
-                
-                 
+
+            /*PO Menu*/
+            case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
+                return new PO_Quotation_RequestController();
+
             default:
                 return null;
         }
@@ -704,6 +773,15 @@ public class DashboardController implements Initializable {
     @FXML
     private void mnuParameterBarangayClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/Barangay.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuParameterBranchClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Branch.fxml";
         //check if oApp is not null before calling loadAnimate
         if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
@@ -855,6 +933,15 @@ public class DashboardController implements Initializable {
     }
 
     @FXML
+    private void mnuParameterMeasureClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Measure.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
     private void mnuParameterModelClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/Model.fxml";
         //check if oApp is not null before calling loadAnimate
@@ -900,6 +987,15 @@ public class DashboardController implements Initializable {
     }
 
     @FXML
+    private void mnuParameterSectionClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Section.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
     private void mnuParameterSizeClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/Size.fxml";
         //check if oApp is not null before calling loadAnimate
@@ -907,6 +1003,23 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
+
+    @FXML
+    private void mnuParameterTermClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Term.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }    @FXML
+    private void mnuParameterWarehouseClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/Warehouse.fxml";
+        //check if oApp is not null before calling loadAnimate
+        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
     @FXML
     private void mnuAccountsPayable_Clicked(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/FrmAccountsPayable.fxml";
@@ -915,6 +1028,7 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
+
     @FXML
     private void mnuAccountsReceivable_Clicked(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/FrmAccountsReceivable.fxml";
@@ -923,7 +1037,7 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
-    
+
     @FXML
     private void mnuAccountsAccreditation_Clicked(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml";
@@ -932,8 +1046,7 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
-    
-    
+
     @FXML
     private void mnuInventoryParamClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/InventoryParam.fxml";
@@ -942,7 +1055,7 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
-    
+
     @FXML
     private void mnuInventoryClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/InventoryDetail.fxml";
@@ -951,16 +1064,37 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
+
     @FXML
-    private void mnuInventorySerialParamClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InventorySerialParam"
-                + ".fxml";
+    private void mnuPOQuotationRequestClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/PO_Quotation_Request.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
     }
-    
+
+    @FXML
+    private void mnuInventorySerialParamClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventorySerialParam"
+                + ".fxml";
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    //    @FXML
+    //    private void mnuClientParameterClick(ActionEvent event) {
+    //        setScene(loadAnimate("/com/rmj/guanzongroup/cas/maven/views/ClientMasterParameter.fxml"));
+    //    } 
+    //    @FXML
+    //    private void mnuClientTransactionCompanyClick(ActionEvent event) {
+    //        setScene(loadAnimate("/com/rmj/guanzongroup/cas/maven/views/ClientMasterTransactionCompany.fxml"));
+    //    } 
+    //    @FXML
+    //    private void mnuClientTransactionIndividualClick(ActionEvent event) {
+    //        setScene(loadAnimate("/com/rmj/guanzongroup/cas/maven/views/ClientMasterTransactionCompany.fxml"));
+    //    } 
+
     private boolean showMessage() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
@@ -978,4 +1112,5 @@ public class DashboardController implements Initializable {
         // Handle the user's response
         return result == buttonTypeYes;
     }
+
 }

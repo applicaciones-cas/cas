@@ -129,11 +129,21 @@
                                                             <GridPane.margin>
                                                                 <Insets left="10.0" />
                                                             </GridPane.margin>
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
                                                         </Text>
                                                         <Label contentDisplay="RIGHT" text="Brand Name" GridPane.rowIndex="1">
                                                             <GridPane.margin>
                                                                 <Insets left="10.0" />
                                                             </GridPane.margin>
+                                             <graphic>
+                                                <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
+                                                   <font>
+                                                      <Font name="Rockwell" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </graphic>
                                                         </Label>
                                                         <CheckBox fx:id="cbActive" disable="true" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                                             <font>
@@ -222,9 +232,9 @@
                                                     <center>
                                                         <AnchorPane prefHeight="500.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                                             <children>
-                                                                <TableView fx:id="tblList" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                <TableView fx:id="tblList" onMouseClicked="#tblList_Clicked" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                     <columns>
-                                                                        <TableColumn fx:id="index01" editable="false" maxWidth="1.7976931348623157E308" prefWidth="120.0" resizable="false" sortable="false" text="ID" />
+                                                                        <TableColumn fx:id="index01" editable="false" maxWidth="1.7976931348623157E308" prefWidth="120.0" resizable="false" sortable="false" text="Code" />
                                                                         <TableColumn fx:id="index02" editable="false" maxWidth="1.7976931348623157E308" prefWidth="433.0" resizable="false" sortable="false" text="Model Name" />
                                                                     </columns>
                                                                     <columnResizePolicy>

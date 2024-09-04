@@ -97,7 +97,6 @@
                                       <rowConstraints>
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
@@ -143,7 +142,7 @@
                                                                     <Insets left="10.0" />
                                                                 </GridPane.margin>
                                                             </Label>
-                                                            <CheckBox fx:id="cbActive" disable="true" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
+                                                            <CheckBox fx:id="cbActive" disable="true" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                                                                 <font>
                                                                     <Font size="14.0" />
                                                                 </font>
@@ -154,26 +153,6 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </padding>
                                                             </CheckBox>
-                                          <Label contentDisplay="RIGHT" text="Inventory Type" GridPane.rowIndex="2">
-                                             <graphic>
-                                                <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
-                                                   <font>
-                                                      <Font name="Rockwell" size="14.0" />
-                                                   </font>
-                                                </Text>
-                                             </graphic>
-                                             <GridPane.margin>
-                                                <Insets left="10.0" />
-                                             </GridPane.margin>
-                                          </Label>
-                                          <TextField fx:id="txtField03" promptText="Press F3: Search" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
-                                             <padding>
-                                                <Insets left="5.0" />
-                                             </padding>
-                                          </TextField>
                                        </children>
                                     </GridPane>
                                  </children>
@@ -184,9 +163,9 @@
                                        <center>
                                           <AnchorPane prefHeight="500.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                              <children>
-                                                                    <TableView fx:id="tblList" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                    <TableView fx:id="tblList" onMouseClicked="#tblList_Clicked" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                         <columns>
-                                                                            <TableColumn fx:id="index01" editable="false" maxWidth="1.7976931348623157E308" prefWidth="120.0" resizable="false" sortable="false" text="ID" />
+                                                                            <TableColumn fx:id="index01" editable="false" maxWidth="1.7976931348623157E308" prefWidth="120.0" resizable="false" sortable="false" text="Code" />
                                                                             <TableColumn fx:id="index02" editable="false" maxWidth="1.7976931348623157E308" prefWidth="433.0" resizable="false" sortable="false" text="Description" />
                                                                         </columns>
                                                    <columnResizePolicy>

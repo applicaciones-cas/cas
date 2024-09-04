@@ -3,7 +3,10 @@ package org.guanzon.cas.controller;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -17,6 +20,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
@@ -31,19 +35,22 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.model.ModelParameter;
-import org.guanzon.cas.parameters.Region;
+import org.guanzon.cas.parameters.Branch;
+import org.guanzon.cas.parameters.Company;
+import org.guanzon.cas.parameters.Province;
+
 import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
  *
- * @author Maynard
+ * @author Luke
  */
-public class RegionController implements Initializable, ScreenInterface {
+public class BranchController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Region";
+    private final String pxeModuleName = "Branch";
     private GRider oApp;
-    private Region oTrans;
+    private Branch oTrans;
     private JSONObject poJSON;
     private int pnEditMode;
 
@@ -61,41 +68,48 @@ public class RegionController implements Initializable, ScreenInterface {
     @FXML
     private HBox hbButtons;
     @FXML
-    private Button btnNew;
+    private TableView tblList;
+
     @FXML
-    private Button btnSave;
+    private TextField txtField99, txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField07, txtField08;
+
     @FXML
-    private Button btnUpdate;
+    private Button btnBrowse, btnNew, btnSave, btnUpdate, btnCancel, btnActivate, btnClose;
+
     @FXML
-    private Button btnCancel;
-    @FXML
-    private Button btnActivate;
-    @FXML
-    private Button btnClose;
-    @FXML
-    private Button btnBrowse;
-    @FXML
-    private TextField txtField01;
-    @FXML
-    private TextField txtField02;
-    @FXML
-    private TextField txtField03;
-    @FXML
-    private TextField txtField04;
-    @FXML
-    private TextField txtField05;
-    @FXML
-    private TextField txtField06;
-    @FXML
-    private TextField txtField99;
-    @FXML
-    private CheckBox cbActive;
+    private CheckBox cbActive, cbWareHouse;
+
     @FXML
     private FontAwesomeIconView faActivate;
-    @FXML
-    private TableView tblList;
+
     @FXML
     private TableColumn index01, index02;
+
+    private Map<TextField, Integer> textFieldLimits = new HashMap<>();
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        oTrans = new Branch(oApp, false);
+        oTrans.setRecordStatus("10");
+        pbLoaded = true;
+
+        pnEditMode = EditMode.UNKNOWN;
+
+        initButton(pnEditMode);
+        initTextFields();
+        clearFields();
+
+        pbLoaded = true;
+        textFieldLimits.put(txtField01, 4); // txtField01 limit is 4 characters
+        textFieldLimits.put(txtField02, 50);
+        textFieldLimits.put(txtField03, 50);
+        textFieldLimits.put(txtField07, 50);
+
+        textFieldLimits.forEach(this::setTextFieldFormatter);
+    }
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -104,12 +118,13 @@ public class RegionController implements Initializable, ScreenInterface {
         switch (lsButton) {
 
             case "btnNew":
+
+                clearFields();
                 poJSON = oTrans.newRecord();
                 loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -121,7 +136,6 @@ public class RegionController implements Initializable, ScreenInterface {
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -129,7 +143,6 @@ public class RegionController implements Initializable, ScreenInterface {
                 poJSON = oTrans.getModel().setModifiedDate(oApp.getServerDate());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -139,13 +152,12 @@ public class RegionController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
 
                 } else {
-                    oTrans = new Region(oApp, true);
+                    oTrans = new Branch(oApp, true);
                     pbLoaded = true;
                     oTrans.setRecordStatus("10");
                     pnEditMode = EditMode.UNKNOWN;
@@ -160,7 +172,6 @@ public class RegionController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -169,7 +180,7 @@ public class RegionController implements Initializable, ScreenInterface {
 
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                    oTrans = new Region(oApp, true);
+                    oTrans = new Branch(oApp, true);
                     oTrans.setRecordStatus("10");
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
@@ -186,14 +197,12 @@ public class RegionController implements Initializable, ScreenInterface {
                             poJSON = oTrans.activateRecord(psPrimary);
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
-                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-
                                 return;
                             } else {
                                 clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
-                                oTrans = new Region(oApp, false);
+                                oTrans = new Branch(oApp, false);
                                 oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
@@ -206,14 +215,12 @@ public class RegionController implements Initializable, ScreenInterface {
                             poJSON = oTrans.deactivateRecord(psPrimary);
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
-                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-
                                 return;
                             } else {
                                 clearFields();
                                 pnEditMode = EditMode.UNKNOWN;
                                 initButton(pnEditMode);
-                                oTrans = new Region(oApp, false);
+                                oTrans = new Branch(oApp, false);
                                 oTrans.setRecordStatus("10");
                                 pbLoaded = true;
 
@@ -262,23 +269,6 @@ public class RegionController implements Initializable, ScreenInterface {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        oTrans = new Region(oApp, false);
-        oTrans.setRecordStatus("10");
-        pbLoaded = true;
-
-        pnEditMode = EditMode.UNKNOWN;
-
-        initButton(pnEditMode);
-        initTextFields();
-        clearFields();
-
-        pbLoaded = true;
-
-    }
-
-    @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
@@ -318,13 +308,12 @@ public class RegionController implements Initializable, ScreenInterface {
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
         txtField03.focusedProperty().addListener(txtField_Focus);
-        txtField04.focusedProperty().addListener(txtField_Focus);
-        txtField05.focusedProperty().addListener(txtField_Focus);
-        txtField06.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField05.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField06.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 
@@ -332,6 +321,9 @@ public class RegionController implements Initializable, ScreenInterface {
         TextField textField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
         String lsValue = textField.getText();
+        if (lsValue == null) {
+            lsValue = "";
+        }
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
@@ -343,6 +335,26 @@ public class RegionController implements Initializable, ScreenInterface {
 
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                             txtField99.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+                    case 5:
+                        poJSON = oTrans.searchDetail("sCompnyID", lsValue, false);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField01.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+                    case 6:
+                        poJSON = oTrans.searchDetail("sProvIDxx", lsValue, false);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField01.requestFocus();
                         } else {
                             loadRecord();
                         }
@@ -381,55 +393,50 @@ public class RegionController implements Initializable, ScreenInterface {
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
-                case 2:
-                    poJSON = oTrans.getModel().setRegionName(lsValue);
+                case 1:
+                    poJSON = oTrans.getModel().setBranchCd(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        return;
+                    }
+                    break;
 
+                case 2:
+                    poJSON = oTrans.getModel().setBranchNm(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
                         return;
                     }
                     break;
 
                 case 3:
-                    poJSON = oTrans.getModel().setMinimumWages(Double.valueOf(lsValue));
+                    poJSON = oTrans.getModel().setDescription(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-
                         return;
                     }
                     break;
-
-                case 4:
-                    poJSON = oTrans.getModel().setColaAmount(Double.valueOf(lsValue));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-
-                        return;
-                    }
-                    break;
-
                 case 5:
-                    poJSON = oTrans.getModel().setMinimumWage2(Double.valueOf(lsValue));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-
-                        return;
+                    String lsCompnyID = (String) oTrans.getModel().getValue("sCompnyID");
+                    if (lsCompnyID != null || !lsCompnyID.isEmpty()) {
+                        poJSON = oTrans.getModel().setCompanyID(lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            return;
+                        }
                     }
                     break;
-
                 case 6:
-                    poJSON = oTrans.getModel().setColaAmount2(Double.valueOf(lsValue));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-
-                        return;
+                    String lsTownIDxx = (String) oTrans.getModel().getValue("sTownIDxx");
+                    if (lsTownIDxx != null || !lsTownIDxx.isEmpty()) {
+                        poJSON = oTrans.getModel().setTownID(lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            return;
+                        }
                     }
                     break;
+
             }
         } else {
             txtField.selectAll();
@@ -439,16 +446,34 @@ public class RegionController implements Initializable, ScreenInterface {
 
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
-
-        psPrimary = oTrans.getModel().getRegionID();
+//        psPrimary = (String) poJSON.get("value");
+        psPrimary = oTrans.getModel().getBranchCd();
         txtField01.setText(psPrimary);
-        txtField02.setText(oTrans.getModel().getRegionName());
-        txtField03.setText(oTrans.getModel().getMinimumWages().toString());
-        txtField04.setText(oTrans.getModel().getColaAmount().toString());
-        txtField05.setText(oTrans.getModel().getMinimumWage2().toString());
-        txtField06.setText(oTrans.getModel().getColaAmount2().toString());
+        txtField02.setText(oTrans.getModel().getBranchNm());
+        txtField03.setText(oTrans.getModel().getDescription());
 
-        cbActive.setSelected(lbActive);
+//        txtField04.setText(oTrans.getModel().getBranchNm());
+        if (oTrans.getModel().getContact() == null) {
+            txtField04.setText(oTrans.getModel().getTeleNum());
+        } else {
+            txtField04.setText(oTrans.getModel().getContact());
+        }
+
+        Company loCompany;
+        String lsCompnyID = (String) oTrans.getModel().getCompanyID();
+        loCompany = oTrans.GetCompanyID(lsCompnyID, true);
+
+        txtField05.setText((String) loCompany.getMaster("sCompnyNm"));
+
+        Province loProvince;
+        String lsTownIDxx = (String) oTrans.getModel().getValue("sTownIDxx");
+        loProvince = oTrans.GetTownID(lsTownIDxx, true);
+
+        txtField06.setText((String) loProvince.getMaster("sProvName"));
+
+        txtField07.setText(oTrans.getModel().getAddress());
+
+        cbActive.setSelected(oTrans.getModel().isActive());
 
         if (lbActive) {
             btnActivate.setText("Deactivate");
@@ -460,6 +485,15 @@ public class RegionController implements Initializable, ScreenInterface {
 
     }
 
+    private void setTextFieldFormatter(TextField textField, int limit) {
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String newText = change.getControlNewText();
+            return newText.length() > limit ? null : change; // Reject change if it exceeds the limit
+        };
+        TextFormatter<String> formatter = new TextFormatter<>(filter);
+        textField.setTextFormatter(formatter);
+    }
+
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
@@ -467,11 +501,12 @@ public class RegionController implements Initializable, ScreenInterface {
         txtField04.clear();
         txtField05.clear();
         txtField06.clear();
-        txtField99.clear();
+        txtField07.clear();
 
         psPrimary = "";
         btnActivate.setText("Activate");
         cbActive.setSelected(false);
+
         loadTableDetail();
     }
 
@@ -494,8 +529,8 @@ public class RegionController implements Initializable, ScreenInterface {
 
         for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
             ListData.add(new ModelParameter(
-                    (String) oTrans.getModelList().get(lnCtr).getRegionID(),
-                    (String) oTrans.getModelList().get(lnCtr).getRegionName(),
+                    (String) oTrans.getModelList().get(lnCtr).getBranchCd(),
+                    (String) oTrans.getModelList().get(lnCtr).getBranchNm(),
                     "",
                     "",
                     ""));
@@ -518,7 +553,9 @@ public class RegionController implements Initializable, ScreenInterface {
                 header.setReordering(false);
             });
         });
+
         tblList.setItems(ListData);
+
     }
 
     @FXML

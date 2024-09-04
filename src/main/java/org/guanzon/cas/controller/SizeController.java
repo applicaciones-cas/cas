@@ -1,10 +1,14 @@
 package org.guanzon.cas.controller;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,17 +17,20 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.model.ModelParameter;
 import org.guanzon.cas.parameters.Size;
 import org.json.simple.JSONObject;
 
@@ -45,6 +52,9 @@ public class SizeController implements Initializable, ScreenInterface {
     private boolean state = false;
     private boolean pbLoaded = false;
     private int pnIndex;
+    private int pnListRow;
+
+    private ObservableList<ModelParameter> ListData = FXCollections.observableArrayList();
 
     @FXML
     private AnchorPane ChildAnchorPane;
@@ -75,11 +85,9 @@ public class SizeController implements Initializable, ScreenInterface {
     @FXML
     private FontAwesomeIconView faActivate;
     @FXML
-    private TableView<?> tblList;
+    private TableView tblList;
     @FXML
-    private TableColumn<?, ?> index01;
-    @FXML
-    private TableColumn<?, ?> index02;
+    private TableColumn index01, index02;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -93,6 +101,7 @@ public class SizeController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -104,6 +113,7 @@ public class SizeController implements Initializable, ScreenInterface {
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -111,6 +121,7 @@ public class SizeController implements Initializable, ScreenInterface {
                 poJSON = oTrans.getModel().setModifiedDate(oApp.getServerDate());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -120,6 +131,7 @@ public class SizeController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -140,6 +152,7 @@ public class SizeController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
@@ -165,6 +178,8 @@ public class SizeController implements Initializable, ScreenInterface {
                             poJSON = oTrans.activateRecord(psPrimary);
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
                                 return;
                             } else {
                                 clearFields();
@@ -183,6 +198,8 @@ public class SizeController implements Initializable, ScreenInterface {
                             poJSON = oTrans.deactivateRecord(psPrimary);
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
                                 return;
                             } else {
                                 clearFields();
@@ -203,13 +220,10 @@ public class SizeController implements Initializable, ScreenInterface {
                 break;
 
             case "btnClose":
+                unloadForm appUnload = new unloadForm();
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-//                        if (unload != null) {
-//                            unload.unloadForm(AnchorMain, oApp, "Size");
-//                        } else {
-//                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
-//                        }
-//                        break;
+                    appUnload.unloadForm(ChildAnchorPane, oApp, pxeModuleName);
+
                 } else {
                     return;
                 }
@@ -284,6 +298,7 @@ public class SizeController implements Initializable, ScreenInterface {
         txtField02.setEditable(lbShow);
 
         txtField02.requestFocus();
+        tblList.setDisable(lbShow);
     }
 
     private void initTextFields() {
@@ -351,6 +366,8 @@ public class SizeController implements Initializable, ScreenInterface {
                     poJSON = oTrans.getModel().setSizeName(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
                         return;
                     }
                     break;
@@ -387,5 +404,62 @@ public class SizeController implements Initializable, ScreenInterface {
         psPrimary = "";
         btnActivate.setText("Activate");
         cbActive.setSelected(false);
+        loadTableDetail();
     }
+
+    private void loadTableDetail() {
+        int lnCtr;
+        ListData.clear();
+
+        poJSON = oTrans.loadModelList();
+        if ("error".equals((String) poJSON.get("result"))) {
+            System.err.println((String) poJSON.get("message"));
+            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
+            return;
+        }
+
+        int lnItem = oTrans.getModelList().size();
+        if (lnItem <= 0) {
+            return;
+        }
+
+        for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
+            ListData.add(new ModelParameter(
+                    (String) oTrans.getModelList().get(lnCtr).getSizeID(),
+                    (String) oTrans.getModelList().get(lnCtr).getSizeName(),
+                    "",
+                    "",
+                    ""));
+
+        }
+
+        initListGrid();
+    }
+
+    public void initListGrid() {
+        index01.setStyle("-fx-alignment: CENTER;");
+        index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+
+        index01.setCellValueFactory(new PropertyValueFactory<ModelParameter, String>("index01"));
+        index02.setCellValueFactory(new PropertyValueFactory<ModelParameter, String>("index02"));
+
+        tblList.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblList.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+        tblList.setItems(ListData);
+    }
+
+    @FXML
+    void tblList_Clicked(MouseEvent event) {
+        pnListRow = tblList.getSelectionModel().getSelectedIndex();
+        if (pnListRow >= 0) {
+            oTrans.openRecord(ListData.get(pnListRow).getIndex01());
+            loadRecord();
+        }
+    }
+
 }
