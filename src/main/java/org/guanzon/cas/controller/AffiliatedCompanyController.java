@@ -99,7 +99,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
         switch (lsButton) {
 
             case "btnNew":
-                
+
                 clearFields();
                 poJSON = oTrans.newRecord();
                 loadRecord();

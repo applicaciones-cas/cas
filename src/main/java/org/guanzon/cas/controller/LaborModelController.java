@@ -2,7 +2,6 @@ package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -111,7 +110,7 @@ public class LaborModelController implements Initializable, ScreenInterface {
                 break;
 
             case "btnSave":
-               
+
                 poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -214,13 +213,10 @@ public class LaborModelController implements Initializable, ScreenInterface {
                 break;
 
             case "btnClose":
+                unloadForm appUnload = new unloadForm();
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-//                        if (unload != null) {
-//                            unload.unloadForm(AnchorMain, oApp, "Size");
-//                        } else {
-//                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
-//                        }
-//                        break;
+                    appUnload.unloadForm(ChildAnchorPane, oApp, pxeModuleName);
+
                 } else {
                     return;
                 }
@@ -378,16 +374,9 @@ public class LaborModelController implements Initializable, ScreenInterface {
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
-                case 2:
-                    poJSON = oTrans.getModel().setModelID(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
 
                 case 3:
-                    poJSON = oTrans.getModel().setAmount(BigDecimal.valueOf(Integer.parseInt(lsValue)));
+                    poJSON = oTrans.getModel().setAmount(Double.valueOf(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         return;

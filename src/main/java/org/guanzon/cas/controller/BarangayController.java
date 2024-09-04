@@ -102,7 +102,7 @@ public class BarangayController implements Initializable, ScreenInterface {
         switch (lsButton) {
 
             case "btnNew":
-                
+
                 clearFields();
                 poJSON = oTrans.newRecord();
                 loadRecord();
@@ -219,13 +219,10 @@ public class BarangayController implements Initializable, ScreenInterface {
                 break;
 
             case "btnClose":
+                unloadForm appUnload = new unloadForm();
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-//                        if (unload != null) {
-//                            unload.unloadForm(AnchorMain, oApp, "Size");
-//                        } else {
-//                            ShowMessageFX.Warning(getStage(), "Please notify the system administrator to configure the null value at the close button.", "Warning", pxeModuleName);
-//                        }
-//                        break;
+                    appUnload.unloadForm(ChildAnchorPane, oApp, pxeModuleName);
+
                 } else {
                     return;
                 }

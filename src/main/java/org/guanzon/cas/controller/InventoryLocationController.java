@@ -213,8 +213,10 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
                 break;
 
             case "btnClose":
+                unloadForm appUnload = new unloadForm();
                 if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-//                        
+                    appUnload.unloadForm(ChildAnchorPane, oApp, pxeModuleName);
+
                 } else {
                     return;
                 }
