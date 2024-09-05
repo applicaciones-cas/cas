@@ -522,7 +522,7 @@ public class Inventory implements GRecord{
                     fsValue,
                     "Stock ID»Barcode»Name",
                     "sStockIDx»sBarCodex»sDescript",
-                    "a.sStockIDx»a.sBarCodex»a.sDescript",
+                    "sStockIDx»sBarCodex»sDescript",
                     fbByCode ? 1: 2);
 
             if (poJSON != null) {
