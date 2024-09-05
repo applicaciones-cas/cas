@@ -318,7 +318,7 @@ public class BranchController implements Initializable, ScreenInterface {
         txtField04.focusedProperty().addListener(txtField_Focus);
         txtField05.focusedProperty().addListener(txtField_Focus);
         txtField06.focusedProperty().addListener(txtField_Focus);
-        txtField07.focusedProperty().addListener(txtField_Focus);
+        txtField07.focusedProperty().addListener(txtArea_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
@@ -444,6 +444,41 @@ public class BranchController implements Initializable, ScreenInterface {
         }
         pnIndex = lnIndex;
     };
+    
+    
+    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
+        if (!pbLoaded) {
+            return;
+        }
+
+        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+        String lsValue = txtField.getText();
+
+        if (lsValue == null) {
+            return;
+        }
+
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lnIndex) {
+                case 7:
+                    poJSON = oTrans.getModel().setAddress(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        return;
+                    }
+                    break;
+
+                
+            }
+        } else {
+            txtField.selectAll();
+        }
+        pnIndex = lnIndex;
+    };
+    
 
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
