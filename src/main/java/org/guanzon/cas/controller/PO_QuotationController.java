@@ -10,7 +10,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.base.GRider;
 
@@ -22,53 +26,27 @@ import org.guanzon.appdriver.base.GRider;
 public class PO_QuotationController implements Initializable, ScreenInterface{
 
     @FXML
+    private AnchorPane MainAnchorPane, apBrowse, apMaster, apButton, apTable, apDetail;
+
+    @FXML
+    private Button btnNew, btnBrowse, btnCancel, btnSave, btnClose, btnUpdate,
+            btnConfirm, btnVoid, btnSearch, btnDelDetail;
+
+    @FXML
     private HBox hbButtons;
     @FXML
-    private Button btnNew;
-    @FXML
-    private Button btnSave;
-    @FXML
-    private Button btnUpdate;
-    @FXML
-    private Button btnPost;
-    @FXML
-    private Button btnBrowse;
-    @FXML
-    private Button btnCancel;
-    @FXML
-    private Button btnClose;
-    @FXML
-    private TextField txtField01;
-    @FXML
-    private TextField txtField03;
-    @FXML
-    private TextField txtField05;
-    @FXML
     private Label lblStatus;
+
     @FXML
-    private TextField txtField02;
+    private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField99, txtField98;
     @FXML
-    private TextField txtField04;
+    private TextArea txtField07;
     @FXML
-    private TextField txtField06;
+    private TextField txtDetail01, txtDetail02, txtDetail03, txtDetail04, txtDetail05, txtDetail06, txtDetail07;
     @FXML
-    private TextField txtField96;
+    private TableView tblDetails;
     @FXML
-    private TextField txtField97;
-    @FXML
-    private TextField txtField98;
-    @FXML
-    private TextField txtField99;
-    @FXML
-    private TextField txtField10;
-    @FXML
-    private TextField txtField011;
-    @FXML
-    private TextField txtField07;
-    @FXML
-    private TextField txtField08;
-    @FXML
-    private TextField txtField09;
+    private TableColumn index01, index02, index03, index04, index05, index06, index07;
 
     /**
      * Initializes the controller class.
