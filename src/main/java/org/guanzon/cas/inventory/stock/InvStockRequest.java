@@ -336,7 +336,6 @@ public class InvStockRequest implements GTranDet {
         return poModelDetail.size();
     }
 
-
     @Override
     public Model_Inv_Stock_Request_Detail getDetailModel(int fnRow) {
         return poModelDetail.get(fnRow);
@@ -404,13 +403,26 @@ public class InvStockRequest implements GTranDet {
                     loInvMaster.setWithUI(p_bWithUI);
                     poJSON = loInvMaster.openRecord(loInventory.getModel().getStockID());
                         
-                    if (poJSON != null) {
+//                    if (poJSON != null) {
+                    if ("succes".equals((String) poJSON.get("result"))) {
                         setDetail(fnRow, "cClassify", (String) loInvMaster.getModel().getClassify());
                         setDetail(fnRow, "nQtyOnHnd",  loInvMaster.getModel().getQtyOnHnd());
                         setDetail(fnRow, "nResvOrdr",  loInvMaster.getModel().getResvOrdr());
                         setDetail(fnRow, "nBackOrdr",  loInvMaster.getModel().getBackOrdr());
                         setDetail(fnRow, "nAvgMonSl",  loInvMaster.getModel().getAvgMonSl());
                         setDetail(fnRow, "nMaxLevel",  loInvMaster.getModel().getMaxLevel());
+                    }else{
+                        setDetail(fnRow, 3, "");
+                        setDetail(fnRow, "xBarCodex", "");
+                        setDetail(fnRow, "xDescript", "");
+                        setDetail(fnRow, "xCategr01", "");
+                        setDetail(fnRow, "xCategr02", "");
+                        setDetail(fnRow, "xInvTypNm", "");
+                        setDetail(fnRow, "xBrandNme", "");
+                        setDetail(fnRow, "xModelNme", "");
+                        setDetail(fnRow, "xModelDsc", "");
+                        setDetail(fnRow, "xColorNme", "");
+                        setDetail(fnRow, "xMeasurNm", "");
                     }
                     return poJSON;
 
