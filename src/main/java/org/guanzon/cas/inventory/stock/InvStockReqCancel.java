@@ -123,6 +123,14 @@ public class InvStockReqCancel implements GTranDet {
 
         if (getItemCount() >= 1) {
             for (int lnCtr = 0; lnCtr <= getItemCount() - 1; lnCtr++) {
+                if(lnCtr>=0){
+                    if(poModelDetail.get(lnCtr).getStockID().isEmpty() || poModelDetail.get(lnCtr).getBarcode().isEmpty()){
+                        poModelDetail.remove(lnCtr);
+                        if (lnCtr>poModelDetail.size()-1){
+                            break;
+                        }
+                    }
+                }
                 poModelDetail.get(lnCtr).setTransactionNumber(poModelMaster.getTransactionNumber());
                 poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
                 poJSON = poModelDetail.get(lnCtr).saveRecord();
@@ -137,7 +145,7 @@ public class InvStockReqCancel implements GTranDet {
 
         } else {
             poJSON.put("result", "error");
-            poJSON.put("message", "Unable to Save empty Transaction.");
+            poJSON.put("message", "No record of item detected.");
             return poJSON;
         }
         
@@ -635,7 +643,11 @@ public class InvStockReqCancel implements GTranDet {
     }
 
     public void RemoveModelDetail(int fnRow) {
-        poModelDetail.remove(fnRow - 1);
+        if(poModelDetail.size()==0){
+            AddModelDetail();
+        }
+        poModelDetail.remove(fnRow);
+
     }
     
     

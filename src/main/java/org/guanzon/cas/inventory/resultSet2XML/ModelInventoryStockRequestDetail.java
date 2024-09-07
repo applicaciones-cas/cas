@@ -63,11 +63,20 @@ public class ModelInventoryStockRequestDetail {
                             ", c.sDescript xCategr01" +
                             ", d.sDescript xCategr02" +
                             ", e.sDescript xInvTypNm" +
+                            ", f.sDescript xBrandNme" +
+                            ", g.sModelNme xModelNme" +
+                            ", g.sDescript xModelDsc" +
+                            ", h.sDescript xColorNme" +
+                            ", i.sMeasurNm xMeasurNm" +
                         " FROM " + System.getProperty("sys.table") + " a" + 
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                             " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
                             " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
                             " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd" +
+                            " LEFT JOIN Brand f ON b.sBrandCde = f.sBrandCde" +
+                            " LEFT JOIN Model g ON b.sModelCde = g.sModelCde" +
+                            " LEFT JOIN Color h ON b.sColorCde = h.sColorCde" +
+                            " LEFT JOIN Measure i ON b.sMeasurID = i.sMeasurID" +
                         " WHERE 0=1";
         
         
