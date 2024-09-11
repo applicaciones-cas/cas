@@ -26,7 +26,7 @@ import org.json.simple.JSONObject;
  *
  * @author Unclejo
  */
-public class InvStockRequest implements GTranDet {
+public class Inv_Request_SP implements GTranDet {
 
     GRider poGRider;
     boolean pbWthParent;
@@ -42,7 +42,7 @@ public class InvStockRequest implements GTranDet {
     public void setWithUI(boolean fbValue){
         p_bWithUI = fbValue;
     }
-    public InvStockRequest(GRider foGRider, boolean fbWthParent) {
+    public Inv_Request_SP(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
 
@@ -513,7 +513,7 @@ public class InvStockRequest implements GTranDet {
             lsSQL = loRS.getString("sTransNox");
             MiscUtil.close(loRS);
         } catch (SQLException ex) {
-            Logger.getLogger(InvStockRequest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Inv_Request_SP.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         

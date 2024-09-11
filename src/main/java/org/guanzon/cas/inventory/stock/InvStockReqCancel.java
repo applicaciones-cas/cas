@@ -100,17 +100,16 @@ public class InvStockReqCancel implements GTranDet {
 
     @Override
     public JSONObject updateTransaction() {
-        JSONObject loJSON = new JSONObject();
-
-        if (poModelMaster.getEditMode() == EditMode.UPDATE) {
-            loJSON.put("result", "success");
-            loJSON.put("message", "Edit mode has changed to update.");
-        } else {
-            loJSON.put("result", "error");
-            loJSON.put("message", "No record loaded to update.");
+        poJSON = new JSONObject();
+        if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UPDATE){
+            poJSON.put("result", "error");
+            poJSON.put("message", "Invalid edit mode.");
+            return poJSON;
         }
-
-        return loJSON;
+        pnEditMode = EditMode.UPDATE;
+        poJSON.put("result", "success");
+        poJSON.put("message", "Update mode success.");
+        return poJSON;
     }
 
     @Override
@@ -126,7 +125,7 @@ public class InvStockReqCancel implements GTranDet {
                 if(lnCtr>=0){
                     if(poModelDetail.get(lnCtr).getStockID().isEmpty() || poModelDetail.get(lnCtr).getBarcode().isEmpty()){
                         poModelDetail.remove(lnCtr);
-                        if (lnCtr>poModelDetail.size()-1){
+                        if (lnCtr<=poModelDetail.size()-1){
                             break;
                         }
                     }
@@ -597,6 +596,7 @@ public class InvStockReqCancel implements GTranDet {
                         poJSON.put("message", "Record loaded successfully.");
                     } 
                 
+                AddModelDetail();
                 System.out.println("lnctr = " + lnctr);
                 
             }else{

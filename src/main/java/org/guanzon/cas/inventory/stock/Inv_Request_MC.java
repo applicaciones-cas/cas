@@ -17,16 +17,18 @@ import org.guanzon.cas.inventory.base.InvMaster;
 import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Master;
+import org.guanzon.cas.inventory.stock.request.RequestController;
+import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Inv_Type;
-import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_Detail;
+import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_MC_Detail;
 import org.json.simple.JSONObject;
 
 /**
  *
  * @author Unclejo
  */
-public class InvStockRequest implements GTranDet {
+public class Inv_Request_MC implements RequestController {
 
     GRider poGRider;
     boolean pbWthParent;
@@ -36,13 +38,14 @@ public class InvStockRequest implements GTranDet {
     private boolean p_bWithUI = true;
     Model_Inv_Stock_Request_Master poModelMaster;
     ArrayList<Model_Inv_Stock_Request_Detail> poModelDetail;
+    RequestControllerFactory.RequestType type; // Example type
 
     JSONObject poJSON;
 
     public void setWithUI(boolean fbValue){
         p_bWithUI = fbValue;
     }
-    public InvStockRequest(GRider foGRider, boolean fbWthParent) {
+    public Inv_Request_MC(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
 
@@ -120,9 +123,10 @@ public class InvStockRequest implements GTranDet {
             return poJSON;
         }
 
-        OpenModelDetail(poModelMaster.getTransactionNumber());
+        poJSON = OpenModelDetail(poModelMaster.getTransactionNumber());
         
         pnEditMode = EditMode.READY;
+        System.out.println("pnEditMode open = " + pnEditMode);
 
         return poJSON;
 
@@ -175,27 +179,19 @@ public class InvStockRequest implements GTranDet {
                     poModelDetail.remove(lnCtr);
                 }
             }
-            poJSON = deleteRecord();
-            if ("error".equals((String) poJSON.get("result"))) {
-                if (!pbWthParent) {
-                    poGRider.rollbackTrans();
-                }
-                return poJSON;
-            }
+//            poJSON = deleteRecord();
+//            if ("error".equals((String) poJSON.get("result"))) {
+//                if (!pbWthParent) {
+//                    poGRider.rollbackTrans();
+//                }
+//                return poJSON;
+//            }
             // After cleaning, check if any valid items are left
             if (getItemCount() > 0) {
                 // Proceed with saving remaining items
                 for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
-                    poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
                     poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
                     
-                    Validator_Inv_Stock_Request_Detail validator = new Validator_Inv_Stock_Request_Detail(poModelDetail.get(poModelDetail.size()-1));
-                    if (!validator.isEntryOkay()){
-                        poJSON.put("result", "error");
-                        poJSON.put("message", validator.getMessage());
-                        return poJSON;
-
-                    }
                     poJSON = poModelDetail.get(lnCtr).saveRecord();
 
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -248,6 +244,12 @@ public class InvStockRequest implements GTranDet {
                 return poJSON;
             }
             if ("error".equals((String) isProcessed("close").get("result"))) {
+                return poJSON;
+            }
+            
+
+            if (poGRider.getUserLevel() < UserRight.SUPERVISOR) {
+                poJSON.put("message", "User is not allowed confirming transaction.");
                 return poJSON;
             }
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_CLOSED);
@@ -513,7 +515,7 @@ public class InvStockRequest implements GTranDet {
             lsSQL = loRS.getString("sTransNox");
             MiscUtil.close(loRS);
         } catch (SQLException ex) {
-            Logger.getLogger(InvStockRequest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Inv_Request_MC.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
@@ -592,6 +594,7 @@ public class InvStockRequest implements GTranDet {
         psTranStatus = fsValue;
     }
 
+    @Override
     public JSONObject OpenModelDetail(String fsTransNo) {
 
         try {
@@ -620,6 +623,7 @@ public class InvStockRequest implements GTranDet {
     }
     
 
+    @Override
     public JSONObject SearchDetailRequest(String fsTransNo, String fsStockID) {
 
         poJSON = new JSONObject();
@@ -657,6 +661,7 @@ public class InvStockRequest implements GTranDet {
      * fetching inventory request detail and set data for Inventory Stock Request Cancel
      * fetching detail by stock id
     */
+    @Override
     public JSONObject OpenModelDetailByStockID(String fsTransNo, String fsStockID) {
 
         try {
@@ -685,6 +690,7 @@ public class InvStockRequest implements GTranDet {
         }
     }
 
+    @Override
     public JSONObject AddModelDetail() {
         poJSON = new JSONObject();
         if (poModelDetail.isEmpty()){
@@ -697,13 +703,6 @@ public class InvStockRequest implements GTranDet {
             
 
         } else {
-            Validator_Inv_Stock_Request_Detail validator = new Validator_Inv_Stock_Request_Detail(poModelDetail.get(poModelDetail.size()-1));
-            if (!validator.isEntryOkay()){
-                poJSON.put("result", "error");
-                poJSON.put("message", validator.getMessage());
-                return poJSON;
-
-            }
             poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
             poModelDetail.get(poModelDetail.size()-1).newRecord();
             poModelDetail.get(poModelDetail.size()-1).setEntryNumber(poModelDetail.size());
@@ -717,35 +716,32 @@ public class InvStockRequest implements GTranDet {
         return poJSON;
     }
 
+    @Override
     public void RemoveModelDetail(int fnRow) {
         if(poModelDetail.size()>=1){
             poModelDetail.remove(fnRow);
-            if(poModelDetail.size()==0){
+            if(poModelDetail.isEmpty()){
                 AddModelDetail();
             }
         }
     }
-    public JSONObject deleteRecord() {
-        poJSON = new JSONObject();
-        if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UPDATE) {
-            if (poGRider.getUserLevel() < UserRight.SUPERVISOR){
-                poJSON.put("result", "error");
-                poJSON.put("message", "User is not allowed delete transaction.");
-                return poJSON;
-            }
-            
-            Model_Inv_Stock_Request_Detail model = new Model_Inv_Stock_Request_Detail(poGRider);
-            String lsSQL = "DELETE FROM " + model.getTable()+
-                                " WHERE sTransNox = " + SQLUtil.toSQL(poModelMaster.getTransactionNumber());
+    
 
-            if (!lsSQL.equals("")){
-                if (poGRider.executeQuery(lsSQL, model.getTable(), poGRider.getBranchCode(), "") > 0) {
-                    poJSON.put("result", "success");
-                    poJSON.put("message", "Record deleted successfully.");
-                } 
-            }
-        }
-        
-        return poJSON;
-    }  
+    /**
+     *
+     * @param types
+     */
+    @Override
+    public void setType(RequestControllerFactory.RequestType types){
+        type = types;
+    }
+    
+    /**
+     *
+     */
+    @Override
+    public void cancelUpdate(){
+        poGRider.beginTrans();
+        poGRider.rollbackTrans();
+    }
 }
