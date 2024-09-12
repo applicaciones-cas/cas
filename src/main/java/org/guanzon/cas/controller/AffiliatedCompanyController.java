@@ -102,7 +102,6 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
 
                 clearFields();
                 poJSON = oTrans.newRecord();
-                loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -111,6 +110,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
+                loadRecord();
                 break;
 
             case "btnSave":

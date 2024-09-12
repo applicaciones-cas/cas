@@ -97,7 +97,6 @@ public class WarehouseController implements Initializable, ScreenInterface {
 
             case "btnNew":
                 poJSON = oTrans.newRecord();
-                loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -106,6 +105,7 @@ public class WarehouseController implements Initializable, ScreenInterface {
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
+                loadRecord();
                 break;
 
             case "btnSave":

@@ -102,7 +102,6 @@ public class BarangayController implements Initializable, ScreenInterface {
         switch (lsButton) {
 
             case "btnNew":
-
                 clearFields();
                 poJSON = oTrans.newRecord();
                 pnEditMode = oTrans.getModel().getEditMode();

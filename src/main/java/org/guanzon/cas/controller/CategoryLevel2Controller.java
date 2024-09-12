@@ -103,7 +103,6 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
 
                 clearFields();
                 poJSON = oTrans.newRecord();
-                loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -112,6 +111,7 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
+                loadRecord();
                 break;
 
             case "btnSave":
