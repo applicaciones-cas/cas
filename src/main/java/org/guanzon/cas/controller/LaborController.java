@@ -111,6 +111,9 @@ public class LaborController implements Initializable, ScreenInterface {
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
+                oTrans.getModel().setPriceLevel1(0.00);
+                oTrans.getModel().setPriceLevel2(0.00);
+                oTrans.getModel().setPriceLevel3(0.00);
                 loadRecord();
                 break;
 
@@ -444,12 +447,10 @@ public class LaborController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getLaborID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getLaborName());
-        try{
-            txtField03.setText(oTrans.getModel().getPriceLevel1().toString());
-            txtField04.setText(oTrans.getModel().getPriceLevel2().toString());
-            txtField05.setText(oTrans.getModel().getPriceLevel3().toString());
-        }catch(Exception e){
-            }
+        txtField03.setText(oTrans.getModel().getPriceLevel1().toString());
+        txtField04.setText(oTrans.getModel().getPriceLevel2().toString());
+        txtField05.setText(oTrans.getModel().getPriceLevel3().toString());
+ 
 
 
         cbActive.setSelected(lbActive);

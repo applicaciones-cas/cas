@@ -108,8 +108,8 @@ public class TermController implements Initializable, ScreenInterface {
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
+                oTrans.getModel().setTermValue(0.00);
                 loadRecord();
-
                 break;
 
             case "btnSave":
