@@ -98,9 +98,10 @@ public class TermController implements Initializable, ScreenInterface {
         switch (lsButton) {
 
             case "btnNew":
+                clearFields();
                 poJSON = oTrans.newRecord();
-                loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
+
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -108,6 +109,8 @@ public class TermController implements Initializable, ScreenInterface {
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
+                loadRecord();
+
                 break;
 
             case "btnSave":
@@ -302,6 +305,9 @@ public class TermController implements Initializable, ScreenInterface {
 
         txtField02.requestFocus();
         tblList.setDisable(lbShow);
+        
+        cbCoverage.setDisable(!lbShow);
+        cbCoverage.setDisable(!lbShow);
     }
 
     private void initTextFields() {
@@ -392,14 +398,19 @@ public class TermController implements Initializable, ScreenInterface {
     };
 
     private void loadRecord() {
+ 
         boolean lbActive = oTrans.getModel().isActive();
         boolean lbCoverage = oTrans.getModel().isCoverage();
 
         psPrimary = oTrans.getModel().getTermCode();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
-        txtField03.setText(oTrans.getModel().getTermValue().toString());
-
+        try{
+            txtField03.setText(oTrans.getModel().getTermValue().toString());
+        }catch(Exception e){
+            }
+        
+        
         cbActive.setSelected(lbActive);
         cbCoverage.setSelected(lbCoverage);
 
@@ -410,12 +421,14 @@ public class TermController implements Initializable, ScreenInterface {
             btnActivate.setText("Activate");
             faActivate.setGlyphName("CHECK");
         }
+    
+
     }
 
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
-        txtField99.clear();
+        txtField03.clear();
 
         psPrimary = "";
         btnActivate.setText("Activate");
@@ -478,5 +491,14 @@ public class TermController implements Initializable, ScreenInterface {
             loadRecord();
         }
     }
+    
+    @FXML
+    void cbCoverage_Clicked(MouseEvent event) {
 
+        if(cbCoverage.isSelected()){
+           oTrans.getModel().setCoverage(cbCoverage.isSelected());
+        }else{
+            oTrans.getModel().setCoverage(cbCoverage.isSelected());
+        }
+    }
 }

@@ -156,7 +156,7 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </padding>
                                                             </CheckBox>
-                                          <CheckBox fx:id="cbHasRoute" disable="true" layoutX="171.0" layoutY="72.0" mnemonicParsing="false" selected="true" text=" Has Route" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                          <CheckBox fx:id="cbHasRoute" disable="true" layoutX="171.0" layoutY="72.0" mnemonicParsing="false" onMouseClicked="#cbHasRoute_Clicked" selected="true" text=" Has Route" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -164,7 +164,7 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox fx:id="cbBlacklist" disable="true" layoutX="171.0" layoutY="103.0" mnemonicParsing="false" selected="true" text="Black List" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                          <CheckBox fx:id="cbBlacklist" disable="true" layoutX="171.0" layoutY="103.0" mnemonicParsing="false" onMouseClicked="#cbBlacklist_Clicked" selected="true" text="Black List" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>

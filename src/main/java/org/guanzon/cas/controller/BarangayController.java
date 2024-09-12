@@ -105,7 +105,6 @@ public class BarangayController implements Initializable, ScreenInterface {
 
                 clearFields();
                 poJSON = oTrans.newRecord();
-                loadRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -114,6 +113,7 @@ public class BarangayController implements Initializable, ScreenInterface {
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
+                loadRecord();
                 break;
 
             case "btnSave":
@@ -309,6 +309,12 @@ public class BarangayController implements Initializable, ScreenInterface {
 
         txtField02.requestFocus();
         tblList.setDisable(lbShow);
+        
+        
+        cbHasRoute.setDisable(!lbShow);
+        cbBlacklist.setDisable(!lbShow);
+        
+        
     }
 
     private void initTextFields() {
@@ -494,6 +500,16 @@ public class BarangayController implements Initializable, ScreenInterface {
             oTrans.openRecord(ListData.get(pnListRow).getIndex01());
             loadRecord();
         }
+    }
+    
+    @FXML
+    void cbHasRoute_Clicked(MouseEvent event) {
+       oTrans.getModel().setHasRoute(cbHasRoute.isSelected());
+       
+    }
+        @FXML
+    void cbBlacklist_Clicked(MouseEvent event) {
+       oTrans.getModel().setBlackList(cbBlacklist.isSelected());
     }
 
 }
