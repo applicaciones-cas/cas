@@ -403,7 +403,10 @@ public class LaborCategoryController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getLaborID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getCategoryCode());
-        txtField03.setText(oTrans.getModel().getAmount().toString());
+        try{
+            txtField03.setText(oTrans.getModel().getAmount().toString());
+        }catch(Exception e){
+            }
 
         cbActive.setSelected(lbActive);
 

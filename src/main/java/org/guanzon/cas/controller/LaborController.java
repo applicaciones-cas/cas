@@ -444,9 +444,13 @@ public class LaborController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getLaborID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getLaborName());
-        txtField03.setText(oTrans.getModel().getPriceLevel1().toString());
-        txtField04.setText(oTrans.getModel().getPriceLevel2().toString());
-        txtField05.setText(oTrans.getModel().getPriceLevel3().toString());
+        try{
+            txtField03.setText(oTrans.getModel().getPriceLevel1().toString());
+            txtField04.setText(oTrans.getModel().getPriceLevel2().toString());
+            txtField05.setText(oTrans.getModel().getPriceLevel3().toString());
+        }catch(Exception e){
+            }
+
 
         cbActive.setSelected(lbActive);
 

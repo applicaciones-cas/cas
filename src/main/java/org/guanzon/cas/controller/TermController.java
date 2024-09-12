@@ -105,7 +105,6 @@ public class TermController implements Initializable, ScreenInterface {
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
