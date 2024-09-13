@@ -113,6 +113,10 @@ public class RegionController implements Initializable, ScreenInterface {
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
+                oTrans.getModel().setMinimumWages(0);
+                oTrans.getModel().setColaAmount(0.0);
+                oTrans.getModel().setMinimumWage2(0);
+                oTrans.getModel().setColaAmount2(0);
                 loadRecord();
                 break;
 
