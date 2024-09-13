@@ -494,7 +494,7 @@
                     <children>
                         <HBox layoutX="14.0" layoutY="-6.0" prefHeight="100.0" prefWidth="200.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
-                                <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Okay">
+                                <Button fx:id="btnSave" contentDisplay="TOP" mnemonicParsing="false" prefHeight="65.0" prefWidth="65.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="OK">
                                     <graphic>
                                         <FontAwesomeIconView glyphName="CHECK" size="20" textAlignment="CENTER" />
                                     </graphic>

@@ -257,7 +257,7 @@
                                                 <Insets left="5.0" />
                                              </padding>
                                           </TextField>
-                                          <CheckBox fx:id="cbWareHouse" disable="true" mnemonicParsing="false" selected="true" text="Warehouse" GridPane.columnIndex="2" GridPane.rowIndex="9">
+                                          <CheckBox fx:id="cbWareHouse" disable="true" mnemonicParsing="false" onMouseClicked="#cbWareHouse_Clicked" selected="true" text="Warehouse" GridPane.columnIndex="2" GridPane.rowIndex="9">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>

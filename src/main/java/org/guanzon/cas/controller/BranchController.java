@@ -118,7 +118,6 @@ public class BranchController implements Initializable, ScreenInterface {
         switch (lsButton) {
 
             case "btnNew":
-
                 clearFields();
                 poJSON = oTrans.newRecord();
                 pnEditMode = oTrans.getModel().getEditMode();
@@ -301,6 +300,8 @@ public class BranchController implements Initializable, ScreenInterface {
 
         txtField02.requestFocus();
         tblList.setDisable(lbShow);
+        
+        cbWareHouse.setDisable(!lbShow);
     }
 
     private void initTextFields() {
@@ -564,6 +565,15 @@ public class BranchController implements Initializable, ScreenInterface {
         if (pnListRow >= 0) {
             oTrans.openRecord(ListData.get(pnListRow).getIndex01());
             loadRecord();
+        }
+    }
+    
+    @FXML
+    void cbWareHouse_Clicked(MouseEvent event) {
+        if(cbWareHouse.isSelected()){
+           oTrans.getModel().setWareHouse(Boolean.toString(cbWareHouse.isSelected()));
+        }else{
+            oTrans.getModel().setWareHouse(Boolean.toString(cbWareHouse.isSelected()));
         }
     }
 

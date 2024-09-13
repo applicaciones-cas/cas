@@ -376,14 +376,15 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                         break;
                     case 7:
                         /*search town*/
-////                        poJSON = oTrans.searchMaster("sTownIDxx", lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-//
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtField99.requestFocus();
-//                        } else {
-//                            loadRecord();
-//                        }
+                        poJSON = oTrans.searchMaster("sProvIDxx", lsValue, false);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField99.requestFocus();
+                        } else {
+                            loadRecord();
+                        }   
+  
                         break;
                 }
             case ENTER:
