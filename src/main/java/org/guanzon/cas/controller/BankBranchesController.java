@@ -364,7 +364,7 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                     case 4:
                         /*search bank */
                         if (btnSave.isVisible()) {
-                            poJSON = oTrans.searchMaster("sBankIDxx", lsValue, false);
+                            poJSON = oTrans.searchDetail("sBankIDxx", lsValue, false);
                             if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                                 ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -376,15 +376,15 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                         break;
                     case 7:
                         /*search town*/
-                        poJSON = oTrans.searchMaster("sProvIDxx", lsValue, false);
+                        if (btnSave.isVisible()){
+                            poJSON = oTrans.searchDetail("sTownIDxx", lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                             txtField99.requestFocus();
                         } else {
                             loadRecord();
-                        }   
-  
+                        }       
+                        }
                         break;
                 }
             case ENTER:
@@ -411,7 +411,7 @@ public class BankBranchesController implements Initializable, ScreenInterface {
 
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
-        String lsValue = txtField.getText();
+        String lsValue = (txtField.getText()==null?"":txtField.getText());
 
         if (lsValue == null) {
             return;
@@ -438,6 +438,17 @@ public class BankBranchesController implements Initializable, ScreenInterface {
 
                         return;
                     }
+                    
+                    break;
+                case 4:
+                    poJSON = oTrans.getModel().setBankName(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
+                        return;
+                    }
+                    
                     break;
                 case 5:
                     poJSON = oTrans.getModel().setContactPerson(lsValue);
@@ -450,6 +461,15 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                     break;
                 case 6:
                     poJSON = oTrans.getModel().setAddress(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
+                        return;
+                    }
+                    break;
+                case 7:
+                    poJSON = oTrans.getModel().setTownName(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
