@@ -21,7 +21,7 @@ public class Inv_Request implements RequestController  {
     int pnEditMode;
     String psTranStatus;
     RequestController poTrans;
-     RequestControllerFactory factory = new RequestControllerFactory();
+    RequestControllerFactory factory = new RequestControllerFactory();
         
     RequestControllerFactory.RequestType type; // Example type
 

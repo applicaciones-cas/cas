@@ -697,6 +697,7 @@ public class InvStockRequest implements GTranDet {
             
 
         } else {
+            System.out.println("size = " + (poModelDetail.size()-1));
             Validator_Inv_Stock_Request_Detail validator = new Validator_Inv_Stock_Request_Detail(poModelDetail.get(poModelDetail.size()-1));
             if (!validator.isEntryOkay()){
                 poJSON.put("result", "error");
