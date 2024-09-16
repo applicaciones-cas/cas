@@ -744,4 +744,9 @@ public class Inv_Request_MC implements RequestController {
         poGRider.beginTrans();
         poGRider.rollbackTrans();
     }
+
+    @Override
+    public void setCategoryType(RequestControllerFactory.RequestCategoryType type) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

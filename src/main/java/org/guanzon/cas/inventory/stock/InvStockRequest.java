@@ -56,6 +56,8 @@ public class InvStockRequest implements GTranDet {
     public JSONObject newTransaction() {
 
         poJSON = new JSONObject();
+        
+        poModelMaster = new Model_Inv_Stock_Request_Master(poGRider);
         poJSON = poModelMaster.newRecord();
 
         if ("error".equals((String) poJSON.get("result"))) {

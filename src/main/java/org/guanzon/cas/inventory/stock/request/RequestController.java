@@ -226,6 +226,7 @@ public interface RequestController extends GTranDet  {
     JSONObject AddModelDetail();
     void RemoveModelDetail(int fnRow);
     void setType(RequestControllerFactory.RequestType type);
+    void setCategoryType(RequestControllerFactory.RequestCategoryType type);
     
     ArrayList<Model_Inv_Stock_Request_Detail> getDetailModel();
     void cancelUpdate();

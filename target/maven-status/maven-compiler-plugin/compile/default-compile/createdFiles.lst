@@ -23,6 +23,7 @@ org\guanzon\cas\inventory\CasInventory.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestCancelDetail.class
 org\guanzon\cas\inventory\base\InvSerial.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInvSerialLedger.class
+org\guanzon\cas\inventory\stock\request\RequestControllerFactory$RequestCategoryType.class
 org\guanzon\cas\inventory\resultSet2XML\ModelCategory.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestCancelMaster.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInvSerial.class

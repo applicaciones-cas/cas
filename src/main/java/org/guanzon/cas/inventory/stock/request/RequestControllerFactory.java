@@ -22,6 +22,10 @@ public class RequestControllerFactory {
         SP,
         SUPPLIES
     }
+    public enum RequestCategoryType {
+        WITH_ROQ,
+        WITHOUT_ROQ
+    }
     public static RequestController make(RequestType foType, GRider oApp, boolean fbVal){
         switch (foType) {
             case MC:

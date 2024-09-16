@@ -24,7 +24,11 @@ public class Inv_Request implements RequestController  {
     RequestControllerFactory factory = new RequestControllerFactory();
         
     RequestControllerFactory.RequestType type; // Example type
+    RequestControllerFactory.RequestCategoryType categ_type; // Example type
 
+    private boolean p_bWithUI = true;
+    JSONObject poJSON;
+    
     // Get the appropriate controller
 
     /**
@@ -35,10 +39,16 @@ public class Inv_Request implements RequestController  {
     public void setType(RequestControllerFactory.RequestType types){
         type = types;
         poTrans = factory.make(type, poGRider, p_bWithUI);
+        poTrans.setType(type);
         
     }
-    private boolean p_bWithUI = true;
-    JSONObject poJSON;
+    
+
+    @Override
+    public void setCategoryType(RequestControllerFactory.RequestCategoryType type) {
+        categ_type = type;
+        poTrans.setCategoryType(categ_type);
+    }
     
     public void setWithUI(boolean fbValue){
         p_bWithUI = fbValue;
