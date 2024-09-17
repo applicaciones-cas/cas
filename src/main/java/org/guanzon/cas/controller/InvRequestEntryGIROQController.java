@@ -60,7 +60,7 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
     
     @FXML
     private AnchorPane 
-                anchorMain;
+                AnchorMain;
 
     @FXML
     private TextField 
@@ -157,7 +157,10 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
             unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
                 case"btnClose":
-                    
+                     if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
+                        clearAllFields();    
+                        appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
+                        }
                     break;
                     
                 case"btnNew":

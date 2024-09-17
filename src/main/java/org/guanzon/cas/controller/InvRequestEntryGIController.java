@@ -752,7 +752,7 @@ public class InvRequestEntryGIController implements Initializable,ScreenInterfac
     private void initTrans(){
         clearAllFields();
         oTrans = new Inv_Request(oApp, true);
-        oTrans.setType(RequestControllerFactory.RequestType.ASSET);
+        oTrans.setType(RequestControllerFactory.RequestType.SP);
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
         pnEditMode = EditMode.UNKNOWN;     
