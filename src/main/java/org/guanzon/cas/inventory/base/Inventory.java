@@ -40,6 +40,7 @@ import org.json.simple.JSONObject;
 public class Inventory implements GRecord{
     GRider poGRider;
     boolean pbWthParent;
+    private boolean p_bWithUI = true;
     String psBranchCd;
     boolean pbWtParent;
     public JSONObject poJSON;
@@ -51,6 +52,9 @@ public class Inventory implements GRecord{
     private Model_Inventory poModel;
     private InventorySubUnit poSubUnit;
 
+    public void setWithUI(boolean fbValue){
+        p_bWithUI = fbValue;
+    }
     public ValidatorFactory.TYPE types;
      public Inventory(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
@@ -445,56 +449,117 @@ public class Inventory implements GRecord{
 
         System.out.print("this is lsSQL == " + lsSQL + "\n");
 
+        if(p_bWithUI){
+            poJSON = ShowDialogFX.Search(poGRider,
+                    lsSQL,
+                    fsValue,
+                    "Stock ID»Barcode»Name",
+                    "sStockIDx»sBarCodex»sDescript",
+                    "a.sStockIDx»a.sBarCodex»a.sDescript",
+                    fbByCode ? 1: 2);
 
-//        if(!pbWthParent){
-//            lsSQL = poModel.getSQL();
-//            if (fbByCode)
-//                lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
-//            else
-//                lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
-//                lsSQL += " LIMIT 1";
-//
-//
-//            System.out.print("test lsSQL == " + lsSQL + "\n");
-//            ResultSet loRS = poGRider.executeQuery(lsSQL);
-//
-//          try {
-//                if (!loRS.next()){
-//                    MiscUtil.close(loRS);
-//
-//                    poJSON = new JSONObject();
-//                    poJSON.put("result", "error");
-//                    poJSON.put("message", "No transaction found for the givern criteria.");
-//                    return poJSON;
-//                }
-//
-//                lsSQL = loRS.getString("sStockIDx");
-//                MiscUtil.close(loRS);
-//                return openRecord(lsSQL);
-//          } catch (SQLException ex) {
-//              Logger.getLogger(InvMaster.class.getName()).log(Level.SEVERE, null, ex);
-//          }
-//
-//        }
-        poJSON = ShowDialogFX.Search(poGRider,
-                lsSQL,
-                fsValue,
-                "Stock ID»Barcode»Name",
-                "sStockIDx»sBarCodex»sDescript",
-                "a.sStockIDx»a.sBarCodex»a.sDescript",
-                fbByCode ? 1: 2);
-
-        if (poJSON != null) {
-            pnEditMode = EditMode.READY;
-            return openRecord((String) poJSON.get("sStockIDx"));
-        } else {
-            poJSON = new JSONObject();
-            poJSON.put("result", "error");
-            poJSON.put("message", "No record loaded to update.");
-            return poJSON;
+            if (poJSON != null) {
+                pnEditMode = EditMode.READY;
+                return openRecord((String) poJSON.get("sStockIDx"));
+            } else {
+                poJSON = new JSONObject();
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded to update.");
+                return poJSON;
+            }
         }
+        if (fbByCode)
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
+        else
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
+            lsSQL += " LIMIT 1";
+            
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+        
+        try {
+            if (!loRS.next()){
+                MiscUtil.close(loRS);
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded.");
+                return poJSON;
+            }
+            
+            lsSQL = loRS.getString("sStockIDx");
+            MiscUtil.close(loRS);
+        } catch (SQLException ex) {
+            Logger.getLogger(Inventory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        return openRecord(lsSQL);
     }
     
+    public JSONObject searchRecordWithContition(String fsValue, String fsCondition, boolean fbByCode) {
+      String lsCondition = "";
+
+        if (psTranStatus.length() > 1) {
+            for (int lnCtr = 0; lnCtr <= psTranStatus.length() - 1; lnCtr++) {
+                lsCondition += ", " + SQLUtil.toSQL(Character.toString(psTranStatus.charAt(lnCtr)));
+            }
+
+            lsCondition = "cRecdStat IN (" + lsCondition.substring(2) + ")";
+        } else {
+            lsCondition = "cRecdStat = " + SQLUtil.toSQL(psTranStatus);
+        }
+        String lsSQL = poModel.makeSelectSQL();
+
+        if (fbByCode)
+            lsSQL = MiscUtil.addCondition(lsSQL, "sBarCodex LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
+        else
+            lsSQL = MiscUtil.addCondition(lsSQL, "sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
+
+        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
+        System.out.print("this is lsSQL == " + lsSQL + "\n");
+        
+        if(p_bWithUI){
+            poJSON = ShowDialogFX.Search(poGRider,
+                    lsSQL,
+                    fsValue,
+                    "Stock ID»Barcode»Name",
+                    "sStockIDx»sBarCodex»sDescript",
+                    "sStockIDx»sBarCodex»sDescript",
+                    fbByCode ? 1: 2);
+
+            if (poJSON != null) {
+                pnEditMode = EditMode.READY;
+                return openRecord((String) poJSON.get("sStockIDx"));
+            } else {
+                poJSON = new JSONObject();
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded to update.");
+                return poJSON;
+            }
+        }
+            
+        
+        
+        lsSQL += " LIMIT 1";
+        System.out.print("this is test lsSQL == " + lsSQL + "\n");
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+        
+        try {
+            if (!loRS.next()){
+                MiscUtil.close(loRS);
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded.");
+                return poJSON;
+            }
+            
+            lsSQL = loRS.getString("sStockIDx");
+            MiscUtil.close(loRS);
+        } catch (SQLException ex) {
+            Logger.getLogger(Inventory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        return openRecord(lsSQL);
+        
+    }
     public JSONObject searchRecordByStockID(String fsValue, boolean fbByCode) {
       String lsCondition = "";
 
@@ -515,55 +580,51 @@ public class Inventory implements GRecord{
             lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
 
         System.out.print("this is lsSQL == " + lsSQL + "\n");
+        
+        if(p_bWithUI){
+            poJSON = ShowDialogFX.Search(poGRider,
+                    lsSQL,
+                    fsValue,
+                    "Stock ID»Barcode»Name",
+                    "sStockIDx»sBarCodex»sDescript",
+                    "a.sStockIDx»a.sBarCodex»a.sDescript",
+                    fbByCode ? 1: 2);
 
-
-//        if(!pbWthParent){
-//            lsSQL = poModel.getSQL();
-//            if (fbByCode)
-//                lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
-//            else
-//                lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
-//                lsSQL += " LIMIT 1";
-//
-//
-//            System.out.print("test lsSQL == " + lsSQL + "\n");
-//            ResultSet loRS = poGRider.executeQuery(lsSQL);
-//
-//          try {
-//                if (!loRS.next()){
-//                    MiscUtil.close(loRS);
-//
-//                    poJSON = new JSONObject();
-//                    poJSON.put("result", "error");
-//                    poJSON.put("message", "No transaction found for the givern criteria.");
-//                    return poJSON;
-//                }
-//
-//                lsSQL = loRS.getString("sStockIDx");
-//                MiscUtil.close(loRS);
-//                return openRecord(lsSQL);
-//          } catch (SQLException ex) {
-//              Logger.getLogger(InvMaster.class.getName()).log(Level.SEVERE, null, ex);
-//          }
-//
-//        }
-        poJSON = ShowDialogFX.Search(poGRider,
-                lsSQL,
-                fsValue,
-                "Stock ID»Barcode»Name",
-                "sStockIDx»sBarCodex»sDescript",
-                "a.sStockIDx»a.sBarCodex»a.sDescript",
-                fbByCode ? 1: 2);
-
-        if (poJSON != null) {
-            pnEditMode = EditMode.READY;
-            return openRecord((String) poJSON.get("sStockIDx"));
-        } else {
-            poJSON = new JSONObject();
-            poJSON.put("result", "error");
-            poJSON.put("message", "No record loaded to update.");
-            return poJSON;
+            if (poJSON != null) {
+                pnEditMode = EditMode.READY;
+                return openRecord((String) poJSON.get("sStockIDx"));
+            } else {
+                poJSON = new JSONObject();
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded to update.");
+                return poJSON;
+            }
         }
+        if (fbByCode)
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
+        else
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
+            lsSQL += " LIMIT 1";
+            
+        ResultSet loRS = poGRider.executeQuery(lsSQL);
+        
+        try {
+            if (!loRS.next()){
+                MiscUtil.close(loRS);
+                poJSON.put("result", "error");
+                poJSON.put("message", "No record loaded.");
+                return poJSON;
+            }
+            
+            lsSQL = loRS.getString("sStockIDx");
+            MiscUtil.close(loRS);
+        } catch (SQLException ex) {
+            Logger.getLogger(Inventory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        return openRecord(lsSQL);
+        
     }
     @Override
     public Model_Inventory getModel() {
