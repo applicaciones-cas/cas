@@ -4,12 +4,16 @@
  */
 package org.guanzon.cas.model;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import org.guanzon.appdriver.constant.TransactionStatus;
+
 /**
  *
  * @author User
  */
 public class SharedModel {
     public static String sharedString = "";
-
+    public static ObservableList<String> TRANSACTION_STATUS = FXCollections.observableArrayList("OPEN", "CLOSED", "POSTED","CANCELLED", "VOID", "UNKNOWN");
    
 }

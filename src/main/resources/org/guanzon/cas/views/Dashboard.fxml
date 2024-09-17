@@ -223,6 +223,26 @@
                                                 <Menu mnemonicParsing="false" text="_Inventory">
                                                     <items>
                                                         <MenuItem fx:id="mnuInventory" mnemonicParsing="false" onAction="#mnuInventoryClick" text="Inventory Details" />
+                                          <Menu mnemonicParsing="false" text="Stock Request">
+                                             <items>
+                                                <Menu mnemonicParsing="false" text="Regular">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuGIStockRequestRegular" mnemonicParsing="false" onAction="#mnuGIStockRequestRegularClick" text="GI Stock Request Regular" />
+                                                      <MenuItem fx:id="mnuSPStockRequestRegular" mnemonicParsing="false" onAction="#mnuSPStockRequestRegularClick" text="SP Stock Request Regular" />
+                                                      <MenuItem fx:id="mnuMCStockRequestRegular" mnemonicParsing="false" onAction="#mnuMCStockRequestRegularClick" text="MC Stock Request Regular" />
+                                                      <MenuItem fx:id="mnuMPStockRequestRegular" mnemonicParsing="false" onAction="#mnuMPStockRequestRegularClick" text="MP Stock Request Regular" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="ROQ">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuGIStockRequestROQ" mnemonicParsing="false" onAction="#mnuGIStockRequestROQClick" text="GI Stock Request ROQ" />
+                                                      <MenuItem fx:id="mnuSPStockRequestROQ" mnemonicParsing="false" onAction="#mnuSPStockRequestROQClick" text="SP Stock Request ROQ" />
+                                                      <MenuItem fx:id="mnuMCStockRequestROQ" mnemonicParsing="false" onAction="#mnuMCStockRequestROQClick" text="MC Stock Request ROQ" />
+                                                      <MenuItem fx:id="mnuMPStockRequestRegular1" mnemonicParsing="false" onAction="#mnuMPStockRequestROQClick" text="MP Stock Request ROQ" />
+                                                   </items>
+                                                </Menu>
+                                             </items>
+                                          </Menu>
                                                     </items>
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="_Purchasing">
