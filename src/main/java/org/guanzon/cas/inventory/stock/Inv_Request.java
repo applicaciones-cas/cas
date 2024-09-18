@@ -216,5 +216,24 @@ public class Inv_Request implements RequestController  {
     public void cancelUpdate(){
         poTrans.cancelUpdate();
     }
+
+    @Override
+    public JSONObject loadAllInventoryMinimumLevel() {
+        return poTrans.loadAllInventoryMinimumLevel();
+    }
+
+    @Override
+    public JSONObject setDetailOthers(int fnRow, String fsCol, Object foData) {
+        return poTrans.setDetailOthers(fnRow, fsCol, foData);
+    }
+
+    @Override
+    public JSONObject setDetailOthers(int fnRow, int fnCol, Object foData) {
+        return poTrans.setDetailOthers(fnRow, fnCol, foData);
+    }
+    @Override
+    public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModelOthers() {
+       return poTrans.getDetailModelOthers();
+    }
     
 }

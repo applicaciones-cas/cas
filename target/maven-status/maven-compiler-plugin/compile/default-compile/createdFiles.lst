@@ -1,3 +1,4 @@
+org\guanzon\cas\inventory\base\PO_Quotation_Request.class
 org\guanzon\cas\inventory\resultSet2XML\ModelCategory4.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventorySubUnit.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInvHistLedger.class

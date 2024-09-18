@@ -219,6 +219,8 @@ public interface RequestController extends GTranDet  {
     @Override
     void setTransactionStatus(String fsValue);
     
+    
+    
     JSONObject OpenModelDetail(String fsTransNo);
     JSONObject SearchDetailRequest(String fsTransNo, String fsStockID);
     JSONObject OpenModelDetailByStockID(String fsTransNo, String fsStockID);
@@ -229,5 +231,28 @@ public interface RequestController extends GTranDet  {
     void setCategoryType(RequestControllerFactory.RequestCategoryType type);
     
     ArrayList<Model_Inv_Stock_Request_Detail> getDetailModel();
+    ArrayList<Model_Inv_Stock_Request_Detail> getDetailModelOthers();
     void cancelUpdate();
+    
+    //use for request with roq
+    JSONObject loadAllInventoryMinimumLevel();
+    
+    /**
+     *
+     * @param fnRow
+     * @param fsCol
+     * @param foData
+     * @return
+     */
+    JSONObject setDetailOthers(int fnRow, String fsCol, Object foData);
+
+    /**
+     *
+     * @param fnRow
+     * @param fsCol
+     * @param fsValue
+     * @param bln
+     * @return
+     */
+    JSONObject setDetailOthers(int fnRow, int fnCol, Object foData);
 }

@@ -40,6 +40,7 @@ public class Inv_Request_SP implements RequestController {
     private boolean p_bWithUI = true;
     Model_Inv_Stock_Request_Master poModelMaster;
     ArrayList<Model_Inv_Stock_Request_Detail> poModelDetail;
+    ArrayList<Model_Inv_Stock_Request_Detail> poModelDetailOthers;
     RequestType type;
     RequestCategoryType category_type;
     // Create a backup list to store deleted records temporarily
@@ -58,6 +59,8 @@ public class Inv_Request_SP implements RequestController {
         poModelMaster = new Model_Inv_Stock_Request_Master(foGRider);
         poModelDetail = new ArrayList<>();
         poModelDetail.add(new Model_Inv_Stock_Request_Detail(foGRider));
+        poModelDetailOthers = new ArrayList<>();
+        poModelDetailOthers.add(new Model_Inv_Stock_Request_Detail(foGRider));
         pnEditMode = EditMode.UNKNOWN;
     }
 
@@ -108,6 +111,10 @@ public class Inv_Request_SP implements RequestController {
             poModelDetail.get(getItemCount() - 1).newRecord();
             poJSON = poModelDetail.get(getItemCount() - 1).setTransactionNumber(poModelMaster.getTransactionNumber());
         }else{
+            poModelDetail = new ArrayList<>();
+            poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
+            poModelDetail.get(getItemCount() - 1).newRecord();
+            poJSON = poModelDetail.get(getItemCount() - 1).setTransactionNumber(poModelMaster.getTransactionNumber());
             poJSON = loadAllInventoryMinimumLevel();
         }
         if ("error".equals((String) poJSON.get("result"))) {
@@ -701,62 +708,20 @@ public class Inv_Request_SP implements RequestController {
             // After cleaning, check if any valid items are left
             if (getItemCount() > 0) {
                 System.out.print("category_type = " + category_type);
-                if(category_type == RequestCategoryType.WITH_ROQ){
-                    boolean allZero = true;
-                    for (Model_Inv_Stock_Request_Detail items : poModelDetail) {
-                        if (Integer.parseInt(items.getQuantity().toString()) != 0) {
-                            allZero = false;  // If any product's quantity is not zero, set flag to false
-                            break;  // No need to check further if one non-zero quantity is found
-                        }
-                    }
-                    if (allZero) {
-                        poJSON.put("result", "error");
-                        poJSON.put("message", "Quantities are currently set to 0. Update them to continue.");
-                        return poJSON;
+                if(category_type == RequestCategoryType.WITHOUT_ROQ){
+                    poJSON = saveDetailWithoutROQ();
+                }else{
+                    poJSON = saveDetailWithROQ();
                 }
+                
+                if ("error".equals((String) poJSON.get("result"))) {
+                    return poJSON;
                 }
                 // Proceed with saving remaining items
-                roqSaveCount = 0;
-                for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
-                    poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
-                    poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
-                    
-                    
-                   if(category_type == RequestCategoryType.WITHOUT_ROQ){
-                        Validator_Inv_Stock_Request_SP_Detail validator = new Validator_Inv_Stock_Request_SP_Detail(poModelDetail.get(poModelDetail.size()-1));
-                        if (!validator.isEntryOkay()){
-                            poJSON.put("result", "error");
-                            poJSON.put("message", validator.getMessage());
-                            return poJSON;
-
-                        }
-                        poJSON = poModelDetail.get(lnCtr).saveRecord();
-                        
-
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            if (!pbWthParent) {
-                                poGRider.rollbackTrans();
-                            }
-                            return poJSON;
-                        }
-                   }else{
-                       int lnQty = Integer.parseInt(poModelDetail.get(lnCtr).getQuantity().toString());
-                        if(lnQty>0){
-                            poJSON = poModelDetail.get(lnCtr).saveRecord();
-                            
-
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                if (!pbWthParent) {
-                                    poGRider.rollbackTrans();
-                                }
-                                return poJSON;
-                            }
-                            roqSaveCount++;
-                        }
-                   }
-                    poJSON.put("result", "success");
-                    poJSON.put("message", "Save item record successfuly.");
-                }
+                
+                poJSON.put("result", "success");
+                poJSON.put("message", "Save item record successfuly.");
+                
             } else {
                 poJSON.put("result", "error");
                 poJSON.put("message", "Unable to Save empty Transaction.");
@@ -768,6 +733,65 @@ public class Inv_Request_SP implements RequestController {
             return poJSON;
         }
         
+        return poJSON;
+    }
+    private JSONObject saveDetailWithoutROQ(){
+        poJSON = new JSONObject();
+        for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
+            poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
+            poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
+
+            Validator_Inv_Stock_Request_SP_Detail validator = new Validator_Inv_Stock_Request_SP_Detail(poModelDetail.get(poModelDetail.size()-1));
+            if (!validator.isEntryOkay()){
+                poJSON.put("result", "error");
+                poJSON.put("message", validator.getMessage());
+                return poJSON;
+
+            }
+            poJSON = poModelDetail.get(lnCtr).saveRecord();
+
+
+            if ("error".equals((String) poJSON.get("result"))) {
+                return poJSON;
+            }
+            poJSON.put("result", "success");
+            poJSON.put("message", "Save item record successfuly.");
+        }
+        return poJSON;
+    }
+    private JSONObject saveDetailWithROQ(){
+        poJSON = new JSONObject();
+        boolean allZero = true;
+        for (Model_Inv_Stock_Request_Detail items : poModelDetail) {
+            if (Integer.parseInt(items.getQuantity().toString()) != 0) {
+                allZero = false;  // If any product's quantity is not zero, set flag to false
+                break;  // No need to check further if one non-zero quantity is found
+            }
+        }
+        if (allZero) {
+            poJSON.put("result", "error");
+            poJSON.put("message", "Quantities are currently set to 0. Update them to continue.");
+            return poJSON;
+        }
+        roqSaveCount = 0;
+        for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
+            poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
+            int lnQty = Integer.parseInt(poModelDetail.get(lnCtr).getQuantity().toString());
+            if(lnQty>0){
+                
+                poModelDetail.get(lnCtr).setEntryNumber(roqSaveCount + 1);
+                poJSON = poModelDetail.get(lnCtr).saveRecord();
+
+
+                if ("error".equals((String) poJSON.get("result"))) {
+                    return poJSON;
+                }
+                roqSaveCount++;
+            }
+            
+            poJSON.put("result", "success");
+            poJSON.put("message", "Save item record successfuly.");
+        }
         return poJSON;
     }
             
@@ -882,7 +906,8 @@ public class Inv_Request_SP implements RequestController {
     * Use for loading Inventory below minimum 
     *
     */
-    private JSONObject loadAllInventoryMinimumLevel(){
+    @Override
+    public JSONObject loadAllInventoryMinimumLevel(){
         poJSON = new JSONObject();
         try {
             String lsSQL = getSQL_Detail();
@@ -1001,5 +1026,19 @@ public class Inv_Request_SP implements RequestController {
             " LEFT JOIN Color g ON b.sColorCde = g.sColorCde" +
             " LEFT JOIN Measure h ON b.sMeasurID = h.sMeasurID" +
             " LEFT JOIN Inv_Type i ON d.sInvTypCd = i.sInvTypCd" ;
+    }
+
+    @Override
+    public JSONObject setDetailOthers(int fnRow, String fsCol, Object foData) {
+        return poModelDetailOthers.get(fnRow).setValue(fsCol, foData);}
+
+    @Override
+    public JSONObject setDetailOthers(int fnRow, int fsCol, Object foData) {
+        return setDetail(fnRow, poModelDetailOthers.get(fnRow).getColumn(fsCol), foData); 
+    }
+
+    @Override
+    public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModelOthers() {
+        return poModelDetailOthers;
     }
 }
