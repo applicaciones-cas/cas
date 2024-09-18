@@ -11,7 +11,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -22,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="AnchorMain" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane fx:id="AnchorMain" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <bottom>
@@ -155,11 +154,11 @@
                                  <items>
                                     <AnchorPane maxHeight="250.0" minHeight="200.0">
                                        <children>
-                                          <TableView fx:id="tblRequest011" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                          <TableView fx:id="tblRequest01" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                              <columns>
-                                                <TableColumn fx:id="R1index011" minWidth="200.0" prefWidth="200.0" text="MONTHLY" />
-                                                <TableColumn fx:id="R1index021" minWidth="200.0" prefWidth="200.0" text="DEMAND" />
-                                                <TableColumn fx:id="R1index031" minWidth="200.0" prefWidth="200.0" text="ORDER" />
+                                                <TableColumn fx:id="R2index01" minWidth="250.0" prefWidth="250.0" text="MONTHLY" />
+                                                <TableColumn fx:id="R2index02" minWidth="200.0" prefWidth="200.0" text="DEMAND" />
+                                                <TableColumn fx:id="R2index03" minWidth="240.0" prefWidth="240.0" text="ORDER" />
                                              </columns>
                                           </TableView>
                                        </children>
@@ -232,94 +231,7 @@
                                                       <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                                    </padding>
                                                 </Label>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Barrcode" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Description" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brand" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Category" GridPane.halignment="RIGHT" GridPane.rowIndex="10">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max Level" GridPane.halignment="RIGHT" GridPane.rowIndex="15">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Class" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="10">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
-                                                <Button fx:id="btnAddItem" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="16">
-                                                   <graphic>
-                                                      <FontAwesomeIconView glyphName="PLUS" size="20" textAlignment="CENTER" />
-                                                   </graphic>
-                                                   <tooltip>
-                                                      <Tooltip text="ADD ADDRESS" />
-                                                   </tooltip>
-                                                </Button>
-                                                <Button fx:id="btnDelItem" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="16">
-                                                   <graphic>
-                                                      <FontAwesomeIconView glyphName="TRASH" size="20" textAlignment="CENTER" />
-                                                   </graphic>
-                                                   <tooltip>
-                                                      <Tooltip text="ADD ADDRESS" />
-                                                   </tooltip>
-                                                   <GridPane.margin>
-                                                      <Insets left="40.0" />
-                                                   </GridPane.margin>
-                                                </Button>
-                                                <TextField fx:id="txtField05" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7" />
-                                                <TextField fx:id="txtField06" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="8" />
-                                                <TextField fx:id="txtField07" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="9" />
-                                                <TextField fx:id="txtField08" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="10" />
-                                                <TextField fx:id="txtField14" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="15" />
-                                                <TextField fx:id="txtField09" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="9" />
-                                                <TextField fx:id="txtField10" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="10" />
                                                 <Separator prefWidth="200.0" GridPane.columnSpan="7" GridPane.rowIndex="4">
-                                                   <GridPane.margin>
-                                                      <Insets left="10.0" right="10.0" />
-                                                   </GridPane.margin>
-                                                </Separator>
-                                                <Separator prefWidth="200.0" GridPane.columnSpan="7" GridPane.rowIndex="6">
                                                    <GridPane.margin>
                                                       <Insets left="10.0" right="10.0" />
                                                    </GridPane.margin>
@@ -332,6 +244,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
+                                                <TextField fx:id="txtField03" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Category" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                                                    <font>
                                                       <Font size="14.0" />
@@ -340,8 +253,71 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <TextField fx:id="txtField03" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                 <TextField fx:id="txtField04" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                                <Separator prefWidth="200.0" GridPane.columnSpan="7" GridPane.rowIndex="6">
+                                                   <GridPane.margin>
+                                                      <Insets left="10.0" right="10.0" />
+                                                   </GridPane.margin>
+                                                </Separator>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Barrcode" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                </Text>
+                                                <TextField fx:id="txtField05" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Description" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                </Text>
+                                                <TextField fx:id="txtField06" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="8" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brand" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                </Text>
+                                                <TextField fx:id="txtField07" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="9" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Category" GridPane.halignment="RIGHT" GridPane.rowIndex="10">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                </Text>
+                                                <TextField fx:id="txtField08" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="10" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                </Text>
+                                                <TextField fx:id="txtField09" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="9" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Class" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="10">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                </Text>
+                                                <TextField fx:id="txtField10" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="10" />
+                                                <Separator prefWidth="200.0" GridPane.columnSpan="7" GridPane.rowIndex="11">
+                                                   <GridPane.margin>
+                                                      <Insets left="10.0" right="10.0" />
+                                                   </GridPane.margin>
+                                                </Separator>
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="On Hand" GridPane.halignment="RIGHT" GridPane.rowIndex="12">
                                                    <font>
                                                       <Font size="14.0" />
@@ -350,6 +326,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
+                                                <TextField fx:id="txtField11" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="12" />
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ROQ" GridPane.halignment="RIGHT" GridPane.rowIndex="13">
                                                    <font>
                                                       <Font size="14.0" />
@@ -358,42 +335,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="On Order" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="12">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Unconfirm Order" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="13">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
-                                                <TextField fx:id="txtField11" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="12" />
                                                 <TextField fx:id="txtField12" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="13" />
-                                                <TextField fx:id="txtField16" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="12" />
-                                                <TextField fx:id="txtField17" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="13" />
-                                                <Separator prefWidth="200.0" GridPane.columnSpan="7" GridPane.rowIndex="11">
-                                                   <GridPane.margin>
-                                                      <Insets left="10.0" right="10.0" />
-                                                   </GridPane.margin>
-                                                </Separator>
-                                                <TextField fx:id="txtField13" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="14" />
-                                                <TextField fx:id="txtField18" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="14" />
-                                                <TextField fx:id="txtField19" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="15" />
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Order" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="14">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Min Level" GridPane.halignment="RIGHT" GridPane.rowIndex="14">
                                                    <font>
                                                       <Font size="14.0" />
@@ -402,14 +344,16 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <Text fill="#f20000" strokeType="OUTSIDE" strokeWidth="0.0" text="Qty Request" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="15">
+                                                <TextField fx:id="txtField13" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="14" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max Level" GridPane.halignment="RIGHT" GridPane.rowIndex="15">
                                                    <font>
-                                                      <Font name="System Bold" size="18.0" />
+                                                      <Font size="14.0" />
                                                    </font>
                                                    <GridPane.margin>
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
+                                                <TextField fx:id="txtField14" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="15" />
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="AMC" GridPane.halignment="RIGHT" GridPane.rowIndex="16">
                                                    <font>
                                                       <Font size="14.0" />
@@ -419,6 +363,42 @@
                                                    </GridPane.margin>
                                                 </Text>
                                                 <TextField fx:id="txtField15" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="16" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="On Order" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="12">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                </Text>
+                                                <TextField fx:id="txtField16" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="12" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Unconfirm Order" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="13">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                </Text>
+                                                <TextField fx:id="txtField17" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="13" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Order" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="14">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                </Text>
+                                                <TextField fx:id="txtField18" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="14" />
+                                                <Text fill="#f20000" strokeType="OUTSIDE" strokeWidth="0.0" text="Qty Request" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="15">
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                </Text>
+                                                <TextField fx:id="txtField19" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="15" />
                                              </children>
                                           </GridPane>
                                        </children>
@@ -429,7 +409,7 @@
                         </AnchorPane>
                         <AnchorPane style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
                            <children>
-                              <TableView fx:id="tblRequest01" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                              <TableView fx:id="tblRequest" onMouseClicked="#tblDetails_Clicked" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                  <columns>
                                     <TableColumn fx:id="R1index01" prefWidth="30.0" text="No." />
                                     <TableColumn fx:id="R1index02" prefWidth="180.0" text="Barrcode" />
@@ -438,8 +418,8 @@
                                     <TableColumn fx:id="R1index05" minWidth="50.0" prefWidth="50.0" text="QOH" />
                                     <TableColumn fx:id="R1index06" minWidth="50.0" prefWidth="50.0" text="Min" />
                                     <TableColumn fx:id="R1index07" minWidth="50.0" prefWidth="50.0" text="CO" />
-                                    <TableColumn fx:id="R1index071" minWidth="50.0" prefWidth="50.0" text="ROQ" />
-                                    <TableColumn fx:id="R1index072" minWidth="50.0" prefWidth="50.0" text="QTY" />
+                                    <TableColumn fx:id="R1index08" minWidth="50.0" prefWidth="50.0" text="ROQ" />
+                                    <TableColumn fx:id="R1index09" minWidth="50.0" prefWidth="50.0" text="QTY" />
                                  </columns>
                                  <stylesheets>
                                     <URL value="@../css/StyleSheet.css" />

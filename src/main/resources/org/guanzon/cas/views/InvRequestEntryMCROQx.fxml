@@ -21,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="AnchorMain" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="AnchorMain" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <bottom>
@@ -145,7 +145,7 @@
                <children>
                   <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <items>
-                        <AnchorPane fx:id="AnchorInput" style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
+                        <AnchorPane style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
@@ -249,7 +249,7 @@
                                           <Insets left="10.0" right="10.0" />
                                        </GridPane.margin>
                                     </Separator>
-                                    <Label fx:id="lblStatus1" alignment="CENTER" contentDisplay="CENTER" maxWidth="300.0" minWidth="150.0" style="-fx-background-color: #4D5656;" text="Requisting Branch Info" textAlignment="CENTER" textFill="WHITE" GridPane.columnSpan="2" GridPane.rowIndex="11">
+                                    <Label fx:id="lblStatus1" alignment="CENTER" contentDisplay="CENTER" maxWidth="300.0" minWidth="150.0" style="-fx-background-color: #4D5656;" text="Requesting Branch Info" textAlignment="CENTER" textFill="WHITE" GridPane.columnSpan="2" GridPane.rowIndex="11">
                                        <font>
                                           <Font name="System Bold Italic" size="15.0" />
                                        </font>
@@ -383,26 +383,26 @@
                               </GridPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="AnchorTable" style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
+                        <AnchorPane style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
                            <children>
                               <SplitPane dividerPositions="0.3" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <items>
                                   <AnchorPane minWidth="0.0" SplitPane.resizableWithParent="false">
                                        <children>
-                                          <TableView fx:id="tblRequest02" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                          <TableView fx:id="tblRequest011" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                              <columns>
-                                                <TableColumn fx:id="R2index01" prefWidth="30.0" text="No." />
-                                                <TableColumn fx:id="R2index02" minWidth="250.0" prefWidth="250.0" text="Model" />
-                                                <TableColumn fx:id="R2index03" minWidth="250.0" prefWidth="250.0" text="Color" />
-                                                <TableColumn fx:id="R2index04" minWidth="85.0" prefWidth="85.0" text="ROQ" />
-                                                <TableColumn fx:id="R2index05" minWidth="85.0" prefWidth="85.0" text="QTY" />
+                                                <TableColumn fx:id="R1index011" prefWidth="30.0" text="No." />
+                                                <TableColumn fx:id="R1index021" minWidth="250.0" prefWidth="250.0" text="Model" />
+                                                <TableColumn fx:id="R1index031" minWidth="250.0" prefWidth="250.0" text="Color" />
+                                                <TableColumn fx:id="R1index0711" minWidth="85.0" prefWidth="85.0" text="ROQ" />
+                                                <TableColumn fx:id="R1index0721" minWidth="85.0" prefWidth="85.0" text="QTY" />
                                              </columns>
                                           </TableView>
                                        </children>
                                     </AnchorPane>
                                   <AnchorPane SplitPane.resizableWithParent="false">
                                        <children>
-                                          <TableView fx:id="tblRequest01" onMouseClicked="#tblDetails_Clicked" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+                                          <TableView fx:id="tblRequest01" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                              <columns>
                                                 <TableColumn fx:id="R1index01" prefWidth="30.0" text="No." />
                                                 <TableColumn fx:id="R1index02" prefWidth="180.0" text="Barrcode" />
@@ -411,8 +411,8 @@
                                                 <TableColumn fx:id="R1index05" minWidth="50.0" prefWidth="50.0" text="QOH" />
                                                 <TableColumn fx:id="R1index06" minWidth="50.0" prefWidth="50.0" text="Min" />
                                                 <TableColumn fx:id="R1index07" minWidth="50.0" prefWidth="50.0" text="CO" />
-                                                <TableColumn fx:id="R1index08" minWidth="50.0" prefWidth="50.0" text="ROQ" />
-                                                <TableColumn fx:id="R1index09" minWidth="50.0" prefWidth="50.0" text="QTY" />
+                                                <TableColumn fx:id="R1index071" minWidth="50.0" prefWidth="50.0" text="ROQ" />
+                                                <TableColumn fx:id="R1index072" minWidth="50.0" prefWidth="50.0" text="QTY" />
                                              </columns>
                                              <stylesheets>
                                                 <URL value="@../css/StyleSheet.css" />

@@ -320,6 +320,9 @@ public class DashboardController implements Initializable {
             
             case "/org/guanzon/cas/views/InvRequestEntryMCROQ.fxml":
                 return "Inventory Request MC ROQ";
+            
+            case "/org/guanzon/cas/views/InvRequestEntrySPROQ.fxml":
+                return "Inventory Request SP ROQ";
 
             /*PURCHASE ORDER QUOTATION MENU*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
@@ -703,6 +706,9 @@ public class DashboardController implements Initializable {
                 
              case "/org/guanzon/cas/views/InvRequestEntryMCROQ.fxml":
                 return  new InvRequestEntryMCROQController();
+             
+             case "/org/guanzon/cas/views/InvRequestEntrySPROQ.fxml":
+                return  new InvRequestEntrySPROQController();
 
             /*PO Menu*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
