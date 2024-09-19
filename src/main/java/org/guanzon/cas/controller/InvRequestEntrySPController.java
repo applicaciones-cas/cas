@@ -390,7 +390,8 @@ public class InvRequestEntrySPController implements Initializable ,ScreenInterfa
                         if (lsValue.length() > 128) {
                             // Call the tooltip method
                              showTooltip(txtField02, "Error: Input exceeds the maximum allowed.");
-                        } else {                        
+                        } else {  
+                            oTrans.getMasterModel().setRemarks(lsValue);
                             System.out.println("REMARKS == " + lsValue);
                         }
                     break;

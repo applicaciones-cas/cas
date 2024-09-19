@@ -241,6 +241,14 @@
                                                       <MenuItem fx:id="mnuMPStockRequestRegular1" mnemonicParsing="false" onAction="#mnuMPStockRequestROQClick" text="MP Stock Request ROQ" />
                                                    </items>
                                                 </Menu>
+                                                <Menu mnemonicParsing="false" text="Cancel">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuGIStockRequestCancel" mnemonicParsing="false" onAction="#mnuGIStockRequestCancelClick" text="GI Stock Request Cancel" />
+                                                      <MenuItem fx:id="mnuSPStockRequestCancel" mnemonicParsing="false" onAction="#mnuSPStockRequestCancelClick" text="SP Stock Request Cancel" />
+                                                      <MenuItem fx:id="mnuMCStockRequestCancel" mnemonicParsing="false" onAction="#mnuMCStockRequestCancelClick" text="MC Stock Request Cancel" />
+                                                      <MenuItem fx:id="mnuMPStockRequestCancel" mnemonicParsing="false" onAction="#mnuMPStockRequestCancelClick" text="MP Stock Request Cancel" />
+                                                   </items>
+                                                </Menu>
                                              </items>
                                           </Menu>
                                                     </items>

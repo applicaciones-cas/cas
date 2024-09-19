@@ -25,6 +25,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -157,30 +158,145 @@ public class InvRequestEntryMPController implements Initializable ,ScreenInterfa
                     break;
                     
                 case"btnNew":
-                    
+                     poJSON = oTrans.newTransaction();
+                    if ("success".equals((String) poJSON.get("result"))){
+                            pnEditMode = oTrans.getEditMode();
+                            pnRow = 0;
+                            initButton(pnEditMode);
+                            clearAllFields();
+//                            initdatepicker();
+                            initTabAnchor();
+                            loadItemData();
+                            loadDetails();
+                            txtField01.setText((String) oTrans.getMasterModel().getTransactionNumber()); 
+                            LocalDate currentDate = LocalDate.now();
+
+                            // Optionally format the date (not necessary for setting value in DatePicker)
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                            String formattedDate = currentDate.format(formatter);
+                            dpField01.setValue(currentDate);
+                        }
                     break;  
                     
-                case"btnSave":
-                    
+                case"btnSave":   
+//                    if(oTrans.getDetailModel().size()<=1){
+//                      if(oTrans.getDetailModel().get(0).getStockID().isEmpty() ||
+//                            oTrans.getDetailModel().get(0).getBarcode().isEmpty())
+//                          System.out.println("detailmodel save == " +  oTrans.getDetailModel().size());
+//                        ShowMessageFX.Information("Empty item request detected, Please check your entry", "Computerized Acounting System", pxeModuleName);
+//                        
+//                        break;    
+//                    }
+                    poJSON = oTrans.saveTransaction();
+                        System.out.println(poJSON.toJSONString());
+                        if ("success".equals((String) poJSON.get("result"))){
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
+                            initTrans();
+//                            pnEditMode = EditMode.UNKNOWN;
+//                            initButton(pnEditMode);
+                            clearAllFields();
+                            initTabAnchor();
+
+                            System.out.println("Record saved successfully.");
+                        } else {
+                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            System.out.println("The record was not saved successfully.");
+                            System.out.println((String) poJSON.get("message"));
+                            
+                            loadItemData();
+                        }
                     break;
-                    
                 case"btnUpdate":
+                        poJSON = oTrans.updateTransaction();
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
+                        }
                         
+//                        poJSON = oTrans.AddModelDetail();
+//                        System.out.println(poJSON.toJSONString());
+//                        if ("error".equals((String) poJSON.get("result"))){
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            break;
+//                        }
+                        pnEditMode =  oTrans.getEditMode();
+                        pnRow = oTrans.getDetailModel().size() - 1;
+//                        
+//                        System.out.println("pnRow sa update= " + pnRow);
+                        loadItemData();
+                        initButton(pnEditMode);
+                        initTblDetails();
+                        initTabAnchor();
+                        txtField03.requestFocus();
+                        
+                        tblDetails.getSelectionModel().select(pnRow + 1);
+//                        initTabAnchor();
                     break;     
                 
                 case"btnBrowse":
-                    
+                    clearAllFields();
+                    String lsValue = (txtSeeks01.getText()==null)?"":txtSeeks01.getText();
+                        poJSON = oTrans.searchTransaction("sTransNox", lsValue, pbLoaded);
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                           
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        txtSeeks01.setText(oTrans.getMasterModel().getTransactionNumber());
+                        System.out.println(oTrans.getEditMode());
+                        pnEditMode = oTrans.getEditMode();
+                        R1data.clear();                           
+                        loadTransaction();
+                        initTblDetails();
+                        loadItemData();
+                        initTabAnchor();
                     break;     
                 
                 case"btnAddItem":
                    
+                        poJSON = oTrans.AddModelDetail();
+                        System.out.println(poJSON.toJSONString());
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
+                        }
+                        
+                            pnRow = oTrans.getDetailModel().size()-1;
+                            clearItem();
+                            pnEditMode = oTrans.getEditMode();
+                            loadItemData();
+                            tblDetails.getSelectionModel().select(pnRow + 1);
+                        
                     break;  
                     
                 case"btnDelItem":
-                    
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this item?") == true){  
+                        oTrans.RemoveModelDetail(pnRow);
+                       
+                        pnRow = oTrans.getDetailModel().size()-1;
+                        clearItem();
+                        loadItemData();
+                        txtField04.requestFocus();
+                    }
                     break;
                 case"btnCancel":
-                     
+                     if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){                            
+//                            clearAllFields();
+                            if(pnEditMode == EditMode.UPDATE){
+                                oTrans.cancelUpdate();
+                            }
+                            initTrans();
+                            oTrans = new Inv_Request(oApp, true);
+                            oTrans.setType(RequestControllerFactory.RequestType.SP);
+                            oTrans.setTransactionStatus("0123");
+                            pnEditMode = EditMode.UNKNOWN;     
+                            initButton(pnEditMode);
+                            initTabAnchor();
+                            
+                        }
                     break; 
                   
                 
@@ -197,6 +313,12 @@ public class InvRequestEntryMPController implements Initializable ,ScreenInterfa
              txtField11},
 
         };
+//        chkField01.setSelected(false);
+//        chkField02.setSelected(false);
+//        chkField03.setSelected(false);
+//        chkField04.setSelected(false);
+//        cmbField01.setValue(null);
+//        cmbField01.setValue(null);
         
         // Loop through each array of TextFields and clear them
         for (TextField[] fields : allFields) {
@@ -242,7 +364,8 @@ public class InvRequestEntryMPController implements Initializable ,ScreenInterfa
 
         txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
         txtSeeks02.setOnKeyPressed(this::txtSeeks_KeyPressed);
-              
+        
+//        lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");        
     }
     
    
@@ -265,7 +388,8 @@ public class InvRequestEntryMPController implements Initializable ,ScreenInterfa
                         if (lsValue.length() > 128) {
                             // Call the tooltip method
                              showTooltip(txtField02, "Error: Input exceeds the maximum allowed.");
-                        } else {                        
+                        } else {
+                            oTrans.getMasterModel().setRemarks(lsValue);
                             System.out.println("REMARKS == " + lsValue);
                         }
                     break;
@@ -301,9 +425,19 @@ public class InvRequestEntryMPController implements Initializable ,ScreenInterfa
                    System.out.print( "Color == ");
                     break;    
                  
+//                case 10:/*Size*/
+////                   oTrans.getModel().setDescription(lsValue);
+//                   System.out.print( "Size == ");
+//                    break; 
                     
                 case 11:/*QTY Request*/
-                    
+//                     (Double.toString(oTrans.getDetailModel().get(lnCtr).getQuantity())),
+//                       loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setOrderQuantity(0);
+                    System.out.println( "case 11 == " + lsValue);
+                    int qty = (lsValue.isEmpty())?0:Integer.parseInt(lsValue);
+                   oTrans.getDetailModel().get(oTrans.getDetailModel().size()-1).setQuantity(qty);
+                   System.out.println( "QTY Request == " + lsValue + "\n");
+                   loadItemData();
                     break;  
                     
             }  
@@ -322,10 +456,22 @@ public class InvRequestEntryMPController implements Initializable ,ScreenInterfa
             case F3:
                 switch (lnIndex){
                     case 04: /*search barcode*/
-                        
+                        poJson = new JSONObject();
+                        poJson =  oTrans.searchDetail(pnRow, 3, lsValue, true);
+                        System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);  
+                               break;
+                           }
                         break;
                     case 05:/**/
-                        
+                        poJson = new JSONObject();
+                        poJson =  oTrans.searchDetail(pnRow, 3, lsValue, false);
+                        System.out.println("poJson = " + poJson.toJSONString());
+                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);  
+                               break;
+                            }
                         break;
                 } 
                 loadDetails();
@@ -384,7 +530,45 @@ public class InvRequestEntryMPController implements Initializable ,ScreenInterfa
             CommonUtils.SetPreviousFocus(txtSeeks);
         }
     }
-
+//    private void initButton(int fnValue){
+//        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+//        btnCancel.setVisible(lbShow);
+//        btnSearch.setVisible(lbShow);
+//        btnSave.setVisible(lbShow); 
+//        
+//        btnSave.setManaged(lbShow);
+//        btnCancel.setManaged(lbShow);
+//        btnSearch.setManaged(lbShow);
+//        btnUpdate.setVisible(!lbShow);
+//        btnBrowse.setVisible(!lbShow);
+//        btnNew.setVisible(!lbShow);
+//
+//        txtSeeks01.setDisable(!lbShow);
+//        txtSeeks02.setDisable(!lbShow);
+//        
+//        if (lbShow){
+//            txtSeeks01.setDisable(lbShow);
+//            txtSeeks01.clear();
+//            txtSeeks02.setDisable(lbShow);
+////            txtSeeks02.clear();
+//            
+//            btnCancel.setVisible(lbShow);
+//            btnSearch.setVisible(lbShow);
+//            btnSave.setVisible(lbShow);
+//            btnUpdate.setVisible(!lbShow);
+//            btnBrowse.setVisible(!lbShow);
+//            btnNew.setVisible(!lbShow);
+//            btnBrowse.setManaged(false);
+//            btnNew.setManaged(false);
+//            btnUpdate.setManaged(false);
+//            btnClose.setManaged(false);
+//        }
+//        else{
+//            txtSeeks01.setDisable(lbShow);
+//            txtSeeks01.requestFocus();
+//            txtSeeks02.setDisable(lbShow);  
+//        }
+//    }
     private void initButton(int fnValue) {
     boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
@@ -463,7 +647,9 @@ public class InvRequestEntryMPController implements Initializable ,ScreenInterfa
                 pnEditMode == EditMode.ADDNEW || 
                 pnEditMode == EditMode.UPDATE){
 
-
+            txtField01.setText((String) oTrans.getMasterModel().getTransactionNumber());
+            txtField02.setText((String) oTrans.getMasterModel().getRemarks());
+//            dpField01.setValue((Date) oTrans.getMasterModel().getTransaction());
             
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -506,7 +692,16 @@ public class InvRequestEntryMPController implements Initializable ,ScreenInterfa
      }
     }
     private void loadDetails(){
-       
+        if(!oTrans.getDetailModel().isEmpty()){ 
+            txtField04.setText((String) oTrans.getDetailModel().get(pnRow).getBarcode()); 
+            txtField05.setText((String) oTrans.getDetailModel().get(pnRow).getDescription()); 
+            txtField06.setText((String) oTrans.getDetailModel().get(pnRow).getCategoryName()); 
+            txtField06.setText((String) oTrans.getDetailModel().get(pnRow).getCategoryName()); 
+            txtField07.setText((String) oTrans.getDetailModel().get(pnRow).getBrandName()); 
+            txtField08.setText((String) oTrans.getDetailModel().get(pnRow).getModelName()); 
+            txtField09.setText((String) oTrans.getDetailModel().get(pnRow).getColorName()); 
+            txtField11.setText(oTrans.getDetailModel().get(pnRow).getQuantity().toString()); 
+        }
     }
     
     private void loadItemData(){
@@ -517,11 +712,11 @@ public class InvRequestEntryMPController implements Initializable ,ScreenInterfa
                 
 //            oTrans.getDetailModel().get(lnCtr).list();
                 R1data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
+                        (String)oTrans.getDetailModel().get(lnCtr).getBarcode(),
+                        (String)oTrans.getDetailModel().get(lnCtr).getDescription(),
+                        oTrans.getDetailModel().get(lnCtr).getQuantityOnHand().toString(),
+                        oTrans.getDetailModel().get(lnCtr).getReservedOrder().toString(),
+                        oTrans.getDetailModel().get(lnCtr).getQuantity().toString(),
                         "",
                         "",
                         "",
@@ -536,14 +731,30 @@ public class InvRequestEntryMPController implements Initializable ,ScreenInterfa
         if(tblDetails.getSelectionModel().getSelectedIndex() >= 0){
             pnRow = tblDetails.getSelectionModel().getSelectedIndex(); 
             loadDetails();
-//             tblDetails.getSelectionModel().clearAndSelect(pnRow);
         }
-////        loadItemData();
-//        if (tblDetails.getSelectionModel().getSelectedIndex() >= 0){
-//            pnRow = tblDetails.getSelectionModel().getSelectedIndex();
-//            loadDetails();
-//            txtField03.requestFocus();
-//        }
+        tblDetails.setOnKeyReleased((KeyEvent t)-> {
+            KeyCode key = t.getCode();
+            switch (key){
+                case DOWN:
+                    pnRow = tblDetails.getSelectionModel().getSelectedIndex(); 
+                    if (pnRow == tblDetails.getItems().size()) {
+                        pnRow = tblDetails.getItems().size();
+                        loadDetails();
+                    }else {
+                        loadDetails();
+                    }
+                    break;
+                case UP:
+                    int pnRows = 0;
+                    int x = 1;
+                     pnRow = tblDetails.getSelectionModel().getSelectedIndex(); 
+
+                        loadDetails();
+                    break;
+                default:
+                    break; 
+            }
+        });
     }
     
     private void clearItem(){

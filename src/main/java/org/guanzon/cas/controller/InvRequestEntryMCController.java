@@ -387,7 +387,8 @@ public class InvRequestEntryMCController implements Initializable ,ScreenInterfa
                         if (lsValue.length() > 128) {
                             // Call the tooltip method
                              showTooltip(txtField02, "Error: Input exceeds the maximum allowed.");
-                        } else {                        
+                        } else {
+                            oTrans.getMasterModel().setRemarks(lsValue);
                             System.out.println("REMARKS == " + lsValue);
                         }
                     break;
@@ -433,7 +434,7 @@ public class InvRequestEntryMCController implements Initializable ,ScreenInterfa
 //                       loJSON = record.getDetailModel().get(record.getDetailModel().size()-1).setOrderQuantity(0);
                     System.out.println( "case 11 == " + lsValue);
                     int qty = (lsValue.isEmpty())?0:Integer.parseInt(lsValue);
-                   oTrans.getDetailModel().get(oTrans.getDetailModel().size()-1).setOrderQuantity(qty);
+                   oTrans.getDetailModel().get(oTrans.getDetailModel().size()-1).setQuantity(qty);
                    System.out.println( "QTY Request == " + lsValue + "\n");
                    loadItemData();
                     break;  

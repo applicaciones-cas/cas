@@ -699,7 +699,7 @@ public class DashboardController implements Initializable {
                 return new InvRequestEntryMCController(); 
                 
              case "/org/guanzon/cas/views/InvRequestEntryMP.fxml":
-                return (ScreenInterface) new InvRequestEntryMPController(); 
+                return new InvRequestEntryMPController(); 
                 
              case "/org/guanzon/cas/views/InvRequestEntryGIROQ.fxml":
                 return  new InvRequestEntryGIROQController();  
@@ -1162,6 +1162,41 @@ public class DashboardController implements Initializable {
     
     @FXML
     private void mnuMPStockRequestROQClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestEntryMPROQ.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    
+    @FXML
+    private void mnuGIStockRequestCancelClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestEntryGIROQ.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    @FXML
+    private void mnuSPStockRequestCancelClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestEntrySPROQ.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    @FXML
+    private void mnuMCStockRequestCancelClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestEntryMCROQ.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    @FXML
+    private void mnuMPStockRequestCancelClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/InvRequestEntryMPROQ.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
