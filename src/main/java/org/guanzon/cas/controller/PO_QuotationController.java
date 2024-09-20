@@ -156,13 +156,6 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
                     return;
                 }
                 
-//                poJSON = oTrans.getMasterModel().setValidity(SQLUtil.toDate(txtField09.getText(), "yyyy-MM-dd"));
-//                if ("error".equals((String) poJSON.get("result"))) {
-//                    System.err.println((String) poJSON.get("message"));
-//                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-//                    pnEditMode = EditMode.UNKNOWN;
-//                    return;
-//                }
                 
                 String formattedDate = LocalDate.parse(txtField04.getText(), 
                 DateTimeFormatter.ofPattern("MMMM dd, yyyy"))
@@ -1029,7 +1022,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
                             return;
                         }
                     }
-
+                    saveUnitPrice();
                     loadTableDetail();
                     break;
                 case 2:
@@ -1046,7 +1039,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
                             return;
                         }
                     }
-
+                    saveUnitPrice();
                     loadTableDetail();
                     break;
 
@@ -1134,10 +1127,19 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
                     loadTableDetail();
                     break;
                 
-                case 7:
-                    BigDecimal nUnitPrice = (BigDecimal) oTrans.getDetailModel(pnDetailRow).getUnitPrice();
-                    System.out.println( "wat " + nUnitPrice);
-                    if (nUnitPrice == null || nUnitPrice.toString() == "") {
+                
+                    
+            }
+        } else {
+            txtField.selectAll();
+        }
+
+    };
+    
+    public void saveUnitPrice() {
+        BigDecimal nUnitPrice = (BigDecimal) oTrans.getDetailModel(pnDetailRow).getUnitPrice();
+        String lsValue = txtDetail07.getText();
+        if (nUnitPrice == null || nUnitPrice.toString() == "") {
 //                        if (txtField.getText().length() > 128) {
 //                            ShowMessageFX.Warning("Max characters for `Descript` exceeds the limit.", pxeModuleName, "Please verify your entry.");
 //                            txtField.requestFocus();
@@ -1149,17 +1151,8 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
                             System.err.println((String) poJSON.get("message"));
                             return;
                         }
-                    }
-
-                    loadTableDetail();
-                    break;
-                    
-            }
-        } else {
-            txtField.selectAll();
         }
-
-    };
+    }
     
     
     
