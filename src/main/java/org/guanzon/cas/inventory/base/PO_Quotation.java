@@ -184,9 +184,10 @@ public class PO_Quotation implements GTranDet{
         poModelMaster.setEntryNumber(poModelDetail.size());
         
         poModelMaster.setPreparedDate(poGRider.getServerDate());
-        
+        poModelMaster.setPrepared(poGRider.getUserID());
         poModelMaster.setModifiedBy(poGRider.getUserID());
         poModelMaster.setModifiedDate(poGRider.getServerDate());
+        
         
         poJSON = poModelMaster.saveRecord();
         if ("success".equals((String) poJSON.get("result"))) {
@@ -642,8 +643,8 @@ public class PO_Quotation implements GTranDet{
                 loTerm.getModel().getTermCode();
                 if (loJSON != null) {
                     setMaster("sTermCode", (String) loTerm.getMaster("sTermCode"));
-                    setMaster("xTermName", (String) loTerm.getMaster("xTermName"));
-
+                    setMaster("xTermName", (String) loTerm.getMaster("sDescript"));
+                    
                     return loJSON;
 
                 } else {
@@ -652,7 +653,30 @@ public class PO_Quotation implements GTranDet{
                     loJSON.put("message", "No Transaction found.");
                     return loJSON;
                 }
+                
+            case "sCategrCd":  //17-xCategrNm
 
+                Category_Level2 loCategory2 = new Category_Level2(poGRider, true);
+                loCategory2.setRecordStatus("01");
+                loJSON = loCategory2.searchRecord(fsValue, fbByCode);
+
+                Inv_Type loInvType = new Inv_Type(poGRider, true);
+                loInvType.openRecord((String) loCategory2.getMaster("sInvTypCd"));
+
+                if (loJSON != null) {
+                    setMaster("sCategrCd", (String) loCategory2.getMaster("sCategrCd"));
+                    setMaster("xCategrNm", (String) loCategory2.getMaster("sDescript"));
+                    return setMaster("xInvTypNm", (String) loCategory2.getMaster("xInvTypNm"));
+
+                } else {
+
+                    loJSON = new JSONObject();
+                    loJSON.put("result", "error");
+                    loJSON.put("message", "No Transaction found.");
+                    return loJSON;
+                }
+                
+                
             default:
                 return null;
         }
