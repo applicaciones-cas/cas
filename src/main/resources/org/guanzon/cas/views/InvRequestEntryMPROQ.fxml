@@ -149,7 +149,7 @@
                            <children>
                               <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <items>
-                                  <AnchorPane style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
+                                  <AnchorPane fx:id="AnchorInput" style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
                                        <children>
                                           <GridPane hgap="3.0" vgap="3.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
                                              <columnConstraints>
@@ -247,7 +247,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <TextField fx:id="txtField06" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                                                <TextField fx:id="txtField05" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="AMC" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
                                                    <font>
                                                       <Font size="14.0" />
@@ -300,7 +300,7 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
                                     </AnchorPane>
-                                  <AnchorPane style="-fx-border-color: FF8201;">
+                                  <AnchorPane fx:id="AnchorTable" style="-fx-border-color: FF8201;">
                                        <children>
                                           <TableView fx:id="tblSummary" prefHeight="300.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <columns>
@@ -322,9 +322,9 @@
                               </SplitPane>
                            </children>
                         </AnchorPane>
-                      <AnchorPane style="-fx-border-color: FF8201;">
+                      <AnchorPane fx:id="AnchorTable01" style="-fx-border-color: FF8201;">
                            <children>
-                              <TableView fx:id="tblRequest" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+                              <TableView fx:id="tblRequest" onMouseClicked="#tblDetails_Clicked" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                  <columns>
                                     <TableColumn fx:id="R1index01" prefWidth="35.0" text="No." />
                                     <TableColumn fx:id="R1index02" minWidth="200.0" prefWidth="200.0" text="Barrcode" />

@@ -51,6 +51,9 @@
     -fx-background-radius: 0;
     -fx-font-size:14;
 }
+.side-button:disabled{
+    -fx-opacity: 1;
+}
 .sidebar-label {
     -fx-text-fill: white;
 }
@@ -132,6 +135,10 @@
   .button_process_dark > .glyph-icon {
      -fx-fill: white;
   }
+  .button_process_dark:disabled {
+    -fx-background-color: #939393; /* Set your desired background color */
+    -fx-opacity: 1; /* Prevent opacity change */
+}
 /* BUTTON BODY CSS END */
 
 /*******************************************************************************

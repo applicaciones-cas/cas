@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
@@ -20,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="AnchorMain" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="AnchorMain" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <bottom>
@@ -71,6 +72,14 @@
                         <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Cancel">
                            <graphic>
                               <FontAwesomeIconView glyphName="CLOSE" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnPrint" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Print">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="PRINT" size="20" />
                            </graphic>
                            <effect>
                               <Blend />
@@ -189,7 +198,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField01" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                    <TextField fx:id="txtField01" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Transaction Date" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                                        <font>
                                           <Font size="14.0" />
@@ -305,7 +314,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField10" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="13" />
+                                    <TextField fx:id="txtField10" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="13" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max Level" GridPane.halignment="RIGHT" GridPane.rowIndex="14">
                                        <font>
                                           <Font size="14.0" />
@@ -314,7 +323,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField11" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="14" />
+                                    <TextField fx:id="txtField11" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="14" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Classification" GridPane.halignment="RIGHT" GridPane.rowIndex="15">
                                        <font>
                                           <Font size="14.0" />
@@ -323,7 +332,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField12" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="15" />
+                                    <TextField fx:id="txtField12" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="15" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="On Hand" GridPane.halignment="RIGHT" GridPane.rowIndex="16">
                                        <font>
                                           <Font size="14.0" />
@@ -332,7 +341,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField13" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="16" />
+                                    <TextField fx:id="txtField13" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="16" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="On Transit" GridPane.halignment="RIGHT" GridPane.rowIndex="17">
                                        <font>
                                           <Font size="14.0" />
@@ -341,7 +350,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField14" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="17" />
+                                    <TextField fx:id="txtField14" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="17" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="AMC" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="13">
                                        <font>
                                           <Font size="14.0" />
@@ -350,7 +359,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField15" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="13" />
+                                    <TextField fx:id="txtField15" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="13" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Reserve" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="14">
                                        <font>
                                           <Font size="14.0" />
@@ -359,7 +368,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField16" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="14" />
+                                    <TextField fx:id="txtField16" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="14" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Back Order" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="15">
                                        <font>
                                           <Font size="14.0" />
@@ -368,7 +377,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField17" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="15" />
+                                    <TextField fx:id="txtField17" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="15" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ROQ" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="16">
                                        <font>
                                           <Font size="14.0" />
@@ -377,7 +386,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField18" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="16" />
+                                    <TextField fx:id="txtField18" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="16" />
                                  </children>
                               </GridPane>
                            </children>
@@ -388,7 +397,7 @@
                                 <items>
                                   <AnchorPane minWidth="0.0" SplitPane.resizableWithParent="false">
                                        <children>
-                                          <TableView fx:id="tblRequest02" onMouseClicked="#tblDetails_Clicked1" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                          <TableView fx:id="tblRequest02" onMouseClicked="#tblSummary_Clicked" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                              <columns>
                                                 <TableColumn fx:id="R2index01" prefWidth="30.0" text="No." />
                                                 <TableColumn fx:id="R2index02" minWidth="250.0" prefWidth="250.0" text="Model" />
@@ -401,11 +410,11 @@
                                     </AnchorPane>
                                   <AnchorPane SplitPane.resizableWithParent="false">
                                        <children>
-                                          <TableView fx:id="tblRequest01" onMouseClicked="#tblDetails_Clicked" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+                                          <TableView fx:id="tblRequest01" onMouseClicked="#tblDetails_Clicked" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                              <columns>
                                                 <TableColumn fx:id="R1index01" prefWidth="30.0" text="No." />
-                                                <TableColumn fx:id="R1index02" prefWidth="180.0" text="Barrcode" />
-                                                <TableColumn fx:id="R1index03" prefWidth="200.0" text="Description" />
+                                                <TableColumn fx:id="R1index02" prefWidth="180.0" text="Model" />
+                                                <TableColumn fx:id="R1index03" prefWidth="200.0" text="Color" />
                                                 <TableColumn fx:id="R1index04" minWidth="50.0" prefWidth="50.0" text="AMC" />
                                                 <TableColumn fx:id="R1index05" minWidth="50.0" prefWidth="50.0" text="QOH" />
                                                 <TableColumn fx:id="R1index06" minWidth="50.0" prefWidth="50.0" text="Min" />
@@ -413,6 +422,10 @@
                                                 <TableColumn fx:id="R1index08" minWidth="50.0" prefWidth="50.0" text="ROQ" />
                                                 <TableColumn fx:id="R1index09" minWidth="50.0" prefWidth="50.0" text="QTY" />
                                              </columns>
+                                             <stylesheets>
+                                                <URL value="@../css/StyleSheet.css" />
+                                                <URL value="@../css/Tables.css" />
+                                             </stylesheets>
                                           </TableView>
                                        </children>
                                     </AnchorPane>
