@@ -1,8 +1,12 @@
 package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -13,6 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -68,9 +73,12 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
     @FXML
     private Label lblStatus;
     @FXML
+    private CheckBox cVatAdd;
+    @FXML
     private TextField txtField01, txtField02, txtField03, txtField04, txtField05, 
                       txtField06, txtField07, txtField08, txtField09, txtField10, 
-                      txtField12, txtField13, txtField98, txtField99,
+                      txtField12, txtField13, txtField14, txtField15, txtField16, 
+                      txtField17, txtField18, txtField19, txtField98, txtField99,
 
                       txtDetail01, txtDetail02, txtDetail03, txtDetail04, txtDetail05, 
                       txtDetail06, txtDetail07, txtDetail08, txtDetail09, txtDetail10, 
@@ -80,7 +88,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
     @FXML
     private TableView tblDetails;
     @FXML
-    private TableColumn index01, index02, index03, index04, index05, index06, index07;
+    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08;
     
     private ObservableList<ModelPOQuotation> data = FXCollections.observableArrayList();
 
@@ -97,6 +105,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
         pbLoaded = true;
+        
     }   
     
     @Override
@@ -108,7 +117,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
     @FXML
     void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
-        
+        boolean isVatAdded = cVatAdd.isSelected();
         switch (lsButton) {
             
             case "btnNew":
@@ -125,21 +134,106 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
                 break;
 
             case "btnSave":
-
-                poJSON = oTrans.getMasterModel().setModifiedBy(oApp.getUserID());
+                
+                poJSON = oTrans.getMasterModel().setRemarks(txtField11.getText());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
 
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-                poJSON = oTrans.getMasterModel().setModifiedDate(oApp.getServerDate());
+                
+                
+                if (isVatAdded = true){
+                    poJSON = oTrans.getMasterModel().setVATAdded("1");
+                } else{
+                    poJSON = oTrans.getMasterModel().setVATAdded("0");
+                }
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                
+//                poJSON = oTrans.getMasterModel().setValidity(SQLUtil.toDate(txtField09.getText(), "yyyy-MM-dd"));
+//                if ("error".equals((String) poJSON.get("result"))) {
+//                    System.err.println((String) poJSON.get("message"));
+//                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+//                    pnEditMode = EditMode.UNKNOWN;
+//                    return;
+//                }
+                
+                String formattedDate = LocalDate.parse(txtField04.getText(), 
+                DateTimeFormatter.ofPattern("MMMM dd, yyyy"))
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                
+                Date date = java.sql.Date.valueOf(formattedDate);
+                
+                poJSON = oTrans.getMasterModel().setReferenceDate(date);
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
+                
+                poJSON = oTrans.getMasterModel().setGrossAmount(Double.parseDouble(txtField15.getText()));
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                
+                poJSON = oTrans.getMasterModel().setDiscount(Double.parseDouble(txtField17.getText()));
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                
+                poJSON = oTrans.getMasterModel().setAddDiscx(Double.parseDouble(txtField18.getText()));
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                
+                poJSON = oTrans.getMasterModel().setVatAmtxx(Double.parseDouble(txtField12.getText()));
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                
+                poJSON = oTrans.getMasterModel().setVatRatex(Double.parseDouble(txtField13.getText()));
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                
+                poJSON = oTrans.getMasterModel().setFreightx(Double.parseDouble(txtField19.getText()));
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                
+                poJSON = oTrans.getMasterModel().setTransactionTotal(Double.parseDouble(txtField14.getText()));
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                
                 
                 poJSON = oTrans.saveTransaction(); 
 
@@ -308,6 +402,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
         index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
 
         index01.setCellValueFactory(new PropertyValueFactory<ModelPOQuotation, String>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<ModelPOQuotation, String>("index02"));
@@ -316,6 +411,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
         index05.setCellValueFactory(new PropertyValueFactory<ModelPOQuotation, String>("index05"));
         index06.setCellValueFactory(new PropertyValueFactory<ModelPOQuotation, String>("index06"));
         index07.setCellValueFactory(new PropertyValueFactory<ModelPOQuotation, String>("index07"));
+        index08.setCellValueFactory(new PropertyValueFactory<ModelPOQuotation, String>("index08"));
 
         tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");
@@ -358,6 +454,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
         apBrowse.setDisable(lbShow);
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
+//        FieldsManualEdit(lbShow);
         apTable.setDisable(!lbShow);
 
     }
@@ -379,6 +476,12 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
         txtField99.focusedProperty().addListener(txtField_Focus);
         txtField98.focusedProperty().addListener(txtField_Focus);
         txtField11.focusedProperty().addListener(txtArea_Focus);
+        txtField14.focusedProperty().addListener(txtField_Focus);
+        txtField15.focusedProperty().addListener(txtField_Focus);
+        txtField16.focusedProperty().addListener(txtField_Focus);
+        txtField17.focusedProperty().addListener(txtField_Focus);
+        txtField18.focusedProperty().addListener(txtField_Focus);
+        txtField19.focusedProperty().addListener(txtField_Focus);
 
         txtDetail01.focusedProperty().addListener(txtDetail_Focus);
         txtDetail02.focusedProperty().addListener(txtDetail_Focus);
@@ -387,14 +490,15 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
         txtDetail05.focusedProperty().addListener(txtDetail_Focus);
         txtDetail06.focusedProperty().addListener(txtDetail_Focus);
         txtDetail07.focusedProperty().addListener(txtDetail_Focus);
-        txtDetail08.focusedProperty().addListener(txtDetail_Focus);
-        txtDetail09.focusedProperty().addListener(txtDetail_Focus);
-        txtDetail10.focusedProperty().addListener(txtDetail_Focus);
-        txtDetail11.focusedProperty().addListener(txtDetail_Focus);
+//        txtDetail08.focusedProperty().addListener(txtDetail_Focus);
+//        txtDetail09.focusedProperty().addListener(txtDetail_Focus);
+//        txtDetail10.focusedProperty().addListener(txtDetail_Focus);
+//        txtDetail11.focusedProperty().addListener(txtDetail_Focus);
 
         /*textFields KeyPressed PROPERTY*/
         txtField01.setOnKeyPressed(this::txtField_KeyPressed);
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);//supplier
+        txtField06.setOnKeyPressed(this::txtField_KeyPressed);//Categ
         txtField10.setOnKeyPressed(this::txtField_KeyPressed);//term
 
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
@@ -439,8 +543,21 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
                             loadRecord();
                         }
                         break;
-                    case 5:/*sCategCd*/
-                        poJSON = oTrans.searchMaster(9, lsValue, false);
+                        
+                    case 6:/*sCategCd*/
+                        poJSON = oTrans.searchMaster(21, lsValue, false);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            txtField01.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+                        
+                    case 10:/*sTermCode*/
+                        poJSON = oTrans.searchMaster(8, lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -483,7 +600,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
-
+                        loadTableDetail();
                         break;
 
                 }
@@ -505,7 +622,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
     
     private void loadRecord() {
         String lsActive = oTrans.getMasterModel().getTransactionStatus();
-
+        
         switch (lsActive) {
             case "0":
                 lblStatus.setText("OPEN");
@@ -525,18 +642,46 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
 
         }
         
+        
+        
         psPrimary = oTrans.getMasterModel().getTransactionNumber();
         txtField01.setText(psPrimary);
-        txtField02.setText(new SimpleDateFormat("yyyy-mm-dd").format(oTrans.getMasterModel().getTransaction()));
+        
+        
+//        String test = CommonUtils.xsDateLong(oTrans.getMasterModel().getTransaction()) + "";
+        txtField02.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransaction()));
+
         
 
         txtField03.setText(oTrans.getMasterModel().getSupplierName());
         txtField04.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getModifiedDate()));
+
+        txtField09.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getValidity()));
+
+        
         
         txtField08.setText(oTrans.getMasterModel().getReferenceNumber());
-        
-        
+        txtField06.setText(oTrans.getMasterModel().getCategoryName());
+        txtField10.setText(oTrans.getMasterModel().getTermName());
         txtField11.setText(oTrans.getMasterModel().getRemarks());
+        
+        
+        txtField12.setText(oTrans.getMasterModel().getVatAmtxx().toString());
+
+        txtField13.setText(oTrans.getMasterModel().getVatRatex().toString());
+        txtField17.setText(oTrans.getMasterModel().getDiscount().toString());
+        txtField18.setText(oTrans.getMasterModel().getAddDiscx().toString());
+        txtField19.setText(oTrans.getMasterModel().getFreightx().toString());
+        txtField16.setText(oTrans.getMasterModel().getTWithHld().toString());
+        txtField14.setText(oTrans.getMasterModel().getTransactionTotal().toString());
+        txtField15.setText(oTrans.getMasterModel().getGrossAmount().toString());
+        
+        int cvataddedx = Integer.parseInt(oTrans.getMasterModel().getVATAdded());
+        if (cvataddedx == 1){
+            cVatAdd.setSelected(true);
+        } else if(cvataddedx == 0){
+            cVatAdd.setSelected(false);
+        }
 
         loadTableDetail();
 
@@ -550,6 +695,18 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
         txtField05.clear();
         txtField06.clear();
         txtField07.clear();
+        txtField08.clear();
+        txtField09.clear();
+        txtField10.clear();
+        txtField11.clear();
+        txtField12.clear();
+        txtField13.clear();
+        txtField14.clear();
+        txtField15.clear();
+        txtField16.clear();
+        txtField17.clear();
+        txtField18.clear();
+        txtField19.clear();
 
         txtField99.clear();
         txtField98.clear();
@@ -586,32 +743,35 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
 
             if (lsStockIDx != null && !lsStockIDx.equals("")) {
                 loInventory = oTrans.GetInventory(lsStockIDx, true);
-
+                BigDecimal nUnitPrce = (BigDecimal) loInventory.getMaster("nUnitPrce");
                 data.add(new ModelPOQuotation(String.valueOf(lnCtr + 1),
                         (String) loInventory.getMaster("sBarCodex"),
                         (String) loInventory.getMaster("sDescript"),
-                        (String) loInventory.getMaster("xModelNme"),
-                        (String) loInventory.getMaster("xColorNme"),
-                        (String) loInventory.getMaster("xMeasurNm"),
-                        oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()));
+                        oTrans.getDetailModel(lnCtr).getValue("nDiscAmtx").toString(),
+                        oTrans.getDetailModel(lnCtr).getValue("nDiscRate").toString(),
+                        (String) loInventory.getMaster("xInvTypNm"),
+                        oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString(),
+                        nUnitPrce.toPlainString()));
 
                 //display fetched detail on console
                 System.out.println("\nNo == " + String.valueOf(lnCtr + 1));
                 System.out.println("\nsBarCodex == " + (String) loInventory.getMaster("sBarCodex"));
                 System.out.println("\nsDescript == " + (String) loInventory.getMaster("sDescript"));
-                System.out.println("\nxModelNme == " + (String) loInventory.getMaster("xModelNme"));
-                System.out.println("\nxColorNme == " + (String) loInventory.getMaster("xColorNme"));
-                System.out.println("\nxMeasurNm == " + (String) loInventory.getMaster("xMeasurNm"));
+                System.out.println("\nnDiscAmtx == " + oTrans.getDetailModel(lnCtr).getValue("nDiscAmtx").toString());
+                System.out.println("\nnDiscRate == " + oTrans.getDetailModel(lnCtr).getValue("nDiscRate").toString());
+                System.out.println("\nxInvTypNm == " + (String) loInventory.getMaster("xInvTypNm"));
                 System.out.println("\nQuantity == " + oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString());
-
+                System.out.println("\nnUnitPrce == " + oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString());
+                
             } else {
                 data.add(new ModelPOQuotation(String.valueOf(lnCtr + 1),
                         "",
                         (String) oTrans.getDetailModel(lnCtr).getValue("sDescript"),
+                        oTrans.getDetailModel(lnCtr).getValue("nDiscAmtx").toString(),
+                        oTrans.getDetailModel(lnCtr).getValue("nDiscRate").toString(),
                         "",
-                        "",
-                        "",
-                        oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()));
+                        oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString(),
+                        oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString() ));
             }
 
         }
@@ -636,10 +796,13 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
     private void setSelectedDetail() {
         txtDetail01.setText((String) data.get(pnDetailRow).getIndex02());
         txtDetail02.setText((String) data.get(pnDetailRow).getIndex03());
-        txtDetail04.setText((String) data.get(pnDetailRow).getIndex04());
-        txtDetail05.setText((String) data.get(pnDetailRow).getIndex05());
-        txtDetail06.setText((String) data.get(pnDetailRow).getIndex06());
-        txtDetail07.setText((String) data.get(pnDetailRow).getIndex07());
+//        txtDetail05.setText((String) data.get(pnDetailRow).getIndex04());
+//        txtDetail09.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("xCategrNm"));
+//        txtDetail10.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("xCategrNm"));
+        txtDetail05.setText((String) data.get(pnDetailRow).getIndex04());
+        txtDetail06.setText((String) data.get(pnDetailRow).getIndex05());
+        txtDetail04.setText((String) data.get(pnDetailRow).getIndex07());
+        txtDetail07.setText((String) data.get(pnDetailRow).getIndex08());
 
         txtDetail03.setText((String) oTrans.getDetailModel(pnDetailRow).getValue("xCategrNm"));
 
@@ -684,13 +847,89 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
                     }
                     txtField.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransaction()));
                     break;
-                case 4://referno
+                    
+                case 4://dReferDte
+                    poJSON = oTrans.getMasterModel().setReferenceDate(SQLUtil.toDate(lsValue, "yyyy-MM-dd"));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    txtField.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransaction()));
+                    break;
+                
+                case 8://referno
                     poJSON = oTrans.getMasterModel().setReferenceNumber(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
+                    break;
+                
+                case 9://dValidity
+                    poJSON = oTrans.getMasterModel().setValidity(SQLUtil.toDate(lsValue, "yyyy-MM-dd"));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    txtField.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransaction()));
+                    break;
+                    
+                case 14://nTWithHld
+                    poJSON = oTrans.getMasterModel().setTransactionTotal(Double.parseDouble(lsValue));
+
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    txtField.setText(oTrans.getMasterModel().getTransactionTotal().toString());
+                    break;
+                   
+                case 16://nTWithHld
+                    poJSON = oTrans.getMasterModel().setTWithHld(Double.parseDouble(lsValue));
+
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    txtField.setText(oTrans.getMasterModel().getTWithHld().toString());
+                    break;
+                
+                case 17://nDiscount
+                    poJSON = oTrans.getMasterModel().setDiscount(Double.parseDouble(lsValue));
+
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    txtField.setText(oTrans.getMasterModel().getDiscount().toString());
+                    break;
+                
+                case 18://nAddDiscx
+                    poJSON = oTrans.getMasterModel().setAddDiscx(Double.parseDouble(lsValue));
+
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    txtField.setText(oTrans.getMasterModel().getAddDiscx().toString());
+                    break;
+                    
+                case 19://
+                    poJSON = oTrans.getMasterModel().setFreightx(Double.parseDouble(lsValue));
+
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    txtField.setText(oTrans.getMasterModel().getFreightx().toString());
                     break;
 //                case 6://expecteddate
 //                    poJSON = oTrans.getMasterModel().setExpectedPurchaseDate(SQLUtil.toDate(lsValue, "yyyy-MM-dd"));
@@ -776,7 +1015,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
-                case 2:
+                case 1:
                     String lsStockID = (String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx");
                     if (lsStockID == null || lsStockID.isEmpty()) {
                         if (txtField.getText().length() > 128) {
@@ -793,8 +1032,25 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
 
                     loadTableDetail();
                     break;
+                case 2:
+                    String lsStockID2 = (String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx");
+                    if (lsStockID2 == null || lsStockID2.isEmpty()) {
+                        if (txtField.getText().length() > 128) {
+                            ShowMessageFX.Warning("Max characters for `Descript` exceeds the limit.", pxeModuleName, "Please verify your entry.");
+                            txtField.requestFocus();
+                            return;
+                        }
+                        poJSON = oTrans.setDetail(pnDetailRow, "sDescript", lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            return;
+                        }
+                    }
 
-                case 7:
+                    loadTableDetail();
+                    break;
+
+                case 4:
                     /*this must be numeric*/
                     int x = 0;
                     try {
@@ -820,7 +1076,84 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
 
                     loadTableDetail();
                     break;
+                    
+                case 5:
+                    /*this must be numeric*/
+                    
+                    Double yy = 0.00;
+                    try {
 
+                        yy = Double.valueOf(lsValue);
+                        if (yy > 99999999) {
+                            yy = 0.00;
+
+                            ShowMessageFX.Warning("Please input not greater than 99999999", pxeModuleName, "");
+                            txtField.requestFocus();
+                        }
+                    } catch (Exception e) {
+                        ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
+                        txtField.requestFocus();
+                    }
+
+                    poJSON = oTrans.setDetail(pnDetailRow, "nDiscAmtx", yy);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    
+                    loadTableDetail();
+                    break;
+                    
+                case 6:
+                    /*this must be numeric*/
+                    Double zz = 0.00;
+                    try {
+
+                        zz = Double.valueOf(lsValue);
+                        if (zz > 99999999) {
+                            zz = 0.00;
+
+                            ShowMessageFX.Warning("Please input not greater than 99999999", pxeModuleName, "");
+                            txtField.requestFocus();
+                        }
+                    } catch (Exception e) {
+                        ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
+                        txtField.requestFocus();
+                    }
+
+                    poJSON = oTrans.setDetail(pnDetailRow, "nDiscRate", zz);
+                    
+                    
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+
+                    loadTableDetail();
+                    break;
+                
+                case 7:
+                    BigDecimal nUnitPrice = (BigDecimal) oTrans.getDetailModel(pnDetailRow).getUnitPrice();
+                    System.out.println( "wat " + nUnitPrice);
+                    if (nUnitPrice == null || nUnitPrice.toString() == "") {
+//                        if (txtField.getText().length() > 128) {
+//                            ShowMessageFX.Warning("Max characters for `Descript` exceeds the limit.", pxeModuleName, "Please verify your entry.");
+//                            txtField.requestFocus();
+//                            return;
+//                        }
+                        poJSON = oTrans.setDetail(pnDetailRow, "nUnitPrce", (Double.parseDouble(lsValue)));
+                        System.out.println( "wat " + nUnitPrice);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            return;
+                        }
+                    }
+
+                    loadTableDetail();
+                    break;
+                    
             }
         } else {
             txtField.selectAll();
