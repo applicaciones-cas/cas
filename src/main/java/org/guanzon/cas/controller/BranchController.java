@@ -341,6 +341,7 @@ public class BranchController implements Initializable, ScreenInterface {
                         }
                         break;
                     case 5:
+                       if (btnSave.isVisible()){
                         poJSON = oTrans.searchDetail("sCompnyID", lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
@@ -349,8 +350,10 @@ public class BranchController implements Initializable, ScreenInterface {
                         } else {
                             loadRecord();
                         }
+                        }
                         break;
                     case 6:
+                        if (btnSave.isVisible()){
                         poJSON = oTrans.searchDetail("sProvIDxx", lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
@@ -358,6 +361,7 @@ public class BranchController implements Initializable, ScreenInterface {
                             txtField01.requestFocus();
                         } else {
                             loadRecord();
+                        }
                         }
                         break;
                 }
@@ -385,7 +389,7 @@ public class BranchController implements Initializable, ScreenInterface {
 
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
-        String lsValue = txtField.getText();
+        String lsValue = (txtField.getText()==null?"":txtField.getText());
 
         if (lsValue == null) {
             return;
@@ -416,6 +420,12 @@ public class BranchController implements Initializable, ScreenInterface {
                         System.err.println((String) poJSON.get("message"));
                         return;
                     }
+                case 4:
+                    poJSON = oTrans.getModel().setContact(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
                     break;
                 case 5:
                     String lsCompnyID = (String) oTrans.getModel().getValue("sCompnyID");
@@ -437,6 +447,14 @@ public class BranchController implements Initializable, ScreenInterface {
                         }
                     }
                     break;
+                    case 7:
+                    poJSON = oTrans.getModel().setAddress(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+
 
             }
         } else {
