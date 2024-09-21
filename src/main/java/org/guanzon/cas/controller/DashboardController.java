@@ -720,7 +720,7 @@ public class DashboardController implements Initializable {
                 return  new InvRequestEntrySPROQController();
                 
               case "/org/guanzon/cas/views/InventoryRequestCancelSP.fxml":
-                return  new InventoryRequestCancelSPController();
+                return  new InvRequestEntrySPROQController();
 
             /*PO Menu*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":

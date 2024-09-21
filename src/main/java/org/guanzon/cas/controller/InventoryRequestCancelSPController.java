@@ -41,7 +41,7 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class InventoryRequestCancelSPController implements Initializable {
+public class InventoryRequestCancelSPController implements Initializable, ScreenInterface{
     private final String pxeModuleName = "SP Stock Request Cancel";
     private GRider oApp;
     private int pnEditMode;  
@@ -103,7 +103,10 @@ public class InventoryRequestCancelSPController implements Initializable {
                              R1index08, 
                              R1index09;
 
-
+    @Override
+    public void setGRider(GRider foValue) {
+        oApp = foValue;
+    } 
     /**
      * Initializes the controller class.
      */
