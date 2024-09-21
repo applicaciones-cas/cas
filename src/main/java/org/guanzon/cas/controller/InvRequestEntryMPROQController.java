@@ -709,7 +709,7 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                 txtField05.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getOnTransit())); 
                 txtField06.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getAverageMonthlySalary())); 
                 txtField07.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getQuantityOnHand())); 
-                txtField08.setText(oTrans.getDetailModelOthers().get(pnRow).getRecordOrder().toString());  
+                txtField08.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getRecordOrder()));  
                 txtField09.setText((String) oTrans.getDetailModelOthers().get(pnRow).getClassify());
                 txtField10.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getQuantity()));
             }
@@ -727,7 +727,7 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                 txtField05.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getOnTransit())); 
                 txtField06.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getAverageMonthlySalary())); 
                 txtField07.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getQuantityOnHand())); 
-                txtField08.setText(oTrans.getDetailModel().get(pnRow1).getRecordOrder().toString());  
+                txtField08.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getRecordOrder()));  
                 txtField09.setText((String) oTrans.getDetailModel().get(pnRow1).getClassify());
                 txtField10.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getQuantity()));
             }            
@@ -752,11 +752,11 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                         (String)oTrans.getDetailModelOthers().get(lnCtr).getBrandName(),
                         
                    String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getAverageMonthlySalary()),
-                   oTrans.getDetailModelOthers().get(lnCtr).getQuantityOnHand().toString(),
-                   oTrans.getDetailModelOthers().get(lnCtr).getMinimumLevel().toString(),
-                   oTrans.getDetailModelOthers().get(lnCtr).getReservedOrder().toString(),
-                   oTrans.getDetailModelOthers().get(lnCtr).getRecordOrder().toString(),
-                   oTrans.getDetailModelOthers().get(lnCtr).getQuantity().toString(),
+                   String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getQuantityOnHand()),
+                   String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getMinimumLevel()),
+                   String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getReservedOrder()),
+                   String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getRecordOrder()),
+                   String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getQuantity()),
                         (String)oTrans.getDetailModelOthers().get(lnCtr).getStockID()));  
                 
             }   
@@ -769,10 +769,10 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                     String.valueOf(lnCtr+1),  // Keep the existing index
                     oTrans.getDetailModel().get(lnCtr).getBarcode(),  // Update values from currentItem
                     oTrans.getDetailModel().get(lnCtr).getDescription(),
-                    oTrans.getDetailModel().get(lnCtr).getQuantityOnHand().toString(),
+                    String.valueOf(oTrans.getDetailModel().get(lnCtr).getQuantityOnHand()),
                     String.valueOf(oTrans.getDetailModel().get(lnCtr).getAverageMonthlySalary()),
-                    oTrans.getDetailModel().get(lnCtr).getRecordOrder().toString(),
-                    oTrans.getDetailModel().get(lnCtr).getQuantity().toString(),                        
+                    String.valueOf(oTrans.getDetailModel().get(lnCtr).getRecordOrder()),
+                    String.valueOf(oTrans.getDetailModel().get(lnCtr).getQuantity()),                        
                         (String)oTrans.getDetailModelOthers().get(lnCtr).getStockID(),
                         "",
                         "",

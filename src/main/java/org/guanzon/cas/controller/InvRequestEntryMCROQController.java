@@ -778,11 +778,11 @@ public class InvRequestEntryMCROQController implements Initializable ,ScreenInte
                         (String)oTrans.getDetailModelOthers().get(lnCtr).getModelName(),
                         (String)oTrans.getDetailModelOthers().get(lnCtr).getColorName(),
                         String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getAverageMonthlySalary()),
-                        oTrans.getDetailModelOthers().get(lnCtr).getQuantityOnHand().toString(),
-                        oTrans.getDetailModelOthers().get(lnCtr).getMinimumLevel().toString(),
-                        oTrans.getDetailModelOthers().get(lnCtr).getReservedOrder().toString(),
-                        oTrans.getDetailModelOthers().get(lnCtr).getRecordOrder().toString(),
-                        oTrans.getDetailModelOthers().get(lnCtr).getQuantity().toString(),
+                        String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getQuantityOnHand()),
+                        String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getMinimumLevel()),
+                        String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getReservedOrder()),
+                        String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getRecordOrder()),
+                        String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getQuantity()),
                         (String)oTrans.getDetailModelOthers().get(lnCtr).getStockID()));  
                 
             }   
@@ -794,12 +794,12 @@ public class InvRequestEntryMCROQController implements Initializable ,ScreenInte
                     oTrans.getDetailModel().get(lnCtr).getModelName(),  // Update values from currentItem
                     oTrans.getDetailModel().get(lnCtr).getColorName(),
                     String.valueOf(oTrans.getDetailModel().get(lnCtr).getAverageMonthlySalary()),
-                    oTrans.getDetailModel().get(lnCtr).getQuantityOnHand().toString(),
-                    oTrans.getDetailModel().get(lnCtr).getMinimumLevel().toString(),
-                    oTrans.getDetailModel().get(lnCtr).getReservedOrder().toString(),
-                    oTrans.getDetailModel().get(lnCtr).getRecordOrder().toString(),
-                    oTrans.getDetailModel().get(lnCtr).getQuantity().toString(),
-                    oTrans.getDetailModel().get(lnCtr).getStockID()
+                    String.valueOf(oTrans.getDetailModel().get(lnCtr).getQuantityOnHand()),
+                    String.valueOf(oTrans.getDetailModel().get(lnCtr).getMinimumLevel()),
+                    String.valueOf(oTrans.getDetailModel().get(lnCtr).getReservedOrder()),
+                    String.valueOf(oTrans.getDetailModel().get(lnCtr).getRecordOrder()),
+                    String.valueOf(oTrans.getDetailModel().get(lnCtr).getQuantity()),
+                    String.valueOf(oTrans.getDetailModel().get(lnCtr).getStockID())
                 ));
            }
         }
