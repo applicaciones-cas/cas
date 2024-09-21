@@ -74,6 +74,9 @@ public class DashboardController implements Initializable {
 
     @FXML
     private MenuItem mnuParameterBranch;
+    
+    @FXML
+    private MenuItem mnuPOQuotation;
 
     @FXML
     private TabPane tabpane;
@@ -333,6 +336,9 @@ public class DashboardController implements Initializable {
             /*PURCHASE ORDER QUOTATION MENU*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
                 return "Purchase Quotation Request";
+            
+            case "/org/guanzon/cas/views/PO_Quotation.fxml":
+                return "Purchase Quotation";
 
             default:
                 return null;
@@ -725,6 +731,9 @@ public class DashboardController implements Initializable {
             /*PO Menu*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
                 return new PO_Quotation_RequestController();
+                
+            case "/org/guanzon/cas/views/PO_Quotation.fxml":
+                return new PO_QuotationController();
 
             default:
                 return null;
@@ -1224,6 +1233,15 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
+    
+    @FXML
+    private void mnuPOQuotationClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/PO_Quotation.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
 
     @FXML
     private void mnuInventorySerialParamClick(ActionEvent event) {
@@ -1233,6 +1251,7 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
+    
     //    @FXML
     //    private void mnuClientParameterClick(ActionEvent event) {
     //        setScene(loadAnimate("/com/rmj/guanzongroup/cas/maven/views/ClientMasterParameter.fxml"));

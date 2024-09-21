@@ -19,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -71,7 +72,10 @@ public class BranchController implements Initializable, ScreenInterface {
     private TableView tblList;
 
     @FXML
-    private TextField txtField99, txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField07, txtField08;
+    private TextField txtField99, txtField01, txtField02, txtField03, txtField04, txtField05, txtField06;
+     
+    @FXML
+    private TextArea txtField07;
 
     @FXML
     private Button btnBrowse, btnNew, btnSave, btnUpdate, btnCancel, btnActivate, btnClose;
@@ -103,14 +107,14 @@ public class BranchController implements Initializable, ScreenInterface {
         clearFields();
 
         pbLoaded = true;
-        textFieldLimits.put(txtField01, 4); // txtField01 limit is 4 characters
-        textFieldLimits.put(txtField02, 50);
-        textFieldLimits.put(txtField03, 50);
-        textFieldLimits.put(txtField07, 50);
-
-        textFieldLimits.forEach(this::setTextFieldFormatter);
+        
     }
-
+    
+    @FXML
+    void cbClick(ActionEvent event){
+        
+    }
+    
     @FXML
     void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
@@ -189,7 +193,7 @@ public class BranchController implements Initializable, ScreenInterface {
                 } else {
                     return;
                 }
-
+            
             case "btnActivate":
                 if (!psPrimary.isEmpty()) {
                     if (btnActivate.getText().equals("Activate")) {
@@ -197,6 +201,7 @@ public class BranchController implements Initializable, ScreenInterface {
                             poJSON = oTrans.activateRecord(psPrimary);
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                                 return;
                             } else {
                                 clearFields();
@@ -293,11 +298,13 @@ public class BranchController implements Initializable, ScreenInterface {
         btnClose.setVisible(!lbShow);
 
         txtField99.setDisable(lbShow);
+        txtField01.setEditable(lbShow);
         txtField02.setEditable(lbShow);
         txtField03.setEditable(lbShow);
         txtField04.setEditable(lbShow);
         txtField05.setEditable(lbShow);
         txtField06.setEditable(lbShow);
+        txtField07.setEditable(lbShow);
 
         txtField02.requestFocus();
         tblList.setDisable(lbShow);
@@ -308,6 +315,10 @@ public class BranchController implements Initializable, ScreenInterface {
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
         txtField03.focusedProperty().addListener(txtField_Focus);
+        txtField04.focusedProperty().addListener(txtField_Focus);
+        txtField05.focusedProperty().addListener(txtField_Focus);
+        txtField06.focusedProperty().addListener(txtField_Focus);
+        txtField07.focusedProperty().addListener(txtArea_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
 
         /*textFields KeyPressed PROPERTY*/
@@ -397,6 +408,7 @@ public class BranchController implements Initializable, ScreenInterface {
                     poJSON = oTrans.getModel().setBranchCd(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         return;
                     }
                     break;
@@ -405,6 +417,7 @@ public class BranchController implements Initializable, ScreenInterface {
                     poJSON = oTrans.getModel().setBranchNm(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         return;
                     }
                     break;
@@ -413,36 +426,59 @@ public class BranchController implements Initializable, ScreenInterface {
                     poJSON = oTrans.getModel().setDescription(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         return;
                     }
                     break;
-                case 5:
-                    String lsCompnyID = (String) oTrans.getModel().getValue("sCompnyID");
-                    if (lsCompnyID != null || !lsCompnyID.isEmpty()) {
-                        poJSON = oTrans.getModel().setCompanyID(lsValue);
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
-                            return;
-                        }
+                case 4:
+                    poJSON = oTrans.getModel().setContact(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        return;
                     }
                     break;
-                case 6:
-                    String lsTownIDxx = (String) oTrans.getModel().getValue("sTownIDxx");
-                    if (lsTownIDxx != null || !lsTownIDxx.isEmpty()) {
-                        poJSON = oTrans.getModel().setTownID(lsValue);
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
-                            return;
-                        }
-                    }
-                    break;
-
             }
         } else {
             txtField.selectAll();
         }
         pnIndex = lnIndex;
     };
+    
+    
+    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
+        if (!pbLoaded) {
+            return;
+        }
+
+        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+        String lsValue = txtField.getText();
+
+        if (lsValue == null) {
+            return;
+        }
+
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lnIndex) {
+                case 7:
+                    poJSON = oTrans.getModel().setAddress(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        return;
+                    }
+                    break;
+
+                
+            }
+        } else {
+            txtField.selectAll();
+        }
+        pnIndex = lnIndex;
+    };
+    
 
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
@@ -474,7 +510,8 @@ public class BranchController implements Initializable, ScreenInterface {
         txtField07.setText(oTrans.getModel().getAddress());
 
         cbActive.setSelected(oTrans.getModel().isActive());
-
+        cbWareHouse.setSelected(oTrans.getModel().isActiveWarehouse());
+        
         if (lbActive) {
             btnActivate.setText("Deactivate");
             faActivate.setGlyphName("CLOSE");
@@ -506,7 +543,7 @@ public class BranchController implements Initializable, ScreenInterface {
         psPrimary = "";
         btnActivate.setText("Activate");
         cbActive.setSelected(false);
-
+        cbWareHouse.setSelected(false);
         loadTableDetail();
     }
 
