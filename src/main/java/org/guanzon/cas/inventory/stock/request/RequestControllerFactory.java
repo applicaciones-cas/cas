@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.cas.inventory.stock.Inv_Request_General;
 import org.guanzon.cas.inventory.stock.Inv_Request_MC;
+import org.guanzon.cas.inventory.stock.Inv_Request_MP;
 import org.guanzon.cas.inventory.stock.Inv_Request_SP;
 /**
  *
@@ -20,7 +22,8 @@ public class RequestControllerFactory {
         MC,
         MP,
         SP,
-        SUPPLIES
+        SUPPLIES,
+        GENERAL
     }
     public enum RequestCategoryType {
         WITH_ROQ,
@@ -30,10 +33,29 @@ public class RequestControllerFactory {
         switch (foType) {
             case MC:
                 return (RequestController) new Inv_Request_MC(oApp, fbVal);
+            case MP:
+                return (RequestController) new Inv_Request_MP(oApp, fbVal);
             case SP:
                 return (RequestController) new Inv_Request_SP(oApp, fbVal);
+            case GENERAL:
+                return (RequestController) new Inv_Request_General(oApp, fbVal);
             default:
                 return null;
         }
     }
+    
+    public static RequestCancelController makeCancel(RequestType foType, GRider oApp, boolean fbVal) {
+        switch (foType) {
+            case MC:
+                return (RequestCancelController) new Inv_Request_MC(oApp, fbVal);
+            case MP:
+                return (RequestCancelController) new Inv_Request_MC(oApp, fbVal);
+            case SP:
+                return (RequestCancelController) new Inv_Request_SP(oApp, fbVal);
+            default:
+                return null;
+        }
+    }
+    
+    
 }

@@ -68,6 +68,7 @@ public class ModelInventoryStockRequestDetail {
                             ", g.sDescript xModelDsc" +
                             ", h.sDescript xColorNme" +
                             ", i.sMeasurNm xMeasurNm" +
+                            ", j.nMinLevel" +
                         " FROM " + System.getProperty("sys.table") + " a" + 
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                             " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
@@ -77,6 +78,7 @@ public class ModelInventoryStockRequestDetail {
                             " LEFT JOIN Model g ON b.sModelCde = g.sModelCde" +
                             " LEFT JOIN Color h ON b.sColorCde = h.sColorCde" +
                             " LEFT JOIN Measure i ON b.sMeasurID = i.sMeasurID" +
+                            " LEFT JOIN Inv_Master j ON b.sStockIDx = j.sStockIDx" +
                         " WHERE 0=1";
         
         

@@ -28,7 +28,7 @@ import org.json.simple.JSONObject;
  *
  * @author Unclejo
  */
-public class Inv_Request_MC implements RequestController {
+public class Inv_Request_General implements RequestController {
 
     GRider poGRider;
     boolean pbWthParent;
@@ -50,7 +50,7 @@ public class Inv_Request_MC implements RequestController {
     public void setWithUI(boolean fbValue){
         p_bWithUI = fbValue;
     }
-    public Inv_Request_MC(GRider foGRider, boolean fbWthParent) {
+    public Inv_Request_General(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
 
@@ -137,7 +137,7 @@ public class Inv_Request_MC implements RequestController {
             return poJSON;
         }
 
-        poJSON = OpenModelDetail(poModelMaster.getTransactionNumber());
+        OpenModelDetail(poModelMaster.getTransactionNumber());
         
         pnEditMode = EditMode.READY;
 

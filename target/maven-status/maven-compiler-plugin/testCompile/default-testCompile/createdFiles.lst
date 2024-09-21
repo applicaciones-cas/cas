@@ -1,6 +1,7 @@
 testInventoryLedger.class
 testInvStockRequest.class
 testInventoryTrans.class
+testPOQuotationRequest.class
 testInventory.class
 testInventorySerial.class
 testInventorySubItem.class
