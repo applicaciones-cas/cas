@@ -813,6 +813,18 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
 
     }
     
+    public void saveUnitPrice(String stockid) {
+        String nUnitPrice = (String) oTrans.getDetailModel(pnDetailRow).getUnitPrice();
+        String lsValue = txtDetail07.getText();
+        if (nUnitPrice == null || nUnitPrice.toString() == "") {
+            poJSON = oTrans.setDetail(pnDetailRow, "nUnitPrce", (Double.parseDouble(lsValue)));
+            System.out.println( "wat " + nUnitPrice);
+            if ("error".equals((String) poJSON.get("result"))) {
+                System.err.println((String) poJSON.get("message"));
+            }
+        }
+    }
+    
     ///////////////////////////////////////////////////////////////////
     
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
@@ -1017,12 +1029,13 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
                             return;
                         }
                         poJSON = oTrans.setDetail(pnDetailRow, "sDescript", lsValue);
+                        
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             return;
                         }
                     }
-                    saveUnitPrice();
+                    
                     loadTableDetail();
                     break;
                 case 2:
@@ -1034,12 +1047,12 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
                             return;
                         }
                         poJSON = oTrans.setDetail(pnDetailRow, "sDescript", lsValue);
+                        
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             return;
                         }
                     }
-                    saveUnitPrice();
                     loadTableDetail();
                     break;
 
@@ -1136,23 +1149,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
 
     };
     
-    public void saveUnitPrice() {
-        BigDecimal nUnitPrice = (BigDecimal) oTrans.getDetailModel(pnDetailRow).getUnitPrice();
-        String lsValue = txtDetail07.getText();
-        if (nUnitPrice == null || nUnitPrice.toString() == "") {
-//                        if (txtField.getText().length() > 128) {
-//                            ShowMessageFX.Warning("Max characters for `Descript` exceeds the limit.", pxeModuleName, "Please verify your entry.");
-//                            txtField.requestFocus();
-//                            return;
-//                        }
-                        poJSON = oTrans.setDetail(pnDetailRow, "nUnitPrce", (Double.parseDouble(lsValue)));
-                        System.out.println( "wat " + nUnitPrice);
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
-                            return;
-                        }
-        }
-    }
+
     
     
     
