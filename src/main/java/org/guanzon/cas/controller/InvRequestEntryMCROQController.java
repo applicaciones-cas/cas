@@ -447,8 +447,7 @@ public class InvRequestEntryMCROQController implements Initializable ,ScreenInte
                    System.out.print( "Model == ");
                     break;
                     
-                case 9:/*Color*/
-//                   oTrans.getModel().setDescription(lsValue);
+                case 9:/*qty request*/
                     int lnValue = (lsValue==null)?0:Integer.valueOf(lsValue);
                     if (lnValue == 0) {
                         // Remove the detail at pnRow1 if the value is 0
@@ -460,7 +459,8 @@ public class InvRequestEntryMCROQController implements Initializable ,ScreenInte
                         // Loop in reverse order to avoid index shifting when removing elements
                         for (int lnCtr = oTrans.getItemCount() - 1; lnCtr >= 0; lnCtr--) {
                             // Check if the quantity is 0 and remove the record if so
-                            if (Integer.parseInt(oTrans.getDetailModel().get(lnCtr).getQuantity().toString()) == 0) {
+                            if (oTrans.getDetailModel().get(lnCtr).getStockID().isEmpty() ||
+                                    Integer.parseInt(oTrans.getDetailModel().get(lnCtr).getQuantity().toString()) == 0) {
                                 oTrans.RemoveModelDetail(lnCtr);
                             }
                         }

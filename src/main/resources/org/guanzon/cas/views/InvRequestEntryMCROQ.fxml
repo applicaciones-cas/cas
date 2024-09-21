@@ -69,17 +69,17 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Cancel">
+                        <Button fx:id="btnPrint" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Print">
                            <graphic>
-                              <FontAwesomeIconView glyphName="CLOSE" size="20" />
+                              <FontAwesomeIconView glyphName="PRINT" size="20" />
                            </graphic>
                            <effect>
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnPrint" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Print">
+                        <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Cancel">
                            <graphic>
-                              <FontAwesomeIconView glyphName="PRINT" size="20" />
+                              <FontAwesomeIconView glyphName="CLOSE" size="20" />
                            </graphic>
                            <effect>
                               <Blend />
@@ -207,7 +207,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <DatePicker fx:id="dpField01" minWidth="203.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                                    <DatePicker fx:id="dpField01" editable="false" minWidth="203.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Remarks" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                                        <font>
                                           <Font size="14.0" />
@@ -225,7 +225,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField03" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                    <TextField fx:id="txtField03" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Estimate" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                                        <font>
                                           <Font size="14.0" />
@@ -234,7 +234,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField04" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                    <TextField fx:id="txtField04" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Capacity" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                                        <font>
                                           <Font size="14.0" />
@@ -243,7 +243,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField05" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                    <TextField fx:id="txtField05" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                     <Label fx:id="lblStatus" alignment="CENTER" contentDisplay="CENTER" maxWidth="264.0" minWidth="150.0" prefHeight="37.0" prefWidth="264.0" style="-fx-background-color: FF8201;" text="APPROVED" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                                        <font>
                                           <Font name="System Bold" size="18.0" />
@@ -273,7 +273,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField06" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                                    <TextField fx:id="txtField06" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
                                        <font>
                                           <Font size="14.0" />
@@ -282,7 +282,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField07" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                                    <TextField fx:id="txtField07" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
                                        <font>
                                           <Font size="14.0" />
@@ -291,7 +291,7 @@
                                           <Insets right="10.0" />
                                        </GridPane.margin>
                                     </Text>
-                                    <TextField fx:id="txtField08" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                                    <TextField fx:id="txtField08" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="7" />
                                     <Text fill="#f20000" strokeType="OUTSIDE" strokeWidth="0.0" text="Qty Request" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
                                        <font>
                                           <Font name="System Bold" size="18.0" />

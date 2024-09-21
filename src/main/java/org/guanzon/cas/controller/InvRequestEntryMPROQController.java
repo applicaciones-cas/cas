@@ -99,7 +99,8 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                 btnUpdate, 
                 btnSearch, 
                 btnCancel, 
-                btnClose;
+                btnClose,
+                btnPrint;
 
     @FXML
     private Label 
@@ -157,7 +158,8 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
         btnSave.setOnAction(this::handleButtonAction);
         btnUpdate.setOnAction(this::handleButtonAction);
         btnClose.setOnAction(this::handleButtonAction);
-        btnBrowse.setOnAction(this::handleButtonAction);  
+        btnBrowse.setOnAction(this::handleButtonAction); 
+        btnPrint.setOnAction(this::handleButtonAction);  
     }
     
     private void handleButtonAction(ActionEvent event) {
@@ -337,6 +339,7 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
             }
         }
         R1data.clear();
+        R2data.clear();
     }
     
     /*initialize fields*/
@@ -352,6 +355,7 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                                         txtField07,
                                         txtField08, 
                                         txtField09,
+                                        txtField10
         };
 
         // Add the listener to each text field in the focusTextFields array
@@ -361,7 +365,7 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
 
         // Define arrays for text fields with setOnKeyPressed handlers
         TextField[] keyPressedTextFields = {
-            txtField04, txtField05, txtField08, txtField09
+            txtField04, txtField05, txtField08, txtField09,txtField10
         };
 
 //        // Set the same key pressed event handler for each text field in the keyPressedTextFields array
@@ -397,6 +401,13 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                     break;
                 case 4:/*Description*/
 //                   oTrans.getModel().setBriefDescription(lsValue);
+                    if (lsValue.length() > 128) {
+                            // Call the tooltip method
+//                             showTooltip(txtField02, "Error: Input exceeds the maximum allowed.");
+                        } else {      
+                            oTrans.getMasterModel().setRemarks(lsValue);
+                            System.out.println("REMARKS == " + lsValue);
+                        }
                    System.out.print( "Description == " );
                     break;
                 case 5:/*On Transit*/
@@ -424,8 +435,11 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                     break;    
                  
                 case 10:/*QTY Request*/
+                    
 //                   oTrans.getModel().setDescription(lsValue);
                     int lnValue = (lsValue==null)?0:Integer.valueOf(lsValue);
+                    System.out.print( "QTY Request start == " + lsValue);
+                    oTrans.getDetailModelOthers().get(pnRow).setQuantity(Integer.valueOf(lsValue));
                     if (lnValue == 0) {
                         // Remove the detail at pnRow1 if the value is 0
                         oTrans.RemoveModelDetail(pnRow1);
@@ -436,7 +450,8 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                         // Loop in reverse order to avoid index shifting when removing elements
                         for (int lnCtr = oTrans.getItemCount() - 1; lnCtr >= 0; lnCtr--) {
                             // Check if the quantity is 0 and remove the record if so
-                            if (Integer.parseInt(oTrans.getDetailModel().get(lnCtr).getQuantity().toString()) == 0) {
+                            if (oTrans.getDetailModel().get(lnCtr).getStockID().isEmpty() || 
+                                    Integer.parseInt(oTrans.getDetailModel().get(lnCtr).getQuantity().toString()) == 0) {
                                 oTrans.RemoveModelDetail(lnCtr);
                             }
                         }
@@ -453,10 +468,9 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                         System.out.println("Cannot add detail: Some items have a quantity of 0.");
                     }
                     oTrans.getDetailModelOthers().get(pnRow).setQuantity(Integer.valueOf(lsValue));
-                    
+                   System.out.print( "QTY Request == " + lsValue);
                     pnRow1 = oTrans.getItemCount() - 1;
                     tblSummary.getSelectionModel().select(pnRow1);
-                   System.out.print( "QTY Request == " + lsValue);
                     break; 
             }  
             loadItemData();
@@ -557,12 +571,15 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
         // Permanently hide btnUpdate
         btnUpdate.setVisible(false);
         btnUpdate.setManaged(false);
+        btnBrowse.setVisible(false);
+        btnBrowse.setManaged(false);
 
         // Manage visibility and managed state of other buttons
-        btnBrowse.setVisible(!lbShow);
+//        btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
-        btnBrowse.setManaged(!lbShow);
+//        btnBrowse.setManaged(!lbShow);
         btnNew.setManaged(!lbShow);
+        btnClose.setVisible(!lbShow);
 
         // Manage text field states
         txtSeeks01.setDisable(!lbShow);
@@ -575,6 +592,8 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
         } else {
             txtSeeks01.requestFocus();
         }
+    btnPrint.setDisable(fnValue == EditMode.UNKNOWN);
+
     }
     private void initTblDetails() {
         R1index01.setStyle("-fx-alignment: CENTER;");
@@ -730,19 +749,6 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
         }
         if(oTrans.getDetailModel()!= null){
             for(lnCtr = 0; lnCtr < oTrans.getDetailModel().size(); lnCtr++){
-//                R2data.add(new ModelStockRequest(
-//                   String.valueOf(lnCtr + 1),
-//                        (String)oTrans.getDetailModelOthers().get(lnCtr).getBarcode(),
-//                        (String)oTrans.getDetailModelOthers().get(lnCtr).getDescription(),
-//                   oTrans.getDetailModel().get(lnCtr).getQuantityOnHand().toString(),
-//                   oTrans.getDetailModelOthers().get(lnCtr).getQuantityOnHand().toString(),
-//                   oTrans.getDetailModelOthers().get(lnCtr).getMinimumLevel().toString(),
-//                   oTrans.getDetailModelOthers().get(lnCtr).getReservedOrder().toString(),
-//                   oTrans.getDetailModelOthers().get(lnCtr).getRecordOrder().toString(),
-//                   oTrans.getDetailModelOthers().get(lnCtr).getQuantity().toString(),
-//                        (String)oTrans.getDetailModelOthers().get(lnCtr).getStockID(),
-//                "")); 
-                
                 R2data.add(new ModelStockRequest(
                     String.valueOf(lnCtr+1),  // Keep the existing index
                     oTrans.getDetailModel().get(lnCtr).getBarcode(),  // Update values from currentItem
@@ -750,11 +756,11 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                     oTrans.getDetailModel().get(lnCtr).getQuantityOnHand().toString(),
                     String.valueOf(oTrans.getDetailModel().get(lnCtr).getAverageMonthlySalary()),
                     oTrans.getDetailModel().get(lnCtr).getRecordOrder().toString(),
-                    oTrans.getDetailModel().get(lnCtr).getQuantity().toString(),
+                    oTrans.getDetailModel().get(lnCtr).getQuantity().toString(),                        
+                        (String)oTrans.getDetailModelOthers().get(lnCtr).getStockID(),
                         "",
                         "",
-                        "",
-                        (String)oTrans.getDetailModelOthers().get(lnCtr).getStockID()
+                        ""
                 ));
            }
         }
@@ -763,7 +769,7 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
     }
     
     @FXML
-    private void tblSummary_Clicked1 (MouseEvent event) {
+    private void tblSummary_Clicked (MouseEvent event) {
         if (tblSummary.getSelectionModel().getSelectedIndex() >= 0) {
             pnRow1 = tblSummary.getSelectionModel().getSelectedIndex();
             Model_Inv_Stock_Request_Detail clickedItem = oTrans.getDetailModel().get(pnRow1);
@@ -776,7 +782,9 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                 pnRow = matchedIndex;
                 System.out.println("StockID found at index: " + matchedIndex);
             } 
+            clearItem();
             loadDetails();
+            txtField10.requestFocus();
             if(!clickedItem.getStockID().isEmpty()){
                 tblRequest.getSelectionModel().select(pnRow);
             }
@@ -791,7 +799,7 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
         if (tblRequest.getSelectionModel().getSelectedIndex() >= 0) {
             pnRow = tblRequest.getSelectionModel().getSelectedIndex(); 
             loadDetails();  // Load details of the clicked item
-
+            txtField10.requestFocus();
             // Retrieve the clicked item from getDetailModelOthers
             Model_Inv_Stock_Request_Detail clickedItem = oTrans.getDetailModelOthers().get(pnRow);
             
