@@ -770,6 +770,8 @@ public class InvRequestEntrySPController implements Initializable ,ScreenInterfa
             }
         }
     }
+    
+    
     private void initTrans(){
         clearAllFields();
         oTrans = new Inv_Request(oApp, true);

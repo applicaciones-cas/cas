@@ -6,6 +6,7 @@ package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
@@ -187,7 +188,6 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
 //                            initdatepicker();
                             initTabAnchor();
                             loadItemData();
-                            loadDetails();
                             txtField01.setText((String) oTrans.getMasterModel().getTransactionNumber()); 
                             LocalDate currentDate = LocalDate.now();
 
@@ -435,22 +435,19 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                     break;    
                  
                 case 10:/*QTY Request*/
-                    
-//                   oTrans.getModel().setDescription(lsValue);
-                    int lnValue = (lsValue==null)?0:Integer.valueOf(lsValue);
-                    System.out.print( "QTY Request start == " + lsValue);
-                    oTrans.getDetailModelOthers().get(pnRow).setQuantity(Integer.valueOf(lsValue));
+                    int lnValue = (lsValue.isEmpty())?0:Integer.valueOf(lsValue);
                     if (lnValue == 0) {
                         // Remove the detail at pnRow1 if the value is 0
                         oTrans.RemoveModelDetail(pnRow1);
                     } else {
                         // Update the quantity for the detail
                         oTrans.getDetailModel(pnRow1).setQuantity(lnValue);
+                        oTrans.getDetailModelOthers().get(pnRow).setQuantity(Integer.valueOf(lsValue));
 
                         // Loop in reverse order to avoid index shifting when removing elements
                         for (int lnCtr = oTrans.getItemCount() - 1; lnCtr >= 0; lnCtr--) {
                             // Check if the quantity is 0 and remove the record if so
-                            if (oTrans.getDetailModel().get(lnCtr).getStockID().isEmpty() || 
+                            if (oTrans.getDetailModel().get(lnCtr).getStockID().isEmpty() ||
                                     Integer.parseInt(oTrans.getDetailModel().get(lnCtr).getQuantity().toString()) == 0) {
                                 oTrans.RemoveModelDetail(lnCtr);
                             }
@@ -467,11 +464,12 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                     } else {
                         System.out.println("Cannot add detail: Some items have a quantity of 0.");
                     }
-                    oTrans.getDetailModelOthers().get(pnRow).setQuantity(Integer.valueOf(lsValue));
-                   System.out.print( "QTY Request == " + lsValue);
+                    
                     pnRow1 = oTrans.getItemCount() - 1;
                     tblSummary.getSelectionModel().select(pnRow1);
-                    break; 
+                    loadDetailSummary();
+                   System.out.print( "Quantity == ");
+                    break;    
             }  
             loadItemData();
         } else
@@ -703,25 +701,40 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
     }
     
     private void loadDetails(){
-        if(!oTrans.getDetailModelOthers().isEmpty()){ 
-            txtField02.setText((String) oTrans.getDetailModelOthers().get(pnRow).getBrandName()); 
-            txtField03.setText((String) oTrans.getDetailModelOthers().get(pnRow).getBarcode()); 
-            txtField04.setText((String) oTrans.getDetailModelOthers().get(pnRow).getDescription());   
-            txtField05.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getOnTransit())); 
-            txtField06.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getAverageMonthlySalary())); 
-            txtField07.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getQuantityOnHand())); 
-            txtField08.setText(oTrans.getDetailModelOthers().get(pnRow).getRecordOrder().toString());  
-            txtField09.setText((String) oTrans.getDetailModelOthers().get(pnRow).getClassify());
-            txtField10.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getQuantity()));
-//            txtField11.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getMaximumLevel())); 
-//            txtField12.setText(oTrans.getDetailModelOthers().get(pnRow).getClassify()); 
-//            txtField13.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getQuantityOnHand())); 
-//            txtField14.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getOnTransit())); 
-//            txtField15.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getAverageMonthlySalary())); 
-//            txtField16.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getReservedOrder())); 
-//            txtField17.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getBackOrder())); 
-//            txtField18.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getRecordOrder())); 
+        try {
+            if(!oTrans.getDetailModelOthers().isEmpty()){ 
+                txtField02.setText((String) oTrans.getDetailModelOthers().get(pnRow).getBrandName()); 
+                txtField03.setText((String) oTrans.getDetailModelOthers().get(pnRow).getBarcode()); 
+                txtField04.setText((String) oTrans.getDetailModelOthers().get(pnRow).getDescription());   
+                txtField05.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getOnTransit())); 
+                txtField06.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getAverageMonthlySalary())); 
+                txtField07.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getQuantityOnHand())); 
+                txtField08.setText(oTrans.getDetailModelOthers().get(pnRow).getRecordOrder().toString());  
+                txtField09.setText((String) oTrans.getDetailModelOthers().get(pnRow).getClassify());
+                txtField10.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getQuantity()));
+            }
+         } catch (NullPointerException ex) {
+            ex.printStackTrace();
         }
+    }
+    
+    private void loadDetailSummary(){
+        try {
+            if(!oTrans.getDetailModel().isEmpty()){
+                txtField02.setText((String) oTrans.getDetailModel().get(pnRow1).getBrandName()); 
+                txtField03.setText((String) oTrans.getDetailModel().get(pnRow1).getBarcode()); 
+                txtField04.setText((String) oTrans.getDetailModel().get(pnRow1).getDescription());   
+                txtField05.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getOnTransit())); 
+                txtField06.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getAverageMonthlySalary())); 
+                txtField07.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getQuantityOnHand())); 
+                txtField08.setText(oTrans.getDetailModel().get(pnRow1).getRecordOrder().toString());  
+                txtField09.setText((String) oTrans.getDetailModel().get(pnRow1).getClassify());
+                txtField10.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getQuantity()));
+            }            
+        } catch (NullPointerException ex) {
+            ex.printStackTrace();
+        }
+        
     }
     
    
@@ -737,6 +750,7 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                         (String)oTrans.getDetailModelOthers().get(lnCtr).getBarcode(),
                         (String)oTrans.getDetailModelOthers().get(lnCtr).getDescription(),
                         (String)oTrans.getDetailModelOthers().get(lnCtr).getBrandName(),
+                        
                    String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getAverageMonthlySalary()),
                    oTrans.getDetailModelOthers().get(lnCtr).getQuantityOnHand().toString(),
                    oTrans.getDetailModelOthers().get(lnCtr).getMinimumLevel().toString(),
@@ -747,6 +761,8 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                 
             }   
         }
+        
+        /*tblsummary data*/
         if(oTrans.getDetailModel()!= null){
             for(lnCtr = 0; lnCtr < oTrans.getDetailModel().size(); lnCtr++){
                 R2data.add(new ModelStockRequest(
@@ -781,12 +797,14 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
             if (matchedIndex != -1) {
                 pnRow = matchedIndex;
                 System.out.println("StockID found at index: " + matchedIndex);
-            } 
-            clearItem();
-            loadDetails();
-            txtField10.requestFocus();
+            }
+            txtField09.requestFocus();
             if(!clickedItem.getStockID().isEmpty()){
                 tblRequest.getSelectionModel().select(pnRow);
+                loadDetails();
+            }else{
+                tblRequest.getSelectionModel().clearSelection();
+                loadDetailSummary();
             }
         }
     }
@@ -817,10 +835,9 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                 for (int lnCtr = 0; lnCtr < oTrans.getItemCount(); lnCtr++) {
                     Model_Inv_Stock_Request_Detail detailModelItem = oTrans.getDetailModel(lnCtr);
 
-                    // Check if StockID is empty
+                    // Check if StockID is empty 
                     if (Integer.parseInt(detailModelItem.getQuantity().toString())==0) {
                         // Replace empty stock ID with clickedItem
-                        
                         oTrans.getDetailModel().set(lnCtr, clickedItem);
                         pnRow1 = lnCtr; // Update pnRow1 with the current row index
                         tblSummary.getSelectionModel().select(pnRow1);
@@ -857,6 +874,77 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                 });
             }
         }
+        
+        
+        
+        
+        
+        
+        
+//        System.out.println("pnRow = " + pnRow);
+//        
+//        // Check if a valid row is selected
+//        if (tblRequest.getSelectionModel().getSelectedIndex() >= 0) {
+//            pnRow = tblRequest.getSelectionModel().getSelectedIndex(); 
+//            loadDetails();  // Load details of the clicked item
+//            txtField10.requestFocus();
+//            // Retrieve the clicked item from getDetailModelOthers
+//            Model_Inv_Stock_Request_Detail clickedItem = oTrans.getDetailModelOthers().get(pnRow);
+//            
+//
+//            // Variable to track if the clicked item has been processed (either replaced or added)
+//            int matchedIndex = IntStream.range(0, oTrans.getItemCount())
+//                .filter(i -> oTrans.getDetailModel(i).getStockID().equals(clickedItem.getStockID()))
+//                .findFirst()
+//                .orElse(-1);  // Return -1 if no match is found
+//
+//            if (matchedIndex != -1) {
+//                pnRow1 = matchedIndex;
+//                System.out.println("StockID found at index: " + matchedIndex);
+//            } else {
+//                for (int lnCtr = 0; lnCtr < oTrans.getItemCount(); lnCtr++) {
+//                    Model_Inv_Stock_Request_Detail detailModelItem = oTrans.getDetailModel(lnCtr);
+//
+//                    // Check if StockID is empty
+//                    if (Integer.parseInt(detailModelItem.getQuantity().toString())==0) {
+//                        // Replace empty stock ID with clickedItem
+//                        
+//                        oTrans.getDetailModel().set(lnCtr, clickedItem);
+//                        pnRow1 = lnCtr; // Update pnRow1 with the current row index
+//                        tblSummary.getSelectionModel().select(pnRow1);
+//                        System.out.println("Empty stock ID found. Replaced with clicked item.");
+//                        break;
+//                    }
+//                }
+//        
+//            loadItemData();
+//            tblRequest.getSelectionModel().select(pnRow);
+//            tblSummary.getSelectionModel().select(pnRow1);
+//            tblRequest.setOnKeyReleased((KeyEvent t)-> {
+//                KeyCode key = t.getCode();
+//                switch (key){
+//                    case DOWN:
+//                        pnRow = tblRequest.getSelectionModel().getSelectedIndex(); 
+//                        if (pnRow == tblRequest.getItems().size()) {
+//                            pnRow = tblRequest.getItems().size();
+//                            loadDetails();
+//                        }else {
+//                            loadDetails();
+//                        }
+//                        break;
+//                    case UP:
+//                        int pnRows = 0;
+//                        int x = 1;
+//                         pnRow = tblRequest.getSelectionModel().getSelectedIndex(); 
+//
+//                            loadDetails();
+//                        break;
+//                    default:
+//                        break; 
+//                    }
+//                });
+//            }
+//        }
     }
     private void clearItem(){
         TextField[][] allFields = {

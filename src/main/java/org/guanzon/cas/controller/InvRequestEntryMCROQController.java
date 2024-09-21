@@ -192,7 +192,7 @@ public class InvRequestEntryMCROQController implements Initializable ,ScreenInte
 //                            initdatepicker();
                             initTabAnchor();
                             loadItemData();
-                            loadDetails();
+//                            loadDetails();
                             txtField01.setText((String) oTrans.getMasterModel().getTransactionNumber()); 
                             LocalDate currentDate = LocalDate.now();
 
@@ -431,7 +431,7 @@ public class InvRequestEntryMCROQController implements Initializable ,ScreenInte
                 case 5:/*Barrcode*/
 //                   oTrans.getModel().setDescription(lsValue);
                    System.out.print( "Barrcode == " );
-                    break;
+                    break; 
                 case 6:/*Description*/
 //                   oTrans.getModel().setDescription(lsValue);
                    System.out.print( "Description == ");
@@ -448,13 +448,14 @@ public class InvRequestEntryMCROQController implements Initializable ,ScreenInte
                     break;
                     
                 case 9:/*qty request*/
-                    int lnValue = (lsValue==null)?0:Integer.valueOf(lsValue);
+                    int lnValue = (lsValue.isEmpty())?0:Integer.valueOf(lsValue);
                     if (lnValue == 0) {
                         // Remove the detail at pnRow1 if the value is 0
                         oTrans.RemoveModelDetail(pnRow1);
                     } else {
                         // Update the quantity for the detail
                         oTrans.getDetailModel(pnRow1).setQuantity(lnValue);
+                        oTrans.getDetailModelOthers().get(pnRow).setQuantity(Integer.valueOf(lsValue));
 
                         // Loop in reverse order to avoid index shifting when removing elements
                         for (int lnCtr = oTrans.getItemCount() - 1; lnCtr >= 0; lnCtr--) {
@@ -476,10 +477,10 @@ public class InvRequestEntryMCROQController implements Initializable ,ScreenInte
                     } else {
                         System.out.println("Cannot add detail: Some items have a quantity of 0.");
                     }
-                    oTrans.getDetailModelOthers().get(pnRow).setQuantity(Integer.valueOf(lsValue));
                     
                     pnRow1 = oTrans.getItemCount() - 1;
                     tblRequest02.getSelectionModel().select(pnRow1);
+                    loadDetailSummary();
                    System.out.print( "Quantity == ");
                     break;    
                  
@@ -742,9 +743,29 @@ public class InvRequestEntryMCROQController implements Initializable ,ScreenInte
             txtField16.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getReservedOrder())); 
             txtField17.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getBackOrder())); 
             txtField18.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnRow).getRecordOrder())); 
+            
+        }
+        
+    }
+    private void loadDetailSummary(){
+        if(!oTrans.getDetailModel().isEmpty()){
+            txtField05.setText((String) oTrans.getDetailModel().get(pnRow1).getDescription()); 
+            txtField06.setText((String) oTrans.getDetailModel().get(pnRow1).getCategoryName()); 
+            txtField06.setText((String) oTrans.getDetailModel().get(pnRow1).getBarcode()); 
+            txtField07.setText((String) oTrans.getDetailModel().get(pnRow1).getModelName()); 
+            txtField08.setText((String) oTrans.getDetailModel().get(pnRow1).getColorName()); 
+            txtField09.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getQuantity())); 
+            txtField10.setText(oTrans.getDetailModel().get(pnRow1).getMinimumLevel().toString());
+            txtField11.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getMaximumLevel())); 
+            txtField12.setText(oTrans.getDetailModel().get(pnRow1).getClassify()); 
+            txtField13.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getQuantityOnHand())); 
+            txtField14.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getOnTransit())); 
+            txtField15.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getAverageMonthlySalary())); 
+            txtField16.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getReservedOrder())); 
+            txtField17.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getBackOrder())); 
+            txtField18.setText(String.valueOf(oTrans.getDetailModel().get(pnRow1).getRecordOrder())); 
         }
     }
-    
    
     private void loadItemData(){
         int lnCtr;
@@ -799,11 +820,14 @@ public class InvRequestEntryMCROQController implements Initializable ,ScreenInte
             if (matchedIndex != -1) {
                 pnRow = matchedIndex;
                 System.out.println("StockID found at index: " + matchedIndex);
-            } 
-            loadDetails();
+            }
             txtField09.requestFocus();
             if(!clickedItem.getStockID().isEmpty()){
                 tblRequest01.getSelectionModel().select(pnRow);
+                loadDetails();
+            }else{
+                tblRequest01.getSelectionModel().clearSelection();
+                loadDetailSummary();
             }
         }
     }

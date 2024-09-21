@@ -12,7 +12,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -24,7 +23,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="AnchorMain" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane fx:id="AnchorMain" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
@@ -188,7 +187,6 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
@@ -329,25 +327,6 @@
                                                    </GridPane.margin>
                                                 </Text>
                                                 <TextField fx:id="txtField13" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="13" />
-                                                <Button fx:id="btnAddItem" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="14">
-                                                   <graphic>
-                                                      <FontAwesomeIconView glyphName="PLUS" size="20" textAlignment="CENTER" />
-                                                   </graphic>
-                                                   <tooltip>
-                                                      <Tooltip text="ADD" />
-                                                   </tooltip>
-                                                </Button>
-                                                <Button fx:id="btnDelItem" contentDisplay="CENTER" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" styleClass="button_process" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="14">
-                                                   <graphic>
-                                                      <FontAwesomeIconView glyphName="TRASH" size="20" textAlignment="CENTER" />
-                                                   </graphic>
-                                                   <tooltip>
-                                                      <Tooltip text="REMOVE" />
-                                                   </tooltip>
-                                                   <GridPane.margin>
-                                                      <Insets left="40.0" />
-                                                   </GridPane.margin>
-                                                </Button>
                                                 <Label fx:id="lblStatus" alignment="CENTER" contentDisplay="CENTER" maxWidth="264.0" minWidth="150.0" prefHeight="37.0" prefWidth="264.0" style="-fx-background-color: FF8201;" stylesheets="@../css/StyleSheet.css" text="APPROVED" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                                                    <font>
                                                       <Font name="System Bold" size="18.0" />
