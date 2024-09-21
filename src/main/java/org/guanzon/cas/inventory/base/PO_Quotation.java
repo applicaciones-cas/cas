@@ -143,7 +143,6 @@ public class PO_Quotation implements GTranDet{
 
         for (lnCtr = 0; lnCtr <= getItemCount() - 1; lnCtr++) {
             
-            System.out.print("Transaction number here??? "+poModelMaster.getTransactionNumber());
             poModelDetail.get(lnCtr).setTransactionNumber(poModelMaster.getTransactionNumber());
             poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
 
