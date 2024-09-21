@@ -175,5 +175,10 @@ public class Inv_Request_Cancel implements RequestCancelController  {
     public void setTransactionStatus(String fsValue) {
         poTrans.setTransactionStatus(fsValue);
     }
+
+    @Override
+    public void setCategoryType(RequestControllerFactory.RequestCategoryType type) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

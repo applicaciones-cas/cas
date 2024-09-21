@@ -13,7 +13,6 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
-import org.guanzon.appdriver.iface.GTranDet;
 import org.guanzon.cas.inventory.base.InvMaster;
 import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
@@ -22,7 +21,6 @@ import org.guanzon.cas.inventory.stock.request.RequestController;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Inv_Type;
-import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_MC_Detail;
 import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_MC_Detail;
 import org.json.simple.JSONObject;
 
@@ -139,7 +137,7 @@ public class Inv_Request_MC implements RequestController {
             return poJSON;
         }
 
-        OpenModelDetail(poModelMaster.getTransactionNumber());
+        poJSON = OpenModelDetail(poModelMaster.getTransactionNumber());
         
         pnEditMode = EditMode.READY;
 

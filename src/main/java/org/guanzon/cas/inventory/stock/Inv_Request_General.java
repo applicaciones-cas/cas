@@ -13,7 +13,6 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
-import org.guanzon.appdriver.iface.GTranDet;
 import org.guanzon.cas.inventory.base.InvMaster;
 import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
@@ -23,14 +22,13 @@ import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Inv_Type;
 import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_MC_Detail;
-import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_MC_Detail;
 import org.json.simple.JSONObject;
 
 /**
  *
  * @author Unclejo
  */
-public class Inv_Request_MP implements RequestController {
+public class Inv_Request_General implements RequestController {
 
     GRider poGRider;
     boolean pbWthParent;
@@ -52,7 +50,7 @@ public class Inv_Request_MP implements RequestController {
     public void setWithUI(boolean fbValue){
         p_bWithUI = fbValue;
     }
-    public Inv_Request_MP(GRider foGRider, boolean fbWthParent) {
+    public Inv_Request_General(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
 
@@ -139,7 +137,7 @@ public class Inv_Request_MP implements RequestController {
             return poJSON;
         }
 
-        poJSON = OpenModelDetail(poModelMaster.getTransactionNumber());
+        OpenModelDetail(poModelMaster.getTransactionNumber());
         
         pnEditMode = EditMode.READY;
 
@@ -755,7 +753,7 @@ public class Inv_Request_MP implements RequestController {
     }
     private JSONObject saveDetailWithoutROQ(){
         poJSON = new JSONObject();
-        System.out.println("getItemCount() = " + getItemCount());
+        
         for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
             poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
             poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
@@ -957,6 +955,7 @@ public class Inv_Request_MP implements RequestController {
                 poModelDetailOthers.get(poModelDetailOthers.size() - 1).setBackOrder(loRS.getInt("nBackOrdr"));
                 poModelDetailOthers.get(poModelDetailOthers.size() - 1).setAverageMonthlySalary(loRS.getInt("nAvgCostx"));
                 poJSON = poModelDetailOthers.get(poModelDetailOthers.size() - 1).setMaximumLevel(loRS.getInt("nMaxLevel"));
+                
                 if ("error".equals((String) poJSON.get("result"))) {
                     if (!pbWthParent) {
                         poGRider.rollbackTrans();

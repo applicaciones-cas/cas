@@ -17,6 +17,7 @@ import org.json.simple.JSONObject;
 public interface RequestCancelController extends GTranDet  {
     
     void setType(RequestControllerFactory.RequestType type);
+    void setCategoryType(RequestControllerFactory.RequestCategoryType type);
     
     /**
      *

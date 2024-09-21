@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.cas.inventory.stock.Inv_Request_General;
 import org.guanzon.cas.inventory.stock.Inv_Request_MC;
 import org.guanzon.cas.inventory.stock.Inv_Request_MP;
 import org.guanzon.cas.inventory.stock.Inv_Request_SP;
@@ -21,7 +22,8 @@ public class RequestControllerFactory {
         MC,
         MP,
         SP,
-        SUPPLIES
+        SUPPLIES,
+        GENERAL
     }
     public enum RequestCategoryType {
         WITH_ROQ,
@@ -35,6 +37,8 @@ public class RequestControllerFactory {
                 return (RequestController) new Inv_Request_MP(oApp, fbVal);
             case SP:
                 return (RequestController) new Inv_Request_SP(oApp, fbVal);
+            case GENERAL:
+                return (RequestController) new Inv_Request_General(oApp, fbVal);
             default:
                 return null;
         }

@@ -134,12 +134,14 @@ public class Inv_Request_SP implements RequestController {
     public JSONObject openTransaction(String fsValue) {
         
         poJSON = new JSONObject();
+        
+        poModelMaster = new Model_Inv_Stock_Request_Master(poGRider);
         poModelMaster.openRecord(fsValue);
         if ("error".equals((String) poJSON.get("result"))) {
             return poJSON;
         }
 
-        OpenModelDetail(poModelMaster.getTransactionNumber());
+        poJSON = OpenModelDetail(poModelMaster.getTransactionNumber());
         
         pnEditMode = EditMode.READY;
 
