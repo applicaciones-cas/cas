@@ -406,7 +406,7 @@ public class BrandController implements Initializable, ScreenInterface {
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        psPrimary = oTrans.getModel().getBrandCode();
+        psPrimary = oTrans.getModel().getBrandID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
         txtField03.setText(oTrans.getModel().getCategoryName());
@@ -454,7 +454,7 @@ public class BrandController implements Initializable, ScreenInterface {
 
         for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
             ListData.add(new ModelParameter(
-                    (String) oTrans.getModelList().get(lnCtr).getBrandCode(),
+                    (String) oTrans.getModelList().get(lnCtr).getBrandID(),
                     (String) oTrans.getModelList().get(lnCtr).getDescription(),
                     "",
                     "",
