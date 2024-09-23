@@ -780,7 +780,7 @@ public class Inventory implements GRecord{
 
                 if (loJSON != null){
 //                    setMaster(fnCol, (String) loBrands.getMaster("sBrandCde"));
-                    poModel.setBrandCode( (String) loBrands.getMaster("sBrandCde"));
+                    poModel.setBrandID((String) loBrands.getMaster("sBrandCde"));
                     return setMaster("xBrandNme", (String) loBrands.getMaster("sDescript"));
                 } else {
                     loJSON = new JSONObject();

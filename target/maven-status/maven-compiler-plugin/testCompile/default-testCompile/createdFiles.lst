@@ -7,4 +7,5 @@ testInventorySerial.class
 testInventorySubItem.class
 testInventoryMaster.class
 testInvStockRequestCancel.class
+testPOQuotation.class
 testInventoryHistLedger.class
