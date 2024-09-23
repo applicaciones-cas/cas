@@ -69,6 +69,14 @@
                               <Blend />
                            </effect>
                         </Button>
+                        <Button fx:id="btnPrint" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Print">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="PRINT" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
                         <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Cancel">
                            <graphic>
                               <FontAwesomeIconView glyphName="CLOSE" size="20" />
@@ -145,7 +153,7 @@
                <children>
                   <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <items>
-                        <AnchorPane style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
+                        <AnchorPane fx:id="AnchorInput" style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
@@ -407,7 +415,7 @@
                               </SplitPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
+                        <AnchorPane fx:id="AnchorTable" style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
                            <children>
                               <TableView fx:id="tblRequest" onMouseClicked="#tblDetails_Clicked" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                  <columns>

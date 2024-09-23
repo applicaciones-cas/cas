@@ -60,7 +60,7 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
     
     @FXML
     private AnchorPane 
-                AnchorMain;
+                AnchorMain, AnchorInput, AnchorTable;
 
     @FXML
     private TextField 
@@ -97,7 +97,8 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
                 btnUpdate, 
                 btnSearch, 
                 btnCancel, 
-                btnClose;
+                btnClose,
+                btnPrint;
 
     @FXML
     private Label 
@@ -105,7 +106,7 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
 
     @FXML
     private TableView 
-                tblRequest01;
+                tblRequest;
 
     @FXML
     private TableColumn
@@ -136,11 +137,23 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
         InitTextFields();        
         initButton(pnEditMode);
         initTblDetails();
-//        initTabAnchor();
+        initTabAnchor();
         lblStatus.setText("UNKNOWN");
         pbLoaded = true;
     }    
-    
+    private void initTabAnchor(){
+        System.out.print("EDIT MODE == " + pnEditMode);
+        boolean pbValue = pnEditMode == EditMode.ADDNEW || 
+                pnEditMode == EditMode.UPDATE;
+        
+        System.out.print("pbValue == " + pbValue);
+        AnchorInput.setDisable(!pbValue);
+//        AnchorDetails.setDisable(!pbValue);
+        AnchorTable.setDisable(!pbValue);
+        if (pnEditMode == EditMode.READY){
+            AnchorTable.setDisable(false);
+        }
+    } 
     private void ClickButton() {
         btnCancel.setOnAction(this::handleButtonAction);
         btnNew.setOnAction(this::handleButtonAction);
@@ -148,6 +161,7 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
         btnUpdate.setOnAction(this::handleButtonAction);
         btnClose.setOnAction(this::handleButtonAction);
         btnBrowse.setOnAction(this::handleButtonAction);  
+        btnPrint.setOnAction(this::handleButtonAction); 
     }
     private void handleButtonAction(ActionEvent event) {
         Object source = event.getSource();
@@ -157,18 +171,54 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
             unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
                 case"btnClose":
-                     if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
                         clearAllFields();    
                         appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
                         }
                     break;
                     
                 case"btnNew":
-                     
+                    poJSON = oTrans.newTransaction();
+                    if ("success".equals((String) poJSON.get("result"))){
+                            pnEditMode = oTrans.getEditMode();
+                            pnRow = 0;
+//                            pnRow1 = 0;
+                            initButton(pnEditMode);
+                            clearAllFields();
+//                            initdatepicker();
+                            initTabAnchor();
+                            loadItemData();
+                            txtField01.setText((String) oTrans.getMasterModel().getTransactionNumber()); 
+                            LocalDate currentDate = LocalDate.now();
+
+                            // Optionally format the date (not necessary for setting value in DatePicker)
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                            String formattedDate = currentDate.format(formatter);
+                            dpField01.setValue(currentDate);
+                        }
                     break;  
                     
-                case"btnSave":   
-                    
+                case"btnSave":  
+                    poJSON = oTrans.saveTransaction();
+                        System.out.println(poJSON.toJSONString());
+                        if ("success".equals((String) poJSON.get("result"))){
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
+                            initTrans();
+//                            pnEditMode = EditMode.UNKNOWN;
+//                            initButton(pnEditMode);
+                            clearAllFields();
+                            initTabAnchor();
+
+                            System.out.println("Record saved successfully.");
+                        } else {
+                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            System.out.println("The record was not saved successfully.");
+                            System.out.println((String) poJSON.get("message"));
+                            
+                            loadItemData();
+                        }
                     break;
                     
                 case"btnUpdate":
@@ -180,7 +230,15 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
                     break;     
                 
                 case"btnCancel":
-                     
+                     if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){                            
+//                            clearAllFields();
+                            if(pnEditMode == EditMode.UPDATE){
+                                oTrans.cancelUpdate();
+                            }
+                            initTrans();
+                            initTabAnchor();
+                            
+                        }
                     break; 
                   
                 
@@ -210,18 +268,10 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
     /*initialize fields*/
     private void InitTextFields(){
        // Define arrays for text fields with focusedProperty listeners
-        TextField[] focusTextFields = {
-                                        txtField01,
-                                        txtField02,
-                                        txtField03,
-                                        txtField04,
-                                        txtField05,
-                                        txtField06, 
-                                        txtField07,
-                                        txtField08, 
-                                        txtField09,
-                                        txtField11
-        };
+        TextField[] focusTextFields = {txtSeeks01, txtField01, txtField02, txtField03, txtField04, 
+                      txtField05, txtField06, txtField07, txtField08, 
+                      txtField09, txtField10, txtField11, txtField12, 
+                      txtField13, txtField14};
 
         // Add the listener to each text field in the focusTextFields array
         for (TextField textField : focusTextFields) {
@@ -230,8 +280,7 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
 
         // Define arrays for text fields with setOnKeyPressed handlers
         TextField[] keyPressedTextFields = {
-            txtField04, txtField05, txtField08, txtField09,
-            txtField11
+            txtField05,txtField10
         };
 
 //        // Set the same key pressed event handler for each text field in the keyPressedTextFields array
@@ -267,9 +316,9 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
                             System.out.println("REMARKS == " + lsValue);
                         }
                     break;
-                case 3:/*Inventory Type*/   
+                case 3:/*Supplier*/   
 //                   oTrans.getModel().setAltBarcode (lsValue);
-                   System.out.print( "Inventory Type == " );
+                   System.out.print( "Supplier == " );
                     break;
                 case 4:/*Category*/
 //                   oTrans.getModel().setBriefDescription(lsValue);
@@ -289,9 +338,9 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
                    System.out.print( "Brand == ");
                     break;
                     
-                case 8:/*Model*/
+                case 8:/*Category*/
 //                   oTrans.getModel().setDescription(lsValue);
-                   System.out.print( "Model == ");
+                   System.out.print( "Category == ");
                     break;
                     
                 case 9:/*Color*/
@@ -299,30 +348,53 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
                    System.out.print( "Color == ");
                     break;    
                  
-                case 10:/*Measure*/
-//                   oTrans.getModel().setDescription(lsValue);
-                   System.out.print( "Measure == ");
+                case 10:/*Class*/
+                   System.out.print( "Class == ");
                     break; 
                     
-                case 11:/*Min Level*/
-                   System.out.println( "Min Level == " + lsValue + "\n");
+                case 11:/*On Hand*/
+                   System.out.println( "On Hand == " + lsValue + "\n");
                     break;  
                 
-                case 12:/*Max Level*/
+                case 12:/*ROQ*/
+                   System.out.println( "ROQ == " + lsValue + "\n");
+                    break; 
+                
+                case 13:/*Min Level*/
+                   System.out.println( "Min Level == " + lsValue + "\n");
+                    break; 
+                
+                case 14:/*Max Level*/
                    System.out.println( "Max Level == " + lsValue + "\n");
                     break; 
                 
-                case 13:/*On Hand*/
-                   System.out.println( "On Hand == " + lsValue + "\n");
+                case 15:/*AMC*/
+//                   oTrans.getModel().setDescription(lsValue);
+                   System.out.print( "AMC == ");
+                    break; 
+                    
+                case 16:/*On Order*/
+                   System.out.println( "On Order == " + lsValue + "\n");
+                    break;  
+                
+                case 17:/*Unconfirm Order*/
+                   System.out.println( "Unconfirm Order == " + lsValue + "\n");
                     break; 
                 
-                case 14:/*Qty Request*/
-                   System.out.println( "QTY Request == " + lsValue + "\n");
+                case 18:/*customer order*/
+                   System.out.println( "customer order == " + lsValue + "\n");
                     break; 
+                
+                case 19:/*Qty Request*/
+                    System.out.println( "case 9 == " + lsValue);
+                    int qty = (lsValue.isEmpty())?0:Integer.parseInt(lsValue);
+                    oTrans.getDetailModel().get(oTrans.getDetailModel().size()-1).setQuantity(qty);
+                    System.out.println( "QTY Request == " + lsValue + "\n");
+                    loadItemData();
+                    break;
             }  
-//            loadItemData();
+            loadItemData();
         } else
-            
             txtField.selectAll();
     };
     
@@ -335,19 +407,20 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
             case ENTER:
             case F3:
                 switch (lnIndex){
-                    case 04: /*search barcode*/
-//                        poJson = new JSONObject();
-//                        poJson =  oTrans.searchDetail(pnRow, 3, lsValue, true);
-//                        System.out.println("poJson = " + poJson.toJSONString());
-//                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                               ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);  
-//                               break;
-//                           }
+                    case 5: /*search barcode*/
+                        poJson = new JSONObject();
+                        poJson =  oTrans.searchDetail(pnRow, 3, lsValue, true);
+                        System.out.println("poJson = " + poJson.toJSONString());
+                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+                               ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);  
+                               break;
+                           }
                         break;
                 } 
 //                loadDetails();
-                txtField11.requestFocus();
+                txtField10.requestFocus();
         }
+        
         switch (event.getCode()){
         case ENTER:
             CommonUtils.SetNextFocus(txtField);
@@ -387,7 +460,7 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
             CommonUtils.SetPreviousFocus(txtSeeks);
         }
     }
-    
+
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
@@ -403,12 +476,15 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
         // Permanently hide btnUpdate
         btnUpdate.setVisible(false);
         btnUpdate.setManaged(false);
+        btnBrowse.setVisible(false);
+        btnBrowse.setManaged(false);
 
         // Manage visibility and managed state of other buttons
-        btnBrowse.setVisible(!lbShow);
+//        btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
-        btnBrowse.setManaged(!lbShow);
+//        btnBrowse.setManaged(!lbShow);
         btnNew.setManaged(!lbShow);
+        btnClose.setVisible(!lbShow);
 
         // Manage text field states
         txtSeeks01.setDisable(!lbShow);
@@ -421,7 +497,10 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
         } else {
             txtSeeks01.requestFocus();
         }
-    }
+    btnPrint.setDisable(fnValue == EditMode.UNKNOWN);
+
+    }    
+
     private void initTblDetails() {
         R1index01.setStyle("-fx-alignment: CENTER;");
         R1index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
@@ -429,6 +508,10 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
         R1index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         R1index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         R1index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        R1index07.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        R1index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        R1index09.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        R1index10.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         
         R1index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
         R1index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
@@ -436,15 +519,19 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
         R1index04.setCellValueFactory(new PropertyValueFactory<>("index04"));
         R1index05.setCellValueFactory(new PropertyValueFactory<>("index05"));
         R1index06.setCellValueFactory(new PropertyValueFactory<>("index06"));
+        R1index07.setCellValueFactory(new PropertyValueFactory<>("index07"));
+        R1index08.setCellValueFactory(new PropertyValueFactory<>("index08"));
+        R1index09.setCellValueFactory(new PropertyValueFactory<>("index09"));
+        R1index10.setCellValueFactory(new PropertyValueFactory<>("index10"));
         
-        tblRequest01.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblRequest01.lookup("TableHeaderRow");
+        tblRequest.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblRequest.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 header.setReordering(false);
             });
         });
-        tblRequest01.setItems(R1data);
-        tblRequest01.autosize();
+        tblRequest.setItems(R1data);
+        tblRequest.autosize();
     }
     
     private void loadTransaction(){
@@ -497,65 +584,75 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
     }
     
     private void loadDetails(){
-//        if(!oTrans.getDetailModel().isEmpty()){ 
-//            txtField04.setText((String) oTrans.getDetailModel().get(pnRow).getBarcode()); 
-//            txtField05.setText((String) oTrans.getDetailModel().get(pnRow).getDescription()); 
-//            txtField06.setText((String) oTrans.getDetailModel().get(pnRow).getCategoryName()); 
-//            txtField06.setText((String) oTrans.getDetailModel().get(pnRow).getCategoryName()); 
-//            txtField07.setText((String) oTrans.getDetailModel().get(pnRow).getBrandName()); 
-//            txtField08.setText((String) oTrans.getDetailModel().get(pnRow).getModelName()); 
-//            txtField09.setText((String) oTrans.getDetailModel().get(pnRow).getColorName()); 
-//            txtField11.setText(oTrans.getDetailModel().get(pnRow).getQuantity().toString()); 
-//        }
+        try {
+            if(!oTrans.getDetailModel().isEmpty()){ 
+                txtField05.setText((String) oTrans.getDetailModel().get(pnRow).getBarcode()); 
+                txtField06.setText((String) oTrans.getDetailModel().get(pnRow).getDescription()); 
+                txtField07.setText((String) oTrans.getDetailModel().get(pnRow).getBrandName());                 
+                txtField08.setText((String) oTrans.getDetailModel().get(pnRow).getCategoryName()); 
+                txtField09.setText((String) oTrans.getDetailModel().get(pnRow).getColorName());                 
+                txtField10.setText((String) oTrans.getDetailModel().get(pnRow).getClassify());                  
+                txtField11.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantityOnHand())); 
+                txtField12.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getRecordOrder()));  
+                txtField13.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getMinimumLevel()));  
+                txtField14.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getMaximumLevel())); 
+                
+            }
+         } catch (NullPointerException ex) {
+            ex.printStackTrace();
+        }
     }
-    
     private void loadItemData(){
         int lnCtr;
         R1data.clear();
         if(oTrans.getDetailModel()!= null){
             for (lnCtr = 0; lnCtr < oTrans.getDetailModel().size(); lnCtr++){
                 
-//            oTrans.getDetailModel().get(lnCtr).list();
-                R1data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        ""));  
+                R1data.add(new ModelStockRequest(
+                   String.valueOf(lnCtr + 1),
+                        (String)oTrans.getDetailModel().get(lnCtr).getBarcode(),
+                        (String)oTrans.getDetailModel().get(lnCtr).getDescription(),                      
+                   String.valueOf(oTrans.getDetailModel().get(lnCtr).getAverageMonthlySalary()),
+                   String.valueOf(oTrans.getDetailModel().get(lnCtr).getQuantityOnHand()),
+                   String.valueOf(oTrans.getDetailModel().get(lnCtr).getMinimumLevel()),
+                   String.valueOf(oTrans.getDetailModel().get(lnCtr).getReservedOrder()),
+                   String.valueOf(oTrans.getDetailModel().get(lnCtr).getRecordOrder()),
+                   String.valueOf(oTrans.getDetailModel().get(lnCtr).getQuantity()),
+                        (String)oTrans.getDetailModel().get(lnCtr).getStockID()));  
                 
-            }
+            }   
         }
     }
     
     @FXML
     private void tblDetails_Clicked (MouseEvent event) {
         System.out.println("pnRow = " + pnRow);
-        if(tblRequest01.getSelectionModel().getSelectedIndex() >= 0){
-            pnRow = tblRequest01.getSelectionModel().getSelectedIndex(); 
+        if(tblRequest.getSelectionModel().getSelectedIndex() >= 0){
+            pnRow = tblRequest.getSelectionModel().getSelectedIndex(); 
             loadDetails();
+            txtField10.requestFocus();
         }
-        tblRequest01.setOnKeyReleased((KeyEvent t)-> {
+        tblRequest.setOnKeyReleased((KeyEvent t)-> {
             KeyCode key = t.getCode();
             switch (key){
                 case DOWN:
-                    pnRow = tblRequest01.getSelectionModel().getSelectedIndex(); 
-                    if (pnRow == tblRequest01.getItems().size()) {
-                        pnRow = tblRequest01.getItems().size();
+                    pnRow = tblRequest.getSelectionModel().getSelectedIndex(); 
+                    if (pnRow == tblRequest.getItems().size()) {
+                        pnRow = tblRequest.getItems().size();
                         loadDetails();
+                        txtField10.requestFocus();
                     }else {
                         loadDetails();
+                        txtField10.requestFocus();
                     }
                     break;
                 case UP:
                     int pnRows = 0;
                     int x = 1;
-                     pnRow = tblRequest01.getSelectionModel().getSelectedIndex(); 
+                     pnRow = tblRequest.getSelectionModel().getSelectedIndex(); 
 
                         loadDetails();
+                        txtField10.requestFocus();
                     break;
                 default:
                     break; 
@@ -578,8 +675,8 @@ public class InvRequestEntryGIROQController implements Initializable ,ScreenInte
     private void initTrans(){
         clearAllFields();
         oTrans = new Inv_Request(oApp, true);
-        oTrans.setType(RequestControllerFactory.RequestType.SP);
-        oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
+        oTrans.setType(RequestControllerFactory.RequestType.GENERAL);        
+        oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITH_ROQ);
         oTrans.setTransactionStatus("0123");
         pnEditMode = EditMode.UNKNOWN;     
         initButton(pnEditMode);

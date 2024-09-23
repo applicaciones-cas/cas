@@ -29,7 +29,7 @@
                <children>
                   <HBox fx:id="hbButtons" alignment="CENTER_LEFT" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Browse">
+                        <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Browse">
                            <graphic>
                               <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
                            </graphic>
@@ -37,7 +37,7 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="New">
+                        <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="New">
                            <graphic>
                               <FontAwesomeIconView glyphName="FILE" size="20" />
                            </graphic>
@@ -45,7 +45,7 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Save">
+                        <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Save">
                            <graphic>
                               <FontAwesomeIconView glyphName="SAVE" size="20" />
                            </graphic>
@@ -53,7 +53,7 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Update">
+                        <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Update">
                            <graphic>
                               <FontAwesomeIconView glyphName="EDIT" size="20" />
                            </graphic>
@@ -61,7 +61,7 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Search">
+                        <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Search">
                            <graphic>
                               <FontAwesomeIconView glyphName="SEARCH" size="20" />
                            </graphic>
@@ -69,7 +69,15 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Cancel">
+                        <Button fx:id="btnPrint" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Print">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="PRINT" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Cancel">
                            <graphic>
                               <FontAwesomeIconView glyphName="CLOSE" size="20" />
                            </graphic>
@@ -77,7 +85,7 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" styleClass="button_process_dark" text="Close">
+                        <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Close">
                            <graphic>
                               <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
                            </graphic>
@@ -145,7 +153,7 @@
                <children>
                   <SplitPane dividerPositions="0.48" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <items>
-                        <AnchorPane style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
+                        <AnchorPane fx:id="AnchorInput" style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
@@ -334,9 +342,9 @@
                               </GridPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane style="-fx-border-color: FF8201;">
+                        <AnchorPane fx:id="AnchorTable" style="-fx-border-color: FF8201;">
                            <children>
-                              <TableView fx:id="tblRequest01" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                              <TableView fx:id="tblRequest" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                  <columns>
                                     <TableColumn fx:id="R1index01" prefWidth="30.0" text="No." />
                                     <TableColumn fx:id="R1index02" prefWidth="180.0" text="Barrcode" />
@@ -346,7 +354,7 @@
                                     <TableColumn fx:id="R1index06" minWidth="50.0" prefWidth="50.0" text="ROQ" />
                                     <TableColumn fx:id="R1index07" minWidth="50.0" prefWidth="50.0" text="AMC" />
                                     <TableColumn fx:id="R1index08" minWidth="50.0" prefWidth="50.0" text="QOH" />
-                                    <TableColumn fx:id="R1index08" minWidth="50.0" prefWidth="50.0" text="BO" />
+                                    <TableColumn fx:id="R1index09" minWidth="50.0" prefWidth="50.0" text="BO" />
                                     <TableColumn fx:id="R1index10" minWidth="50.0" prefWidth="50.0" text="QTY" />
                                  </columns>
                                  <stylesheets>

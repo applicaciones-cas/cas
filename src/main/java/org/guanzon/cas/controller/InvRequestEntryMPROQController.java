@@ -750,7 +750,6 @@ public class InvRequestEntryMPROQController implements Initializable ,ScreenInte
                         (String)oTrans.getDetailModelOthers().get(lnCtr).getBarcode(),
                         (String)oTrans.getDetailModelOthers().get(lnCtr).getDescription(),
                         (String)oTrans.getDetailModelOthers().get(lnCtr).getBrandName(),
-                        
                    String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getAverageMonthlySalary()),
                    String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getQuantityOnHand()),
                    String.valueOf(oTrans.getDetailModelOthers().get(lnCtr).getMinimumLevel()),

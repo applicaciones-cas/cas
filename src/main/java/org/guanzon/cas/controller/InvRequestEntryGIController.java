@@ -441,8 +441,10 @@ public class InvRequestEntryGIController implements Initializable,ScreenInterfac
                     break;
                     
                 case 13:/*REQUEST*/
-//                   oTrans.getMasterModel().setDescription(lsValue);
-                   System.out.print( "REQUEST == ");
+                    int qty = (lsValue.isEmpty())?0:Integer.parseInt(lsValue);
+                   oTrans.getDetailModel().get(oTrans.getDetailModel().size()-1).setQuantity(qty);
+                   System.out.println( "QTY Request == " + lsValue + "\n");
+                   loadItemData();
                     break;
             }                  
         } else
@@ -752,7 +754,7 @@ public class InvRequestEntryGIController implements Initializable,ScreenInterfac
     private void initTrans(){
         clearAllFields();
         oTrans = new Inv_Request(oApp, true);
-        oTrans.setType(RequestControllerFactory.RequestType.SP);
+        oTrans.setType(RequestControllerFactory.RequestType.GENERAL);
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
         pnEditMode = EditMode.UNKNOWN;     
