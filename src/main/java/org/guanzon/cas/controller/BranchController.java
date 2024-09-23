@@ -510,7 +510,7 @@ public class BranchController implements Initializable, ScreenInterface {
         txtField07.setText(oTrans.getModel().getAddress());
 
         cbActive.setSelected(oTrans.getModel().isActive());
-        cbWareHouse.setSelected(oTrans.getModel().isActiveWarehouse());
+//        cbWareHouse.setSelected(oTrans.getModel().isActiveWarehouse());
         
         if (lbActive) {
             btnActivate.setText("Deactivate");
