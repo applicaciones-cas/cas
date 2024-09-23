@@ -486,9 +486,9 @@
                      <top>
                         <AnchorPane BorderPane.alignment="CENTER">
                            <children>
-                              <AnchorPane fx:id="apBrowse" style="-fx-background-color: A0A0A0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <AnchorPane fx:id="apBrowse" prefHeight="45.0" prefWidth="1370.0" style="-fx-background-color: A0A0A0;">
                                  <children>
-                                    <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="45.0">
+                                    <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="45.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="142.3333282470703" minWidth="10.0" prefWidth="142.3333282470703" />
                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.6666717529297" minWidth="10.0" prefWidth="194.6666717529297" />
@@ -510,7 +510,7 @@
                                                 <Insets right="5.0" />
                                              </GridPane.margin>
                                           </Text>
-                                          <TextField fx:id="txtField991" promptText="Press F3: Search" GridPane.columnIndex="1">
+                                          <TextField fx:id="txtField99" promptText="Press F3: Search" GridPane.columnIndex="1">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -524,7 +524,7 @@
                                                 <Cursor fx:constant="TEXT" />
                                              </cursor>
                                           </TextField>
-                                          <TextField fx:id="txtField981" prefHeight="26.0" prefWidth="174.0" promptText="Press F3: Search" GridPane.columnIndex="3">
+                                          <TextField fx:id="txtField98" prefHeight="26.0" prefWidth="174.0" promptText="Press F3: Search" GridPane.columnIndex="3">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -551,7 +551,7 @@
                                                 <Insets right="5.0" />
                                              </GridPane.margin>
                                           </Text>
-                                          <TextField fx:id="txtField9811" prefHeight="26.0" prefWidth="167.0" promptText="Press F3: Search" GridPane.columnIndex="5">
+                                          <TextField fx:id="txtField981" prefHeight="26.0" prefWidth="167.0" promptText="Press F3: Search" GridPane.columnIndex="5">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
