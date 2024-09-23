@@ -21,7 +21,7 @@ import org.guanzon.cas.inventory.stock.request.RequestController;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Inv_Type;
-import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_MC_Detail;
+import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_GI_Detail;
 import org.json.simple.JSONObject;
 
 /**
@@ -370,7 +370,7 @@ public class Inv_Request_General implements RequestController {
                 Inventory loInventory = new Inventory(poGRider, true);
                 loInventory.setRecordStatus(psTranStatus);
                 loInventory.setWithUI(p_bWithUI);
-                poJSON = loInventory.searchRecordWithContition(fsValue, "sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()) + " AND sCategCd2 != " + SQLUtil.toSQL("0007"), fbByCode);
+                poJSON = loInventory.searchRecordWithContition(fsValue, "sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()) + " AND d.sMainCatx = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()), fbByCode);
 
                 if (poJSON != null) {
                     for(int lnCtr = 0; lnCtr < poModelDetail.size(); lnCtr++){
@@ -450,7 +450,7 @@ public class Inv_Request_General implements RequestController {
         }
 
         String lsSQL = MiscUtil.addCondition(getSQL(), " a.sTransNox LIKE "
-                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition + " AND f.sCategCd1 = '0001' AND f.sCategCd2 != '0007' GROUP BY a.sTransNox ASC");
+                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition + " AND f.sCategCd1 = '0004' AND d.sMainCatx = '0004' GROUP BY a.sTransNox ASC");
 
         poJSON = new JSONObject();
         System.out.println("searchTransaction = " + lsSQL);
@@ -674,7 +674,7 @@ public class Inv_Request_General implements RequestController {
 
 
             } else {
-                Validator_Inv_Stock_Request_MC_Detail validator = new Validator_Inv_Stock_Request_MC_Detail(poModelDetail.get(poModelDetail.size()-1));
+                Validator_Inv_Stock_Request_GI_Detail validator = new Validator_Inv_Stock_Request_GI_Detail(poModelDetail.get(poModelDetail.size()-1));
                 if (!validator.isEntryOkay()){
                     poJSON.put("result", "error");
                     poJSON.put("message", validator.getMessage());
@@ -757,7 +757,7 @@ public class Inv_Request_General implements RequestController {
         for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
             poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
             poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
-            Validator_Inv_Stock_Request_MC_Detail validator = new Validator_Inv_Stock_Request_MC_Detail(poModelDetail.get(poModelDetail.size()-1));
+            Validator_Inv_Stock_Request_GI_Detail validator = new Validator_Inv_Stock_Request_GI_Detail(poModelDetail.get(poModelDetail.size()-1));
                 if (!validator.isEntryOkay()){
                     poJSON.put("result", "error");
                     poJSON.put("message", validator.getMessage());
@@ -930,7 +930,7 @@ public class Inv_Request_General implements RequestController {
         poJSON = new JSONObject();
         try {
             String lsSQL = getSQL_Detail();
-            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0001' AND b.sCategCd2 = '0007'");
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0004' AND d.sMainCatx = '0004'");
             ResultSet loRS = poGRider.executeQuery(lsSQL);
             System.out.println("\n" + lsSQL);
             poModelDetailOthers =  new ArrayList<>();

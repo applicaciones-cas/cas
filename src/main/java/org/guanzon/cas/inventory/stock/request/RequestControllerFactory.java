@@ -56,6 +56,18 @@ public class RequestControllerFactory {
                 return null;
         }
     }
+    public static RequestApprovalController makeApproval(RequestType foType, GRider oApp, boolean fbVal) {
+        switch (foType) {
+            case MC:
+                return (RequestApprovalController) new Inv_Request_MC(oApp, fbVal);
+            case MP:
+                return (RequestApprovalController) new Inv_Request_MC(oApp, fbVal);
+            case SP:
+                return (RequestApprovalController) new Inv_Request_SP(oApp, fbVal);
+            default:
+                return null;
+        }
+    }
     
     
 }

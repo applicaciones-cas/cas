@@ -22,8 +22,7 @@ import org.guanzon.cas.inventory.stock.request.RequestController;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Inv_Type;
-import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_MC_Detail;
-import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_MC_Detail;
+import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_MP_Detail;
 import org.json.simple.JSONObject;
 
 /**
@@ -676,7 +675,7 @@ public class Inv_Request_MP implements RequestController {
 
 
             } else {
-                Validator_Inv_Stock_Request_MC_Detail validator = new Validator_Inv_Stock_Request_MC_Detail(poModelDetail.get(poModelDetail.size()-1));
+                Validator_Inv_Stock_Request_MP_Detail validator = new Validator_Inv_Stock_Request_MP_Detail(poModelDetail.get(poModelDetail.size()-1));
                 if (!validator.isEntryOkay()){
                     poJSON.put("result", "error");
                     poJSON.put("message", validator.getMessage());
@@ -759,7 +758,7 @@ public class Inv_Request_MP implements RequestController {
         for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
             poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
             poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
-            Validator_Inv_Stock_Request_MC_Detail validator = new Validator_Inv_Stock_Request_MC_Detail(poModelDetail.get(poModelDetail.size()-1));
+            Validator_Inv_Stock_Request_MP_Detail validator = new Validator_Inv_Stock_Request_MP_Detail(poModelDetail.get(poModelDetail.size()-1));
                 if (!validator.isEntryOkay()){
                     poJSON.put("result", "error");
                     poJSON.put("message", validator.getMessage());
