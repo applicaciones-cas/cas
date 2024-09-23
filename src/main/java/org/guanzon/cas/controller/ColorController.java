@@ -393,7 +393,7 @@ public class ColorController implements Initializable, ScreenInterface {
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        psPrimary = oTrans.getModel().getColorCode();
+        psPrimary = oTrans.getModel().getColorID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
         cbActive.setSelected(oTrans.getModel().isActive());
@@ -438,7 +438,7 @@ public class ColorController implements Initializable, ScreenInterface {
 
         for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
             ListData.add(new ModelParameter(
-                    (String) oTrans.getModelList().get(lnCtr).getColorCode(),
+                    (String) oTrans.getModelList().get(lnCtr).getColorID(),
                     (String) oTrans.getModelList().get(lnCtr).getDescription(),
                     "",
                     "",
