@@ -143,11 +143,11 @@ public class testInventory{
         }
         Assert.assertEquals("0001", record.getModel().getCategCd4());
         
-        loJSON = record.getModel().setBrandCode("M0012401");
+        loJSON = record.getModel().setBrandID("M0012401");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals("M0012401", record.getModel().getBrandCode());
+        Assert.assertEquals("M0012401", record.getModel().getBrandID());
         
         loJSON = record.getModel().setBrandName("Samasung");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -155,11 +155,11 @@ public class testInventory{
         }
         Assert.assertEquals("Samasung", record.getModel().getBrandName());
 //        
-        loJSON = record.getModel().setModelCode("M0012401");
+        loJSON = record.getModel().setModelID("M0012401");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals("M0012401", record.getModel().getModelCode());
+        Assert.assertEquals("M0012401", record.getModel().getModelID());
         
         loJSON = record.getModel().setModelName("RAIDER GTR 180");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -167,11 +167,11 @@ public class testInventory{
         }
         Assert.assertEquals("RAIDER GTR 180", (record.getModel().getModelName())==null?"":record.getModel().getModelName());
         
-        loJSON = record.getModel().setColorCode("M001001");
+        loJSON = record.getModel().setColorID("M001001");
         if ("error".equals((String) loJSON.get("result"))) {
             Assert.fail((String) loJSON.get("message"));
         }
-        Assert.assertEquals("M001001", record.getModel().getColorCode());
+        Assert.assertEquals("M001001", record.getModel().getColorID());
         
         loJSON = record.getModel().setColorName("ORANGE");
         if ("error".equals((String) loJSON.get("result"))) {
@@ -312,13 +312,13 @@ public class testInventory{
         Assert.assertEquals("0001", record.getModel().getCategCd3());
         Assert.assertEquals("0001", record.getModel().getCategCd4());
         
-        Assert.assertEquals("M0012401", record.getModel().getBrandCode());
+        Assert.assertEquals("M0012401", record.getModel().getBrandID());
         Assert.assertEquals("Samasung", record.getModel().getBrandName());
         
-        Assert.assertEquals("", record.getModel().getModelCode());
+        Assert.assertEquals("", record.getModel().getModelID());
         Assert.assertEquals("", (record.getModel().getModelName())==null?"":record.getModel().getModelName());
         
-        Assert.assertEquals("M001001", record.getModel().getColorCode());
+        Assert.assertEquals("M001001", record.getModel().getColorID());
         Assert.assertEquals("ORANGE", record.getModel().getColorName());
         
         Assert.assertEquals("", record.getModel().getMeasureID());
