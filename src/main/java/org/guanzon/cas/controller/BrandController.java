@@ -96,9 +96,7 @@ public class BrandController implements Initializable, ScreenInterface {
         String lsButton = ((Button) event.getSource()).getId();
 
         switch (lsButton) {
-
             case "btnNew":
-
                 clearFields();
                 poJSON = oTrans.newRecord();
                 loadRecord();
@@ -323,10 +321,11 @@ public class BrandController implements Initializable, ScreenInterface {
         TextField textField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
         String lsValue = textField.getText();
+        if (lsValue == null) lsValue = "";
+                                
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
-
                     case 99:
                         /*Browse Primary*/
                         poJSON = oTrans.searchRecord(lsValue, false);
@@ -409,7 +408,7 @@ public class BrandController implements Initializable, ScreenInterface {
         psPrimary = oTrans.getModel().getBrandID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getDescription());
-        txtField03.setText(oTrans.getModel().getCategoryName());
+        txtField03.setText(oTrans.Category().getDescription());
 
         cbActive.setSelected(oTrans.getModel().isActive());
 
