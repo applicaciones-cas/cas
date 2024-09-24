@@ -26,6 +26,7 @@
 .table-view .filler, .table-view .column-header {
     -fx-background-color: transparent;
     -fx-size: 20px;
+    -fx-pref-height: 26px;
 }
 
 .table-view .table-cell{

@@ -38,18 +38,16 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.controller.ScreenInterface;
 import org.guanzon.cas.controller.unloadForm;
 import org.guanzon.cas.inventory.base.Inventory;
-import org.guanzon.cas.inventory.base.PO_Quotation_Request;
-import org.guanzon.cas.model.ModelPOQuotationRequest;
 import org.guanzon.cas.model.ModelPurchaseOrder;
 import org.guanzon.cas.purchasing.controller.PurchaseOrder;
 import org.json.simple.JSONObject;
 
-/**s
+/**
+ * s
  *
  * @author User
  */
 //PO_Main_1Controller
-
 public class PurchaseOrderMCController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Purchase Order(for Motorcycle, Mobile Phone, Cars)";
@@ -63,13 +61,14 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     private boolean pbLoaded = false;
     private int pnIndex;
     private int pnDetailRow;
+    private AnchorPane MainAnchorPane;
 
     @FXML
-    private AnchorPane MainAnchorPane, apBrowse, apMaster, apButton, apTable, apDetail;
+    private AnchorPane apBrowse, apMaster, apButton, apTable, apDetail;
 
     @FXML
     private Button btnBrowse, btnNew, btnUpdate, btnPrint, btnClose,
-            btnFindSource, btnSearch, btnSave, btnAddItem, btnRemoveItem, btnCancel;
+            btnFindSource, btnSearch, btnSave, btnRemoveItem, btnCancel,btnAddItem;
 
     @FXML
     private HBox hbButtons;
@@ -82,7 +81,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     private TextArea txtField07;
     @FXML
     private TextField txtDetail01, txtDetail02, txtDetail03, txtDetail04, txtDetail05, txtDetail06, txtDetail07;
-    
+
     @FXML
     private TableView tblDetails;
     @FXML
@@ -91,6 +90,28 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     private ObservableList<ModelPurchaseOrder> data = FXCollections.observableArrayList();
     //PO_Quotation_Request == PurchaseOrder
     //ModelPOQuotationRequest == ModelPurchaseOrder
+    @FXML
+    private HBox hbButtons1;
+    @FXML
+    private Button btnAdditem;
+    @FXML
+    private TextField txtField08;
+    @FXML
+    private TextField txtField09;
+    @FXML
+    private TextField txtField10;
+    @FXML
+    private TextField txtField11;
+    @FXML
+    private TextField txtField12;
+    @FXML
+    private TableColumn index08;
+    @FXML
+    private TableColumn index09;
+    @FXML
+    private TableColumn index10;
+    @FXML
+    private TableColumn index11;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -125,6 +146,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     return;
                 }
                 break;
+
             case "btnUpdate":
                 poJSON = oTrans.updateTransaction();
 
@@ -150,7 +172,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 break;
             case "btnFindSource":
                 break;
-                
+
             case "btnSearch":
                 if (pnIndex > 3 || pnIndex < 1) {
                     pnIndex = 1;
@@ -247,13 +269,13 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
 
-        index01.setCellValueFactory(new PropertyValueFactory<ModelPOQuotationRequest, String>("index01"));
-        index02.setCellValueFactory(new PropertyValueFactory<ModelPOQuotationRequest, String>("index02"));
-        index03.setCellValueFactory(new PropertyValueFactory<ModelPOQuotationRequest, String>("index03"));
-        index04.setCellValueFactory(new PropertyValueFactory<ModelPOQuotationRequest, String>("index04"));
-        index05.setCellValueFactory(new PropertyValueFactory<ModelPOQuotationRequest, String>("index05"));
-        index06.setCellValueFactory(new PropertyValueFactory<ModelPOQuotationRequest, String>("index06"));
-        index07.setCellValueFactory(new PropertyValueFactory<ModelPOQuotationRequest, String>("index07"));
+        index01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index01"));
+        index02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index02"));
+        index03.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index03"));
+        index04.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index04"));
+        index05.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index05"));
+        index06.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index06"));
+        index07.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index07"));
 
         tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");
@@ -306,6 +328,10 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         btnNew.setVisible(!lbShow);
         btnUpdate.setVisible(!lbShow);
         btnClose.setVisible(!lbShow);
+        btnFindSource.setVisible(!lbShow);
+        btnRemoveItem.setVisible(!lbShow);
+        btnPrint.setVisible(!lbShow);
+        btnAddItem.setVisible(!lbShow);
 
         apBrowse.setDisable(lbShow);
         apMaster.setDisable(!lbShow);
@@ -419,6 +445,13 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             case F3:
                 switch (lnIndex) {
                     case 1:
+                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, lnIndex == 1);
+//                        System.out.println("poJson Result = " + poJSON.toJSONString());
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+
+                        break;
                     case 2:
                         /* Barcode & Description */
                         poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, lnIndex == 1);
@@ -643,11 +676,8 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         txtField03.setText(oTrans.getMasterModel().getDestination());
         txtField04.setText(oTrans.getMasterModel().getReferenceNo());
         txtField05.setText(oTrans.getMasterModel().getCategoryName());
-//        txtField06.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getExpectedPurchaseDate()));
         txtField07.setText(oTrans.getMasterModel().getRemarks());
-
         loadTableDetail();
-
     }
 
     private void clearFields() {
@@ -661,6 +691,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
         txtField99.clear();
         txtField98.clear();
+        txtField97.clear();
 
         txtDetail01.clear();
         txtDetail02.clear();
