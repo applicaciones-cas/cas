@@ -632,7 +632,7 @@ public class DashboardController implements Initializable {
 
             case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
                 return new FrmAccountsAccreditationController();
-            
+                
             case "/org/guanzon/cas/views/InventoryParam.fxml":
                 return new InventoryParamController();
             

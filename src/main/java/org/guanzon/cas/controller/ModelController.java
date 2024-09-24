@@ -431,7 +431,7 @@ public class ModelController implements Initializable, ScreenInterface {
     private void loadRecord() {
         boolean lbActive = oTrans.getModel().isActive();
 
-        psPrimary = oTrans.getModel().getModelCode();
+        psPrimary = oTrans.getModel().getModelID();
         txtField01.setText(psPrimary);
         txtField02.setText(oTrans.getModel().getBrandName());
         txtField03.setText(oTrans.getModel().getModelName());
@@ -483,7 +483,7 @@ public class ModelController implements Initializable, ScreenInterface {
 
         for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
             ListData.add(new ModelParameter(
-                    (String) oTrans.getModelList().get(lnCtr).getModelCode(),
+                    (String) oTrans.getModelList().get(lnCtr).getModelID(),
                     (String) oTrans.getModelList().get(lnCtr).getModelName(),
                     "",
                     "",

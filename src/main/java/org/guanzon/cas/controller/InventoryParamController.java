@@ -694,7 +694,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex){
-                    case 06: /*search category 1*/
+                    case 06:
                         
                         poJson = new JSONObject();
                         poJson =  oTrans.SearchMaster(6,lsValue, false);
@@ -709,7 +709,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            txtField06.setText((String) oTrans.getModel().getCategName1()); 
                            initSubItemForm();
                         break;
-                    case 7: /*search category 2*/
+                    case 7:
                         poJson = new JSONObject();
                         poJson =  oTrans.SearchMaster(7,lsValue, false);
                            System.out.println("poJson = " + poJson.toJSONString());
@@ -721,7 +721,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                            txtField07.setText((String) oTrans.getMaster(34));    
                            cmbField01.setValue((String) oTrans.getMaster(42));  
                         break;
-                    case 8: /*search category 3*/
+                    case 8:
                         poJson = new JSONObject();
                         poJson =  oTrans.SearchMaster(8,lsValue, false);
                            System.out.println("poJson = " + poJson.toJSONString());
@@ -731,7 +731,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                             System.out.print( "category 3 == " + oTrans.getMaster(35));
                            txtField08.setText((String) oTrans.getMaster(35));      
                         break;
-                    case 9: /*search category 4*/
+                    case 9:
                         poJson = new JSONObject();
                         poJson =  oTrans.SearchMaster(9,lsValue, false);
                            System.out.println("poJson = " + poJson.toJSONString());
