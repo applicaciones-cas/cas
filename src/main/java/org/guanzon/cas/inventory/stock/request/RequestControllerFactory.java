@@ -12,6 +12,7 @@ import org.guanzon.cas.inventory.stock.Inv_Request_General;
 import org.guanzon.cas.inventory.stock.Inv_Request_MC;
 import org.guanzon.cas.inventory.stock.Inv_Request_MP;
 import org.guanzon.cas.inventory.stock.Inv_Request_SP;
+import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_SP_Approval;
 /**
  *
  * @author User
@@ -63,7 +64,7 @@ public class RequestControllerFactory {
             case MP:
                 return (RequestApprovalController) new Inv_Request_MC(oApp, fbVal);
             case SP:
-                return (RequestApprovalController) new Inv_Request_SP(oApp, fbVal);
+                return (RequestApprovalController) new Inv_Request_SP_Approval(oApp, fbVal);
             default:
                 return null;
         }

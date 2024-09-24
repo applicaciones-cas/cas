@@ -194,6 +194,11 @@ public class Inv_Request_Approval implements RequestApprovalController  {
     public ArrayList<Model_Inv_Stock_Request_Master> getMasterModelList() {
         return poTrans.getMasterModelList();
     }
+    
+    @Override
+    public JSONObject LoadModelMasterList() {
+        return poTrans.LoadModelMasterList();
+    }
 
     
 }

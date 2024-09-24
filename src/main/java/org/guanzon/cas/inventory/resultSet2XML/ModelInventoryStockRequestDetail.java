@@ -38,47 +38,48 @@ public class ModelInventoryStockRequestDetail {
         
         
         String lsSQL = "SELECT" +
-                            "  a.sTransNox" +
-                            ", a.nEntryNox" +
-                            ", a.sStockIDx" +
-                            ", a.nQuantity" +
-                            ", a.cClassify" +
-                            ", a.nRecOrder" +
-                            ", a.nQtyOnHnd" +
-                            ", a.nResvOrdr" +
-                            ", a.nBackOrdr" +
-                            ", a.nOnTranst" +
-                            ", a.nAvgMonSl" +
-                            ", a.nMaxLevel" +
-                            ", a.nApproved" +
-                            ", a.nCancelld" +
-                            ", a.nIssueQty" +
-                            ", a.nOrderQty" +
-                            ", a.nAllocQty" +
-                            ", a.nReceived" +
-                            ", a.sNotesxxx" +
-                            ", a.dModified" +
-                            ", b.sBarCodex xBarCodex" +
-                            ", b.sDescript xDescript" +
-                            ", c.sDescript xCategr01" +
-                            ", d.sDescript xCategr02" +
-                            ", e.sDescript xInvTypNm" +
-                            ", f.sDescript xBrandNme" +
-                            ", g.sModelNme xModelNme" +
-                            ", g.sDescript xModelDsc" +
-                            ", h.sDescript xColorNme" +
-                            ", i.sMeasurNm xMeasurNm" +
-                            ", j.nMinLevel" +
-                        " FROM " + System.getProperty("sys.table") + " a" + 
-                            " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-                            " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
-                            " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
-                            " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd" +
-                            " LEFT JOIN Brand f ON b.sBrandCde = f.sBrandCde" +
-                            " LEFT JOIN Model g ON b.sModelCde = g.sModelCde" +
-                            " LEFT JOIN Color h ON b.sColorCde = h.sColorCde" +
-                            " LEFT JOIN Measure i ON b.sMeasurID = i.sMeasurID" +
-                            " LEFT JOIN Inv_Master j ON b.sStockIDx = j.sStockIDx" +
+                "  a.sTransNox" +
+                ", a.nEntryNox" +
+                ", a.sStockIDx" +
+                ", a.nQuantity" +
+                ", a.cClassify" +
+                ", a.nRecOrder" +
+                ", a.nQtyOnHnd" +
+                ", a.nResvOrdr" +
+                ", a.nBackOrdr" +
+                ", a.nOnTranst" +
+                ", a.nAvgMonSl" +
+                ", a.nMaxLevel" +
+                ", a.nApproved" +
+                ", a.nCancelld" +
+                ", a.nIssueQty" +
+                ", a.nOrderQty" +
+                ", a.nAllocQty" +
+                ", a.nReceived" +
+                ", a.sNotesxxx" +
+                ", a.dModified" +
+                ", b.sBarCodex xBarCodex" +
+                ", b.sDescript xDescript" +
+                ", c.sDescript xCategr01" +
+                ", d.sDescript xCategr02" +
+                ", e.sDescript xInvTypNm" +
+                ", f.sDescript xBrandNme" +
+                ", g.sDescript xModelNme" +
+                ", g.sDescript xModelDsc" +
+                ", h.sDescript xColorNme" +
+                ", i.sMeasurNm xMeasurNm" +
+                ", j.nMinLevel" +
+                ", j.sLocatnID" +
+            " FROM Inv_Stock_Request_Detail a" + 
+                " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
+                " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
+                " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
+                " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd" +
+                " LEFT JOIN Brand f ON b.sBrandIDx = f.sBrandIDx" +
+                " LEFT JOIN Model g ON b.sModelIDx = g.sModelIDx" +
+                " LEFT JOIN Color h ON b.sColorIDx = h.sColorIDx" +
+                " LEFT JOIN Measure i ON b.sMeasurID = i.sMeasurID"+
+                " LEFT JOIN Inv_Master j ON b.sStockIDx = j.sStockIDx" +
                         " WHERE 0=1";
         
         

@@ -932,7 +932,7 @@ public class Inv_Request_MC implements RequestController {
             String lsSQL = getSQL_Detail();
             lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0001' AND b.sCategCd2 = '0007'");
             ResultSet loRS = poGRider.executeQuery(lsSQL);
-            System.out.println("\n" + lsSQL);
+            System.out.println(" " + lsSQL);
             poModelDetailOthers =  new ArrayList<>();
             while (loRS.next()) {
                 poModelDetailOthers.add(new Model_Inv_Stock_Request_Detail(poGRider));
@@ -1015,36 +1015,43 @@ public class Inv_Request_MC implements RequestController {
     }
     
     private String getSQL_Detail(){
-        return "SELECT" +
-            "   a.sStockIDx" +
-            " , a.sBranchCd" +
-            " , a.nQtyOnHnd" +
-            " , a.nMinLevel" +
-            " , a.nMaxLevel" +
-            " , a.nAvgMonSl" +
-            " , a.nAvgCostx" +
-            " , a.cClassify" +
-            " , a.nBackOrdr" +
-            " , a.nResvOrdr" +
-            " , b.sBarCodex xBarCodex" +
-            " , b.sDescript xDescript" +
-            " , c.sDescript xCategr01" +
-            " , d.sDescript xCategr02" +
-            " , e.sDescript xBrandNme" +
-            " , f.sModelNme xModelNme" +
-            " , g.sDescript xColorNme" +
-            " , h.sMeasurNm xMeasurNm" +
-            " , h.sMeasurNm xMeasurNm" +
-            " , i.sDescript xInvTypNm" +
-        " FROM Inv_Master a"+ 
-            " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-            " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
-            " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
-            " LEFT JOIN Brand e ON b.sBrandCde = e.sBrandCde" +
-            " LEFT JOIN Model f ON b.sModelCde = f.sModelCde" +
-            " LEFT JOIN Color g ON b.sColorCde = g.sColorCde" +
-            " LEFT JOIN Measure h ON b.sMeasurID = h.sMeasurID" +
-            " LEFT JOIN Inv_Type i ON d.sInvTypCd = i.sInvTypCd" ;
+        return "SELECT " +
+                "  a.sStockIDx, " +
+                "  a.sBranchCd, " +
+                "  a.nQtyOnHnd, " +
+                "  a.nMinLevel, " +
+                "  a.nMaxLevel, " +
+                "  a.nAvgMonSl, " +
+                "  a.nAvgCostx, " +
+                "  a.cClassify, " +
+                "  a.nBackOrdr, " +
+                "  a.nResvOrdr, " +
+                "  b.sBarCodex xBarCodex, " +
+                "  b.sDescript xDescript, " +
+                "  c.sDescript xCategr01, " +
+                "  d.sDescript xCategr02, " +
+                "  e.sDescript xBrandNme, " +
+                "  f.sDescript xModelNme, " +
+                "  g.sDescript xColorNme, " +
+                "  h.sMeasurNm xMeasurNm, " +
+                "  i.sDescript xInvTypNm " +
+                "FROM  Inv_Master a " +
+                "  LEFT JOIN Inventory b " +
+                "    ON a.sStockIDx = b.sStockIDx " +
+                "  LEFT JOIN Category c " +
+                "    ON b.sCategCd1 = c.sCategrCd " +
+                "  LEFT JOIN Category_Level2 d " +
+                "    ON b.sCategCd2 = d.sCategrCd " +
+                "  LEFT JOIN Brand e " +
+                "    ON b.sBrandIDx = e.sBrandIDx " +
+                "  LEFT JOIN Model f " +
+                "    ON b.sModelIDx = f.sModelIDx " +
+                "  LEFT JOIN Color g " +
+                "    ON b.sColorIDx = g.sColorIDx " +
+                "  LEFT JOIN Measure h " +
+                "    ON b.sMeasurID = h.sMeasurID " +
+                "  LEFT JOIN Inv_Type i " +
+                "    ON d.sInvTypCd = i.sInvTypCd" ;
     }
     
 
