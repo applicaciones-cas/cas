@@ -227,4 +227,5 @@ public interface RequestApprovalController extends GTranDet  {
     ArrayList<Model_Inv_Stock_Request_Master> getMasterModelList();
     
     public JSONObject LoadModelMasterList();
+    public void cancelUpdate();
 }

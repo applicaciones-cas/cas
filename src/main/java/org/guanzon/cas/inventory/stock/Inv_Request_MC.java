@@ -573,7 +573,7 @@ public class Inv_Request_MC implements RequestController {
 
         try {
             String lsSQL = MiscUtil.addCondition(new Model_Inv_Stock_Request_Detail(poGRider).getSQL(), "a.sTransNox = " + SQLUtil.toSQL(fsTransNo));
-            ResultSet loRS = poGRider.executeQuery(lsSQL);
+            lsSQL = MiscUtil.addCondition(lsSQL, "j.sBranchCd = " + SQLUtil.toSQL(poModelMaster.getBranchCode()));ResultSet loRS = poGRider.executeQuery(lsSQL);
             poModelDetail = new ArrayList<>();
             while (loRS.next()) {
 
@@ -829,11 +829,6 @@ public class Inv_Request_MC implements RequestController {
     public JSONObject deleteRecord() {
         poJSON = new JSONObject();
         if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UPDATE) {
-            if (poGRider.getUserLevel() < UserRight.SUPERVISOR){
-                poJSON.put("result", "error");
-                poJSON.put("message", "User is not allowed delete transaction.");
-                return poJSON;
-            }
             String lsSQLs = MiscUtil.addCondition(new Model_Inv_Stock_Request_Detail(poGRider).getSQL(), "a.sTransNox = " + SQLUtil.toSQL(poModelMaster.getTransactionNumber()));
             ResultSet loRS = poGRider.executeQuery(lsSQLs);
             backupRecords = new ArrayList<>();

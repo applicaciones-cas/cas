@@ -200,5 +200,10 @@ public class Inv_Request_Approval implements RequestApprovalController  {
         return poTrans.LoadModelMasterList();
     }
 
+    @Override
+    public void cancelUpdate() {
+        poTrans.cancelUpdate();
+    }
+    
     
 }

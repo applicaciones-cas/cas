@@ -26,7 +26,7 @@ import org.guanzon.cas.inventory.stock.request.RequestControllerFactory.RequestT
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory.RequestCategoryType;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Inv_Type;
-import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_SP_Detail;
+import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_SP_Approval_Detail;
 import org.json.simple.JSONObject;
 
 /**
@@ -189,6 +189,7 @@ public class Inv_Request_SP_Approval implements RequestApprovalController {
         poJSON = SaveDetail();
         if("error".equals((String)poJSON.get("result"))){
             if (!pbWthParent) {
+                cancelUpdate();
                 poGRider.rollbackTrans();
             }
             return poJSON;
@@ -690,7 +691,7 @@ public class Inv_Request_SP_Approval implements RequestApprovalController {
             
 
         } else {
-            Validator_Inv_Stock_Request_SP_Detail validator = new Validator_Inv_Stock_Request_SP_Detail(poModelDetail.get(poModelDetail.size()-1));
+            Validator_Inv_Stock_Request_SP_Approval_Detail validator = new Validator_Inv_Stock_Request_SP_Approval_Detail(poModelDetail.get(poModelDetail.size()-1));
             if (!validator.isEntryOkay()){
                 poJSON.put("result", "error");
                 poJSON.put("message", validator.getMessage());
@@ -720,7 +721,7 @@ public class Inv_Request_SP_Approval implements RequestApprovalController {
             
 
         } else {
-            Validator_Inv_Stock_Request_SP_Detail validator = new Validator_Inv_Stock_Request_SP_Detail(poModelDetail.get(poModelDetail.size()-1));
+            Validator_Inv_Stock_Request_SP_Approval_Detail validator = new Validator_Inv_Stock_Request_SP_Approval_Detail(poModelDetail.get(poModelDetail.size()-1));
             if (!validator.isEntryOkay()){
                 poJSON.put("result", "error");
                 poJSON.put("message", validator.getMessage());
@@ -751,12 +752,62 @@ public class Inv_Request_SP_Approval implements RequestApprovalController {
             }
             // After cleaning, check if any valid items are left
             if (getItemCount() > 0) {
-                for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
+                
+                    int lnCtr = 0;
+                    int lnModified = 0;
+                    double lnQuantity = 0;
+                    double lnApproved = 0;
+                    double lnCancelld = 0;
+                    double lnIssueQty = 0;
+                    double lnOrderQty = 0;
+                    String lsStockID = "";
+                    boolean lbReqApproval = false;
+                for (lnCtr = 0; lnCtr <= getItemCount() - 1; lnCtr++) {
+                    lnQuantity = Double.parseDouble(String.valueOf(poModelDetail.get(lnCtr).getQuantity()));
+                    lnApproved = Double.parseDouble(String.valueOf(poModelDetail.get(lnCtr).getApproved()));
+                    lnCancelld = Double.parseDouble(String.valueOf(poModelDetail.get(lnCtr).getApproved()));
+                    if (lnApproved > 0) {
+                        lnModified++;
+                    }
+                    if (lnApproved > lnQuantity) {
+                        lbReqApproval = true;
+                        break;
+                    }
+                }
+                if (lbReqApproval) {
+                    if (poGRider.getUserLevel() < UserRight.SUPERVISOR) {
+//                        JSONObject loJSON = ShowDialogFX.getApproval(poGRider);
+                        JSONObject loJSON =  ShowDialogFX.getUserApproval(poGRider);
+                        if ("success".equals((String) loJSON.get("result"))) {
+                            if ((int) loJSON.get("nUserLevl") < UserRight.SUPERVISOR) {
+                                restoreData();
+                                poJSON.put("result", "error");
+                                poJSON.put("message","Only managerial accounts can approved transactions.(Authentication failed!!!)");
+                                return poJSON;
+                            }
+                            System.out.println("loJSON = " + loJSON.toJSONString());
+                            poModelMaster.setApproved((String)loJSON.get("sUserIDxx"));
+                            poModelMaster.setApprovedDate(poGRider.getServerDate());
+//                            poModelMaster.setApproveCode();
+                        }else{
+                            restoreData();
+                            poJSON.put("result", "error");
+                            poJSON.put("message","Seek Manager's Approval for this Stock Request!.(Authentication required!!!)");
+                            return poJSON;
+                        }
+                    }else{
+                        poModelMaster.setApproved(poGRider.getUserID());
+                        poModelMaster.setApprovedDate(poGRider.getServerDate());
+                    }
+                }
+
+                for (lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
                     poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
                     poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
 
-                    Validator_Inv_Stock_Request_SP_Detail validator = new Validator_Inv_Stock_Request_SP_Detail(poModelDetail.get(poModelDetail.size()-1));
+                    Validator_Inv_Stock_Request_SP_Approval_Detail validator = new Validator_Inv_Stock_Request_SP_Approval_Detail(poModelDetail.get(poModelDetail.size()-1));
                     if (!validator.isEntryOkay()){
+                        restoreData();
                         poJSON.put("result", "error");
                         poJSON.put("message", validator.getMessage());
                         return poJSON;
@@ -765,6 +816,8 @@ public class Inv_Request_SP_Approval implements RequestApprovalController {
                     poJSON = poModelDetail.get(lnCtr).saveRecord();
 
                     if ("error".equals((String) poJSON.get("result"))) {
+                        
+                        restoreData();
                         return poJSON;
                     }
                     // Proceed with saving remaining items
@@ -792,7 +845,7 @@ public class Inv_Request_SP_Approval implements RequestApprovalController {
             poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
             poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
 
-            Validator_Inv_Stock_Request_SP_Detail validator = new Validator_Inv_Stock_Request_SP_Detail(poModelDetail.get(poModelDetail.size()-1));
+            Validator_Inv_Stock_Request_SP_Approval_Detail validator = new Validator_Inv_Stock_Request_SP_Approval_Detail(poModelDetail.get(poModelDetail.size()-1));
             if (!validator.isEntryOkay()){
                 poJSON.put("result", "error");
                 poJSON.put("message", validator.getMessage());
@@ -822,11 +875,6 @@ public class Inv_Request_SP_Approval implements RequestApprovalController {
     public JSONObject deleteRecord() {
         poJSON = new JSONObject();
         if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UPDATE) {
-            if (poGRider.getUserLevel() < UserRight.SUPERVISOR){
-                poJSON.put("result", "error");
-                poJSON.put("message", "User is not allowed delete transaction.");
-                return poJSON;
-            }
             String lsSQLs = MiscUtil.addCondition(new Model_Inv_Stock_Request_Detail(poGRider).getSQL(), "a.sTransNox = " + SQLUtil.toSQL(poModelMaster.getTransactionNumber()));
             ResultSet loRS = poGRider.executeQuery(lsSQLs);
             System.out.println(lsSQLs);
@@ -860,31 +908,31 @@ public class Inv_Request_SP_Approval implements RequestApprovalController {
         
         return poJSON;
     }  
-    
-    // Method to restore records from backup
-    public JSONObject restoreDeletedRecords() {
-        poJSON =  new JSONObject();
-        if (!backupRecords.isEmpty()) {
-            if (!pbWthParent) {
-                poGRider.beginTrans();
-            }
-            poModelDetail.clear();  // Clear the current details
-            poModelDetail.addAll(backupRecords);  // Restore from backup
-            poJSON = SaveDetail();
-            
-            if ("error".equals((String) poJSON.get("result"))) {
-                if (!pbWthParent) {
-                    poGRider.rollbackTrans();
-                }
-            }
-            if (!pbWthParent) {
-                poGRider.commitTrans();
-            }
-            
-        }
-        poJSON.put("result", "success");
-        return poJSON;
-    }
+//    
+//    // Method to restore records from backup
+//    public JSONObject cancelUpdates() {
+//        poJSON =  new JSONObject();
+//        if (!backupRecords.isEmpty()) {
+//            if (!pbWthParent) {
+//                poGRider.beginTrans();
+//            }
+//            poModelDetail.clear();  // Clear the current details
+//            poModelDetail.addAll(backupRecords);  // Restore from backup
+//            poJSON = SaveDetail();
+//            
+//            if ("error".equals((String) poJSON.get("result"))) {
+//                if (!pbWthParent) {
+//                    poGRider.rollbackTrans();
+//                }
+//            }
+//            if (!pbWthParent) {
+//                poGRider.commitTrans();
+//            }
+//            
+//        }
+//        poJSON.put("result", "success");
+//        return poJSON;
+//    }
 
     @Override
     public void setType(RequestType types) {
@@ -1016,5 +1064,61 @@ public class Inv_Request_SP_Approval implements RequestApprovalController {
     @Override
     public ArrayList<Model_Inv_Stock_Request_Master>  getMasterModelList() {
         return poMasterList;
+    }
+    
+    @Override
+    public void cancelUpdate(){
+        poJSON =  new JSONObject();
+        if (!backupRecords.isEmpty()) {
+            if (!pbWthParent) {
+                poGRider.beginTrans();
+            }
+            for(int lnCtr1 = 0; lnCtr1 < backupRecords.size(); lnCtr1++){
+                backupRecords.get(lnCtr1).setApproved(0);
+            }
+            
+            poModelDetail.clear();  // Clear the current details
+            poModelDetail.addAll(backupRecords);  // Restore from backup
+            poJSON = SaveDetail();
+            
+            if ("error".equals((String) poJSON.get("result"))) {
+                if (!pbWthParent) {
+                    poGRider.rollbackTrans();
+                }
+            }
+            if (!pbWthParent) {
+                poGRider.commitTrans();
+            }
+            
+        }
+//        poJSON.put("result", "success")
+    }
+    
+    private void restoreData(){
+        if (!backupRecords.isEmpty()) {
+            if (!pbWthParent) {
+                poGRider.beginTrans();
+            }
+            for(int lnCtr = 0; lnCtr < getItemCount() && lnCtr < backupRecords.size(); lnCtr++){
+                Model_Inv_Stock_Request_Detail model = poModelDetail.get(lnCtr);
+                if(model.getStockID().equalsIgnoreCase(backupRecords.get(lnCtr).getStockID())){
+                    backupRecords.get(lnCtr).setApproved(model.getApproved());
+                }
+            }
+            
+            poModelDetail.clear();  // Clear the current details
+            poModelDetail.addAll(backupRecords);  // Restore from backup
+//            poJSON = SaveDetail();
+            
+            if ("error".equals((String) poJSON.get("result"))) {
+                if (!pbWthParent) {
+                    poGRider.rollbackTrans();
+                }
+            }
+            if (!pbWthParent) {
+                poGRider.commitTrans();
+            }
+            
+        }
     }
 }
