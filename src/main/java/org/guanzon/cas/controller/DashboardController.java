@@ -339,6 +339,9 @@ public class DashboardController implements Initializable {
             
             case "/org/guanzon/cas/views/PO_Quotation.fxml":
                 return "Purchase Quotation";
+                
+            case "/org/guanzon/cas/views/PurchaseOrderMC.fxml":
+                return "Purchase Order";
 
             default:
                 return null;
@@ -650,8 +653,8 @@ public class DashboardController implements Initializable {
                 return new BarangayController();
             case "/org/guanzon/cas/views/Branch.fxml":
                 return new BranchController();
-            case "/org/guanzon/cas/views/Brand.fxml":
-                return new BrandController();
+//          case "/org/guanzon/cas/views/Brand.fxml":
+//                return new BrandController();
             case "/org/guanzon/cas/views/Category.fxml":
                 return new CategoryController();
             case "/org/guanzon/cas/views/CategoryLevel2.fxml":
@@ -660,8 +663,8 @@ public class DashboardController implements Initializable {
                 return new CategoryLevel3Controller();
             case "/org/guanzon/cas/views/CategoryLevel4.fxml":
                 return new CategoryLevel4Controller();
-            case "/org/guanzon/cas/views/Color.fxml":
-                return new ColorController();
+//            case "/org/guanzon/cas/views/Color.fxml":
+//                return new ColorController();
             case "/org/guanzon/cas/views/ColorDetail.fxml":
                 return new ColorDetailController();
             case "/org/guanzon/cas/views/Company.fxml":
@@ -684,8 +687,8 @@ public class DashboardController implements Initializable {
                 return new MadeController();
             case "/org/guanzon/cas/views/Measure.fxml":
                 return new MeasureController();
-            case "/org/guanzon/cas/views/Model.fxml":
-                return new ModelController();
+//            case "/org/guanzon/cas/views/Model.fxml":
+//                return new ModelController();
             case "/org/guanzon/cas/views/Province.fxml":
                 return new ProvinceController();
             case "/org/guanzon/cas/views/Region.fxml":
@@ -707,26 +710,26 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/InventoryDetail.fxml":
                 return new InventoryDetailController();
                 
-             case "/org/guanzon/cas/views/InvRequestEntryGI.fxml":
-                return (ScreenInterface) new InvRequestEntryGIController(); 
-                
-             case "/org/guanzon/cas/views/InvRequestEntrySp.fxml":
-                return new InvRequestEntrySPController();  
-                
-             case "/org/guanzon/cas/views/InvRequestEntryMC.fxml":
-                return new InvRequestEntryMCController(); 
-                
-             case "/org/guanzon/cas/views/InvRequestEntryMP.fxml":
-                return new InvRequestEntryMPController(); 
+//             case "/org/guanzon/cas/views/InvRequestEntryGI.fxml":
+//                return (ScreenInterface) new InvRequestEntryGIController(); 
+//                
+//             case "/org/guanzon/cas/views/InvRequestEntrySp.fxml":
+//                return new InvRequestEntrySPController();  
+//                
+//             case "/org/guanzon/cas/views/InvRequestEntryMC.fxml":
+//                return new InvRequestEntryMCController(); 
+//                
+//             case "/org/guanzon/cas/views/InvRequestEntryMP.fxml":
+//                return new InvRequestEntryMPController(); 
                 
              case "/org/guanzon/cas/views/InvRequestEntryGIROQ.fxml":
                 return  new InvRequestEntryGIROQController();  
                 
-             case "/org/guanzon/cas/views/InvRequestEntryMCROQ.fxml":
-                return  new InvRequestEntryMCROQController();
-                
-             case "/org/guanzon/cas/views/InvRequestEntryMPROQ.fxml":
-                return  new InvRequestEntryMPROQController();
+//             case "/org/guanzon/cas/views/InvRequestEntryMCROQ.fxml":
+//                return  new InvRequestEntryMCROQController();
+//                
+//             case "/org/guanzon/cas/views/InvRequestEntryMPROQ.fxml":
+//                return  new InvRequestEntryMPROQController();
              
              case "/org/guanzon/cas/views/InvRequestEntrySPROQ.fxml":
                 return  new InvRequestEntrySPROQController();
@@ -737,9 +740,11 @@ public class DashboardController implements Initializable {
             /*PO Menu*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
                 return new PO_Quotation_RequestController();
-                
-            case "/org/guanzon/cas/views/PO_Quotation.fxml":
-                return new PO_QuotationController();
+            case "/org/guanzon/cas/views/PurchaseOrderMC.fxml":
+                return new PurchaseOrderMCController();
+//                
+//            case "/org/guanzon/cas/views/PO_Quotation.fxml":
+//                return new PO_QuotationController();
 
             default:
                 return null;
@@ -1234,6 +1239,14 @@ public class DashboardController implements Initializable {
     @FXML
     private void mnuPOQuotationRequestClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/PO_Quotation_Request.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    @FXML
+    private void mnuPurchaseOrderMCClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/PurchaseOrderMC.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
