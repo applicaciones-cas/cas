@@ -306,25 +306,32 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 loInventory = oTrans.GetInventory(lsStockIDx, true);
 
                 data.add(new ModelPurchaseOrder(String.valueOf(lnCtr + 1),
-                        (String) loInventory.getMaster("sDescript"),
                         (String) loInventory.getMaster("sBarCodex"),
-                        (String) loInventory.getMaster("sBrandxxx"),
-                        (String) loInventory.getMaster("xModelCde"),
-                        (String) loInventory.getMaster("xModelNme"),
-                        (String) loInventory.getMaster("xModelVnt"),
-                        (String) loInventory.getMaster("xYrModelx"),
-                        (String) loInventory.getMaster("sColorxxx"),
-                        (String) loInventory.getMaster("nCostxxxx"),
-                        oTrans.getDetailModel(lnCtr).getValue("nOrderxxx").toString()));
+                        (String) loInventory.getMaster("sDescript"),
+                        (String) loInventory.getMaster("xBrandNme"),
+                        (String) loInventory.getMaster("sModelID"),
+                        (String) loInventory.getMaster("sModelID"),
+                        (String) loInventory.getMaster("sModelID"),
+                        "year model",
+                        (String) loInventory.getMaster("xColorNme"),
+                        "",""
+//                        (String) loInventory.getMaster("nUnitPrce"),
+//                        (String) loInventory.getMaster("nUnitPrce")
+//                        oTrans.getDetailModel(lnCtr).getValue("nOrderxxx").toString()
+                ));
 
                 //display fetched detail on console
 //                System.out.println("\nNo == " + String.valueOf(lnCtr + 1));
 //                System.out.println("\nsBarCodex == " + (String) loInventory.getMaster("sBarCodex"));
 //                System.out.println("\nsDescript == " + (String) loInventory.getMaster("sDescript"));
-//                System.out.println("\nxModelNme == " + (String) loInventory.getMaster("xModelNme"));
-//                System.out.println("\nxColorNme == " + (String) loInventory.getMaster("xColorNme"));
-//                System.out.println("\nxMeasurNm == " + (String) loInventory.getMaster("xMeasurNm"));
-//                System.out.println("\nQuantity == " + oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString());
+//                System.out.println("\nxModelNme == " + (String) loInventory.getMaster("sBrandxxx"));
+//                System.out.println("\nxColorNme == " + (String) loInventory.getMaster("xModelCde"));
+//                System.out.println("\nxMeasurNm == " + (String) loInventory.getMaster("xModelNme"));
+//                System.out.println("\nxMeasurNm == " + (String) loInventory.getMaster("xModelVnt"));
+//                System.out.println("\nxMeasurNm == " + (String) loInventory.getMaster("xYrModelx"));
+//                System.out.println("\nxMeasurNm == " + (String) loInventory.getMaster("sColorxxx"));
+//                System.out.println("\nxMeasurNm == " + (String) loInventory.getMaster("nCostxxxx"));
+//                System.out.println("\nQuantity == " + oTrans.getDetailModel(lnCtr).getValue("nOrderxxx").toString());
             } else {
                 data.add(new ModelPurchaseOrder(String.valueOf(lnCtr + 1),
                         "",
@@ -347,7 +354,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 tblDetails.getFocusModel().focus(0);
                 pnDetailRow = tblDetails.getSelectionModel().getSelectedIndex();
             }
-            setSelectedDetail();
+            setSelectedDetail(); //textfield data
         } else {
             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
             tblDetails.getSelectionModel().select(pnDetailRow);
@@ -573,6 +580,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 //        txtField01.setOnKeyPressed(this::txtField_KeyPressed); // TransactionNo
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField09.setOnKeyPressed(this::txtField_KeyPressed);
 
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
         txtField98.setOnKeyPressed(this::txtField_KeyPressed);
@@ -719,6 +727,18 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                             loadRecord();
                         }
                         break;
+                    case 9:
+                        /*sTermCode*/
+                        poJSON = oTrans.searchMaster(10, lsValue, false);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            txtField01.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
 //                    case 5:/*sCategCd*/
 //                        poJSON = oTrans.searchMaster(9, lsValue, false);
 //                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
@@ -764,12 +784,17 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         break;
                     case 2:
                         /* Barcode & Description */
-                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, lnIndex == 1);
+                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, lnIndex == 2);
+//                         oTrans.searchDetail("sDescription", lnLastRow, txtField.getText(), false)
 //                        System.out.println("poJson Result = " + poJSON.toJSONString());
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
-
+//                            oTrans.getDetailModel(pnDetailRow);
+//                        if (oTrans.getItemCount() > 0 ) {
+//                            int lnLastRow = oTrans.getItemCount() - 1;
+//                            oTrans.searchDetail(lnLastRow,3, "", false);
+//                        }
                         break;
 
                 }
