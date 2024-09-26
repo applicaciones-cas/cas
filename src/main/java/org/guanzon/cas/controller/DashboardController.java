@@ -332,6 +332,9 @@ public class DashboardController implements Initializable {
                 
             case "/org/guanzon/cas/views/InventoryRequestCancelSP.fxml":
                 return "Inventory Request Cancel SP";
+                
+            case "/org/guanzon/cas/views/InventoryRequestCancelMC.fxml":
+                return "Inventory Request Cancel MC";
 
             /*PURCHASE ORDER QUOTATION MENU*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
@@ -731,8 +734,11 @@ public class DashboardController implements Initializable {
              case "/org/guanzon/cas/views/InvRequestEntrySPROQ.fxml":
                 return  new InvRequestEntrySPROQController();
                 
-              case "/org/guanzon/cas/views/InventoryRequestCancelSP.fxml":
-                return  new InvRequestEntrySPROQController();
+            case "/org/guanzon/cas/views/InventoryRequestCancelSP.fxml":
+                return  new InventoryRequestCancelSPController();
+            
+             case "/org/guanzon/cas/views/InventoryRequestCancelMC.fxml":
+                return  new InventoryRequestCancelMCController();
 
             /*PO Menu*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
@@ -1215,7 +1221,7 @@ public class DashboardController implements Initializable {
     }
     @FXML
     private void mnuMCStockRequestCancelClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InvRequestEntryMCROQ.fxml";
+        String sformname = "/org/guanzon/cas/views/InventoryRequestCancelMC.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
