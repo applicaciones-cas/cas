@@ -12,6 +12,7 @@ import org.guanzon.cas.inventory.stock.Inv_Request_General;
 import org.guanzon.cas.inventory.stock.Inv_Request_MC;
 import org.guanzon.cas.inventory.stock.Inv_Request_MP;
 import org.guanzon.cas.inventory.stock.Inv_Request_SP;
+import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_MC_Approval;
 import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_SP_Approval;
 /**
  *
@@ -60,7 +61,7 @@ public class RequestControllerFactory {
     public static RequestApprovalController makeApproval(RequestType foType, GRider oApp, boolean fbVal) {
         switch (foType) {
             case MC:
-                return (RequestApprovalController) new Inv_Request_MC(oApp, fbVal);
+                return (RequestApprovalController) new Inv_Request_MC_Approval(oApp, fbVal);
             case MP:
                 return (RequestApprovalController) new Inv_Request_MC(oApp, fbVal);
             case SP:

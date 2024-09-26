@@ -41,7 +41,7 @@ public class ModelInvMaster {
                             "   a.sStockIDx" +
                             " , a.sBranchCd" +
                             " , a.sWHouseID" +
-                            " , a.sLocatnCd" +
+                            " , a.sLocatnID" +
                             " , a.nBinNumbr" +
                             " , a.dAcquired" +
                             " , a.dBegInvxx" +
@@ -65,10 +65,12 @@ public class ModelInvMaster {
                             " , b.sDescript xDescript" +
                             " , c.sWHouseNm xWHouseNm" +
                             " , d.sDescript xLocatnNm" +
-                        " FROM " + System.getProperty("sys.table") + " a"+ 
+                            " , e.sSectnNme xSectnNme" +
+                        " FROM Inv_Master a"+ 
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                             " LEFT JOIN Warehouse c ON a.sWhouseID = c.sWhouseID" +
-                            " LEFT JOIN Inv_Location d ON a.sLocatnCd = d.sLocatnCd";
+                            " LEFT JOIN Inv_Location d ON a.sLocatnID = d.sLocatnID" +
+                            " LEFT JOIN Section e ON e.sSectnIDx = d.sSectnIDx";
 
         
         
