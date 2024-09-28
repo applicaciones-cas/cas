@@ -177,14 +177,24 @@
                                                                         <RowConstraints minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                      </rowConstraints>
                                                                      <children>
+                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Destination" GridPane.halignment="RIGHT">
+                                                                           <GridPane.margin>
+                                                                              <Insets left="10.0" right="10.0" />
+                                                                           </GridPane.margin>
+                                                                        </Text>
                                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Supplier" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                                                                            <GridPane.margin>
                                                                               <Insets left="10.0" right="10.0" />
                                                                            </GridPane.margin>
                                                                         </Text>
-                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Destination" GridPane.halignment="RIGHT">
+                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Contact P." GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                                                                            <GridPane.margin>
                                                                               <Insets left="10.0" right="10.0" />
+                                                                           </GridPane.margin>
+                                                                        </Text>
+                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Contact No." GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                                                                           <GridPane.margin>
+                                                                              <Insets right="10.0" />
                                                                            </GridPane.margin>
                                                                         </Text>
                                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Remarks" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
@@ -205,39 +215,6 @@
                                                                               <Insets right="10.0" />
                                                                            </GridPane.margin>
                                                                         </Text>
-                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Contact No." GridPane.halignment="RIGHT" GridPane.rowIndex="3">
-                                                                           <GridPane.margin>
-                                                                              <Insets right="10.0" />
-                                                                           </GridPane.margin>
-                                                                        </Text>
-                                                                        <TextField fx:id="txtField03" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" styleClass="text-field" GridPane.columnIndex="1" />
-                                                                        <TextField fx:id="txtField08" editable="false" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="5">
-                                                                           <GridPane.margin>
-                                                                              <Insets />
-                                                                           </GridPane.margin>
-                                                                        </TextField>
-                                                                        <TextField fx:id="txtField09" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="5" GridPane.rowIndex="1">
-                                                                           <GridPane.margin>
-                                                                              <Insets />
-                                                                           </GridPane.margin>
-                                                                        </TextField>
-                                                                        <TextField fx:id="txtField04" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                        <TextField fx:id="txtField06" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                                                                           <GridPane.margin>
-                                                                              <Insets />
-                                                                           </GridPane.margin>
-                                                                        </TextField>
-                                                                        <TextArea fx:id="txtField07" maxWidth="-Infinity" prefHeight="50.0" prefWidth="269.0" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="4" GridPane.rowSpan="2">
-                                                                           <GridPane.margin>
-                                                                              <Insets bottom="3.0" top="3.0" />
-                                                                           </GridPane.margin>
-                                                                        </TextArea>
-                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Contact P." GridPane.halignment="RIGHT" GridPane.rowIndex="2">
-                                                                           <GridPane.margin>
-                                                                              <Insets left="10.0" right="10.0" />
-                                                                           </GridPane.margin>
-                                                                        </Text>
-                                                                        <TextField fx:id="txtField05" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Disc. Rate" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                                                                            <GridPane.margin>
                                                                               <Insets left="10.0" right="10.0" />
@@ -248,8 +225,6 @@
                                                                               <Insets left="10.0" right="10.0" />
                                                                            </GridPane.margin>
                                                                         </Text>
-                                                                        <TextField fx:id="txtField10" maxWidth="1.7976931348623157E308" prefHeight="25.0" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-                                                                        <TextField fx:id="txtField11" maxWidth="1.7976931348623157E308" prefHeight="25.0" GridPane.columnIndex="5" GridPane.rowIndex="3" />
                                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total Order" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                                                                            <font>
                                                                               <Font name="System Bold" size="15.0" />
@@ -258,7 +233,28 @@
                                                                               <Insets right="5.0" />
                                                                            </GridPane.margin>
                                                                         </Text>
-                                                                        <TextField fx:id="txtField12" maxWidth="1.7976931348623157E308" prefHeight="25.0" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+                                                                        <TextField fx:id="txtField03" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" promptText="Press F3 to Search." styleClass="text-field" GridPane.columnIndex="1" />
+                                                                        <TextField fx:id="txtField06" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                                           <GridPane.margin>
+                                                                              <Insets />
+                                                                           </GridPane.margin>
+                                                                        </TextField>
+                                                                        <TextArea fx:id="txtField07" maxWidth="-Infinity" prefHeight="50.0" prefWidth="269.0" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="4" GridPane.rowSpan="2">
+                                                                           <GridPane.margin>
+                                                                              <Insets bottom="3.0" top="3.0" />
+                                                                           </GridPane.margin>
+                                                                        </TextArea>
+                                                                        <TextField fx:id="txtField09" prefHeight="25.0" promptText="Press F3 to Search." styleClass="text-field" GridPane.columnIndex="5" GridPane.rowIndex="1">
+                                                                           <GridPane.margin>
+                                                                              <Insets />
+                                                                           </GridPane.margin>
+                                                                        </TextField>
+                                                                        <TextField fx:id="txtField10" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="25.0" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                                        <TextField fx:id="txtField11" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="25.0" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                                                        <TextField fx:id="txtField12" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="25.0" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+                                                                        <TextField fx:id="txtField04" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" promptText="Press F3 to Search." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                        <TextField fx:id="txtField05" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                        <TextField fx:id="txtField08" prefHeight="26.0" GridPane.columnIndex="5" />
                                                                      </children>
                                                                   </GridPane>
                                                                </children>
@@ -273,7 +269,7 @@
                                                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                    </padding>
                                                 </AnchorPane>
-                                                <AnchorPane fx:id="apDetail" style="-fx-border-color: FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="850.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                <AnchorPane fx:id="apTransactionIssues" style="-fx-border-color: FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="850.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <children>
                                                       <VBox layoutX="5.0" layoutY="17.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <children>
@@ -316,7 +312,7 @@
                                           </AnchorPane>
                                        </children>
                                     </AnchorPane>
-                                    <AnchorPane minHeight="-Infinity" style="-fx-border-color: FF8201;">
+                                    <AnchorPane fx:id="apDetail" minHeight="-Infinity" style="-fx-border-color: FF8201;">
                                        <children>
                                           <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <columnConstraints>
@@ -370,12 +366,6 @@
                                                       <Insets right="5.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <TextField fx:id="txtField13" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <TextField fx:id="txtField14" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="26.0" prefWidth="269.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <TextField fx:id="txtField15" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                <TextField fx:id="txtField16" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                <TextField fx:id="txtField18" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="7" GridPane.rowIndex="2" />
-                                                <TextField fx:id="txtField17" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="7" GridPane.rowIndex="1" />
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Order" GridPane.columnIndex="9" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                                                    <GridPane.margin>
                                                       <Insets right="5.0" />
@@ -384,7 +374,13 @@
                                                       <Font name="System Bold" size="14.0" />
                                                    </font>
                                                 </Text>
-                                                <TextField fx:id="txtField19" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="10" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtDetail01" maxWidth="1.7976931348623157E308" prefHeight="25.0" promptText="Press F3 to Search." styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtDetail02" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="26.0" prefWidth="269.0" promptText="Press F3 to Search." styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtDetail03" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtDetail04" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtDetail05" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtDetail06" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtDetail07" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="10" GridPane.rowIndex="2" />
                                              </children>
                                           </GridPane>
                                        </children>

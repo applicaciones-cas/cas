@@ -62,131 +62,77 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
     private int pnIndex;
     private int pnDetailRow;
     
-    
-    @FXML
-    private TableColumn index01, index02, index03, index04, index05, index06, index07;
-
-    private ObservableList<ModelPurchaseOrder> data = FXCollections.observableArrayList();
-
     @FXML
     private AnchorPane MainAnchorPane;
 
     @FXML
     private AnchorPane apButton;
+    @FXML
+    private AnchorPane apDetail;
+    @FXML
+    private AnchorPane apMaster;
+    @FXML
+    private AnchorPane apTable;
+    @FXML
+    private AnchorPane apBrowse;
+    @FXML
+    private AnchorPane apTransactionIssues;
+//    @FXML
+//    private TableColumn index01, index02, index03, index04, index05, index06, index07;
+
+
+    @FXML
+    private Button btnBrowse, btnNew, btnUpdate, btnPrint, btnClose,
+            btnFindSource, btnSearch, btnSave, btnRemoveItem, btnCancel, btnAddItem;
+
 
     @FXML
     private HBox hbButtons;
 
     @FXML
-    private Button btnBrowse;
+    private HBox hbButtons1;
 
     @FXML
-    private Button btnPrint;
+    private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10,
+            txtField11, txtField12, txtField99, txtField98, txtField97;
 
     @FXML
-    private Button btnConfirm;
-
-    @FXML
-    private Button btnCancel;
-
-    @FXML
-    private Button btnClose;
-
-    @FXML
-    private AnchorPane apMaster;
+    private TextArea txtField07;
+    
 
     @FXML
     private Label lblStatus;
 
-    @FXML
-    private TextField txtField01;
 
     @FXML
-    private TextField txtField02;
+    private TextField txtDetail01, txtDetail02, txtDetail03, txtDetail04, txtDetail05, txtDetail06, txtDetail07;
 
     @FXML
-    private TextField txtField03;
+    private TableView tblDetails;
 
     @FXML
-    private TextField txtField08;
-
-    @FXML
-    private TextField txtField09;
-
-    @FXML
-    private TextField txtField04;
-
-    @FXML
-    private TextField txtField06;
-
-    @FXML
-    private TextArea txtField07;
-
-    @FXML
-    private TextField txtField05;
-
-    @FXML
-    private TextField txtField10;
-
-    @FXML
-    private TextField txtField11;
-
-    @FXML
-    private TextField txtField12;
-
-    @FXML
-    private AnchorPane apDetail;
+    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08, index09, index10, index11;
+    
+    
+    
 
     @FXML
     private Label lblStatus1;
 
     @FXML
-    private TableColumn<?, ?> index12;
+    private TableColumn index12;
 
     @FXML
-    private TableColumn<?, ?> index13;
-
-    @FXML
-    private TextField txtField13;
-
-    @FXML
-    private TextField txtField14;
-
-    @FXML
-    private TextField txtField15;
-
-    @FXML
-    private TextField txtField16;
-
-    @FXML
-    private TextField txtField18;
-
-    @FXML
-    private TextField txtField17;
-
-    @FXML
-    private TextField txtField19;
-
-    @FXML
-    private AnchorPane apTable;
-
-    @FXML
-    private TableView tblDetails;
-
-  
+    private TableColumn  index13;
 
 
-    @FXML
-    private AnchorPane apBrowse;
+   
+    
+    
+    private ObservableList<ModelPurchaseOrder> data = FXCollections.observableArrayList();
 
-    @FXML
-    private TextField txtField99;
 
-    @FXML
-    private TextField txtField98;
 
-    @FXML
-    private TextField txtField97;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {

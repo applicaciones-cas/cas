@@ -442,7 +442,7 @@
                                     </AnchorPane>
                                     <AnchorPane fx:id="apTable" prefWidth="1351.0" style="-fx-border-color: FF8201;">
                                        <children>
-                                          <TableView fx:id="tblDetails" onMouseClicked="#tblDetails_Clicked" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <TableView fx:id="tblDetails" layoutX="20.0" onMouseClicked="#tblDetails_Clicked" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <columns>
                                                 <TableColumn fx:id="index01" editable="false" maxWidth="30.0" minWidth="25.0" prefWidth="30.0" sortable="false" text="No." />
                                                 <TableColumn fx:id="index02" editable="false" maxWidth="-1.0" minWidth="150.0" prefWidth="150.0" sortable="false" text="Barcode" />
