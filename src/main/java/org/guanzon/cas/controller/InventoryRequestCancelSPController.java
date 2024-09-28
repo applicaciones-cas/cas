@@ -558,7 +558,7 @@ public class InventoryRequestCancelSPController implements Initializable ,Screen
                 switch (lnIndex){
                     case 04: /*search order*/
                         poJson = new JSONObject();
-                        poJson =  oTrans.BrowseRequest("sTransNox",lsValue, true);
+                        poJson =  oTrans.BrowseRequest("sTransNox",lsValue, false);
                         if("error".equalsIgnoreCase(poJson.get("result").toString())){
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);  
                             break;
@@ -696,11 +696,10 @@ public class InventoryRequestCancelSPController implements Initializable ,Screen
     }
     private void loadDetails(){
         if(!oTrans.getDetailModel().isEmpty()){ 
+            System.out.println("order number == " + oTrans.getDetailModel().get(pnRow).getOrderNumber());
             txtField04.setText((String) oTrans.getDetailModel().get(pnRow).getOrderNumber()); 
             txtField05.setText((String) oTrans.getDetailModel().get(pnRow).getBarcode()); 
-            txtField06.setText((String) oTrans.getDetailModel().get(pnRow).getDescription());
-            
-            txtField10.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantity()));
+            txtField06.setText((String) oTrans.getDetailModel().get(pnRow).getDescription()); 
             txtField11.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getUnserve())); 
             txtField12.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantity())); 
 //            txtField06.setText((String) oTrans.getDetailModel().get(pnRow).getCategoryName()); 

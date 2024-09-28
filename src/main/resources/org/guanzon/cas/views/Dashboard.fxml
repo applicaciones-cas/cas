@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
@@ -225,6 +225,9 @@
                                                         <MenuItem fx:id="mnuInventory" mnemonicParsing="false" onAction="#mnuInventoryClick" text="Inventory Details" />
                                           <Menu mnemonicParsing="false" text="Stock Request">
                                              <items>
+                                                <MenuItem fx:id="mnuStockRequestWithoutROQ" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQClick" text="Regular" />
+                                                <MenuItem fx:id="mnuStockRequestWithoutROQSP" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQSPClick" text="Regular SP" />
+                                                <MenuItem fx:id="mnuStockRequestWithoutROQGI" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQGIClick" text="Regular GI" />
                                                 <Menu mnemonicParsing="false" text="Regular">
                                                    <items>
                                                       <MenuItem fx:id="mnuGIStockRequestRegular" mnemonicParsing="false" onAction="#mnuGIStockRequestRegularClick" text="GI Stock Request Regular" />

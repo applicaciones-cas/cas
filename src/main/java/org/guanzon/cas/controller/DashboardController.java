@@ -312,7 +312,7 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/InvRequestEntryGI.fxml":
                 return "Inventory Request GI";  
             case "/org/guanzon/cas/views/InvRequestEntrySp.fxml":
-                return "Inventory Request SP"; 
+                return "Inventory Request SPx"; 
             case "/org/guanzon/cas/views/InvRequestEntryMC.fxml":
                 return "Inventory Request MC"; 
             case "/org/guanzon/cas/views/InvRequestEntryMP.fxml":
@@ -335,6 +335,15 @@ public class DashboardController implements Initializable {
                 
             case "/org/guanzon/cas/views/InventoryRequestCancelMC.fxml":
                 return "Inventory Request Cancel MC";
+                
+            case "/org/guanzon/cas/views/InvRequestWithoutROQ.fxml":
+                return "Inventory Request";
+                
+            case "/org/guanzon/cas/views/InvRequestWithoutROQSP.fxml":
+                return "Inventory Request SP";
+                
+            case "/org/guanzon/cas/views/InvRequestWithoutROQGI.fxml":
+                return "Inventory Request GI";
 
             /*PURCHASE ORDER QUOTATION MENU*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
@@ -739,6 +748,15 @@ public class DashboardController implements Initializable {
             
              case "/org/guanzon/cas/views/InventoryRequestCancelMC.fxml":
                 return  new InventoryRequestCancelMCController();
+            
+             case "/org/guanzon/cas/views/InvRequestWithoutROQ.fxml":
+                return  new InvRequestWithoutROQController();
+            
+             case "/org/guanzon/cas/views/InvRequestWithoutROQSP.fxml":
+                return  new InvRequestWithoutROQSPController();
+            
+             case "/org/guanzon/cas/views/InvRequestWithoutROQGI.fxml":
+                return  new InvRequestWithoutROQGIController();
 
             /*PO Menu*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
@@ -1231,6 +1249,33 @@ public class DashboardController implements Initializable {
     @FXML
     private void mnuMPStockRequestCancelClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/InvRequestEntryMPROQ.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    @FXML
+    private void mnuStockRequestWithoutROQClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestWithoutROQ.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    @FXML
+    private void mnuStockRequestWithoutROQSPClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestWithoutROQSP.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    @FXML
+    private void mnuStockRequestWithoutROQGIClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestWithoutROQGI.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

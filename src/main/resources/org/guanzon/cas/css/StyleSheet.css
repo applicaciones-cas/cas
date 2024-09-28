@@ -105,7 +105,10 @@
   -fx-background-color: #FF8201;
   -fx-text-fill: black;
 }
-
+.button_process:disabled
+{
+  -fx-opacity: 1; 
+}
 .button_process:hover > .glyph-icon
 {
   -fx-fill: black;
