@@ -233,6 +233,7 @@ public interface RequestController extends GTranDet  {
     ArrayList<Model_Inv_Stock_Request_Detail> getDetailModel();
     ArrayList<Model_Inv_Stock_Request_Detail> getDetailModelOthers();
     void cancelUpdate();
+//    void checkType();
     
     //use for request with roq
     JSONObject loadAllInventoryMinimumLevel();

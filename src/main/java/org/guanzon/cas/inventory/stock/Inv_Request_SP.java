@@ -374,7 +374,7 @@ public class Inv_Request_SP implements RequestController {
                 Inventory loInventory = new Inventory(poGRider, true);
                 loInventory.setRecordStatus(psTranStatus);
                 loInventory.setWithUI(p_bWithUI);
-                poJSON = loInventory.searchRecordWithContition(fsValue, "sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()) + " AND sCategCd2 = " + SQLUtil.toSQL("0007"), fbByCode);
+                poJSON = loInventory.searchRecordWithContition(fsValue, "a.sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()) + " AND a.sCategCd2 = " + SQLUtil.toSQL("0007"), fbByCode);
 
                 if (poJSON != null) {
                     for(int lnCtr = 0; lnCtr < poModelDetail.size(); lnCtr++){
@@ -466,16 +466,14 @@ public class Inv_Request_SP implements RequestController {
                     "sTransNox»dTransact»sReferNox",
                     "a.sTransNox»a.dTransact»a.sReferNox",
                     fbByCode ? 0 : 1);
-
-            if (poJSON != null) {
-                return openTransaction((String) poJSON.get("sTransNox"));
-
-            } else {
+            if ("error".equals((String) poJSON.get("result"))) {
                 
                 poJSON = new JSONObject();
                 poJSON.put("result", "error");
                 poJSON.put("message", "No record loaded.");
                 return poJSON;
+            } else {
+                return openTransaction((String) poJSON.get("sTransNox"));
             }
         }
         //use for testing 

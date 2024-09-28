@@ -10,8 +10,10 @@ import java.util.function.Supplier;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.cas.inventory.stock.Inv_Request_General;
 import org.guanzon.cas.inventory.stock.Inv_Request_MC;
+import org.guanzon.cas.inventory.stock.Inv_Request_Without_ROQ;
 import org.guanzon.cas.inventory.stock.Inv_Request_MP;
 import org.guanzon.cas.inventory.stock.Inv_Request_SP;
+import org.guanzon.cas.inventory.stock.Inv_Request_SP_Without_ROQ;
 import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_MC_Approval;
 import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_SP_Approval;
 /**
@@ -32,13 +34,14 @@ public class RequestControllerFactory {
         WITHOUT_ROQ
     }
     public static RequestController make(RequestType foType, GRider oApp, boolean fbVal){
+        System.out.println("foType = " + foType);
         switch (foType) {
             case MC:
                 return (RequestController) new Inv_Request_MC(oApp, fbVal);
             case MP:
                 return (RequestController) new Inv_Request_MP(oApp, fbVal);
             case SP:
-                return (RequestController) new Inv_Request_SP(oApp, fbVal);
+                return (RequestController) new Inv_Request_SP_Without_ROQ(oApp, fbVal);
             case GENERAL:
                 return (RequestController) new Inv_Request_General(oApp, fbVal);
             default:

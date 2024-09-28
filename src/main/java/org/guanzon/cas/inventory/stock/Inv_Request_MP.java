@@ -371,7 +371,7 @@ public class Inv_Request_MP implements RequestController {
                 Inventory loInventory = new Inventory(poGRider, true);
                 loInventory.setRecordStatus(psTranStatus);
                 loInventory.setWithUI(p_bWithUI);
-                poJSON = loInventory.searchRecordWithContition(fsValue, "sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()) + " AND sCategCd2 != " + SQLUtil.toSQL("0007"), fbByCode);
+                poJSON = loInventory.searchRecordWithContition(fsValue, "a.sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()), fbByCode);
 
                 if (poJSON != null) {
                     for(int lnCtr = 0; lnCtr < poModelDetail.size(); lnCtr++){
@@ -451,7 +451,7 @@ public class Inv_Request_MP implements RequestController {
         }
 
         String lsSQL = MiscUtil.addCondition(getSQL(), " a.sTransNox LIKE "
-                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition + " AND f.sCategCd1 = '0001' AND f.sCategCd2 != '0007' GROUP BY a.sTransNox ASC");
+                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition + " AND f.sCategCd1 = '0002' GROUP BY a.sTransNox ASC");
 
         poJSON = new JSONObject();
         System.out.println("searchTransaction = " + lsSQL);
@@ -463,16 +463,14 @@ public class Inv_Request_MP implements RequestController {
                     "sTransNox»dTransact»sReferNox",
                     "a.sTransNox»a.dTransact»a.sReferNox",
                     fbByCode ? 0 : 1);
-
-            if (poJSON != null) {
-                return openTransaction((String) poJSON.get("sTransNox"));
-
-            } else {
+            if ("error".equals((String) poJSON.get("result"))) {
                 
                 poJSON = new JSONObject();
                 poJSON.put("result", "error");
                 poJSON.put("message", "No record loaded.");
                 return poJSON;
+            } else {
+                return openTransaction((String) poJSON.get("sTransNox"));
             }
         }
         //use for testing 
@@ -927,7 +925,7 @@ public class Inv_Request_MP implements RequestController {
         poJSON = new JSONObject();
         try {
             String lsSQL = getSQL_Detail();
-            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0001' AND b.sCategCd2 = '0007'");
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0002'");
             ResultSet loRS = poGRider.executeQuery(lsSQL);
             System.out.println("\n" + lsSQL);
             poModelDetailOthers =  new ArrayList<>();

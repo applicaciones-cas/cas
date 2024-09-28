@@ -4,11 +4,13 @@ org\guanzon\cas\inventory\resultSet2XML\ModelInventorySubUnit.class
 org\guanzon\cas\inventory\stock\request\approval\Inv_Request_SP_Approval.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInvHistLedger.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestDetail.class
-org\guanzon\cas\inventory\stock\request\purchase\Inv_Request_Purchase.class
+org\guanzon\cas\inventory\stock\Inv_Request_Without_ROQ.class
+org\guanzon\cas\inventory\stock\request\approval\InvRequestApproval.class
 org\guanzon\cas\inventory\stock\request\RequestCancelController.class
 org\guanzon\cas\inventory\stock\request\RequestApprovalController.class
 org\guanzon\cas\inventory\stock\request\RequestController.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestMaster.class
+org\guanzon\cas\inventory\stock\request\approval\Inv_Request_MP_Approval.class
 org\guanzon\cas\inventory\base\PO_Quotation.class
 org\guanzon\cas\inventory\stock\Inv_Request_General.class
 org\guanzon\cas\inventory\stock\InvStockReqCancel.class
@@ -22,7 +24,6 @@ org\guanzon\cas\inventory\resultSet2XML\ModelInvSerialLedger.class
 org\guanzon\cas\inventory\stock\request\RequestControllerFactory$RequestCategoryType.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestCancelMaster.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInvSerial.class
-org\guanzon\cas\inventory\stock\request\RequestPurchaseController.class
 org\guanzon\cas\inventory\stock\request\RequestControllerFactory$RequestType.class
 org\guanzon\cas\inventory\stock\Inv_Request_MC.class
 org\guanzon\cas\inventory\stock\Inv_Request_SP.class
@@ -47,6 +48,7 @@ org\guanzon\cas\inventory\resultSet2XML\ModelCategory.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventoryTrans.class
 org\guanzon\cas\inventory\stock\Inv_Request.class
 org\guanzon\cas\inventory\base\InventoryTrans.class
+org\guanzon\cas\inventory\stock\Inv_Request_SP_Without_ROQ.class
 org\guanzon\cas\inventory\base\InvHistLedger.class
 org\guanzon\cas\inventory\resultSet2XML\ModelCategory2.class
 org\guanzon\cas\inventory\base\InvSerialLedger.class

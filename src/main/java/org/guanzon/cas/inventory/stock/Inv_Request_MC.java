@@ -370,7 +370,7 @@ public class Inv_Request_MC implements RequestController {
                 Inventory loInventory = new Inventory(poGRider, true);
                 loInventory.setRecordStatus(psTranStatus);
                 loInventory.setWithUI(p_bWithUI);
-                poJSON = loInventory.searchRecordWithContition(fsValue, "sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()) + " AND sCategCd2 != " + SQLUtil.toSQL("0007"), fbByCode);
+                poJSON = loInventory.searchRecordWithContition(fsValue, "a.sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()) + " AND a.sCategCd2 != " + SQLUtil.toSQL("0007"), fbByCode);
 
                 if (poJSON != null) {
                     for(int lnCtr = 0; lnCtr < poModelDetail.size(); lnCtr++){
@@ -462,16 +462,14 @@ public class Inv_Request_MC implements RequestController {
                     "sTransNox»dTransact»sReferNox",
                     "a.sTransNox»a.dTransact»a.sReferNox",
                     fbByCode ? 0 : 1);
-
-            if (poJSON != null) {
-                return openTransaction((String) poJSON.get("sTransNox"));
-
-            } else {
+            if ("error".equals((String) poJSON.get("result"))) {
                 
                 poJSON = new JSONObject();
                 poJSON.put("result", "error");
                 poJSON.put("message", "No record loaded.");
                 return poJSON;
+            } else {
+                return openTransaction((String) poJSON.get("sTransNox"));
             }
         }
         //use for testing 
@@ -925,7 +923,7 @@ public class Inv_Request_MC implements RequestController {
         poJSON = new JSONObject();
         try {
             String lsSQL = getSQL_Detail();
-            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0001' AND b.sCategCd2 = '0007'");
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0001' AND b.sCategCd2 != '0007'");
             ResultSet loRS = poGRider.executeQuery(lsSQL);
             System.out.println(" " + lsSQL);
             poModelDetailOthers =  new ArrayList<>();
@@ -1063,4 +1061,5 @@ public class Inv_Request_MC implements RequestController {
     public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModelOthers() {
         return poModelDetailOthers;
     }
+
 }

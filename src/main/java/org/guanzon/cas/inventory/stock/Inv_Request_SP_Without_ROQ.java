@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.guanzon.appdriver.agent.ShowDialogFX;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
@@ -21,14 +22,15 @@ import org.guanzon.cas.inventory.stock.request.RequestController;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Inv_Type;
-import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_GI_Detail;
+import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_MC_Detail;
+import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_SP_Detail;
 import org.json.simple.JSONObject;
 
 /**
  *
  * @author Unclejo
  */
-public class Inv_Request_General implements RequestController {
+public class Inv_Request_SP_Without_ROQ implements RequestController {
 
     GRider poGRider;
     boolean pbWthParent;
@@ -50,7 +52,7 @@ public class Inv_Request_General implements RequestController {
     public void setWithUI(boolean fbValue){
         p_bWithUI = fbValue;
     }
-    public Inv_Request_General(GRider foGRider, boolean fbWthParent) {
+    public Inv_Request_SP_Without_ROQ(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
 
@@ -132,12 +134,14 @@ public class Inv_Request_General implements RequestController {
     public JSONObject openTransaction(String fsValue) {
         
         poJSON = new JSONObject();
+        
+        poModelMaster = new Model_Inv_Stock_Request_Master(poGRider);
         poModelMaster.openRecord(fsValue);
         if ("error".equals((String) poJSON.get("result"))) {
             return poJSON;
         }
 
-        OpenModelDetail(poModelMaster.getTransactionNumber());
+        poJSON = OpenModelDetail(poModelMaster.getTransactionNumber());
         
         pnEditMode = EditMode.READY;
 
@@ -370,8 +374,9 @@ public class Inv_Request_General implements RequestController {
                 Inventory loInventory = new Inventory(poGRider, true);
                 loInventory.setRecordStatus(psTranStatus);
                 loInventory.setWithUI(p_bWithUI);
-                poJSON = loInventory.searchRecordWithContition(fsValue, "a.sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()) + " AND d.sMainCatx = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()), fbByCode);
-
+                
+                poJSON = loInventory.searchRecordWithContition(fsValue,  "a.sCategCd2 = '0007'", fbByCode);
+                
                 if (poJSON != null) {
                     for(int lnCtr = 0; lnCtr < poModelDetail.size(); lnCtr++){
                         if(poModelDetail.get(lnCtr).getStockID().equalsIgnoreCase((String) loInventory.getModel().getStockID())){
@@ -450,7 +455,8 @@ public class Inv_Request_General implements RequestController {
         }
 
         String lsSQL = MiscUtil.addCondition(getSQL(), " a.sTransNox LIKE "
-                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition + " AND f.sCategCd1 = '0004' AND d.sMainCatx = '0004' GROUP BY a.sTransNox ASC");
+                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition + " AND f.sCategCd2 = '0007'") + "  GROUP BY a.sTransNox ASC";
+        
 
         poJSON = new JSONObject();
         System.out.println("searchTransaction = " + lsSQL);
@@ -462,14 +468,16 @@ public class Inv_Request_General implements RequestController {
                     "sTransNox»dTransact»sReferNox",
                     "a.sTransNox»a.dTransact»a.sReferNox",
                     fbByCode ? 0 : 1);
-            if ("error".equals((String) poJSON.get("result"))) {
+
+            if (poJSON != null) {
+                return openTransaction((String) poJSON.get("sTransNox"));
+
+            } else {
                 
                 poJSON = new JSONObject();
                 poJSON.put("result", "error");
                 poJSON.put("message", "No record loaded.");
                 return poJSON;
-            } else {
-                return openTransaction((String) poJSON.get("sTransNox"));
             }
         }
         //use for testing 
@@ -571,6 +579,7 @@ public class Inv_Request_General implements RequestController {
 
         try {
             String lsSQL = MiscUtil.addCondition(new Model_Inv_Stock_Request_Detail(poGRider).getSQL(), "a.sTransNox = " + SQLUtil.toSQL(fsTransNo));
+            lsSQL = MiscUtil.addCondition(lsSQL, "j.sBranchCd = " + SQLUtil.toSQL(poModelMaster.getBranchCode()));
             ResultSet loRS = poGRider.executeQuery(lsSQL);
             poModelDetail = new ArrayList<>();
             while (loRS.next()) {
@@ -662,40 +671,6 @@ public class Inv_Request_General implements RequestController {
 
     public JSONObject AddModelDetail() {
         poJSON = new JSONObject();
-        if(category_type == RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ){
-            if (poModelDetail.isEmpty()){
-                poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
-                poModelDetail.get(0).newRecord();
-                poModelDetail.get(0).setTransactionNumber(poModelMaster.getTransactionNumber());
-                poJSON.put("result", "success");
-                poJSON.put("message", "Inventory request add record.");
-
-
-            } else {
-                Validator_Inv_Stock_Request_GI_Detail validator = new Validator_Inv_Stock_Request_GI_Detail(poModelDetail.get(poModelDetail.size()-1));
-                if (!validator.isEntryOkay()){
-                    poJSON.put("result", "error");
-                    poJSON.put("message", validator.getMessage());
-                    return poJSON;
-
-                }
-                poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
-                poModelDetail.get(poModelDetail.size()-1).newRecord();
-                poModelDetail.get(poModelDetail.size() - 1).setTransactionNumber(poModelMaster.getTransactionNumber());
-
-                poJSON.put("result", "success");
-                poJSON.put("message", "Inventory request add record.");
-            }
-            System.out.println(poModelDetail.size());
-            
-        }else{
-            poJSON = AddModelDetailROQ();
-        }
-
-        return poJSON;
-    }
-    private JSONObject AddModelDetailROQ(){
-        poJSON = new JSONObject();
         if (poModelDetail.isEmpty()){
             poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
             poModelDetail.get(0).newRecord();
@@ -705,11 +680,17 @@ public class Inv_Request_General implements RequestController {
             
 
         } else {
-            
+            Validator_Inv_Stock_Request_SP_Detail validator = new Validator_Inv_Stock_Request_SP_Detail(poModelDetail.get(poModelDetail.size()-1));
+            if (!validator.isEntryOkay()){
+                poJSON.put("result", "error");
+                poJSON.put("message", validator.getMessage());
+                return poJSON;
+
+            }
             poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
             poModelDetail.get(poModelDetail.size()-1).newRecord();
             poModelDetail.get(poModelDetail.size() - 1).setTransactionNumber(poModelMaster.getTransactionNumber());
-
+            
             poJSON.put("result", "success");
             poJSON.put("message", "Inventory request add record.");
         }
@@ -731,11 +712,21 @@ public class Inv_Request_General implements RequestController {
             }
             // After cleaning, check if any valid items are left
             if (getItemCount() > 0) {
+                System.out.print("category_type = " + category_type);
                 if(category_type == RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ){
                     poJSON = saveDetailWithoutROQ();
                 }else{
                     poJSON = saveDetailWithROQ();
                 }
+                
+                if ("error".equals((String) poJSON.get("result"))) {
+                    return poJSON;
+                }
+                // Proceed with saving remaining items
+                
+                poJSON.put("result", "success");
+                poJSON.put("message", "Save item record successfuly.");
+                
             } else {
                 poJSON.put("result", "error");
                 poJSON.put("message", "Unable to Save empty Transaction.");
@@ -751,24 +742,21 @@ public class Inv_Request_General implements RequestController {
     }
     private JSONObject saveDetailWithoutROQ(){
         poJSON = new JSONObject();
-        
         for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
             poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
             poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
-            Validator_Inv_Stock_Request_GI_Detail validator = new Validator_Inv_Stock_Request_GI_Detail(poModelDetail.get(poModelDetail.size()-1));
-                if (!validator.isEntryOkay()){
-                    poJSON.put("result", "error");
-                    poJSON.put("message", validator.getMessage());
-                    return poJSON;
 
-                }
+            Validator_Inv_Stock_Request_SP_Detail validator = new Validator_Inv_Stock_Request_SP_Detail(poModelDetail.get(poModelDetail.size()-1));
+            if (!validator.isEntryOkay()){
+                poJSON.put("result", "error");
+                poJSON.put("message", validator.getMessage());
+                return poJSON;
+
+            }
             poJSON = poModelDetail.get(lnCtr).saveRecord();
 
 
             if ("error".equals((String) poJSON.get("result"))) {
-                if (!pbWthParent) {
-                    poGRider.rollbackTrans();
-                }
                 return poJSON;
             }
             poJSON.put("result", "success");
@@ -778,7 +766,6 @@ public class Inv_Request_General implements RequestController {
     }
     private JSONObject saveDetailWithROQ(){
         poJSON = new JSONObject();
-        System.out.print("category_type = " + category_type);
         boolean allZero = true;
         for (Model_Inv_Stock_Request_Detail items : poModelDetail) {
             if (Integer.parseInt(items.getQuantity().toString()) != 0) {
@@ -791,28 +778,25 @@ public class Inv_Request_General implements RequestController {
             poJSON.put("message", "Quantities are currently set to 0. Update them to continue.");
             return poJSON;
         }
-        
-        // Proceed with saving remaining items
         roqSaveCount = 0;
         for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
-            System.out.println("getItemCount() = " + getItemCount());
             poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
-            poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
-            poJSON = poModelDetail.get(lnCtr).saveRecord();
+            int lnQty = Integer.parseInt(poModelDetail.get(lnCtr).getQuantity().toString());
+            if(lnQty>0){
+                
+                poModelDetail.get(lnCtr).setEntryNumber(roqSaveCount + 1);
+                poJSON = poModelDetail.get(lnCtr).saveRecord();
 
 
-            if ("error".equals((String) poJSON.get("result"))) {
-                if (!pbWthParent) {
-                    poGRider.rollbackTrans();
+                if ("error".equals((String) poJSON.get("result"))) {
+                    return poJSON;
                 }
-                return poJSON;
+                roqSaveCount++;
             }
-           roqSaveCount++;
-
+            
             poJSON.put("result", "success");
             poJSON.put("message", "Save item record successfuly.");
-        
-         }
+        }
         return poJSON;
     }
             
@@ -827,6 +811,11 @@ public class Inv_Request_General implements RequestController {
     public JSONObject deleteRecord() {
         poJSON = new JSONObject();
         if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UPDATE) {
+//            if (poGRider.getUserLevel() < UserRight.SUPERVISOR){
+//                poJSON.put("result", "error");
+//                poJSON.put("message", "User is not allowed delete transaction.");
+//                return poJSON;
+//            }
             String lsSQLs = MiscUtil.addCondition(new Model_Inv_Stock_Request_Detail(poGRider).getSQL(), "a.sTransNox = " + SQLUtil.toSQL(poModelMaster.getTransactionNumber()));
             ResultSet loRS = poGRider.executeQuery(lsSQLs);
             backupRecords = new ArrayList<>();
@@ -917,36 +906,42 @@ public class Inv_Request_General implements RequestController {
         poJSON.put("result", "success");
 //        return poJSON;
     }
+    /*
+    * Use for loading Inventory below minimum 
+    *
+    */
     @Override
     public JSONObject loadAllInventoryMinimumLevel(){
         poJSON = new JSONObject();
         try {
             String lsSQL = getSQL_Detail();
-            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0004' AND d.sMainCatx = '0004'");
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel");
+            lsSQL = MiscUtil.addCondition(lsSQL, "b.sCategCd2 = '0007'");
+           
             ResultSet loRS = poGRider.executeQuery(lsSQL);
             System.out.println("\n" + lsSQL);
-            poModelDetailOthers =  new ArrayList<>();
+            poModelDetail =  new ArrayList<>();
             while (loRS.next()) {
-                poModelDetailOthers.add(new Model_Inv_Stock_Request_Detail(poGRider));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).newRecord();
+                poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
+                poModelDetail.get(poModelDetail.size() - 1).newRecord();
                 System.out.println(poModelMaster.getTransactionNumber());
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setTransactionNumber(poModelMaster.getTransactionNumber());
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setStockID((String) loRS.getString("sStockIDx"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setBarcode((String) loRS.getString("xBarCodex"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setDescription((String) loRS.getString("xDescript"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setCategoryName((String) loRS.getString("xCategr01"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setCategoryName2((String) loRS.getString("xCategr02"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setCategoryType((String) loRS.getString("xInvTypNm"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setBrandName((String) loRS.getString("xBrandNme"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setModelName((String) loRS.getString("xModelNme"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setColorName((String) loRS.getString("xColorNme"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setMeasureName((String) loRS.getString("xMeasurNm"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setClassify((String) loRS.getString("cClassify"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setQuantityOnHand(loRS.getInt("nQtyOnHnd"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setReservedOrder(loRS.getInt("nResvOrdr"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setBackOrder(loRS.getInt("nBackOrdr"));
-                poModelDetailOthers.get(poModelDetailOthers.size() - 1).setAverageMonthlySalary(loRS.getInt("nAvgCostx"));
-                poJSON = poModelDetailOthers.get(poModelDetailOthers.size() - 1).setMaximumLevel(loRS.getInt("nMaxLevel"));
+                poModelDetail.get(poModelDetail.size() - 1).setTransactionNumber(poModelMaster.getTransactionNumber());
+                poModelDetail.get(poModelDetail.size() - 1).setStockID((String) loRS.getString("sStockIDx"));
+                poModelDetail.get(poModelDetail.size() - 1).setBarcode((String) loRS.getString("xBarCodex"));
+                poModelDetail.get(poModelDetail.size() - 1).setDescription((String) loRS.getString("xDescript"));
+                poModelDetail.get(poModelDetail.size() - 1).setCategoryName((String) loRS.getString("xCategr01"));
+                poModelDetail.get(poModelDetail.size() - 1).setCategoryName2((String) loRS.getString("xCategr02"));
+                poModelDetail.get(poModelDetail.size() - 1).setCategoryType((String) loRS.getString("xInvTypNm"));
+                poModelDetail.get(poModelDetail.size() - 1).setBrandName((String) loRS.getString("xBrandNme"));
+                poModelDetail.get(poModelDetail.size() - 1).setModelName((String) loRS.getString("xModelNme"));
+                poModelDetail.get(poModelDetail.size() - 1).setColorName((String) loRS.getString("xColorNme"));
+                poModelDetail.get(poModelDetail.size() - 1).setMeasureName((String) loRS.getString("xMeasurNm"));
+                poModelDetail.get(poModelDetail.size() - 1).setClassify((String) loRS.getString("cClassify"));
+                poModelDetail.get(poModelDetail.size() - 1).setQuantityOnHand(loRS.getInt("nQtyOnHnd"));
+                poModelDetail.get(poModelDetail.size() - 1).setReservedOrder(loRS.getInt("nResvOrdr"));
+                poModelDetail.get(poModelDetail.size() - 1).setBackOrder(loRS.getInt("nBackOrdr"));
+                poModelDetail.get(poModelDetail.size() - 1).setAverageMonthlySalary(loRS.getInt("nAvgCostx"));
+                poJSON = poModelDetail.get(poModelDetail.size() - 1).setMaximumLevel(loRS.getInt("nMaxLevel"));
                 
                 if ("error".equals((String) poJSON.get("result"))) {
                     if (!pbWthParent) {
@@ -968,7 +963,7 @@ public class Inv_Request_General implements RequestController {
         }
     }
     private String getSQL(){
-        return "SELECT " +
+        String lsSQL =  "SELECT " +
             "  a.sTransNox, " +
             "  a.sBranchCd, " +
             "  a.sCategrCd, " +
@@ -1003,52 +998,69 @@ public class Inv_Request_General implements RequestController {
             "  LEFT JOIN Inv_Stock_Request_Detail e " +
             "	on  e.sTransNox = a.sTransNox " +
             "  LEFT JOIN Inventory f " +
-            "	on f.sStockIDx = e.sStockIDx";
+            "	on f.sStockIDx = e.sStockIDx";  
+        //validate result based on the assigned inventory type.
+        if (!System.getProperty("store.inventory.industry").isEmpty())
+            lsSQL = MiscUtil.addCondition(lsSQL, " f.sCategCd1 IN " + CommonUtils.getParameter(System.getProperty("store.inventory.industry")));
+        
+        return lsSQL;
     }
-    
     private String getSQL_Detail(){
-        return "SELECT" +
-            "   a.sStockIDx" +
-            " , a.sBranchCd" +
-            " , a.nQtyOnHnd" +
-            " , a.nMinLevel" +
-            " , a.nMaxLevel" +
-            " , a.nAvgMonSl" +
-            " , a.nAvgCostx" +
-            " , a.cClassify" +
-            " , a.nBackOrdr" +
-            " , a.nResvOrdr" +
-            " , b.sBarCodex xBarCodex" +
-            " , b.sDescript xDescript" +
-            " , c.sDescript xCategr01" +
-            " , d.sDescript xCategr02" +
-            " , e.sDescript xBrandNme" +
-            " , f.sModelNme xModelNme" +
-            " , g.sDescript xColorNme" +
-            " , h.sMeasurNm xMeasurNm" +
-            " , h.sMeasurNm xMeasurNm" +
-            " , i.sDescript xInvTypNm" +
-        " FROM Inv_Master a"+ 
-            " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
-            " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
-            " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
-            " LEFT JOIN Brand e ON b.sBrandCde = e.sBrandCde" +
-            " LEFT JOIN Model f ON b.sModelCde = f.sModelCde" +
-            " LEFT JOIN Color g ON b.sColorCde = g.sColorCde" +
-            " LEFT JOIN Measure h ON b.sMeasurID = h.sMeasurID" +
-            " LEFT JOIN Inv_Type i ON d.sInvTypCd = i.sInvTypCd" ;
+        String lsSQL =  "SELECT " +
+                "  a.sStockIDx, " +
+                "  a.sBranchCd, " +
+                "  a.nQtyOnHnd, " +
+                "  a.nMinLevel, " +
+                "  a.nMaxLevel, " +
+                "  a.nAvgMonSl, " +
+                "  a.nAvgCostx, " +
+                "  a.cClassify, " +
+                "  a.nResvOrdr, " +
+                "  a.nBackOrdr, " +
+                "  b.sBarCodex xBarCodex, " +
+                "  b.sDescript xDescript, " +
+                "  c.sDescript xCategr01, " +
+                "  d.sDescript xCategr02, " +
+                "  e.sDescript xBrandNme, " +
+                "  f.sDescript xModelNme, " +
+                "  g.sDescript xColorNme, " +
+                "  h.sMeasurNm xMeasurNm, " +
+                "  i.sDescript xInvTypNm " +
+                "FROM  Inv_Master a " +
+                "  LEFT JOIN Inventory b " +
+                "    ON a.sStockIDx = b.sStockIDx " +
+                "  LEFT JOIN Category c " +
+                "    ON b.sCategCd1 = c.sCategrCd " +
+                "  LEFT JOIN Category_Level2 d " +
+                "    ON b.sCategCd2 = d.sCategrCd " +
+                "  LEFT JOIN Brand e " +
+                "    ON b.sBrandIDx = e.sBrandIDx " +
+                "  LEFT JOIN Model f " +
+                "    ON b.sModelIDx = f.sModelIDx " +
+                "  LEFT JOIN Color g " +
+                "    ON b.sColorIDx = g.sColorIDx " +
+                "  LEFT JOIN Measure h " +
+                "    ON b.sMeasurID = h.sMeasurID " +
+                "  LEFT JOIN Inv_Type i " +
+                "    ON d.sInvTypCd = i.sInvTypCd" ;
+//         /validate result based on the assigned inventory type.
+        if (!System.getProperty("store.inventory.industry").isEmpty())
+            lsSQL = MiscUtil.addCondition(lsSQL, " b.sCategCd1 IN " + CommonUtils.getParameter(System.getProperty("store.inventory.industry")));
+        
+        return lsSQL;
+        
     }
     
 
     @Override
     public JSONObject setDetailOthers(int fnRow, String fsCol, Object foData) {
-        return poModelDetail.get(fnRow).setValue(fsCol, foData);
-    }
+        return poModelDetailOthers.get(fnRow).setValue(fsCol, foData);}
 
     @Override
-    public JSONObject setDetailOthers(int fnRow, int fnCol, Object foData) {
-        return poModelDetail.get(fnRow).setValue(fnCol, foData);
+    public JSONObject setDetailOthers(int fnRow, int fsCol, Object foData) {
+        return setDetail(fnRow, poModelDetailOthers.get(fnRow).getColumn(fsCol), foData); 
     }
+
     @Override
     public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModelOthers() {
         return poModelDetailOthers;
