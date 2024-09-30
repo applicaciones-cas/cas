@@ -5,12 +5,10 @@ org\guanzon\cas\inventory\stock\request\approval\Inv_Request_SP_Approval.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInvHistLedger.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestDetail.class
 org\guanzon\cas\inventory\stock\Inv_Request_Without_ROQ.class
-org\guanzon\cas\inventory\stock\request\approval\InvRequestApproval.class
 org\guanzon\cas\inventory\stock\request\RequestCancelController.class
 org\guanzon\cas\inventory\stock\request\RequestApprovalController.class
 org\guanzon\cas\inventory\stock\request\RequestController.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestMaster.class
-org\guanzon\cas\inventory\stock\request\approval\Inv_Request_MP_Approval.class
 org\guanzon\cas\inventory\base\PO_Quotation.class
 org\guanzon\cas\inventory\stock\Inv_Request_General.class
 org\guanzon\cas\inventory\stock\InvStockReqCancel.class

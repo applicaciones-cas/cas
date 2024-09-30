@@ -186,6 +186,7 @@ public class Inv_Request_SP implements RequestController {
         poJSON = SaveDetail();
         if("error".equals((String)poJSON.get("result"))){
             if (!pbWthParent) {
+                restoreData();
                 poGRider.rollbackTrans();
             }
             return poJSON;
@@ -202,6 +203,7 @@ public class Inv_Request_SP implements RequestController {
             }
         } else {
             if (!pbWthParent) {
+                restoreData();
                 poGRider.rollbackTrans();
                 poJSON.put("result", "error");
                 poJSON.put("message", "Unable to Save Transaction.");
@@ -454,7 +456,11 @@ public class Inv_Request_SP implements RequestController {
         }
 
         String lsSQL = MiscUtil.addCondition(getSQL(), " a.sTransNox LIKE "
-                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition + " AND f.sCategCd1 = '0001' AND f.sCategCd2 = '0007' GROUP BY a.sTransNox ASC");
+                + SQLUtil.toSQL(fsValue + "%") + " AND f.sCategCd1 = '0001' AND f.sCategCd2 = '0007' AND " + 
+                "LEFT(a.sTransNox,4) LIKE " + SQLUtil.toSQL(poGRider.getBranchCode() + "%") +
+                " AND " +  lsCondition + "  GROUP BY a.sTransNox ASC");
+//        String lsSQL = MiscUtil.addCondition(getSQL(), " a.sTransNox LIKE "
+//                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition + " AND f.sCategCd1 = '0001' AND f.sCategCd2 = '0007' GROUP BY a.sTransNox ASC");
 
         poJSON = new JSONObject();
         System.out.println("searchTransaction = " + lsSQL);
@@ -724,11 +730,13 @@ public class Inv_Request_SP implements RequestController {
                 poJSON.put("message", "Save item record successfuly.");
                 
             } else {
+                restoreData();
                 poJSON.put("result", "error");
                 poJSON.put("message", "Unable to Save empty Transaction.");
                 return poJSON;
             }
         } else {
+            restoreData();
             poJSON.put("result", "error");
             poJSON.put("message", "Unable to Save empty Transaction.");
             return poJSON;
@@ -744,6 +752,7 @@ public class Inv_Request_SP implements RequestController {
 
             Validator_Inv_Stock_Request_SP_Detail validator = new Validator_Inv_Stock_Request_SP_Detail(poModelDetail.get(poModelDetail.size()-1));
             if (!validator.isEntryOkay()){
+                restoreData();
                 poJSON.put("result", "error");
                 poJSON.put("message", validator.getMessage());
                 return poJSON;
@@ -753,6 +762,7 @@ public class Inv_Request_SP implements RequestController {
 
 
             if ("error".equals((String) poJSON.get("result"))) {
+                restoreData();
                 return poJSON;
             }
             poJSON.put("result", "success");
@@ -785,6 +795,7 @@ public class Inv_Request_SP implements RequestController {
 
 
                 if ("error".equals((String) poJSON.get("result"))) {
+                    restoreData();
                     return poJSON;
                 }
                 roqSaveCount++;
@@ -795,11 +806,16 @@ public class Inv_Request_SP implements RequestController {
         }
         return poJSON;
     }
-            
+        
+    /**
+     *
+     * @param fnRow
+     */
+    @Override
     public void RemoveModelDetail(int fnRow) {
-        if(poModelDetail.size()>=1){
+        if (poModelDetail.size() >= 1) {
             poModelDetail.remove(fnRow);
-            if(poModelDetail.size()==0){
+            if (poModelDetail.isEmpty()) {
                 AddModelDetail();
             }
         }
@@ -879,13 +895,18 @@ public class Inv_Request_SP implements RequestController {
         category_type = type;
     }
 
+    
     @Override
-    public void cancelUpdate() {
+    public void cancelUpdate(){
         poJSON =  new JSONObject();
         if (!backupRecords.isEmpty()) {
             if (!pbWthParent) {
                 poGRider.beginTrans();
             }
+            for(int lnCtr1 = 0; lnCtr1 < backupRecords.size(); lnCtr1++){
+                backupRecords.get(lnCtr1).setApproved(0);
+            }
+            
             poModelDetail.clear();  // Clear the current details
             poModelDetail.addAll(backupRecords);  // Restore from backup
             poJSON = SaveDetail();
@@ -900,8 +921,36 @@ public class Inv_Request_SP implements RequestController {
             }
             
         }
-        poJSON.put("result", "success");
-//        return poJSON;
+//        poJSON.put("result", "success")
+    }
+    
+    private void restoreData(){
+        if (!backupRecords.isEmpty()) {
+            if (!pbWthParent) {
+                poGRider.beginTrans();
+            }
+            for(int lnCtr = 0; lnCtr < getItemCount() && lnCtr < backupRecords.size(); lnCtr++){
+                Model_Inv_Stock_Request_Detail model = poModelDetail.get(lnCtr);
+                if(model.getStockID().equalsIgnoreCase(backupRecords.get(lnCtr).getStockID())){
+                    backupRecords.get(lnCtr).setApproved(model.getApproved());
+                }
+            }
+            
+            poModelDetail.clear();  // Clear the current details
+            poModelDetail.addAll(backupRecords);  // Restore from backup
+//            poJSON = SaveDetail();
+            
+            if ("error".equals((String) poJSON.get("result"))) {
+                if (!pbWthParent) {
+                    poGRider.rollbackTrans();
+                }
+            }
+            if (!pbWthParent) {
+                poGRider.commitTrans();
+            }
+            
+        }
+    
     }
     /*
     * Use for loading Inventory below minimum 

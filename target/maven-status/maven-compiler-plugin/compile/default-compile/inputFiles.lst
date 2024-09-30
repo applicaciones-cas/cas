@@ -7,7 +7,6 @@ D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInvMaster.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\Inv_Request_SP.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\InvTransfer.java
-D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\request\approval\Inv_Request_MP_Approval.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\Inv_Request_MC.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelCategory2.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\InvStockRequest.java
@@ -20,7 +19,6 @@ D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInvRequestSupplies.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\InvLedger.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInventoryTrans.java
-D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\request\approval\InvRequestApproval.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\request\approval\Inv_Request_SP_Approval.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\PO_Quotation.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\request\approval\Inv_Request_Approval.java

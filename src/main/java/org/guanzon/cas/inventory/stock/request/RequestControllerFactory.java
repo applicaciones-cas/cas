@@ -41,7 +41,7 @@ public class RequestControllerFactory {
             case MP:
                 return (RequestController) new Inv_Request_MP(oApp, fbVal);
             case SP:
-                return (RequestController) new Inv_Request_SP_Without_ROQ(oApp, fbVal);
+                return (RequestController) new Inv_Request_SP(oApp, fbVal);
             case GENERAL:
                 return (RequestController) new Inv_Request_General(oApp, fbVal);
             default:
