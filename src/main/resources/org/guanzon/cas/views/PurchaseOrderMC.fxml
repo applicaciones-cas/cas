@@ -32,9 +32,7 @@
                      <bottom>
                         <AnchorPane fx:id="apButton" BorderPane.alignment="CENTER">
                            <children>
-                              <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <children>
-                                    <HBox fx:id="hbButtons" alignment="CENTER_LEFT" spacing="5.0" style="-fx-background-color: E9E9E9;">
+                                                   <HBox fx:id="hbButtons" alignment="CENTER_LEFT" spacing="5.0" style="-fx-background-color: E9E9E9;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
                                           <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Browse">
                                              <graphic>
@@ -52,6 +50,14 @@
                                                 <Blend />
                                              </effect>
                                           </Button>
+                                    <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Save">
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="SAVE" size="20" />
+                                       </graphic>
+                                       <effect>
+                                          <Blend />
+                                       </effect>
+                                    </Button>
                                           <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Update">
                                              <graphic>
                                                 <FontAwesomeIconView glyphName="EDIT" size="20" />
@@ -60,6 +66,14 @@
                                                 <Blend />
                                              </effect>
                                           </Button>
+                                    <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Search">
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="SEARCH" size="20" />
+                                       </graphic>
+                                       <effect>
+                                          <Blend />
+                                       </effect>
+                                    </Button>
                                           <Button fx:id="btnPrint" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Print">
                                              <graphic>
                                                 <FontAwesomeIconView glyphName="PRINT" size="20" />
@@ -68,6 +82,38 @@
                                                 <Blend />
                                              </effect>
                                           </Button>
+                                    <Button fx:id="btnAddItem" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Add Item">
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="FILE" size="20" />
+                                       </graphic>
+                                       <effect>
+                                          <Blend />
+                                       </effect>
+                                    </Button>
+                                    <Button fx:id="btnRemoveItem" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Remove Item">
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="MINUS" size="20" />
+                                       </graphic>
+                                       <effect>
+                                          <Blend />
+                                       </effect>
+                                    </Button>
+                                    <Button fx:id="btnFindSource" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Find Source">
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
+                                       </graphic>
+                                       <effect>
+                                          <Blend />
+                                       </effect>
+                                    </Button>
+                                    <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Cancel">
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="CLOSE" size="20" />
+                                       </graphic>
+                                       <effect>
+                                          <Blend />
+                                       </effect>
+                                    </Button>
                                           <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Close">
                                              <graphic>
                                                 <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
@@ -84,67 +130,8 @@
                                           <Insets />
                                        </opaqueInsets>
                                     </HBox>
-                                    <HBox fx:id="hbButtons1" alignment="CENTER_LEFT" spacing="5.0" style="-fx-background-color: E9E9E9;">
-                                       <children>
-                                          <Button fx:id="btnFindSource" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Find Source">
-                                             <graphic>
-                                                <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
-                                             </graphic>
-                                             <effect>
-                                                <Blend />
-                                             </effect>
-                                          </Button>
-                                          <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" layoutX="465.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Search">
-                                             <graphic>
-                                                <FontAwesomeIconView glyphName="SEARCH" size="20" />
-                                             </graphic>
-                                             <effect>
-                                                <Blend />
-                                             </effect>
-                                          </Button>
-                                          <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Save">
-                                             <graphic>
-                                                <FontAwesomeIconView glyphName="SAVE" size="20" />
-                                             </graphic>
-                                             <effect>
-                                                <Blend />
-                                             </effect>
-                                          </Button>
-                                          <Button fx:id="btnAddItem" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Add Item">
-                                             <graphic>
-                                                <FontAwesomeIconView glyphName="FILE" size="20" />
-                                             </graphic>
-                                             <effect>
-                                                <Blend />
-                                             </effect>
-                                          </Button>
-                                          <Button fx:id="btnRemoveItem" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Remove Item">
-                                             <graphic>
-                                                <FontAwesomeIconView glyphName="MINUS" size="20" />
-                                             </graphic>
-                                             <effect>
-                                                <Blend />
-                                             </effect>
-                                          </Button>
-                                          <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Cancel">
-                                             <graphic>
-                                                <FontAwesomeIconView glyphName="CLOSE" size="20" />
-                                             </graphic>
-                                             <effect>
-                                                <Blend />
-                                             </effect>
-                                          </Button>
+
                                        </children>
-                                       <padding>
-                                          <Insets bottom="5.0" left="5.0" top="5.0" />
-                                       </padding>
-                                       <opaqueInsets>
-                                          <Insets />
-                                       </opaqueInsets>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
                            <BorderPane.margin>
                               <Insets />
                            </BorderPane.margin>
@@ -440,9 +427,9 @@
                                           </AnchorPane>
                                        </children>
                                     </AnchorPane>
-                                    <AnchorPane fx:id="apTable" prefWidth="1351.0" style="-fx-border-color: FF8201;">
+                                    <AnchorPane fx:id="apTable" style="-fx-border-color: FF8201;">
                                        <children>
-                                          <TableView fx:id="tblDetails" layoutX="20.0" onMouseClicked="#tblDetails_Clicked" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <TableView fx:id="tblDetails" layoutX="20.0" onMouseClicked="#tblDetails_Clicked" prefHeight="500.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <columns>
                                                 <TableColumn fx:id="index01" editable="false" maxWidth="30.0" minWidth="25.0" prefWidth="30.0" sortable="false" text="No." />
                                                 <TableColumn fx:id="index02" editable="false" maxWidth="-1.0" minWidth="150.0" prefWidth="150.0" sortable="false" text="Barcode" />
