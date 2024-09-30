@@ -50,7 +50,7 @@ import org.json.simple.JSONObject;
  */
 public class InvRequestWithoutROQGIController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Inventory Request SP";
+    private final String pxeModuleName = "Inventory Request GI";
     private GRider oApp;
     private int pnEditMode;
     private Inv_Request oTrans;
@@ -417,7 +417,7 @@ public class InvRequestWithoutROQGIController implements Initializable, ScreenIn
                 case 12:/*QTY Request*/
                     System.out.println("case 11 == " + lsValue);
                     int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
-                    oTrans.getDetailModel().get(oTrans.getDetailModel().size() - 1).setQuantity(qty);
+                    oTrans.getDetailModel().get(pnRow).setQuantity(qty);
                     System.out.println("QTY Request == " + lsValue + "\n");
                     loadItemData();
                     break;

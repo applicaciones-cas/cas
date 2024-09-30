@@ -135,7 +135,7 @@ public class ModelStockRequest {
         this.index06 = new SimpleStringProperty(index06);
         this.index07 = new SimpleStringProperty(index07);
         this.index08 = new SimpleStringProperty(index08);
-        this.index09 = new SimpleStringProperty(index08);
+        this.index09 = new SimpleStringProperty(index09);
     }
 
     public ModelStockRequest(String index01,

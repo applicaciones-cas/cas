@@ -344,14 +344,24 @@ public class DashboardController implements Initializable {
                 
             case "/org/guanzon/cas/views/InvRequestWithoutROQGI.fxml":
                 return "Inventory Request GI";
-
+            
+            case "/org/guanzon/cas/views/InvRequestROQ.fxml":
+                return "Inventory Request ROQ";            
+            
+            case "/org/guanzon/cas/views/InvRequestROQSP.fxml":
+                return "Inventory Request ROQ SP";
+                
             /*PURCHASE ORDER QUOTATION MENU*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
                 return "Purchase Quotation Request";
             
             case "/org/guanzon/cas/views/PO_Quotation.fxml":
                 return "Purchase Quotation";
-
+                
+                
+            /*History Menu*/
+                case "/org/guanzon/cas/views/InvRequestHistory.fxml":
+                return "Inventory Request History";
             default:
                 return null;
         }
@@ -748,6 +758,7 @@ public class DashboardController implements Initializable {
             
              case "/org/guanzon/cas/views/InventoryRequestCancelMC.fxml":
                 return  new InventoryRequestCancelMCController();
+                
             
              case "/org/guanzon/cas/views/InvRequestWithoutROQ.fxml":
                 return  new InvRequestWithoutROQController();
@@ -757,14 +768,26 @@ public class DashboardController implements Initializable {
             
              case "/org/guanzon/cas/views/InvRequestWithoutROQGI.fxml":
                 return  new InvRequestWithoutROQGIController();
+                
+             case "/org/guanzon/cas/views/InvRequestROQ.fxml":
+                return  new InvRequestROQController();
 
+             case "/org/guanzon/cas/views/InvRequestROQSP.fxml":
+                return  new InvRequestROQSPController();
+                
             /*PO Menu*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
                 return new PO_Quotation_RequestController();
                 
             case "/org/guanzon/cas/views/PO_Quotation.fxml":
                 return new PO_QuotationController();
-
+               
+            /*History Menu*/
+            
+            case "/org/guanzon/cas/views/InvRequestHistory.fxml":
+                return  new InvRequestHistoryController();
+                
+            
             default:
                 return null;
         }
@@ -1281,6 +1304,33 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
+    
+    @FXML
+    private void mnuStockRequestROQClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestROQ.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    @FXML
+    private void mnuStockRequestROQSPClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestROQSP.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    @FXML
+    private void mnuStockRequestROQGIClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestROQGI.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
 
     @FXML
     private void mnuPOQuotationRequestClick(ActionEvent event) {
@@ -1304,6 +1354,14 @@ public class DashboardController implements Initializable {
     private void mnuInventorySerialParamClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/InventorySerialParam"
                 + ".fxml";
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    @FXML
+    private void mnuHistStockRequestClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestHistory.fxml";
+        //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }

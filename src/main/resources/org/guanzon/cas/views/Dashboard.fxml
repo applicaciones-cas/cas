@@ -225,9 +225,6 @@
                                                         <MenuItem fx:id="mnuInventory" mnemonicParsing="false" onAction="#mnuInventoryClick" text="Inventory Details" />
                                           <Menu mnemonicParsing="false" text="Stock Request">
                                              <items>
-                                                <MenuItem fx:id="mnuStockRequestWithoutROQ" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQClick" text="Regular" />
-                                                <MenuItem fx:id="mnuStockRequestWithoutROQSP" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQSPClick" text="Regular SP" />
-                                                <MenuItem fx:id="mnuStockRequestWithoutROQGI" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQGIClick" text="Regular GI" />
                                                 <Menu mnemonicParsing="false" text="Regular">
                                                    <items>
                                                       <MenuItem fx:id="mnuGIStockRequestRegular" mnemonicParsing="false" onAction="#mnuGIStockRequestRegularClick" text="GI Stock Request Regular" />
@@ -250,6 +247,20 @@
                                                       <MenuItem fx:id="mnuSPStockRequestCancel" mnemonicParsing="false" onAction="#mnuSPStockRequestCancelClick" text="SP Stock Request Cancel" />
                                                       <MenuItem fx:id="mnuMCStockRequestCancel" mnemonicParsing="false" onAction="#mnuMCStockRequestCancelClick" text="MC Stock Request Cancel" />
                                                       <MenuItem fx:id="mnuMPStockRequestCancel" mnemonicParsing="false" onAction="#mnuMPStockRequestCancelClick" text="MP Stock Request Cancel" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="NEW UI Regular">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuStockRequestWithoutROQ" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQClick" text="Regular" />
+                                                      <MenuItem fx:id="mnuStockRequestWithoutROQSP" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQSPClick" text="Regular SP" />
+                                                      <MenuItem fx:id="mnuStockRequestWithoutROQGI" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQGIClick" text="Regular GI" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="NEW UI ROQ">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuStockRequestROQ" mnemonicParsing="false" onAction="#mnuStockRequestROQClick" text="ROQ" />
+                                                      <MenuItem fx:id="mnuStockRequestROQSP" mnemonicParsing="false" onAction="#mnuStockRequestROQSPClick" text="ROQ SP" />
+                                                      <MenuItem fx:id="mnuStockRequestROQGI" mnemonicParsing="false" onAction="#mnuStockRequestROQGIClick" text="ROQ GI" />
                                                    </items>
                                                 </Menu>
                                              </items>
@@ -279,7 +290,7 @@
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="_History">
                                                     <items>
-                                                        <MenuItem mnemonicParsing="false" text="About" />
+                                                        <MenuItem fx:id="mnuHistStockRequest" mnemonicParsing="false" onAction="#mnuHistStockRequestClick" text="Stock Request" />
                                                     </items>
                                                 </Menu>
                                             </menus>
