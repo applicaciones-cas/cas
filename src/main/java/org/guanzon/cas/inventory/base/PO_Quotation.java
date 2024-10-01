@@ -22,8 +22,8 @@ import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Inv_Type;
 import org.guanzon.cas.parameters.Measure;
 import org.guanzon.cas.parameters.Term;
-import org.guanzon.cas.validators.poquotation.Validator_PO_Quotation_Request_Detail;
-import org.guanzon.cas.validators.poquotation.Validator_PO_Quotation_Request_Master;
+import org.guanzon.cas.validators.poquotation.Validator_PO_Quotation_Detail;
+import org.guanzon.cas.validators.poquotation.Validator_PO_Quotation_Master;
 import org.json.simple.JSONObject;
 
 /**
@@ -110,23 +110,23 @@ public class PO_Quotation implements GTranDet{
         int lnCtr;
         String lsSQL;
         
-//        Validator_PO_Quotation_Request_Detail ValidateDetails = new Validator_PO_Quotation_Request_Detail(poModelDetail);
-//        if (!ValidateDetails.isEntryOkay()) {
-//            poJSON.put("result", "error");
-//            poJSON.put("message", ValidateDetails.getMessage());
-//            
-//            return poJSON;
-//
-//        }
-//        
-//        Validator_PO_Quotation_Request_Master ValidateMasters = new Validator_PO_Quotation_Request_Master(poModelMaster);
-//        if (!ValidateMasters.isEntryOkay()) {
-//            poJSON.put("result", "error");
-//            poJSON.put("message", ValidateMasters.getMessage());
-//            
-//            return poJSON;
-//            
-//        }
+        Validator_PO_Quotation_Detail ValidateDetails = new Validator_PO_Quotation_Detail(poModelDetail);
+        if (!ValidateDetails.isEntryOkay()) {
+            poJSON.put("result", "error");
+            poJSON.put("message", ValidateDetails.getMessage());
+            
+            return poJSON;
+
+        }
+        
+        Validator_PO_Quotation_Master ValidateMasters = new Validator_PO_Quotation_Master(poModelMaster);
+        if (!ValidateMasters.isEntryOkay()) {
+            poJSON.put("result", "error");
+            poJSON.put("message", ValidateMasters.getMessage());
+            
+            return poJSON;
+            
+        }
         
         
         
