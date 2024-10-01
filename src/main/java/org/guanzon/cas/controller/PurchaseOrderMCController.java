@@ -42,6 +42,8 @@ import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.model.ModelPurchaseOrder;
 import org.guanzon.cas.model.clients.Model_Client_Institution_Contact;
 import org.guanzon.cas.model.clients.Model_Client_Mobile;
+import org.guanzon.cas.parameters.Color;
+import org.guanzon.cas.parameters.Model;
 import org.guanzon.cas.purchasing.controller.PurchaseOrder;
 import org.guanzon.cas.validators.ValidatorFactory;
 import org.json.simple.JSONObject;
@@ -240,7 +242,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 break;
             case "btnAddItem":
                 // Clearing fields
-                oTrans.setSavingStatus(false);
+                oTrans.setSavingStatus(true);
                 apMaster.setDisable(true);
 
                 poJSON = oTrans.AddModelDetail();
@@ -251,13 +253,14 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-                
+
                 pnDetailRow = oTrans.getItemCount() - 1;
                 loadTableDetail();
                 tblDetails.getSelectionModel().select(pnDetailRow + 1);
                 // Add another new row and placing data in newly added row - different count may differ
                 break;
             case "btnRemoveItem":
+                oTrans.setSavingStatus(false);
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this item?") == true) {
                     oTrans.RemoveModelDetail(pnDetailRow);
                     pnDetailRow = oTrans.getItemCount() - 1;
@@ -332,6 +335,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         txtField07.setText(oTrans.getMasterModel().getRemarks());
         txtField08.setText(oTrans.getMasterModel().getReferenceNo());
         txtField09.setText(oTrans.getMasterModel().getTermName());
+        
         try {
             txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
             txtField11.setText(String.valueOf(oTrans.getMasterModel().getAddDiscount()));
@@ -352,31 +356,40 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         }
         //count size
         for (lnCtr = 0; lnCtr < oTrans.getDetailModel(); lnCtr++) {
-
             System.out.println((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"));
-
         }
 
-        Inventory loInventory;
+//        Model loMdl = new Model(oApp, true);
+//        setDetail( "sStockIDx", (String) loInventory.getMaster("sDescript"));
+
         for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
             String lsStockIDx = (String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx");
 
+            Inventory loInventory;
+            Color loColor;
             if (lsStockIDx != null && !lsStockIDx.equals("")) {
-
+                
+                
                 loInventory = oTrans.GetInventory(lsStockIDx, true);
+                //loMdl.openRecord((String) loInventory.getMaster("sModelIDx"));
+                //                loColor.openRecord((String) loInventory.getMaster("sColorIDx"));
+                
+                loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
                 data.add(new ModelPurchaseOrder(String.valueOf(lnCtr + 1),
                         (String) loInventory.getMaster("sBarCodex"),
                         (String) oTrans.getDetailModel(lnCtr).getDescription(),
-                        (String) loInventory.getMaster("xBrandNme "),
-                        (String) loInventory.getMaster("sModelCde"),
-                        (String) loInventory.getMaster("sModelNme"),
+                        (String) loInventory.getMaster("xBrandNme"),
+                        " ",
+                        "",
+                        // loMdl.getModel().getModelCode(),
+                        // loMdl.getModel().getModelName(),
                         "",
                         "year model",
-                        (String) loInventory.getMaster("xColorNme"),
-                        "",
+                        //loColor.getModel().getDescription(),
+                        loColor.getModel().getDescription(),
+                        loInventory.getMaster("nUnitPrce").toString(),
                         ""
                 ));
-
             } else {
                 data.add(new ModelPurchaseOrder(String.valueOf(lnCtr + 1),
                         "",
@@ -448,11 +461,11 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     private void setSelectedDetail() {
         txtDetail01.setText((String) data.get(pnDetailRow).getIndex02());
         txtDetail02.setText((String) data.get(pnDetailRow).getIndex03());
-        txtDetail03.setText((String) data.get(pnDetailRow).getIndex03());
+        txtDetail03.setText((String) data.get(pnDetailRow).getIndex10());
         txtDetail04.setText((String) data.get(pnDetailRow).getIndex04());
-        txtDetail05.setText((String) data.get(pnDetailRow).getIndex05());
-        txtDetail06.setText((String) data.get(pnDetailRow).getIndex06());
-        txtDetail07.setText((String) data.get(pnDetailRow).getIndex07());
+        txtDetail05.setText((String) data.get(pnDetailRow).getIndex10());
+        txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getRecOrder()) );
+        txtDetail07.setText((String) data.get(pnDetailRow).getIndex11());
 
     }
 
@@ -489,14 +502,14 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
-                case 10://Disc Rate
+                case 10://Disc
                     poJSON = oTrans.getMasterModel().setDiscount(Integer.valueOf(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
-                case 11://Disc Rate
+                case 11://AddDisc Rate
                     poJSON = oTrans.getMasterModel().setAddDiscount(Integer.valueOf(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -504,7 +517,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         return;
                     }
                 case 12://Total Order
-                    poJSON = oTrans.getMasterModel().setTransactionTotal(Integer.valueOf(lsValue));
+                    poJSON = oTrans.getMasterModel().setTransactionTotal(Integer.valueOf(lsValue)); // computation
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
@@ -598,7 +611,40 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                     loadTableDetail();
                     break;
+                case 5:
+                    String lsNewCost = (String) oTrans.getDetailModel(pnDetailRow).getValue("nUnitPrce");
+                    if (lsNewCost == null || lsNewCost.isEmpty()) {
+                        if (txtField.getText().length() > 128) {
+                            ShowMessageFX.Warning("Max characters for `ROQ` exceeds the limit.", pxeModuleName, "Please verify your entry.");
+                            txtField.requestFocus();
+                            return;
+                        }
+                        poJSON = oTrans.setDetail(pnDetailRow, "nUnitPrce", lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            return;
+                        }
+                    }
 
+                    loadTableDetail();
+                 break;
+                case 6:
+                    String lsRecOrder = (String) oTrans.getDetailModel(pnDetailRow).getValue("nRecOrder");
+                    if (lsRecOrder == null || lsRecOrder.isEmpty()) {
+                        if (txtField.getText().length() > 128) {
+                            ShowMessageFX.Warning("Max characters for `ROQ` exceeds the limit.", pxeModuleName, "Please verify your entry.");
+                            txtField.requestFocus();
+                            return;
+                        }
+                        poJSON = oTrans.setDetail(pnDetailRow, "nRecOrder", lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            return;
+                        }
+                    }
+
+                    loadTableDetail();
+                    break;
                 case 7:
                     /*this must be numeric*/
                     int x = 0;
