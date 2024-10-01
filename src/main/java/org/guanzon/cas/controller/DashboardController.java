@@ -335,7 +335,9 @@ public class DashboardController implements Initializable {
                 
             case "/org/guanzon/cas/views/InventoryRequestCancelMC.fxml":
                 return "Inventory Request Cancel MC";
+            
                 
+            /*Inventory Stock Request NEW UI*/    
             case "/org/guanzon/cas/views/InvRequestWithoutROQ.fxml":
                 return "Inventory Request";
                 
@@ -351,6 +353,17 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/InvRequestROQSP.fxml":
                 return "Inventory Request ROQ SP";
                 
+            /*Inventory Stock Request cancellation NEW UI*/    
+            case "/org/guanzon/cas/views/InvRequestCancellation.fxml":
+                return "Inventory Request Cancel"; 
+                
+            case "/org/guanzon/cas/views/InvRequestCancellationSP.fxml":
+                return "Inventory Request Cancel SP"; 
+                
+            case "/org/guanzon/cas/views/InvRequestCancellationGI.fxml":
+                return "Inventory Request Cancel GI";
+            
+                
             /*PURCHASE ORDER QUOTATION MENU*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
                 return "Purchase Quotation Request";
@@ -360,8 +373,14 @@ public class DashboardController implements Initializable {
                 
                 
             /*History Menu*/
-                case "/org/guanzon/cas/views/InvRequestHistory.fxml":
+            case "/org/guanzon/cas/views/InvRequestHistory.fxml":
                 return "Inventory Request History";
+                
+            case "/org/guanzon/cas/views/InvRequestHistorySP.fxml":
+                return "Inventory Request History SP";
+                
+            case "/org/guanzon/cas/views/InvRequestHistoryGI.fxml":
+                return "Inventory Request History GI";
             default:
                 return null;
         }
@@ -759,7 +778,7 @@ public class DashboardController implements Initializable {
              case "/org/guanzon/cas/views/InventoryRequestCancelMC.fxml":
                 return  new InventoryRequestCancelMCController();
                 
-            
+            /*Inventory Stock Request NEW UI*/
              case "/org/guanzon/cas/views/InvRequestWithoutROQ.fxml":
                 return  new InvRequestWithoutROQController();
             
@@ -775,6 +794,16 @@ public class DashboardController implements Initializable {
              case "/org/guanzon/cas/views/InvRequestROQSP.fxml":
                 return  new InvRequestROQSPController();
                 
+             /*Inventory Stock Request cancellation NEW UI*/    
+             case "/org/guanzon/cas/views/InvRequestCancellation.fxml":
+                return  new InvRequestCancellationController();
+                
+             case "/org/guanzon/cas/views/InvRequestCancellationSP.fxml":
+                return  new InvRequestCancellationSPController();
+                
+             case "/org/guanzon/cas/views/InvRequestCancellationGI.fxml":
+                return  new InvRequestCancellationGIController();
+                
             /*PO Menu*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
                 return new PO_Quotation_RequestController();
@@ -786,7 +815,12 @@ public class DashboardController implements Initializable {
             
             case "/org/guanzon/cas/views/InvRequestHistory.fxml":
                 return  new InvRequestHistoryController();
-                
+            
+            case "/org/guanzon/cas/views/InvRequestHistorySP.fxml":
+                return  new InvRequestHistorySPController();
+            
+            case "/org/guanzon/cas/views/InvRequestHistoryGI.fxml":
+                return  new InvRequestHistoryGIController();
             
             default:
                 return null;
@@ -1278,6 +1312,9 @@ public class DashboardController implements Initializable {
         }
     }
     
+    
+    /*Stock Request NEW UI*/
+
     @FXML
     private void mnuStockRequestWithoutROQClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/InvRequestWithoutROQ.fxml";
@@ -1332,6 +1369,36 @@ public class DashboardController implements Initializable {
         }
     }
 
+    /*Stock Request Cancellation NEW UI*/
+    @FXML
+    private void mnuStockRequestCancellationClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestCancellation.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    @FXML
+    private void mnuStockRequestCancellationSPClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestCancellationSP.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    @FXML
+    private void mnuStockRequestCancellationGIClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestCancellationGI.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    
+    /*PO*/
     @FXML
     private void mnuPOQuotationRequestClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/PO_Quotation_Request.fxml";
@@ -1358,6 +1425,8 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
+    
+    /*Stock Request History*/
     @FXML
     private void mnuHistStockRequestClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/InvRequestHistory.fxml";
@@ -1367,19 +1436,24 @@ public class DashboardController implements Initializable {
         }
     }
     
-    //    @FXML
-    //    private void mnuClientParameterClick(ActionEvent event) {
-    //        setScene(loadAnimate("/com/rmj/guanzongroup/cas/maven/views/ClientMasterParameter.fxml"));
-    //    } 
-    //    @FXML
-    //    private void mnuClientTransactionCompanyClick(ActionEvent event) {
-    //        setScene(loadAnimate("/com/rmj/guanzongroup/cas/maven/views/ClientMasterTransactionCompany.fxml"));
-    //    } 
-    //    @FXML
-    //    private void mnuClientTransactionIndividualClick(ActionEvent event) {
-    //        setScene(loadAnimate("/com/rmj/guanzongroup/cas/maven/views/ClientMasterTransactionCompany.fxml"));
-    //    } 
-
+    @FXML
+    private void mnuHistStockRequestSPClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestHistorySP.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    @FXML
+    private void mnuHistStockRequestGIClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestHistoryGI.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
     private boolean showMessage() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");

@@ -50,9 +50,9 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class InvRequestWithoutROQController implements Initializable, ScreenInterface {
+public class InvRequestROQController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Inventory Request";
+    private final String pxeModuleName = "Inventory Request ROQ";
     private GRider oApp;
     private int pnEditMode;
     private Inv_Request oTrans;
@@ -570,6 +570,11 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         btnNew.setManaged(!lbShow);
         btnUpdate.setManaged(!lbShow);
         btnClose.setManaged(!lbShow);
+        
+        btnAddItem.setVisible(false);
+        btnAddItem.setManaged(false);
+        btnDelItem.setVisible(false);
+        btnDelItem.setManaged(false);
 
     }
 
@@ -698,10 +703,11 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
 
     @FXML
     private void tblDetails_Clicked(MouseEvent event) {
-        System.out.println("pnRow = " + pnRow);
         if (tblDetails.getSelectionModel().getSelectedIndex() >= 0) {
             pnRow = tblDetails.getSelectionModel().getSelectedIndex();
+            System.out.println("pnRow = " + pnRow);
             loadDetails();
+            txtField14.requestFocus();
         }
         tblDetails.setOnKeyReleased((KeyEvent t) -> {
             KeyCode key = t.getCode();
@@ -793,7 +799,7 @@ private void initTrans() {
                 System.out.println("type value = " + types);
             }
         }
-        oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
+        oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITH_ROQ);
         oTrans.setTransactionStatus("0123");
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
