@@ -228,4 +228,5 @@ public interface RequestApprovalController extends GTranDet  {
     
     public JSONObject LoadModelMasterList();
     public void cancelUpdate();
+    JSONObject BrowseRequest(String fsColumn, String fsValue, boolean fbByCode) ;
 }

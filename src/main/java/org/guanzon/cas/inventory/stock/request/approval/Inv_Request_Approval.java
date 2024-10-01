@@ -204,6 +204,11 @@ public class Inv_Request_Approval implements RequestApprovalController  {
     public void cancelUpdate() {
         poTrans.cancelUpdate();
     }
+
+    @Override
+    public JSONObject BrowseRequest(String fsColumn, String fsValue, boolean fbByCode) {
+        return poTrans.BrowseRequest(fsColumn, fsValue, fbByCode);
+    }
     
     
 }

@@ -41,6 +41,7 @@ public class Inv_Request_MC_Approval implements RequestApprovalController {
     String psTranStatus;
 
     private boolean p_bWithUI = true;
+    Inv_Request poRequest;
     Model_Inv_Stock_Request_Master poModelMaster;
     ArrayList<Model_Inv_Stock_Request_Master> poMasterList;
     ArrayList<Model_Inv_Stock_Request_Detail> poModelDetail;
@@ -65,6 +66,7 @@ public class Inv_Request_MC_Approval implements RequestApprovalController {
         poMasterList.add(new Model_Inv_Stock_Request_Master(foGRider));
         poModelDetail = new ArrayList<>();
         poModelDetail.add(new Model_Inv_Stock_Request_Detail(foGRider));
+        poRequest = new Inv_Request(foGRider, fbWthParent);
         pnEditMode = EditMode.UNKNOWN;
     }
 
@@ -582,6 +584,74 @@ public class Inv_Request_MC_Approval implements RequestApprovalController {
     @Override
     public void setTransactionStatus(String fsValue) {
         psTranStatus = fsValue;
+    }
+
+    /**
+     * @return This function process for inventory stock request. This function
+     * use for browsing Inventory Stock Request fetching inventory request and
+     * set data for Inventory Stock Request Approval
+     */
+    public JSONObject BrowseRequest(String fsColumn, String fsValue, boolean fbByCode) {
+        poJSON = new JSONObject();
+        try {
+            poRequest.setType(type);
+            poRequest.setCategoryType(category_type);
+            poRequest.setTransactionStatus("01");
+            poRequest.setWithUI(p_bWithUI);
+            poJSON = poRequest.searchTransaction(fsColumn, fsValue, fbByCode);
+            if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
+                return poJSON;
+            }
+
+            setMaster("sBranchCd", poRequest.getMasterModel().getBranchCode());
+            setMaster("xBranchNm", poRequest.getMasterModel().getBranchName());
+            setMaster("sCategrCd", poRequest.getMasterModel().getCategoryCode());
+            setMaster("xCategrNm", poRequest.getMasterModel().getCategoryName());
+            setMaster("sTransNox", poRequest.getMasterModel().getTransactionNumber());
+            setMaster("dStartEnc", poRequest.getMasterModel().getStartEncDate());
+            System.out.println("getTransactionNumber = " + poRequest.getMasterModel().getTransactionNumber());
+            if (p_bWithUI) {
+                poModelDetail = new ArrayList<>();
+                for (int lnCtr = 0; lnCtr < poRequest.getDetailModel().size(); lnCtr++) {
+                    poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
+                    poModelDetail.get(lnCtr).newRecord();
+
+                    setDetail(lnCtr, "nEntryNox", (int) poRequest.getDetailModel().get(lnCtr).getEntryNumber());
+                    setDetail(lnCtr, "sTransNox", (String) poRequest.getDetailModel().get(lnCtr).getTransactionNumber());
+                    setDetail(lnCtr, "sStockIDx", (String) poRequest.getDetailModel().get(lnCtr).getStockID());
+                    setDetail(lnCtr, "nQuantity", (int) poRequest.getDetailModel().get(lnCtr).getCancelled());
+                    setDetail(lnCtr, "sNotesxxx", (String) poRequest.getDetailModel().get(lnCtr).getNotes());
+                    setDetail(lnCtr, "xBarCodex", (String) poRequest.getDetailModel().get(lnCtr).getBarcode());
+                    setDetail(lnCtr, "xDescript", (String) poRequest.getDetailModel().get(lnCtr).getDescription());
+                    setDetail(lnCtr, "xCategr01", (String) poRequest.getDetailModel().get(lnCtr).getCategoryName());
+                    setDetail(lnCtr, "xCategr02", (String) poRequest.getDetailModel().get(lnCtr).getCategoryName2());
+                    setDetail(lnCtr, "xInvTypNm", (String) poRequest.getDetailModel().get(lnCtr).getCategoryType());
+                }
+            } else {
+                poModelDetail = new ArrayList<>();
+//            set all request detail to request detail approval;
+                for (int lnCtr = 0; lnCtr <= poRequest.getDetailModel().size() - 1; lnCtr++) {
+                    poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
+                    poModelDetail.get(lnCtr).newRecord();
+
+                    setDetail(lnCtr, "nEntryNox", (int) poRequest.getDetailModel().get(lnCtr).getEntryNumber());
+                    setDetail(lnCtr, "sTransNox", (String) poRequest.getDetailModel().get(lnCtr).getTransactionNumber());
+                    setDetail(lnCtr, "sStockIDx", (String) poRequest.getDetailModel().get(lnCtr).getStockID());
+                    setDetail(lnCtr, "nQuantity", (int) poRequest.getDetailModel().get(lnCtr).getCancelled());
+                    setDetail(lnCtr, "sNotesxxx", (String) poRequest.getDetailModel().get(lnCtr).getNotes());
+                    setDetail(lnCtr, "xBarCodex", (String) poRequest.getDetailModel().get(lnCtr).getBarcode());
+                    setDetail(lnCtr, "xDescript", (String) poRequest.getDetailModel().get(lnCtr).getDescription());
+                    setDetail(lnCtr, "xCategr01", (String) poRequest.getDetailModel().get(lnCtr).getCategoryName());
+                    setDetail(lnCtr, "xCategr02", (String) poRequest.getDetailModel().get(lnCtr).getCategoryName2());
+                    setDetail(lnCtr, "xInvTypNm", (String) poRequest.getDetailModel().get(lnCtr).getCategoryType());
+
+                }
+            }
+        } catch (NullPointerException e) {
+
+        }
+
+        return poJSON;
     }
 
     public JSONObject OpenModelDetail(String fsTransNo) {

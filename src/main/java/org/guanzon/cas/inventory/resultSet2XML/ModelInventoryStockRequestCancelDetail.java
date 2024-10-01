@@ -50,13 +50,33 @@ public class ModelInventoryStockRequestCancelDetail {
                             ", c.sDescript xCategr01" +
                             ", d.sDescript xCategr02" +
                             ", e.sDescript xInvTypNm" +
+                            ", f.cClassify" +
+                            ", f.nQtyOnHnd" +
+                            ", f.nResvOrdr" +
+                            ", f.nBackOrdr" +
+                            ", f.nOnTranst" +
+                            ", f.nAvgMonSl" +
+                            ", f.sNotesxxx" +
+                            ", f.nQuantity xQuantity" +
+                            ", f.nIssueQty" +
+                            ", f.nOrderQty" +
+                            ", g.sDescript xBrandNme" +
+                            ", h.sDescript xModelNme" +
+                            ", h.sDescript xModelDsc" +
+                            ", i.sDescript xColorNme" +
+                            ", j.sMeasurNm xMeasurNm" +
                         " FROM " + System.getProperty("sys.table") + " a" + 
                             " LEFT JOIN Inventory b ON a.sStockIDx = b.sStockIDx" +
                             " LEFT JOIN Category c ON b.sCategCd1 = c.sCategrCd" +
                             " LEFT JOIN Category_Level2 d ON b.sCategCd2 = d.sCategrCd" +
                             " LEFT JOIN Inv_Type e ON d.sInvTypCd = e.sInvTypCd" +
+                            " LEFT JOIN Inv_Stock_Request_Detail f ON b.sStockIDx = f.sStockIDx" +
+                            " LEFT JOIN Brand g ON b.sBrandIDx = g.sBrandIDx" +
+                            " LEFT JOIN Model h ON b.sModelIDx = h.sModelIDx" +
+                            " LEFT JOIN Color i ON b.sColorIDx = i.sColorIDx" +
+                            " LEFT JOIN Measure j ON b.sMeasurID = j.sMeasurID"+ 
                         " WHERE 0=1";
-        
+                        
         
         ResultSet loRS = instance.executeQuery(lsSQL);
         try {
