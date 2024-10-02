@@ -5,6 +5,7 @@ org\guanzon\cas\inventory\stock\request\approval\Inv_Request_SP_Approval.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInvHistLedger.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestDetail.class
 org\guanzon\cas\inventory\stock\Inv_Request_Without_ROQ.class
+org\guanzon\cas\inventory\stock\request\cancel\InvRequestCancel$1.class
 org\guanzon\cas\inventory\stock\request\RequestCancelController.class
 org\guanzon\cas\inventory\stock\request\RequestApprovalController.class
 org\guanzon\cas\inventory\stock\request\RequestController.class

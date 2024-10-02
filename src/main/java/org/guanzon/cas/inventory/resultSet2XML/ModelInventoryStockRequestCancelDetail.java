@@ -56,7 +56,6 @@ public class ModelInventoryStockRequestCancelDetail {
                             ", f.nBackOrdr" +
                             ", f.nOnTranst" +
                             ", f.nAvgMonSl" +
-                            ", f.sNotesxxx" +
                             ", f.nQuantity xQuantity" +
                             ", f.nIssueQty" +
                             ", f.nOrderQty" +
