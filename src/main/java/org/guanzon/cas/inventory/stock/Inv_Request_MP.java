@@ -466,8 +466,7 @@ public class Inv_Request_MP implements RequestController {
                     "sTransNox»dTransact»sReferNox",
                     "a.sTransNox»a.dTransact»a.sReferNox",
                     fbByCode ? 0 : 1);
-            if ("error".equals((String) poJSON.get("result"))) {
-                
+            if (poJSON == null || "error".equals((String) poJSON.get("result"))) {
                 poJSON = new JSONObject();
                 poJSON.put("result", "error");
                 poJSON.put("message", "No record loaded.");

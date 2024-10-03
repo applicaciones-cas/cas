@@ -469,8 +469,7 @@ public class Inv_Request_General implements RequestController {
                     "sTransNox»xBranchNm»dTransact",
                     "a.sTransNox»b.sBranchNm»a.dTransact",
                     fbByCode ? 0 : 1);
-            if ("error".equals((String) poJSON.get("result"))) {
-
+            if (poJSON == null || "error".equals((String) poJSON.get("result"))) {
                 poJSON = new JSONObject();
                 poJSON.put("result", "error");
                 poJSON.put("message", "No record loaded.");

@@ -468,7 +468,7 @@ public class Inv_Request_MC_Approval implements RequestApprovalController {
         }
 
         String lsSQL = MiscUtil.addCondition(getSQL(), " a.sTransNox LIKE "
-                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition + " AND f.sCategCd1 = '0001' AND f.sCategCd2 = '0007' GROUP BY a.sTransNox ASC");
+                + SQLUtil.toSQL(fsValue + "%") + " AND LEFT(a.sTransNox, 4) = " + SQLUtil.toSQL(poGRider.getBranchCode()) + " AND " + lsCondition + " AND f.sCategCd1 = '0001' AND f.sCategCd2 = '0007' GROUP BY a.sTransNox ASC");
 
         poJSON = new JSONObject();
         System.out.println("searchTransaction = " + lsSQL);
@@ -480,16 +480,14 @@ public class Inv_Request_MC_Approval implements RequestApprovalController {
                     "sTransNox»dTransact»sReferNox",
                     "a.sTransNox»a.dTransact»a.sReferNox",
                     fbByCode ? 0 : 1);
-
-            if (poJSON != null) {
-                return openTransaction((String) poJSON.get("sTransNox"));
-
-            } else {
-
+            
+            if (poJSON == null || "error".equals((String) poJSON.get("result"))) {
                 poJSON = new JSONObject();
                 poJSON.put("result", "error");
                 poJSON.put("message", "No record loaded.");
                 return poJSON;
+            } else {
+                return openTransaction((String) poJSON.get("sTransNox"));
             }
         }
 //use for testing 
