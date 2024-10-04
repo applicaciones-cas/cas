@@ -20,7 +20,6 @@ org\guanzon\cas\inventory\stock\Inv_Request_MP.class
 org\guanzon\cas\inventory\base\InventoryTrans1.class
 org\guanzon\cas\inventory\stock\request\RequestControllerFactory.class
 org\guanzon\cas\inventory\CasInventory.class
-org\guanzon\cas\inventory\stock\request\purchase\Inv_Request_MC_Purchase.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInvSerialLedger.class
 org\guanzon\cas\inventory\stock\request\RequestControllerFactory$RequestCategoryType.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestCancelMaster.class

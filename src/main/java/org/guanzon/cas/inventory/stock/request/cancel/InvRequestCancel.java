@@ -20,8 +20,6 @@ import org.guanzon.cas.inventory.models.Model_Inv_Stock_Req_Cancel_Detail;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Req_Cancel_Master;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.inventory.stock.Inv_Request;
-import org.guanzon.cas.inventory.stock.Inv_Request_SP;
-import org.guanzon.cas.inventory.stock.request.RequestCancelController;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
 import org.json.simple.JSONObject;
 
@@ -74,9 +72,10 @@ public class InvRequestCancel implements GTranDet {
 
         poJSON = new JSONObject();
 
+        poRequest = new Inv_Request(poGRider, pbWthParent);
         poModelDetail = new ArrayList<>();
         poModelDetail.add(new Model_Inv_Stock_Req_Cancel_Detail(poGRider));
-        poRequest = new Inv_Request(poGRider, pbWthParent);
+        poModelDetail.get(0).newRecord();
         poJSON = poModelDetail.get(0).setTransactionNumber(poModelMaster.getTransactionNumber());
         if ("error".equals((String) poJSON.get("result"))) {
             poJSON.put("result", "error");
@@ -128,26 +127,30 @@ public class InvRequestCancel implements GTranDet {
             poGRider.beginTrans();
         }
 
+        boolean hasZero = false;
         if (getItemCount() >= 1) {
             // Loop in reverse order to avoid index shifting when removing elements
-            boolean allZero = true;
-            for (Model_Inv_Stock_Req_Cancel_Detail items : poModelDetail) {
-                if (Integer.parseInt(items.getQuantity().toString()) != 0) {
-                    allZero = false;  // If any product's quantity is not zero, set flag to false
-                    break;  // No need to check further if one non-zero quantity is found
-                }
-            }
-            if (allZero) {
-                poJSON.put("result", "error");
-                poJSON.put("message", "Quantities are currently set to 0. Update them to continue.");
-                return poJSON;
-            }
             for (int lnCtr = getItemCount() - 1; lnCtr >= 0; lnCtr--) {
                 // Check if StockID or Barcode is empty
+                
+                int lnQty = Integer.parseInt(poModelDetail.get(lnCtr).getQuantity().toString());
+                System.out.println(lnQty);
                 if (poModelDetail.get(lnCtr).getStockID().isEmpty() || poModelDetail.get(lnCtr).getBarcode().isEmpty()) {
                     // Remove the empty record
                     poModelDetail.remove(lnCtr);
+                }else{
+                    //check if one non-zero quantity is found
+                    if (lnQty == 0) {
+                        hasZero = true;  // If any product's quantity is not zero, set flag to false
+                        break;  // No need to check further if one non-zero quantity is found
+                    }
+                    
                 }
+            }
+            if (hasZero) {
+                poJSON.put("result", "error");
+                poJSON.put("message", "Quantities are currently set to 0. Update them to continue.");
+                return poJSON;
             }
             
             for (int lnCtr = 0; lnCtr <= getItemCount() - 1; lnCtr++) {
@@ -438,14 +441,19 @@ public class InvRequestCancel implements GTranDet {
         switch (fnCol) {
 
             case 3: //sBarCodex/sStockID
+                if(poModelMaster.getOrderNumber().isEmpty()){
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "No order was discovered. Please search for order first.");
+                    return poJSON;
+                }
                 String lsSQL = new Model_Inv_Stock_Request_Detail(poGRider).getSQL();
 //                lsSQL =  MiscUtil.addCondition(lsSQL, fsValue);
 
-                lsSQL = MiscUtil.addCondition(lsSQL, "a.sTransNox = " + SQLUtil.toSQL(poModelDetail.get(fnRow).getOrderNumber()));
+                lsSQL = MiscUtil.addCondition(lsSQL, "a.sTransNox = " + SQLUtil.toSQL(poModelMaster.getOrderNumber()));
                 if (fbByCode) {
-                    lsSQL = MiscUtil.addCondition(lsSQL, "b.sBarCodex = " + SQLUtil.toSQL(fsValue));
-                } else {
                     lsSQL = MiscUtil.addCondition(lsSQL, "b.sBarCodex LIKE " + SQLUtil.toSQL("%" + fsValue + "%"));
+                } else {
+                    lsSQL = MiscUtil.addCondition(lsSQL, "b.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%"));
                 }
                 System.out.println("searchDetail = " + lsSQL);
                 if (p_bWithUI) {
@@ -621,11 +629,12 @@ public class InvRequestCancel implements GTranDet {
             poJSON = ShowDialogFX.Search(poGRider,
                     lsSQL,
                     fsValue,
-                    "Transaction No»Date»Refer No",
-                    "sTransNox»dTransact»sReferNox",
-                    "sTransNox»dTransact»sReferNox",
+                    "Transaction No»Date»Remarks",
+                    "sTransNox»dTransact»sRemarksx",
+                    "a.sTransNox»a.dTransact»a.sRemarksx",
                     fbByCode ? 0 : 1);
             
+            System.out.println(poJSON);
             if (poJSON == null || "error".equals((String) poJSON.get("result"))) {
                 poJSON = new JSONObject();
                 poJSON.put("result", "error");
@@ -662,13 +671,40 @@ public class InvRequestCancel implements GTranDet {
     }
 
     @Override
-    public JSONObject searchMaster(String string, String string1, boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public JSONObject searchMaster(String fsCol, String string1, boolean bln) {
+        return searchMaster(poModelMaster.getColumn(fsCol), string1, bln);
     }
 
     @Override
-    public JSONObject searchMaster(int i, String string, boolean bln) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public JSONObject searchMaster(int fnCol, String fsValue, boolean bln) {
+        poJSON = new JSONObject();
+        switch (fnCol) {
+            case 5:
+                poRequest.setType(type);
+                poRequest.setCategoryType(category_type);
+                poRequest.setTransactionStatus("01");
+                poRequest.setWithUI(p_bWithUI);
+                poJSON = poRequest.searchTransaction("sTransNox", fsValue, bln);
+                if (poJSON == null || "error".equals((String) poJSON.get("result"))) {
+                    poJSON = new JSONObject();
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "No record loaded.");
+                    return poJSON;
+                }
+
+                setMaster("sBranchCd", poRequest.getMasterModel().getBranchCode());
+                setMaster("xBranchNm", poRequest.getMasterModel().getBranchName());
+                setMaster("sCategrCd", poRequest.getMasterModel().getCategoryCode());
+                setMaster("xCategrNm", poRequest.getMasterModel().getCategoryName());
+                setMaster("sOrderNox", poRequest.getMasterModel().getTransactionNumber());
+                setMaster("dStartEnc", poRequest.getMasterModel().getStartEncDate());
+                System.out.println("getTransactionNumber = " + poRequest.getMasterModel().getTransactionNumber());
+                
+                break;
+            default:
+                throw new AssertionError();
+        }
+        return poJSON;
     }
 
     @Override
@@ -820,9 +856,6 @@ public class InvRequestCancel implements GTranDet {
             poJSON.put("message", "Inventory request add record.");
 
         } else {
-            if(poModelDetail.get(poModelDetail.size() - 1).getStockID().isEmpty() || poModelDetail.get(poModelDetail.size() - 1).getBarcode().isEmpty()){
-                
-            }
             poModelDetail.add(new Model_Inv_Stock_Req_Cancel_Detail(poGRider));
             poModelDetail.get(poModelDetail.size() - 1).newRecord();
             poModelDetail.get(poModelDetail.size() - 1).setEntryNumber(poModelDetail.size());
@@ -850,7 +883,7 @@ public class InvRequestCancel implements GTranDet {
      * use for browsing Inventory Stock Request fetching inventory request and
      * set data for Inventory Stock Request Cancel
      */
-    public JSONObject BrowseRequest(int fnRow, String fsColumn, String fsValue, boolean fbByCode) {
+    public JSONObject BrowseRequest(String fsColumn, String fsValue, boolean fbByCode) {
         poJSON = new JSONObject();
         poRequest.setType(type);
         poRequest.setCategoryType(category_type);
@@ -864,16 +897,16 @@ public class InvRequestCancel implements GTranDet {
             return poJSON;
         }
 
-//            setMaster("sBranchCd", poRequest.getMasterModel().getBranchCode());
-//            setMaster("xBranchNm", poRequest.getMasterModel().getBranchName());
-//            setMaster("sCategrCd", poRequest.getMasterModel().getCategoryCode());
-//            setMaster("xCategrNm", poRequest.getMasterModel().getCategoryName());
-//            setMaster("sOrderNox", poRequest.getMasterModel().getTransactionNumber());
-//            setMaster("dStartEnc", poRequest.getMasterModel().getStartEncDate());
+        setMaster("sBranchCd", poRequest.getMasterModel().getBranchCode());
+        setMaster("xBranchNm", poRequest.getMasterModel().getBranchName());
+        setMaster("sCategrCd", poRequest.getMasterModel().getCategoryCode());
+        setMaster("xCategrNm", poRequest.getMasterModel().getCategoryName());
+        setMaster("sOrderNox", poRequest.getMasterModel().getTransactionNumber());
+        setMaster("dStartEnc", poRequest.getMasterModel().getStartEncDate());
         System.out.println("getTransactionNumber = " + poRequest.getMasterModel().getTransactionNumber());
         if (p_bWithUI) {
             if (ShowMessageFX.YesNo("Do you want to display all request item from this transaction " + poRequest.getMasterModel().getTransactionNumber() + "?", "Computerized Acounting System", "Inventory Stock Request Cancel")) {
-//                    poModelDetail = new ArrayList<>();
+                poModelDetail = new ArrayList<>();
 
                 for (int lnCtr = 0; lnCtr < poRequest.getDetailModel().size(); lnCtr++) {
                     boolean isExist = false;
@@ -888,41 +921,41 @@ public class InvRequestCancel implements GTranDet {
                         continue;
                     }
                     poModelDetail.add(new Model_Inv_Stock_Req_Cancel_Detail(poGRider));
-                    poModelDetail.get(fnRow).newRecord();
+                    poModelDetail.get(lnCtr).newRecord();
 
-                    setDetail(fnRow, "nEntryNox", (int) poRequest.getDetailModel().get(lnCtr).getEntryNumber());
-                    setDetail(fnRow, "sOrderNox", (String) poRequest.getDetailModel().get(lnCtr).getTransactionNumber());
-                    setDetail(fnRow, "sStockIDx", (String) poRequest.getDetailModel().get(lnCtr).getStockID());
-//                        setDetail(fnRow, "nQuantity", (int) poRequest.getDetailModel().get(lnCtr).getCancelled());
-                    setDetail(fnRow, "sNotesxxx", (String) poRequest.getDetailModel().get(lnCtr).getNotes());
-                    setDetail(fnRow, "xBarCodex", (String) poRequest.getDetailModel().get(lnCtr).getBarcode());
-                    setDetail(fnRow, "xDescript", (String) poRequest.getDetailModel().get(lnCtr).getDescription());
-                    setDetail(fnRow, "xCategr01", (String) poRequest.getDetailModel().get(lnCtr).getCategoryName());
-                    setDetail(fnRow, "xCategr02", (String) poRequest.getDetailModel().get(lnCtr).getCategoryName2());
-                    setDetail(fnRow, "xInvTypNm", (String) poRequest.getDetailModel().get(lnCtr).getCategoryType());
-                    setDetail(fnRow, "cClassify", poRequest.getDetailModel().get(lnCtr).getClassify());
-                    setDetail(fnRow, "xQuantity", poRequest.getDetailModel().get(lnCtr).getQuantity());
-                    setDetail(fnRow, "nQtyOnHnd", poRequest.getDetailModel().get(lnCtr).getQuantityOnHand());
-                    setDetail(fnRow, "nResvOrdr", poRequest.getDetailModel().get(lnCtr).getReservedOrder());
-                    setDetail(fnRow, "nBackOrdr", poRequest.getDetailModel().get(lnCtr).getBackOrder());
-                    setDetail(fnRow, "nOnTranst", poRequest.getDetailModel().get(lnCtr).getOnTransit());
-                    setDetail(fnRow, "nAvgMonSl", poRequest.getDetailModel().get(lnCtr).getAverageMonthlySalary());
-                    setDetail(fnRow, "nIssueQty", poRequest.getDetailModel().get(lnCtr).getIssueQuantity());
-                    setDetail(fnRow, "nOrderQty", poRequest.getDetailModel().get(lnCtr).getOrderQuantity());
-                    setDetail(fnRow, "xBrandNme", poRequest.getDetailModel().get(lnCtr).getBrandName());
-                    setDetail(fnRow, "xModelNme", poRequest.getDetailModel().get(lnCtr).getModelName());
-                    setDetail(fnRow, "xModelDsc", poRequest.getDetailModel().get(lnCtr).getModelDescription());
-                    setDetail(fnRow, "xColorNme", poRequest.getDetailModel().get(lnCtr).getColorName());
-                    setDetail(fnRow, "xMeasurNm", poRequest.getDetailModel().get(lnCtr).getMeasureName());
+                    setDetail(lnCtr, "nEntryNox", (int) poRequest.getDetailModel().get(lnCtr).getEntryNumber());
+                    setDetail(lnCtr, "sOrderNox", (String) poRequest.getDetailModel().get(lnCtr).getTransactionNumber());
+                    setDetail(lnCtr, "sStockIDx", (String) poRequest.getDetailModel().get(lnCtr).getStockID());
+//                        setDetail(lnCtr, "nQuantity", (int) poRequest.getDetailModel().get(lnCtr).getCancelled());
+                    setDetail(lnCtr, "sNotesxxx", (String) poRequest.getDetailModel().get(lnCtr).getNotes());
+                    setDetail(lnCtr, "xBarCodex", (String) poRequest.getDetailModel().get(lnCtr).getBarcode());
+                    setDetail(lnCtr, "xDescript", (String) poRequest.getDetailModel().get(lnCtr).getDescription());
+                    setDetail(lnCtr, "xCategr01", (String) poRequest.getDetailModel().get(lnCtr).getCategoryName());
+                    setDetail(lnCtr, "xCategr02", (String) poRequest.getDetailModel().get(lnCtr).getCategoryName2());
+                    setDetail(lnCtr, "xInvTypNm", (String) poRequest.getDetailModel().get(lnCtr).getCategoryType());
+                    setDetail(lnCtr, "cClassify", poRequest.getDetailModel().get(lnCtr).getClassify());
+                    setDetail(lnCtr, "xQuantity", poRequest.getDetailModel().get(lnCtr).getQuantity());
+                    setDetail(lnCtr, "nQtyOnHnd", poRequest.getDetailModel().get(lnCtr).getQuantityOnHand());
+                    setDetail(lnCtr, "nResvOrdr", poRequest.getDetailModel().get(lnCtr).getReservedOrder());
+                    setDetail(lnCtr, "nBackOrdr", poRequest.getDetailModel().get(lnCtr).getBackOrder());
+                    setDetail(lnCtr, "nOnTranst", poRequest.getDetailModel().get(lnCtr).getOnTransit());
+                    setDetail(lnCtr, "nAvgMonSl", poRequest.getDetailModel().get(lnCtr).getAverageMonthlySalary());
+                    setDetail(lnCtr, "nIssueQty", poRequest.getDetailModel().get(lnCtr).getIssueQuantity());
+                    setDetail(lnCtr, "nOrderQty", poRequest.getDetailModel().get(lnCtr).getOrderQuantity());
+                    setDetail(lnCtr, "xBrandNme", poRequest.getDetailModel().get(lnCtr).getBrandName());
+                    setDetail(lnCtr, "xModelNme", poRequest.getDetailModel().get(lnCtr).getModelName());
+                    setDetail(lnCtr, "xModelDsc", poRequest.getDetailModel().get(lnCtr).getModelDescription());
+                    setDetail(lnCtr, "xColorNme", poRequest.getDetailModel().get(lnCtr).getColorName());
+                    setDetail(lnCtr, "xMeasurNm", poRequest.getDetailModel().get(lnCtr).getMeasureName());
                     int nUnserved = Integer.parseInt(String.valueOf(poRequest.getDetailModel().get(lnCtr).getQuantity()))
                         - (Integer.parseInt(String.valueOf(poRequest.getDetailModel().get(lnCtr).getIssueQuantity()))
                         + Integer.parseInt(String.valueOf(poRequest.getDetailModel().get(lnCtr).getCancelled()))
                         + Integer.parseInt(String.valueOf(poRequest.getDetailModel().get(lnCtr).getOrderQuantity())));
-                    setDetail(fnRow, "nUnserved", 0);
-                    setDetail(fnRow, "nQuantity", (int) poRequest.getDetailModel().get(lnCtr).getCancelled());
+                    setDetail(lnCtr, "nUnserved", 0);
+                    setDetail(lnCtr, "nQuantity", (int) poRequest.getDetailModel().get(lnCtr).getCancelled());
                     poJSON.put("result", "success");
                     poJSON.put("message", "Item added.");
-                    fnRow++;
+//                    fnRow++;
 
                 }
             }
