@@ -263,6 +263,13 @@
                                                       <MenuItem fx:id="mnuStockRequestROQGI" mnemonicParsing="false" onAction="#mnuStockRequestROQGIClick" text="ROQ GI" />
                                                    </items>
                                                 </Menu>
+                                                <Menu mnemonicParsing="false" text="NEW UI Cancellation">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuStockRequestCancellation" mnemonicParsing="false" onAction="#mnuStockRequestCancellationClick" text="Cancellation" />
+                                                      <MenuItem fx:id="mnuStockRequestCancellationSP" mnemonicParsing="false" onAction="#mnuStockRequestCancellationSPClick" text="Cancellation SP" />
+                                                      <MenuItem fx:id="mnuStockRequestCancellationGI" mnemonicParsing="false" onAction="#mnuStockRequestCancellationGIClick" text="Cancellation GI" />
+                                                   </items>
+                                                </Menu>
                                              </items>
                                           </Menu>
                                                     </items>
@@ -290,7 +297,13 @@
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="_History">
                                                     <items>
-                                                        <MenuItem fx:id="mnuHistStockRequest" mnemonicParsing="false" onAction="#mnuHistStockRequestClick" text="Stock Request" />
+                                          <Menu mnemonicParsing="false" text="Stock Request">
+                                            <items>
+                                                              <MenuItem fx:id="mnuHistStockRequest" mnemonicParsing="false" onAction="#mnuHistStockRequestClick" text="Stock Request" />
+                                              <MenuItem fx:id="mnuHistStockRequestSP" mnemonicParsing="false" onAction="#mnuHistStockRequestSPClick" text="Stock Request SP" />
+                                                <MenuItem fx:id="mnuHistStockRequestGI" mnemonicParsing="false" onAction="#mnuHistStockRequestGIClick" text="Stock Request GI" />
+                                            </items>
+                                          </Menu>
                                                     </items>
                                                 </Menu>
                                             </menus>

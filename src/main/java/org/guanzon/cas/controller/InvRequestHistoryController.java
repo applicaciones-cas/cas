@@ -50,7 +50,7 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class InvRequestWithoutROQController implements Initializable, ScreenInterface {
+public class InvRequestHistoryController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Inventory Request";
     private GRider oApp;
@@ -85,7 +85,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
             btnAddItem,
             btnDelItem,
             btnCancel,
-            btnClose,
+            btnClose,btnVoid,
             btnStatistic;
 
     @FXML
@@ -102,7 +102,9 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
             txtField11,
             txtField12,
             txtField13,
-            txtField14;
+            txtField14,
+            txtSeeks01,
+            txtSeeks02;
 
     @FXML
     private DatePicker dpField01;
@@ -143,6 +145,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         initTblDetails();
         initTabAnchor();
         lblStatus.setText("UNKNOWN");
+        System.out.println("Edit mode on load == " + pnEditMode);
         pbLoaded = true;
     }
 
@@ -156,6 +159,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         btnBrowse.setOnAction(this::handleButtonAction);
         btnAddItem.setOnAction(this::handleButtonAction);
         btnDelItem.setOnAction(this::handleButtonAction);
+        btnVoid.setOnAction(this::handleButtonAction);
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -244,6 +248,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                     initTblDetails();
                     loadItemData();
                     initTabAnchor();
+                    System.out.println("Edit mode after browse == " + pnEditMode);
                     break;
 
                 case "btnAddItem":
@@ -262,24 +267,27 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
 
                     break;
 
-                case "btnDelItem":
-                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this item?") == true) {
-                        oTrans.RemoveModelDetail(pnRow);
-                        pnRow = oTrans.getDetailModel().size() - 1;
-                        clearItem();
-                        loadItemData();
-                        txtField04.requestFocus();
-                    }
+                case "btnDelItem":   
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this item?")) {
+                            oTrans.RemoveModelDetail(pnRow);
+                            pnRow = oTrans.getDetailModel().size() - 1;
+                            clearItem();
+                            loadItemData();
+                            txtField04.requestFocus();
+                        }
+                    
                     break;
                 case "btnCancel":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                    if (pnEditMode == 1) {
+                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
 
-                        if (pnEditMode == EditMode.UPDATE) {
-                            oTrans.cancelUpdate();
+                            if (pnEditMode == EditMode.UPDATE) {
+                                oTrans.cancelUpdate();
+                            }
+                            initTrans();
+                            initTabAnchor();
+
                         }
-                        initTrans();
-                        initTabAnchor();
-
                     }
                     break;
 
@@ -325,7 +333,9 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
             txtField11,
             txtField12,
             txtField13,
-            txtField14,};
+            txtField14,
+            txtSeeks01,
+            txtSeeks02};
 
 // Add the listener to each text field in the focusTextFields array
         for (TextField textField : focusTextFields) {
@@ -342,7 +352,8 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         for (TextField textField : keyPressedTextFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
+        txtSeeks02.setOnKeyPressed(this::txtSeeks_KeyPressed);
 //        lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");        
     }
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
@@ -523,15 +534,41 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
         String lsValue = (txtSeeks.getText() == null ? "" : txtSeeks.getText());
         JSONObject poJSON;
-        switch (event.getCode()) {
+        switch (event.getCode()) {            
+            case ENTER:
             case F3:
                 switch (lnIndex) {
                     case 1:
                         /*transaction no*/
-                        System.out.print("search transaction == " + lsValue);
+                        poJSON = oTrans.searchTransaction("sTransNox", "", true);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
+                        }
+                        pnEditMode = oTrans.getEditMode();
+                        R1data.clear();
+                        loadTransaction();
+                        initTblDetails();
+                        loadItemData();
+                        initTabAnchor();
+                        System.out.println("Edit mode after browse == " + pnEditMode);
+                        break;
+                    case 2:
+                        /*REFERENCE no*/
+                        poJSON = oTrans.searchTransaction("sTransNox", "", false);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
+                        }
+                        pnEditMode = oTrans.getEditMode();
+                        R1data.clear();
+                        loadTransaction();
+                        initTblDetails();
+                        loadItemData();
+                        initTabAnchor();
+                        System.out.println("Edit mode after browse == " + pnEditMode);
                         break;
                 }
-            case ENTER:
 
         }
         switch (event.getCode()) {
@@ -549,13 +586,13 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
 // Manage visibility and managed state of buttons
-        btnCancel.setVisible(lbShow);
+        btnCancel.setVisible(!lbShow);
         btnSearch.setVisible(lbShow);
         btnSave.setVisible(lbShow);
         btnAddItem.setVisible(lbShow);
         btnDelItem.setVisible(lbShow);
 
-        btnCancel.setManaged(lbShow);
+        btnCancel.setManaged(!lbShow);
         btnSearch.setManaged(lbShow);
         btnSave.setManaged(lbShow);
         btnAddItem.setManaged(lbShow);
@@ -570,7 +607,13 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         btnNew.setManaged(!lbShow);
         btnUpdate.setManaged(!lbShow);
         btnClose.setManaged(!lbShow);
+        btnVoid.setVisible(!lbShow);
+        btnVoid.setManaged(!lbShow);
 
+        btnNew.setVisible(false);
+        btnNew.setManaged(false);
+        btnUpdate.setVisible(false);
+        btnUpdate.setManaged(false);
     }
 
     private void initTblDetails() {
@@ -798,9 +841,5 @@ private void initTrans() {
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
-
-
-
-    
 
 }

@@ -129,7 +129,7 @@
                     <items>
                       <AnchorPane SplitPane.resizableWithParent="false">
                            <children>
-                              <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <SplitPane dividerPositions="0.6" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <items>
                                   <AnchorPane fx:id="anchorMaster" style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
                                        <padding>
@@ -172,7 +172,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <DatePicker fx:id="dpField01" maxWidth="250.0" minWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                                                <DatePicker fx:id="dpField01" maxWidth="300.0" minWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Remarks" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                                                    <font>
                                                       <Font size="14.0" />
@@ -371,20 +371,17 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
                            <children>
-                              <TableView fx:id="tblDetails" onMouseClicked="#tblDetails_Clicked" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TableView fx:id="tblDetails" onMouseClicked="#tblDetails_Clicked" prefWidth="1239.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columns>
                                     <TableColumn fx:id="index01" prefWidth="30.0" resizable="false" text="No." />
-                                    <TableColumn fx:id="index02" prefWidth="150.0" resizable="false" text="Order No" />
-                                    <TableColumn fx:id="index03" prefWidth="150.0" resizable="false" text="Barrcode" />
-                                    <TableColumn fx:id="index04" prefWidth="220.0" resizable="false" text="Item Description" />
-                                    <TableColumn fx:id="index05" minWidth="120.0" prefWidth="120.0" resizable="false" text="Brand" />
-                                    <TableColumn fx:id="index06" minWidth="120.0" prefWidth="120.0" resizable="false" text="Model Code" />
-                                    <TableColumn fx:id="index07" minWidth="120.0" prefWidth="150.0" resizable="false" text="Model Name" />
-                                    <TableColumn fx:id="index08" minWidth="120.0" prefWidth="150.0" resizable="false" text="Model Variant" />
-                                    <TableColumn fx:id="index09" minWidth="120.0" prefWidth="120.0" resizable="false" text="Year Model" />
-                                    <TableColumn fx:id="index10" minWidth="120.0" prefWidth="120.0" resizable="false" text="Color" />
-                                    <TableColumn fx:id="index11" minWidth="80.0" resizable="false" text="Unprcd Qty" />
-                                    <TableColumn fx:id="index12" minWidth="80.0" resizable="false" text="Cancel" />
+                                    <TableColumn fx:id="index02" prefWidth="200.0" resizable="false" text="Barrcode" />
+                                    <TableColumn fx:id="index03" prefWidth="200.0" resizable="false" text="Item Description" />
+                                    <TableColumn fx:id="index04" minWidth="120.0" prefWidth="180.0" resizable="false" text="Brand" />
+                                    <TableColumn fx:id="index05" minWidth="120.0" prefWidth="190.0" resizable="false" text="Model Name" />
+                                    <TableColumn fx:id="index06" minWidth="120.0" prefWidth="120.0" resizable="false" text="Color" />
+                                    <TableColumn fx:id="index07" minWidth="120.0" prefWidth="150.0" resizable="false" text="Measurement" />
+                                    <TableColumn fx:id="index08" minWidth="80.0" prefWidth="100.0" resizable="false" text="Unprcd Qty" />
+                                    <TableColumn fx:id="index09" minWidth="80.0" prefWidth="100.0" resizable="false" text="Cancel" />
                                  </columns>
                               </TableView>
                            </children>

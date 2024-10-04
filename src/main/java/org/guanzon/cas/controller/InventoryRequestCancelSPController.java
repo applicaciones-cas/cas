@@ -558,7 +558,7 @@ public class InventoryRequestCancelSPController implements Initializable ,Screen
                 switch (lnIndex){
                     case 04: /*search order*/
                         poJson = new JSONObject();
-                        poJson =  oTrans.BrowseRequest("sTransNox",lsValue, false);
+                        poJson =  oTrans.BrowseRequest("sTransNox",lsValue, true);
                         if("error".equalsIgnoreCase(poJson.get("result").toString())){
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);  
                             break;
@@ -679,6 +679,7 @@ public class InventoryRequestCancelSPController implements Initializable ,Screen
                 
 //            oTrans.getDetailModel().get(lnCtr).list();
                 R1data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),
+                        (String)oTrans.getDetailModel().get(lnCtr).getOrderNumber(),
                         (String)oTrans.getDetailModel().get(lnCtr).getBarcode(),
                         (String)oTrans.getDetailModel().get(lnCtr).getDescription(),
                         "",
