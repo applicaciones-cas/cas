@@ -14,11 +14,13 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.iface.GTranDet;
+import org.guanzon.cas.clients.account.Account_Accreditation;
 import org.guanzon.cas.inventory.models.Model_PO_Quotation_Detail;
 import org.guanzon.cas.inventory.models.Model_PO_Quotation_Master;
 import org.guanzon.cas.parameters.Branch;
 import org.guanzon.cas.parameters.Category_Level2;
 import org.guanzon.cas.parameters.Color;
+import org.guanzon.cas.parameters.Company;
 import org.guanzon.cas.parameters.Inv_Type;
 import org.guanzon.cas.parameters.Measure;
 import org.guanzon.cas.parameters.Term;
@@ -109,7 +111,9 @@ public class PO_Quotation implements GTranDet{
     public JSONObject saveTransaction() {
         int lnCtr;
         String lsSQL;
-        
+        if (poModelDetail.get(getItemCount() - 1).getStockID().equals("") && poModelDetail.get(getItemCount() - 1).getDescription().equals("")) {
+            RemoveModelDetail(getItemCount() - 1);
+        }
         Validator_PO_Quotation_Detail ValidateDetails = new Validator_PO_Quotation_Detail(poModelDetail);
         if (!ValidateDetails.isEntryOkay()) {
             poJSON.put("result", "error");
@@ -618,23 +622,40 @@ public class PO_Quotation implements GTranDet{
 //                    return loJSON;
 //                }
 //
-//            case "sSupplier": //4 //16-xDestinat
-//                Supplier loSupplier = new Supplier(poGRider, true);
-//                loDestinat.setRecordStatus(psTranStatus);
-//                loJSON = loDestinat.searchRecord(fsValue, fbByCode);
-//
-//                if (loJSON != null) {
-//                    setMaster("sDestinat", (String) loDestinat.getMaster("sSupplier"));
-//                    setMaster("xDestinat", (String) loDestinat.getMaster("sBranchNm"));
-//
-//                    return loJSON;
-//
-//                } else {
-//                    loJSON = new JSONObject();
-//                    loJSON.put("result", "error");
-//                    loJSON.put("message", "No Transaction found.");
-//                    return loJSON;
-//                }
+            case "sSupplier": //4 //16-xDestinat
+                Account_Accreditation loSupplier = new Account_Accreditation(poGRider, true);
+                loSupplier.setTransactionStatus(psTranStatus);
+                loJSON = loSupplier.SearchAccredetation(fsValue, fbByCode);
+//                JSONObject loDetails = loSupplier.SearchAccredetation(fsValue, fbByCode);
+                if (loJSON != null) {
+                    
+
+                    if (loJSON != null && "success".equals(loJSON.get("result"))) {
+                        System.out.println("JSON "+ loJSON.toString()); 
+                        
+                        String ssSupplier = (String) loJSON.get("a.sClientID");
+                        String sxSupplier = (String) loJSON.get("b.sCompnyNm");
+                        String sAddressID = (String) loJSON.get("c.sAddrssID");
+                        String xAddressxx = (String) loJSON.get("sFllAddrs");
+                        String sContactID = (String) loJSON.get("a.sContctID");
+                        String xCPMobil1 = (String) loJSON.get("d.sMobileNo");
+
+                        setMaster("sSupplier", ssSupplier);
+                        setMaster("xSupplier", sxSupplier);
+                        setMaster("sAddrssID", sAddressID);
+                        setMaster("xAddressx", xAddressxx);
+                        setMaster("sContctID", sContactID);
+                        setMaster("xCPMobil1", xCPMobil1);
+
+                        return loJSON;
+                    }
+                } else {
+                    loJSON = new JSONObject();
+                    loJSON.put("result", "error");
+                    loJSON.put("message", "No Transaction found.");
+                    return loJSON;
+                }
+
 
             case "sTermCode": //Term
                 Term loTerm = new Term(poGRider, true);
