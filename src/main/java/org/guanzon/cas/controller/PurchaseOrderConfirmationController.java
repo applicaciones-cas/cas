@@ -35,19 +35,35 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.controller.ScreenInterface;
 import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.model.ModelPurchaseOrder;
+import org.guanzon.cas.parameters.Branch;
 import org.guanzon.cas.parameters.Color;
+import org.guanzon.cas.parameters.Model;
 import org.guanzon.cas.purchasing.controller.PurchaseOrder;
 import org.json.simple.JSONObject;
+import org.junit.Assert;
 
 /**
  * FXML Controller class
  *
  * @author User
  */
-public class PurchaseOrderConfirmationController implements Initializable, ScreenInterface {
+public class PurchaseOrderConfirmationController  implements Initializable, ScreenInterface{
+    private final String pxeModuleName = "Purchase Order(for Motorcycle, Mobile Phone, Cars)";
+    private GRider oApp;
+    private PurchaseOrder oTrans;
+    private JSONObject poJSON;
+    private int pnEditMode;
 
+    private String psPrimary = "";
+    private boolean pbLoaded = false;
+    private int pnIndex;
+    private int pnDetailRow;
+    
+    
+    
     @FXML
     private AnchorPane MainAnchorPane;
     @FXML
@@ -105,11 +121,11 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
     @FXML
     private Label lblStatus1;
     @FXML
-    private TableView<?> tblTransactionIssues;
+    private TableView tblTransactionIssues;
     @FXML
-    private TableColumn<?, ?> index12;
+    private TableColumn index12;
     @FXML
-    private TableColumn<?, ?> index13;
+    private TableColumn index13;
     @FXML
     private AnchorPane apDetail;
     @FXML
@@ -153,41 +169,346 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
     @FXML
     private TableColumn index11;
 
-    private ObservableList<ModelPurchaseOrder> data = FXCollections.observableArrayList();
     /**
      * Initializes the controller class.
      */
-    private final String pxeModuleName = "Purchase Order(for Motorcycle, Mobile Phone, Cars)";
-    private GRider oApp;
-    private PurchaseOrder oTrans;
-    private JSONObject poJSON;
-    private int pnEditMode;
+    private ObservableList<ModelPurchaseOrder> data = FXCollections.observableArrayList();
 
-    private String psPrimary = "";
+    
+    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        if (!pbLoaded) {
+            return;
+        }
 
-    private boolean pbLoaded = false;
-    private int pnIndex;
-    private int pnDetailRow;
+        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+        String lsValue = txtField.getText();
 
-    private void initButton(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+        if (lsValue == null) {
+            return;
+        }
 
-        btnCancel.setVisible(lbShow);
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lnIndex) {
+                case 2://dtransact
+                    poJSON = oTrans.getMasterModel().setTransactionDate(SQLUtil.toDate(lsValue, "yyyy-MM-dd"));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    txtField.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
+                    break;
 
-        btnCancel.setManaged(lbShow);
+                case 8://Reference No
+                    poJSON = oTrans.getMasterModel().setReferenceNo(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+                case 10://Disc
+                    poJSON = oTrans.getMasterModel().setDiscount(Integer.valueOf(lsValue));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+                case 11://AddDisc Rate
+                    poJSON = oTrans.getMasterModel().setAddDiscount(Integer.valueOf(lsValue));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+                case 12://Total Order
+                    poJSON = oTrans.getMasterModel().setTransactionTotal(Integer.valueOf(lsValue)); // computation
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
 
-        btnBrowse.setManaged(!lbShow);
-        btnClose.setManaged(!lbShow);
+            }
+        } else {
 
-        btnBrowse.setVisible(!lbShow);
-        btnClose.setVisible(!lbShow);
-        btnPrint.setVisible(!lbShow);
+            switch (lnIndex) {
+                case 2:
+                    txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getTransactionDate(), "yyyy-MM-dd"));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
 
-        apBrowse.setDisable(lbShow);
-        apMaster.setDisable(!lbShow);
-        apDetail.setDisable(!lbShow);
-        apTable.setDisable(!lbShow);
+            }
 
+        }
+
+        txtField.selectAll();
+        pnIndex = lnIndex;
+    };
+
+    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
+        if (!pbLoaded) {
+            return;
+        }
+
+        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+        String lsValue = txtField.getText();
+
+        if (lsValue == null) {
+            return;
+        }
+
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lnIndex) {
+                case 7://Remarks
+                    poJSON = oTrans.getMasterModel().setRemarks(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+            }
+        } else {
+            txtField.selectAll();
+        }
+        pnIndex = lnIndex;
+    };
+
+    final ChangeListener<? super Boolean> txtDetail_Focus = (o, ov, nv) -> {
+        if (!pbLoaded) {
+            return;
+        }
+
+        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(9, 11));
+        String lsValue = txtField.getText();
+        pnIndex = lnIndex;
+        if (lsValue == null) {
+            return;
+        }
+
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lnIndex) {
+                case 2:
+                    String lsStockID = (String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx");
+                    if (lsStockID == null || lsStockID.isEmpty()) {
+                        if (txtField.getText().length() > 128) {
+                            ShowMessageFX.Warning("Max characters for `Descript` exceeds the limit.", pxeModuleName, "Please verify your entry.");
+                            txtField.requestFocus();
+                            return;
+                        }
+                        poJSON = oTrans.setDetail(pnDetailRow, "sDescript", lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            return;
+                        }
+                    }
+                    loadTableDetail();
+                    break;
+                case 5:
+                    //Orig Cost inputted by user
+                    String lsNewCost = (String) oTrans.getDetailModel(pnDetailRow).getValue("nUnitPrce");
+                    if (lsNewCost == null || lsNewCost.isEmpty()) {
+                        if (txtField.getText().length() > 128) {
+                            ShowMessageFX.Warning("Max characters for `ROQ` exceeds the limit.", pxeModuleName, "Please verify your entry.");
+                            txtField.requestFocus();
+                            return;
+                        }
+                        poJSON = oTrans.setDetail(pnDetailRow, "nUnitPrce", lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            return;
+                        }
+                    }
+
+                    loadTableDetail();
+                    break;
+                case 7:
+                    /*this must be numeric*/
+                    int x = 0;
+                    try {
+
+                        x = Integer.valueOf(lsValue);
+                        if (x > 999999) {
+                            x = 0;
+
+                            ShowMessageFX.Warning("Please input not greater than 999999", pxeModuleName, "");
+                            txtField.requestFocus();
+                        }
+                    } catch (Exception e) {
+                        ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
+                        txtField.requestFocus();
+                    }
+
+                    poJSON = oTrans.setDetail(pnDetailRow, "nQuantity", x);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+
+                    loadTableDetail();
+                    break;
+
+            }
+        } else {
+            txtField.selectAll();
+        }
+
+    };
+    private void txtField_KeyPressed(KeyEvent event) {
+
+        TextField textField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = textField.getText();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 97:/*Browse Supplier*/
+                        poJSON = oTrans.searchSupplier("sSupplier", lsValue, lnIndex == 97);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField01.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+                    case 98:/*Browse Destination*/
+                        poJSON = oTrans.searchDestination("sDestinat", lsValue, lnIndex == 98);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField01.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+
+                    case 99:/*Browse Primary*/
+                        poJSON = oTrans.searchTransaction("sTransNox", lsValue, lnIndex == 99);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField01.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+
+                    case 3:
+                        /*sDestinat*/
+                        poJSON = oTrans.searchMaster(5, lsValue, false);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            txtField01.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+
+                    case 4:
+                        /*sSupplier*/
+                        poJSON = oTrans.searchMaster(6, lsValue, false);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            txtField01.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+                    case 9:
+                        /*sTermCode*/
+                        poJSON = oTrans.searchMaster(10, lsValue, false);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            txtField01.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+
+                }
+                break;
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                break;
+            case DOWN:
+                CommonUtils.SetNextFocus(textField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(textField);
+        }
+
+        pnIndex = lnIndex;
+    }
+    
+    
+    private void loadRecord() {
+        String lsActive = oTrans.getMasterModel().getTransactionStatus();
+
+        switch (lsActive) {
+            case "0":
+                lblStatus.setText("OPEN");
+                break;
+            case "1":
+                lblStatus.setText("CLOSED");
+                break;
+            case "2":
+                lblStatus.setText("POSTED");
+                break;
+            case "3":
+                lblStatus.setText("CANCELLED");
+                break;
+            default:
+                lblStatus.setText("UNKNOWN");
+                break;
+        }
+
+        //get supplier id and search contctp & contctno
+        String lsClientID = oTrans.getMasterModel().getSupplier();
+        if (!lsClientID.isEmpty()) {
+            oTrans.searchMaster("sSupplier", lsClientID, pbLoaded);
+        }
+
+        psPrimary = oTrans.getMasterModel().getTransactionNo();
+        txtField01.setText(psPrimary);
+        txtField02.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
+        txtField03.setText(oTrans.getMasterModel().getDestinationOther());
+        txtField04.setText(oTrans.getMasterModel().getSupplierName());
+        txtField05.setText(oTrans.getMasterModel().getContactPerson1());
+        txtField06.setText(oTrans.getMasterModel().getMobileNo());
+        txtField07.setText(oTrans.getMasterModel().getRemarks());
+        txtField08.setText(oTrans.getMasterModel().getReferenceNo());
+        txtField09.setText(oTrans.getMasterModel().getTermName());
+
+        try {
+            txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
+            txtField11.setText(String.valueOf(oTrans.getMasterModel().getAddDiscount()));
+            txtField12.setText(String.valueOf(oTrans.getMasterModel().getTransactionTotal()));
+
+        } catch (Exception e) {
+        }
+        loadTableDetail();
     }
 
     private void loadTableDetail() {
@@ -204,7 +525,6 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
 
         }
 
-//        Model loMdl = new Model(oApp, true);
 //        setDetail( "sStockIDx", (String) loInventory.getMaster("sDescript"));
         double lnTotalTransaction = 0;
         for (lnCtr = 0; lnCtr <= oTrans.getItemCount() - 1; lnCtr++) {
@@ -212,32 +532,30 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
 
             Inventory loInventory;
             Color loColor;
-//            Model loMdl;
+            Model loMdl;
+//            Model_Variant loMdlVrnt;
             if (lsStockIDx != null && !lsStockIDx.equals("")) {
 
                 loInventory = oTrans.GetInventory(lsStockIDx, true);
-                try {
-                    //for the meantime try-catch for Model
-//                    loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
-                } catch (Exception e) {
-                }
+                //for the meantime try-catch for Model
+                loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
+
                 loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
                 data.add(new ModelPurchaseOrder(String.valueOf(lnCtr + 1),
                         (String) loInventory.getMaster("sBarCodex"),
                         (String) oTrans.getDetailModel(lnCtr).getDescription(),
                         (String) loInventory.getMaster("xBrandNme"),
-                        "",
-                        "",
-                        //loMdl.getModel().getModelCode(),
-                        //loMdl.getModel().getModelName(),
+                        (String)loMdl.getModel().getModelCode(),
+                        (String)loMdl.getModel().getDescription(),
                         // loMdl.getModel().getModelCode(),
                         // loMdl.getModel().getModelName(),
                         "",
                         //getYearModel method in Model is missing
-                        "year model",
-                        loColor.getModel().getDescription(),
-                        loInventory.getMaster("nUnitPrce").toString(),
-                        oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
+//                        String.valueOf(loMdl.getModel().getYearModel()),
+                        "",
+                        (String)loColor.getModel().getDescription(),
+                        (String)loInventory.getMaster("nUnitPrce").toString(),
+                        (String)oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
                 ));
 
                 try {
@@ -285,6 +603,20 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
         }
         initDetailsGrid();
     }
+    
+     private void setSelectedDetail() {
+        txtDetail01.setText((String) data.get(pnDetailRow).getIndex02());
+        txtDetail02.setText((String) data.get(pnDetailRow).getIndex03());
+        txtDetail03.setText((String) data.get(pnDetailRow).getIndex10());
+        txtDetail04.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQtyOnHand()));
+        txtDetail05.setText((String) data.get(pnDetailRow).getIndex10());
+        try {
+            txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getRecOrder()));
+        } catch (Exception e) {
+        }
+        txtDetail07.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQuantity()));
+
+    }
 
     public void initDetailsGrid() {
         index01.setStyle("-fx-alignment: CENTER;");
@@ -322,129 +654,6 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
 
     }
 
-    private void setSelectedDetail() {
-        txtDetail01.setText((String) data.get(pnDetailRow).getIndex02());
-        txtDetail02.setText((String) data.get(pnDetailRow).getIndex03());
-        txtDetail03.setText((String) data.get(pnDetailRow).getIndex10());
-        txtDetail04.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQtyOnHand()));
-        txtDetail05.setText((String) data.get(pnDetailRow).getIndex10());
-        try {
-            txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getRecOrder()));
-        } catch (Exception e) {
-        }
-        txtDetail07.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQuantity()));
-
-    }
-    
-    private void loadRecord() {
-        String lsActive = oTrans.getMasterModel().getTransactionStatus();
-
-        switch (lsActive) {
-            case "0":
-                lblStatus.setText("OPEN");
-                break;
-            case "1":
-                lblStatus.setText("CLOSED");
-                break;
-            case "2":
-                lblStatus.setText("POSTED");
-                break;
-            case "3":
-                lblStatus.setText("CANCELLED");
-                break;
-            default:
-                lblStatus.setText("UNKNOWN");
-                break;
-
-        }
-
-        //get supplier id and search contctp & contctno
-        String lsClientID = oTrans.getMasterModel().getSupplier();
-        if (!lsClientID.isEmpty()) {
-            oTrans.searchMaster("sSupplier", lsClientID, pbLoaded);
-        }
-
-        psPrimary = oTrans.getMasterModel().getTransactionNo();
-        txtField01.setText(psPrimary);
-        txtField02.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
-        txtField03.setText(oTrans.getMasterModel().getDestinationOther());
-        txtField04.setText(oTrans.getMasterModel().getSupplierName());
-        txtField05.setText(oTrans.getMasterModel().getContactPerson1());
-        txtField06.setText(oTrans.getMasterModel().getMobileNo());
-        txtField07.setText(oTrans.getMasterModel().getRemarks());
-        txtField08.setText(oTrans.getMasterModel().getReferenceNo());
-        txtField09.setText(oTrans.getMasterModel().getTermName());
-
-        try {
-            txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
-            txtField11.setText(String.valueOf(oTrans.getMasterModel().getAddDiscount()));
-            txtField12.setText(String.valueOf(oTrans.getMasterModel().getTransactionTotal()));
-
-        } catch (Exception e) {
-        }
-        loadTableDetail();
-    }
-
-    private void txtField_KeyPressed(KeyEvent event) {
-
-        TextField textField = (TextField) event.getSource();
-        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
-        String lsValue = textField.getText();
-        switch (event.getCode()) {
-            case F3:
-                switch (lnIndex) {
-                    case 98:/*Browse Destination*/
-                    case 99:/*Browse Primary*/
-                        poJSON = oTrans.searchTransaction("sTransNox", lsValue, lnIndex == 99);
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtField01.requestFocus();
-                        } else {
-                            loadRecord();
-                        }
-                        break;
-
-                    case 3:
-                        /*sDestinat*/
-                        poJSON = oTrans.searchMaster(5, lsValue, false);
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                            txtField01.requestFocus();
-                        } else {
-                            loadRecord();
-                        }
-                        break;
-//                    case 5:/*sCategCd*/
-//                        poJSON = oTrans.searchMaster(9, lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-//
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-//                            txtField01.requestFocus();
-//                        } else {
-//                            loadRecord();
-//                        }
-//                        break;
-
-                }
-                break;
-        }
-        switch (event.getCode()) {
-            case ENTER:
-                break;
-            case DOWN:
-                CommonUtils.SetNextFocus(textField);
-                break;
-            case UP:
-                CommonUtils.SetPreviousFocus(textField);
-        }
-
-        pnIndex = lnIndex;
-    }
-
     private void txtDetail_KeyPressed(KeyEvent event) {
 
         TextField textField = (TextField) event.getSource();
@@ -464,14 +673,21 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
                     case 2:
                         /* Barcode & Description */
                         poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, lnIndex == 1);
+//                         oTrans.searchDetail("sDescription", lnLastRow, txtField.getText(), false)
 //                        System.out.println("poJson Result = " + poJSON.toJSONString());
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
 
+//                            oTrans.getDetailModel(pnDetailRow);
+//                        if (oTrans.getItemCount() > 0 ) {
+//                            int lnLastRow = oTrans.getItemCount() - 1;
+//                            oTrans.searchDetail(lnLastRow,3, "", false);
+//                        }
                         break;
 
                 }
+                loadRecord();
                 loadTableDetail();
                 break;
         }
@@ -487,177 +703,10 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
 
         pnIndex = lnIndex;
     }
+    
 
-    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
-        if (!pbLoaded) {
-            return;
-        }
-
-        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
-        String lsValue = txtField.getText();
-
-        if (lsValue == null) {
-            return;
-        }
-
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lnIndex) {
-                case 2://dtransact
-                    poJSON = oTrans.getMasterModel().setTransactionDate(SQLUtil.toDate(lsValue, "yyyy-MM-dd"));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    txtField.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
-                    break;
-//                case 4://referno
-//                    poJSON = oTrans.getMasterModel().setReferenceNo(lsValue);
-//                    if ("error".equals((String) poJSON.get("result"))) {
-//                        System.err.println((String) poJSON.get("message"));
-//                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-//                        return;
-//                    }
-//                    break;
-//                case 6://expecteddate
-//                    poJSON = oTrans.getMasterModel().setExpectedPurchaseDate(SQLUtil.toDate(lsValue, "yyyy-MM-dd"));
-//                    if ("error".equals((String) poJSON.get("result"))) {
-//                        System.err.println((String) poJSON.get("message"));
-//                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-//                        return;
-//                    }
-//                    txtField.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getExpectedPurchaseDate()));
-//                    break;
-
-            }
-        } else {
-
-            switch (lnIndex) {
-                case 2:
-                    txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getTransactionDate(), "yyyy-MM-dd"));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-//                case 6:
-//                    txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getExpectedPurchaseDate(), "yyyy-MM-dd"));
-//                    if ("error".equals((String) poJSON.get("result"))) {
-//                        System.err.println((String) poJSON.get("message"));
-//                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-//                        return;
-//                    }
-//                    break;
-            }
-
-        }
-
-        txtField.selectAll();
-        pnIndex = lnIndex;
-    };
-
-    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
-        if (!pbLoaded) {
-            return;
-        }
-
-        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
-        String lsValue = txtField.getText();
-
-        if (lsValue == null) {
-            return;
-        }
-
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lnIndex) {
-                case 7:
-                    poJSON = oTrans.getMasterModel().setRemarks(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-            }
-        } else {
-            txtField.selectAll();
-        }
-        pnIndex = lnIndex;
-    };
-
-    final ChangeListener<? super Boolean> txtDetail_Focus = (o, ov, nv) -> {
-        if (!pbLoaded) {
-            return;
-        }
-
-        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(txtField.getId().substring(9, 11));
-        String lsValue = txtField.getText();
-        pnIndex = lnIndex;
-        if (lsValue == null) {
-            return;
-        }
-
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lnIndex) {
-                case 2:
-                    String lsStockID = (String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx");
-                    if (lsStockID == null || lsStockID.isEmpty()) {
-                        if (txtField.getText().length() > 128) {
-                            ShowMessageFX.Warning("Max characters for `Descript` exceeds the limit.", pxeModuleName, "Please verify your entry.");
-                            txtField.requestFocus();
-                            return;
-                        }
-                        poJSON = oTrans.setDetail(pnDetailRow, "sDescript", lsValue);
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
-                            return;
-                        }
-                    }
-
-                    loadTableDetail();
-                    break;
-
-                case 7:
-                    /*this must be numeric*/
-                    int x = 0;
-                    try {
-
-                        x = Integer.valueOf(lsValue);
-                        if (x > 999999) {
-                            x = 0;
-
-                            ShowMessageFX.Warning("Please input not greater than 999999", pxeModuleName, "");
-                            txtField.requestFocus();
-                        }
-                    } catch (Exception e) {
-                        ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
-                        txtField.requestFocus();
-                    }
-
-                    poJSON = oTrans.setDetail(pnDetailRow, "nQuantity", x);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-
-                    loadTableDetail();
-                    break;
-
-            }
-        } else {
-            txtField.selectAll();
-        }
-
-    };
-
-    private void initTextFields() {
+    
+        private void initTextFields() {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
@@ -665,9 +714,16 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
         txtField04.focusedProperty().addListener(txtField_Focus);
         txtField05.focusedProperty().addListener(txtField_Focus);
         txtField06.focusedProperty().addListener(txtField_Focus);
+        txtField07.focusedProperty().addListener(txtArea_Focus);
+        txtField08.focusedProperty().addListener(txtField_Focus);
+        txtField09.focusedProperty().addListener(txtField_Focus);
+        txtField10.focusedProperty().addListener(txtField_Focus);
+        txtField11.focusedProperty().addListener(txtField_Focus);
+        txtField12.focusedProperty().addListener(txtField_Focus);
+
         txtField99.focusedProperty().addListener(txtField_Focus);
         txtField98.focusedProperty().addListener(txtField_Focus);
-        txtField07.focusedProperty().addListener(txtArea_Focus);
+        txtField97.focusedProperty().addListener(txtField_Focus);
 
         txtDetail01.focusedProperty().addListener(txtDetail_Focus);
         txtDetail02.focusedProperty().addListener(txtDetail_Focus);
@@ -677,10 +733,10 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
         txtDetail06.focusedProperty().addListener(txtDetail_Focus);
         txtDetail07.focusedProperty().addListener(txtDetail_Focus);
 
-        /*textFields KeyPressed PROPERTY*/
-        txtField01.setOnKeyPressed(this::txtField_KeyPressed); // TransactionNo
+//      txtField01.setOnKeyPressed(this::txtField_KeyPressed); // TransactionNo
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField05.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField04.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField09.setOnKeyPressed(this::txtField_KeyPressed);
 
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
         txtField98.setOnKeyPressed(this::txtField_KeyPressed);
@@ -688,35 +744,273 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
 
         txtDetail01.setOnKeyPressed(this::txtDetail_KeyPressed);//barcode
         txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);
-//        txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);//description for clarification
-//        txtField10.setOnKeyPressed(this::txtField_KeyPressed);
-
     }
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         oTrans = new PurchaseOrder(oApp, false);
         oTrans.setTransactionStatus("12340");
 
         initTextFields();
-//        initDetailsGrid();
-//        clearFields();
+        initDetailsGrid();
+        clearFields();
 
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
         pbLoaded = true;
     }
+    
+        private void initButton(int fnValue) {
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
+// Manage visibility and managed state of buttons
+        btnCancel.setVisible(lbShow);
+        btnCancel.setManaged(lbShow);
+
+
+// Manage visibility and managed state of other buttons
+        btnBrowse.setVisible(!lbShow);
+        btnPrint.setVisible(!lbShow);
+        btnClose.setVisible(!lbShow);
+        btnBrowse.setManaged(!lbShow);
+        btnPrint.setManaged(!lbShow);
+        btnClose.setManaged(!lbShow);
+
+    }
+    private void clearFields() {
+        txtField01.clear();
+        txtField02.clear();
+        txtField03.clear();
+        txtField04.clear();
+        txtField05.clear();
+        txtField06.clear();
+        txtField07.clear();
+        txtField08.clear();
+        txtField09.clear();
+        txtField10.clear();
+        txtField11.clear();
+        txtField12.clear();
+
+        txtField99.clear();
+        txtField98.clear();
+        txtField97.clear();
+
+        txtDetail01.clear();
+        txtDetail02.clear();
+        txtDetail03.clear();
+        txtDetail04.clear();
+        txtDetail05.clear();
+        txtDetail06.clear();
+        txtDetail07.clear();
+
+        psPrimary = "";
+        lblStatus.setText("UNKNOWN");
+
+        pnDetailRow = -1;
+        pnIndex = -1;
+
+        data.clear();
+
+    }
+
+ @FXML
+    void cmdButton_Click(ActionEvent event) {
+        String lsButton = ((Button) event.getSource()).getId();
+
+        switch (lsButton) {
+            case "btnBrowse":
+                if (pnIndex < 98) {
+                    pnIndex = 99;
+                }
+                poJSON = oTrans.searchTransaction("sTransNox", "", pnIndex == 99);
+                pnEditMode = EditMode.READY;
+                //start
+                if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                    txtField01.requestFocus();
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                } else {
+                    loadRecord();
+                }
+                break;
+
+            case "btnNew":
+                oTrans.setSavingStatus(true);
+
+                poJSON = oTrans.newTransaction();
+                Branch loCompanyID = oTrans.GetBranch(oApp.getBranchCode());
+
+                oTrans.setMaster("sCompnyID", loCompanyID.getModel().getCompanyID());
+                oTrans.getMasterModel().setDiscount(0.00);
+                oTrans.getMasterModel().setAddDiscount(0.00);
+                oTrans.getMasterModel().setTransactionTotal(0.00);
+                loadRecord();
+                pnEditMode = oTrans.getMasterModel().getEditMode();
+                oTrans.setTransactionStatus("12340");
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+
+                break;
+            case "btnUpdate":
+                oTrans.setSavingStatus(true);
+                poJSON = oTrans.updateTransaction();
+                pnEditMode = oTrans.getMasterModel().getEditMode();
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                break;
+            case "btnPrint":
+                poJSON = oTrans.printRecord();
+                if ("error".equals((String) poJSON.get("result"))) {
+                    Assert.fail((String) poJSON.get("message"));
+                }
+
+                break;
+            case "btnClose":
+                unloadForm appUnload = new unloadForm();
+                if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                    appUnload.unloadForm(MainAnchorPane, oApp, pxeModuleName);
+
+                } else {
+                    return;
+                }
+
+                break;
+            case "btnFindSource":
+                if (pnIndex > 3 || pnIndex < 1) {
+                    pnIndex = 1;
+                }
+                switch (pnIndex) {
+                    case 2:
+                        /* Barcode & Description */
+                        poJSON = oTrans.searchDetail(pnDetailRow, 3, (pnIndex == 1) ? txtDetail01.getText() : "", pnIndex == 1);
+//                        System.out.println("poJson Result = " + poJSON.toJSONString());
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+
+                        loadTableDetail();
+                        break;
+                }
+                break;
+
+            case "btnSearch":
+                if (pnIndex > 3 || pnIndex < 1) {
+                    pnIndex = 1;
+                }
+                switch (pnIndex) {
+                    case 1:
+                    case 2:
+                        /* Barcode & Description */
+                        poJSON = oTrans.searchDetail(pnDetailRow, 3, (pnIndex == 1) ? txtDetail01.getText() : "", pnIndex == 1);
+//                        System.out.println("poJson Result = " + poJSON.toJSONString());
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+
+                        loadTableDetail();
+                        break;
+                }
+                break;
+            case "btnSave":
+
+                poJSON = oTrans.getMasterModel().setModifiedBy(oApp.getUserID());
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                poJSON = oTrans.getMasterModel().setModifiedDate(oApp.getServerDate());
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                }
+                poJSON = oTrans.saveTransaction();
+
+                pnEditMode = oTrans.getMasterModel().getEditMode();
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+
+                } else {
+                    oTrans = new PurchaseOrder(oApp, true);
+                    pbLoaded = true;
+                    oTrans.setTransactionStatus("12340");
+                    pnEditMode = EditMode.UNKNOWN;
+                    clearFields();
+                    ShowMessageFX.Information(null, pxeModuleName, "Transaction successful Saved!");
+                }
+                break;
+            case "btnAddItem":
+                // Clearing fields
+                oTrans.setSavingStatus(true);
+                apMaster.setDisable(true);
+                if (oTrans.getDetailModel(pnDetailRow).getQuantity() > 0
+                        && !oTrans.getDetailModel(pnDetailRow).getStockID().isEmpty()) {
+                    poJSON = oTrans.AddModelDetail();
+                }
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    return;
+                }
+                pnDetailRow = oTrans.getItemCount() - 1;
+                loadTableDetail();
+                tblDetails.getSelectionModel().select(pnDetailRow + 1);
+                break;
+            case "btnRemoveItem":
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this item?") == true) {
+                    oTrans.RemoveModelDetail(pnDetailRow);
+                    pnDetailRow = oTrans.getItemCount() - 1;
+                    loadTableDetail();
+                    txtField04.requestFocus();
+                    oTrans.setSavingStatus(false);
+                }
+                break;
+            case "btnCancel":
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
+                    oTrans = new PurchaseOrder(oApp, true);
+                    oTrans.setTransactionStatus("12340");
+                    pbLoaded = true;
+                    pnEditMode = EditMode.UNKNOWN;
+                    clearFields();
+                    break;
+                } else {
+                    return;
+                }
+            default:
+                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                return;
+        }
+        initButton(pnEditMode);
+
+    }
+
+    @FXML
+    void tblDetails_Clicked(MouseEvent event) {
+        pnDetailRow = tblDetails.getSelectionModel().getSelectedIndex();
+        if (pnDetailRow >= 0) {
+            setSelectedDetail();
+        }
+
+    }
+
+    @Override
     public void setGRider(GRider foValue) {
-        oApp = foValue;
-    }
-
-    @FXML
-    private void cmdButton_Click(ActionEvent event) {
-    }
-
-    @FXML
-    private void tblDetails_Clicked(MouseEvent event) {
+     oApp = foValue;
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }
