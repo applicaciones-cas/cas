@@ -17,6 +17,7 @@ import org.guanzon.cas.inventory.stock.Inv_Request_SP_Without_ROQ;
 import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_MC_Approval;
 import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_SP_Approval;
 import org.guanzon.cas.inventory.stock.request.issuance.Inv_Request_SP_Issuance;
+import org.guanzon.cas.inventory.stock.request.purchase.Inv_Request_SP_Purchase;
 /**
  *
  * @author User
@@ -83,6 +84,18 @@ public class RequestControllerFactory {
                 return (RequestIssuanceController) new Inv_Request_MC(oApp, fbVal);
             case SP:
                 return (RequestIssuanceController) new Inv_Request_SP_Issuance(oApp, fbVal);
+            default:
+                return null;
+        }
+    }
+    public static RequestPurchaseController maakePurchase(RequestType foType, GRider oApp, boolean fbVal) {
+        switch (foType) {
+            case MC:
+                return (RequestPurchaseController) new Inv_Request_MC_Approval(oApp, fbVal);
+            case MP:
+                return (RequestPurchaseController) new Inv_Request_MC(oApp, fbVal);
+            case SP:
+                return (RequestPurchaseController) new Inv_Request_SP_Purchase(oApp, fbVal);
             default:
                 return null;
         }

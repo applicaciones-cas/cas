@@ -16,11 +16,14 @@ import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GTranDet;
 import org.guanzon.cas.inventory.base.InvMaster;
 import org.guanzon.cas.inventory.base.Inventory;
+import org.guanzon.cas.inventory.models.Model_Inv_Stock_Req_Cancel_Detail;
+import org.guanzon.cas.inventory.models.Model_Inv_Stock_Req_Cancel_Master;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Master;
 import org.guanzon.cas.inventory.stock.request.RequestController;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory.RequestType;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory.RequestCategoryType;
+import org.guanzon.cas.inventory.stock.request.cancel.InvRequestCancel;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Inv_Type;
 import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_SP_Detail;
@@ -307,8 +310,50 @@ public class Inv_Request_SP implements RequestController {
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
             }
+            
+            InvRequestCancel loCancel = new InvRequestCancel(poGRider, pbWthParent);
+            loCancel.setType(type);
+            loCancel.setCategoryType(category_type);
+            loCancel.setTransactionStatus(psTranStatus);
+            poJSON = loCancel.newTransaction();
+            
+            if ("error".equals((String) poJSON.get("result"))) {
+                return poJSON;
+            }
+            loCancel.getMasterModel().setBranchCode((String)poModelMaster.getBranchCode());
+            loCancel.getMasterModel().setCategoryCode((String)poModelMaster.getCategoryCode());
+            loCancel.getMasterModel().setTransaction(poGRider.getServerDate());
+            loCancel.getMasterModel().setOrderNumber(poModelMaster.getTransactionNumber());
+            loCancel.getMasterModel().setRemarks(poModelMaster.getRemarks());
+            loCancel.getMasterModel().setApproved(poModelMaster.getApproved());
+            loCancel.getMasterModel().setApprovedDate(poModelMaster.getApprovedDate());
+            loCancel.getMasterModel().setApproveCode(poModelMaster.getApproveCode());
 
+            for(int lnCtr = 0; lnCtr < poModelDetail.size(); lnCtr++){
+                loCancel.getDetailModel(lnCtr).setOrderNumber(poModelMaster.getTransactionNumber());
+                loCancel.getDetailModel(lnCtr).setStockID(poModelDetail.get(lnCtr).getStockID());
+                loCancel.getDetailModel(lnCtr).setBarcode(poModelDetail.get(lnCtr).getBarcode());
+                loCancel.getDetailModel(lnCtr).setQuantity(Integer.parseInt(poModelDetail.get(lnCtr).getQuantity().toString()));
+                loCancel.getDetailModel(lnCtr).setNotes(poModelDetail.get(lnCtr).getNotes());
+                
+                loCancel.AddModelDetail();
+            }
+            
+            
+            poJSON = loCancel.saveTransaction();
+            
+            if ("error".equals((String) poJSON.get("result"))) {
+                return poJSON;
+            }
+            
             poJSON = poModelMaster.saveRecord();
+            
+            if ("error".equals((String) poJSON.get("result"))) {
+                return poJSON;
+            }
+            
+            poJSON.put("result", "success");
+            poJSON.put("message", "Record successfully cancelled.");
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "error");
@@ -341,7 +386,8 @@ public class Inv_Request_SP implements RequestController {
         return poModelDetail.get(fnRow);
 
     }
-//    @Override
+
+    @Override
     public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModel() {
         return poModelDetail;
     }

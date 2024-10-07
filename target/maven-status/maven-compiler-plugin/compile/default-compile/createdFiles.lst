@@ -6,6 +6,7 @@ org\guanzon\cas\inventory\resultSet2XML\ModelInvHistLedger.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestDetail.class
 org\guanzon\cas\inventory\stock\Inv_Request_Without_ROQ.class
 org\guanzon\cas\inventory\stock\request\cancel\InvRequestCancel$1.class
+org\guanzon\cas\inventory\stock\request\purchase\Inv_Request_Purchase.class
 org\guanzon\cas\inventory\stock\request\RequestCancelController.class
 org\guanzon\cas\inventory\stock\request\RequestApprovalController.class
 org\guanzon\cas\inventory\stock\request\RequestController.class
@@ -24,6 +25,7 @@ org\guanzon\cas\inventory\resultSet2XML\ModelInvSerialLedger.class
 org\guanzon\cas\inventory\stock\request\RequestControllerFactory$RequestCategoryType.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestCancelMaster.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInvSerial.class
+org\guanzon\cas\inventory\stock\request\RequestPurchaseController.class
 org\guanzon\cas\inventory\stock\request\RequestControllerFactory$RequestType.class
 org\guanzon\cas\inventory\stock\Inv_Request_MC.class
 org\guanzon\cas\inventory\stock\Inv_Request_SP.class
@@ -42,6 +44,7 @@ org\guanzon\cas\inventory\resultSet2XML\ModelCategory3.class
 org\guanzon\cas\inventory\base\InvLedger.class
 org\guanzon\cas\inventory\stock\request\cancel\InvRequestCancel.class
 org\guanzon\cas\inventory\stock\request\RequestControllerFactory$1.class
+org\guanzon\cas\inventory\stock\request\purchase\Inv_Request_SP_Purchase.class
 org\guanzon\cas\inventory\base\InventorySubUnit.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInvLedger.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestCancelDetail.class

@@ -15,6 +15,7 @@ import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
+import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GTranDet;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Req_Cancel_Detail;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Req_Cancel_Master;
@@ -99,9 +100,13 @@ public class InvRequestCancel implements GTranDet {
         if ("error".equals((String) poJSON.get("result"))) {
             return poJSON;
         }
-
-        OpenModelDetail(poModelMaster.getTransactionNumber());
-
+        
+        poJSON = OpenModelDetail(poModelMaster.getTransactionNumber());
+        if ("error".equals((String) poJSON.get("result"))) {
+            return poJSON;
+        }
+        
+        pnEditMode = EditMode.READY;
         return poJSON;
 
     }
@@ -114,6 +119,10 @@ public class InvRequestCancel implements GTranDet {
             poJSON.put("message", "Invalid edit mode.");
             return poJSON;
         }
+        
+        if ("error".equals((String) isProcessed("update").get("result"))) {
+            return poJSON;
+        }
         pnEditMode = EditMode.UPDATE;
         poJSON.put("result", "success");
         poJSON.put("message", "Update mode success.");
@@ -122,7 +131,6 @@ public class InvRequestCancel implements GTranDet {
 
     @Override
     public JSONObject saveTransaction() {
-
         poJSON = new JSONObject();
         if (!pbWthParent) {
             poGRider.beginTrans();
@@ -135,7 +143,6 @@ public class InvRequestCancel implements GTranDet {
             return poJSON;
         }
         poJSON = SaveDetail();
-
         if ("error".equals((String) poJSON.get("result"))) {
             restoreData();
             if (!pbWthParent) {
@@ -153,13 +160,10 @@ public class InvRequestCancel implements GTranDet {
             if (!pbWthParent) {
                 poGRider.rollbackTrans();
             }
-
             restoreData();
-
             poJSON.put("result", "error");
             poJSON.put("message", "Unable to Save Transaction.");
         }
-
         return poJSON;
     }
 
@@ -171,7 +175,6 @@ public class InvRequestCancel implements GTranDet {
     @Override
     public JSONObject closeTransaction(String fsValue) {
         poJSON = new JSONObject();
-
         if (poModelMaster.getEditMode() == EditMode.READY
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
 
@@ -196,6 +199,30 @@ public class InvRequestCancel implements GTranDet {
             poJSON = poModelMaster.setTransactionStatus(TransactionStatus.STATE_CLOSED);
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
+            }
+            
+            if (poGRider.getUserLevel() < UserRight.SUPERVISOR) {
+                JSONObject loJSON =  ShowDialogFX.getUserApproval(poGRider);
+                if ("success".equals((String) loJSON.get("result"))) {
+                    if ((int) loJSON.get("nUserLevl") < UserRight.SUPERVISOR) {
+                        restoreData();
+                        poJSON.put("result", "error");
+                        poJSON.put("message","Only managerial accounts can approved transactions.(Authentication failed!!!)");
+                        return poJSON;
+                    }
+                    System.out.println("loJSON = " + loJSON.toJSONString());
+                    poModelMaster.setApproved((String)loJSON.get("sUserIDxx"));
+                    poModelMaster.setApprovedDate(poGRider.getServerDate());
+    //                            poModelMaster.setApproveCode();
+                }else{
+                    restoreData();
+                    poJSON.put("result", "error");
+                    poJSON.put("message","Seek Manager's Approval for this Stock Request!.(Authentication required!!!)");
+                    return poJSON;
+                }
+            }else{
+                poModelMaster.setApproved(poGRider.getUserID());
+                poModelMaster.setApprovedDate(poGRider.getServerDate());
             }
 //            poJSON = transactRequest();
             if (getItemCount() >= 1) {
@@ -254,9 +281,9 @@ public class InvRequestCancel implements GTranDet {
     @Override
     public JSONObject postTransaction(String fsValue) {
         poJSON = new JSONObject();
-
         if (poModelMaster.getEditMode() == EditMode.READY
                 || poModelMaster.getEditMode() == EditMode.UPDATE) {
+
             if ("error".equals((String) isProcessed("post").get("result"))) {
                 return poJSON;
             }
@@ -273,10 +300,36 @@ public class InvRequestCancel implements GTranDet {
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
             }
+            
+            if (poGRider.getUserLevel() < UserRight.SUPERVISOR) {
+                JSONObject loJSON =  ShowDialogFX.getUserApproval(poGRider);
+                if ("success".equals((String) loJSON.get("result"))) {
+                    if ((int) loJSON.get("nUserLevl") < UserRight.SUPERVISOR) {
+                        restoreData();
+                        poJSON.put("result", "error");
+                        poJSON.put("message","Only managerial accounts can approved transactions.(Authentication failed!!!)");
+                        return poJSON;
+                    }
+                    System.out.println("loJSON = " + loJSON.toJSONString());
+                    poModelMaster.setApproved((String)loJSON.get("sUserIDxx"));
+                    poModelMaster.setApprovedDate(poGRider.getServerDate());
+    //                            poModelMaster.setApproveCode();
+                }else{
+                    restoreData();
+                    poJSON.put("result", "error");
+                    poJSON.put("message","Seek Manager's Approval for this Stock Request!.(Authentication required!!!)");
+                    return poJSON;
+                }
+            }else{
+                poModelMaster.setApproved(poGRider.getUserID());
+                poModelMaster.setApprovedDate(poGRider.getServerDate());
+            }
+//            poJSON = transactRequest();
             if (getItemCount() >= 1) {
                 for (int lnCtr = 0; lnCtr <= getItemCount() - 1; lnCtr++) {
                     poModelDetail.get(lnCtr).setTransactionNumber(poModelMaster.getTransactionNumber());
                     poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
+
                     int lnQty = Integer.parseInt(poModelDetail.get(lnCtr).getQuantity().toString());
                     poJSON = updateRequestDetail(poModelDetail.get(lnCtr).getStockID(), lnQty);
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -289,30 +342,31 @@ public class InvRequestCancel implements GTranDet {
                     poJSON.put("message", "Record save successfully");
 
                 }
-//                poJSON = poRequest.openTransaction(poModelMaster.getOrderNumber());
-//                if ("error".equals((String) poJSON.get("result"))) {
-//                    if (!pbWthParent) {
-//                        poGRider.rollbackTrans();
-//                    }
-//                    return poJSON;
-//                }
-//                if (getItemCount() == poRequest.getItemCount()) {
-//                    poRequest.getMasterModel().setTransactionStatus(TransactionStatus.STATE_CANCELLED);
-//                    poJSON = poRequest.getMasterModel().saveRecord();
-//                    if ("error".equals((String) poJSON.get("result"))) {
-//                        if (!pbWthParent) {
-//                            poGRider.rollbackTrans();
-//                        }
-//                        return poJSON;
-//                    }
-//                }
-
+                poJSON = poRequest.openTransaction(poModelMaster.getOrderNumber());
+                if ("error".equals((String) poJSON.get("result"))) {
+                    if (!pbWthParent) {
+                        poGRider.rollbackTrans();
+                    }
+                    return poJSON;
+                }
+                if (getItemCount() == poRequest.getItemCount()) {
+                    poRequest.getMasterModel().setTransactionStatus(TransactionStatus.STATE_CANCELLED);
+                    poJSON = poRequest.getMasterModel().saveRecord();
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        if (!pbWthParent) {
+                            poGRider.rollbackTrans();
+                        }
+                        return poJSON;
+                    }
+                }
             } else {
                 poJSON.put("result", "error");
                 poJSON.put("message", "Unable to Save empty Transaction.");
                 return poJSON;
             }
-
+            if ("error".equals((String) poJSON.get("result"))) {
+                return poJSON;
+            }
             poModelMaster.setEntryNumber(poModelDetail.size());
 
             poJSON = poModelMaster.saveRecord();
@@ -1011,8 +1065,11 @@ public class InvRequestCancel implements GTranDet {
     }
 
     private JSONObject updateRequestDetail(String lsStockID, int fnQty) {
+        poRequest = new Inv_Request(poGRider, false);
+        poRequest.setType(type);
+        poRequest.setCategoryType(category_type);
         poJSON = poRequest.OpenModelDetailByStockID(poModelMaster.getOrderNumber(), lsStockID);
-
+        System.out.println("poJSON = " + poJSON);
         if ("error".equals((String) poJSON.get("result"))) {
             if (!pbWthParent) {
                 poGRider.rollbackTrans();
@@ -1134,7 +1191,6 @@ public class InvRequestCancel implements GTranDet {
             // Check if StockID or Barcode is empty
 
                 int lnQty = Integer.parseInt(poModelDetail.get(lnCtr).getQuantity().toString());
-                System.out.println(lnQty);
                 if (poModelDetail.get(lnCtr).getStockID().isEmpty() || poModelDetail.get(lnCtr).getBarcode().isEmpty()) {
                     // Remove the empty record
                     poModelDetail.remove(lnCtr);
@@ -1152,8 +1208,9 @@ public class InvRequestCancel implements GTranDet {
                 poJSON.put("message", "Quantities are currently set to 0. Update them to continue.");
                 return poJSON;
             }
-
+            System.out.println(getItemCount());
             for (int lnCtr = 0; lnCtr <= getItemCount() - 1; lnCtr++) {
+                System.out.println("getStockID() = " + poModelDetail.get(lnCtr).getStockID());
                 poModelDetail.get(lnCtr).setTransactionNumber(poModelMaster.getTransactionNumber());
                 poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
                 poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
