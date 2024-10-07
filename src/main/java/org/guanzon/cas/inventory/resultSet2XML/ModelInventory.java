@@ -17,10 +17,10 @@ public class ModelInventory {
     public static void main (String [] args){
         String path;
         if(System.getProperty("os.name").toLowerCase().contains("win")){
-            path = "D:/GGC_Java_Systems";
+            path = "D:/GGC_Maven_Systems";
         }
         else{
-            path = "/srv/GGC_Java_Systems";
+            path = "/srv/GGC_Maven_Systems";
         }
         System.setProperty("sys.default.path.config", path);
 
@@ -47,9 +47,9 @@ public class ModelInventory {
                             ", a.sCategCd2" +
                             ", a.sCategCd3" +
                             ", a.sCategCd4" +
-                            ", a.sBrandCde" +
-                            ", a.sModelCde" +
-                            ", a.sColorCde" +
+                            ", a.sBrandIDx" +
+                            ", a.sModelIDx" +
+                            ", a.sColorIDx" +
                             ", a.sMeasurID" +
                             ", a.sInvTypCd" +
                             ", a.nUnitPrce" +
@@ -75,7 +75,7 @@ public class ModelInventory {
                             ", d.sDescript xCategNm3" +
                             ", e.sDescript xCategNm4" +
                             ", f.sDescript xBrandNme" +
-                            ", g.sModelNme xModelNme" +
+                            ", g.sDescript xModelNme" +
                             ", g.sDescript xModelDsc" +
                             ", h.sDescript xColorNme" +
                             ", i.sMeasurNm xMeasurNm" +
@@ -83,14 +83,14 @@ public class ModelInventory {
                             ", k.sBarCodex xSuperCde" +
                             ", k.sDescript xSuperDsc" +
                             ", c.sMainCatx xMainCatx" +
-                        " FROM " + System.getProperty("sys.table") + " a"+ 
+                        " FROM Inventory a"+ 
                             " LEFT JOIN Category b ON a.sCategCd1 = b.sCategrCd" +
                             " LEFT JOIN Category_Level2 c ON a.sCategCd2 = c.sCategrCd" +
-                            " LEFT JOIN Category_Level3 d ON a.sCategCd3 = c.sCategrCd" +
-                            " LEFT JOIN Category_Level4 e ON a.sCategCd4 = c.sCategrCd" +
-                            " LEFT JOIN Brand f ON a.sBrandCde = f.sBrandCde" +
-                            " LEFT JOIN Model g ON a.sModelCde = g.sModelCde" +
-                            " LEFT JOIN Color h ON a.sColorCde = h.sColorCde" +
+                            " LEFT JOIN Category_Level3 d ON a.sCategCd3 = d.sCategrCd" +
+                            " LEFT JOIN Category_Level4 e ON a.sCategCd4 = e.sCategrCd" +
+                            " LEFT JOIN Brand f ON a.sBrandIDx = f.sBrandIDx" +
+                            " LEFT JOIN Model g ON a.sModelIDx = g.sModelIDx" +
+                            " LEFT JOIN Color h ON a.sColorIDx = h.sColorIDx" +
                             " LEFT JOIN Measure i ON a.sMeasurID = i.sMeasurID" +
                             " LEFT JOIN Inv_Type j ON c.sInvTypCd = j.sInvTypCd" +
                             " LEFT JOIN Inventory k ON a.sSupersed = k.sStockIDx" ;

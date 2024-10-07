@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
@@ -54,6 +56,9 @@ public class InventoryTrans implements GTransaction{
     private final String pxeLastTran = "2018-10-01";
     private final String pxeModuleName = "InventoryTrans";
     
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    Date date;
     public InventoryTrans(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
@@ -459,7 +464,11 @@ public class InventoryTrans implements GTransaction{
                                     int fnUpdateMode){
         psSourceCd = InvConstants.BRANCH_ORDER_CONFIRM;
         psSourceNo = fsSourceNo;
-        pdTransact = fdTransDate;
+        try {
+            pdTransact = dateFormat.parse(String.valueOf(fdTransDate));
+        } catch (ParseException ex) {
+            Logger.getLogger(InventoryTrans.class.getName()).log(Level.SEVERE, null, ex);
+        }
         pnEditMode = fnUpdateMode;
     
         return saveTransaction();
@@ -735,6 +744,7 @@ public class InventoryTrans implements GTransaction{
                             ", b.dTransact dLastTran" +
                             ", a.sStockIDx" +
                             ", a.sWHouseID" + 
+                            ", a.sLocatnID" + 
                             ", b.dExpiryxx" + 
                         " FROM Inv_Master a" +
                             " LEFT JOIN Inv_Ledger b" + 
@@ -768,6 +778,7 @@ public class InventoryTrans implements GTransaction{
 
                     poModelProcessd.get(lnRow).setRecdStat(RecordStatus.ACTIVE);
                     poModelProcessd.get(lnRow).setWareHouseID("");
+                    poModelProcessd.get(lnRow).setLocationID("");
                 } else {
                     try {
                         loRS.first();
@@ -779,6 +790,7 @@ public class InventoryTrans implements GTransaction{
                         poModelProcessd.get(lnRow).setFloatQty(loRS.getDouble("nFloatQty"));
                         poModelProcessd.get(lnRow).setRecdStat(loRS.getString("cRecdStat"));
                         poModelProcessd.get(lnRow).setWareHouseID((loRS.getString("sWHouseID")==null)?"":loRS.getString("sWHouseID"));
+                        poModelProcessd.get(lnRow).setLocationID((loRS.getString("sLocatnID")==null)?"":loRS.getString("sLocatnID"));
 //                        poModelProcessd.get(lnRow).setExpiryDate(loRS.getDate("dExpiryxx").toString());
                         
                         if (loRS.getDate("dAcquired") != null) poModelProcessd.get(lnRow).setAcquiredDate(loRS.getDate("dAcquired"));
@@ -1081,7 +1093,7 @@ public class InventoryTrans implements GTransaction{
                 lsMasSQL = "INSERT INTO Inv_Master SET" +
                                 "  sStockIDx = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getStockID()) +
                                 ", sBranchCd = " + SQLUtil.toSQL(psBranchCd) +
-                                ", sLocatnCd = " + SQLUtil.toSQL("") +
+                                ", sLocatnID = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getLocationID()) +
                                 ", nBinNumbr = " + 0 +
                                 ", nBegQtyxx = " + 0 +
                                 ", nQtyOnHnd = " + poModelProcessd.get(lnCtr).getQuantityIn() +
@@ -1145,7 +1157,8 @@ public class InventoryTrans implements GTransaction{
                                 lsMasSQL + 
                                 ", nLedgerNo = " + lnLedgerNo + 
 //                                ", dLastTran = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getExpiryDate()) +
-                                ", dLastTran = " + SQLUtil.toSQL(poModel.get(lnCtr).getExpiryDate()) +
+                                ", dLastTran = " + SQLUtil.toSQL((poModelProcessd.get(lnCtr).getExpiryDate().toString().isEmpty()?poGRider.getServerDate():poModelProcessd.get(lnCtr).getExpiryDate())) +
+//                                ", dLastTran = " + SQLUtil.toSQL(poModel.get(lnCtr).getExpiryDate()) +
                                 ", dModified = " + SQLUtil.toSQL(poGRider.getServerDate()) + 
                             " WHERE sStockIDx = " + SQLUtil.toSQL(poModelProcessd.get(lnCtr).getStockID()) + 
                                 " AND sBranchCd = " + SQLUtil.toSQL(psBranchCd);

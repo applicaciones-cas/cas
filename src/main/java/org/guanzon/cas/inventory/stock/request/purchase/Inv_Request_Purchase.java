@@ -1,26 +1,30 @@
-package org.guanzon.cas.inventory.stock;
+package org.guanzon.cas.inventory.stock.request.purchase;
 
+import org.guanzon.cas.inventory.stock.request.issuance.*;
+import org.guanzon.cas.inventory.stock.request.approval.*;
+import org.guanzon.cas.inventory.stock.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Master;
-import org.guanzon.cas.inventory.stock.request.RequestController;
+import org.guanzon.cas.inventory.stock.request.RequestIssuanceController;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
+import org.guanzon.cas.inventory.stock.request.RequestPurchaseController;
 import org.json.simple.JSONObject;
 
 /**
  *
  * @author Unclejo
  */
-public class Inv_Request implements RequestController  {
+public class Inv_Request_Purchase implements RequestPurchaseController  {
 
     GRider poGRider;
     boolean pbWthParent;
     int pnEditMode;
     String psTranStatus;
-    RequestController poTrans;
+    RequestIssuanceController poTrans;
     RequestControllerFactory factory = new RequestControllerFactory();
         
     RequestControllerFactory.RequestType type; // Example type
@@ -28,8 +32,7 @@ public class Inv_Request implements RequestController  {
 
     private boolean p_bWithUI = true;
     JSONObject poJSON;
-    
-    // Get the appropriate controller
+
     /**
      *
      * @param types
@@ -37,7 +40,7 @@ public class Inv_Request implements RequestController  {
     @Override
     public void setType(RequestControllerFactory.RequestType types){
         type = types;
-        poTrans = factory.make(type, poGRider, p_bWithUI);
+        poTrans = factory.makeIssuance(type, poGRider, p_bWithUI);
         poTrans.setType(type);
         
     }
@@ -53,7 +56,7 @@ public class Inv_Request implements RequestController  {
         p_bWithUI = fbValue;
 
     }
-    public Inv_Request(GRider foGRider, boolean fbWthParent) {
+    public Inv_Request_Purchase(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
         
@@ -62,7 +65,7 @@ public class Inv_Request implements RequestController  {
 
     @Override
     public int getItemCount() {
-       return poTrans.getItemCount();
+        return poTrans.getItemCount();
     }
 
     @Override
@@ -78,7 +81,6 @@ public class Inv_Request implements RequestController  {
     @Override
     public JSONObject setDetail(int fnRow, String fsCol, Object foData) {
         return poTrans.setDetail(fnRow, fsCol, foData);
-        
     }
 
     @Override
@@ -87,9 +89,8 @@ public class Inv_Request implements RequestController  {
     }
 
     @Override
-    public JSONObject searchDetail(int fnRow, int fnCol, String fsValue, boolean bln)  {
+    public JSONObject searchDetail(int fnRow, int fnCol, String fsValue, boolean bln) {
         return poTrans.searchDetail(fnRow, fnCol, fsValue, bln);
-        
     }
 
     @Override
@@ -98,8 +99,8 @@ public class Inv_Request implements RequestController  {
     }
 
     @Override
-    public JSONObject openTransaction(String string) {
-        return poTrans.openTransaction(string);
+    public JSONObject openTransaction(String fsValue) {
+        return poTrans.openTransaction(fsValue);
     }
 
     @Override
@@ -113,23 +114,23 @@ public class Inv_Request implements RequestController  {
     }
 
     @Override
-    public JSONObject deleteTransaction(String string) {
-        return poTrans.deleteTransaction(string);
+    public JSONObject deleteTransaction(String fsValue) {
+        return poTrans.deleteTransaction(fsValue);
     }
 
     @Override
-    public JSONObject closeTransaction(String string) {
-        return poTrans.closeTransaction(string);
+    public JSONObject closeTransaction(String fsValue) {
+        return poTrans.closeTransaction(fsValue);
     }
 
     @Override
-    public JSONObject postTransaction(String string) {
-        return poTrans.postTransaction(string);
+    public JSONObject postTransaction(String fsValue) {
+        return poTrans.postTransaction(fsValue);
     }
 
     @Override
-    public JSONObject voidTransaction(String string) {
-        return poTrans.voidTransaction(string);
+    public JSONObject voidTransaction(String fsValue) {
+        return poTrans.voidTransaction(fsValue);
     }
 
     @Override
@@ -168,71 +169,28 @@ public class Inv_Request implements RequestController  {
     }
 
     @Override
-    public JSONObject setMaster(String fsCol, Object foData) {
-        return poTrans.setMaster(fsCol, foData);
-        
+    public JSONObject setMaster(String fsValue, Object foData) {
+        return poTrans.setMaster(fsValue, foData);
     }
 
     @Override
     public int getEditMode() {
         return poTrans.getEditMode();
     }
-    
+
     @Override
     public void setTransactionStatus(String fsValue) {
         poTrans.setTransactionStatus(fsValue);
     }
 
     @Override
-    public JSONObject OpenModelDetail(String fsTransNo) {
-        return poTrans.OpenModelDetail(fsTransNo);
-    }
-
-    @Override
-    public JSONObject SearchDetailRequest(String fsTransNo, String fsStockID) {
-        return poTrans.SearchDetailRequest(fsTransNo, fsStockID);
-    }
-
-    @Override
-    public JSONObject OpenModelDetailByStockID(String fsTransNo, String fsStockID) {
-        return poTrans.OpenModelDetailByStockID(fsTransNo, fsStockID);
-    }
-    @Override
-    public JSONObject AddModelDetail() {
-        return poTrans.AddModelDetail();
-    }
-
-    @Override
-    public void RemoveModelDetail(int fnRow) {
-        poTrans.RemoveModelDetail(fnRow);
-    }
-
-    @Override
     public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModel() {
-       return poTrans.getDetailModel();
+        return poTrans.getDetailModel();
     }
+
     @Override
-    public void cancelUpdate(){
+    public void cancelUpdate() {
         poTrans.cancelUpdate();
-    }
-
-    @Override
-    public JSONObject loadAllInventoryMinimumLevel() {
-        return poTrans.loadAllInventoryMinimumLevel();
-    }
-
-    @Override
-    public JSONObject setDetailOthers(int fnRow, String fsCol, Object foData) {
-        return poTrans.setDetailOthers(fnRow, fsCol, foData);
-    }
-
-    @Override
-    public JSONObject setDetailOthers(int fnRow, int fnCol, Object foData) {
-        return poTrans.setDetailOthers(fnRow, fnCol, foData);
-    }
-    @Override
-    public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModelOthers() {
-       return poTrans.getDetailModelOthers();
     }
     
 }

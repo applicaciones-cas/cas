@@ -8,13 +8,17 @@ import java.util.ArrayList;
 import org.guanzon.appdriver.iface.GTranDet;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Master;
+import org.guanzon.cas.parameters.Branch;
 import org.json.simple.JSONObject;
 
 /**
  *
  * @author User
  */
-public interface RequestController extends GTranDet  {
+public interface RequestIssuanceController extends GTranDet  {
+    
+    void setType(RequestControllerFactory.RequestType type);
+    void setCategoryType(RequestControllerFactory.RequestCategoryType type);
     
     /**
      *
@@ -219,41 +223,9 @@ public interface RequestController extends GTranDet  {
     @Override
     void setTransactionStatus(String fsValue);
     
-    
-    
-    JSONObject OpenModelDetail(String fsTransNo);
-    JSONObject SearchDetailRequest(String fsTransNo, String fsStockID);
-    JSONObject OpenModelDetailByStockID(String fsTransNo, String fsStockID);
-//    JSONObject deleteRecord(int fnEntryNox);
-    JSONObject AddModelDetail();
-    void RemoveModelDetail(int fnRow);
-    void setType(RequestControllerFactory.RequestType type);
-    void setCategoryType(RequestControllerFactory.RequestCategoryType type);
-    
     ArrayList<Model_Inv_Stock_Request_Detail> getDetailModel();
-    ArrayList<Model_Inv_Stock_Request_Detail> getDetailModelOthers();
-    void cancelUpdate();
-//    void checkType();
-    
-    //use for request with roq
-    JSONObject loadAllInventoryMinimumLevel();
-    
-    /**
-     *
-     * @param fnRow
-     * @param fsCol
-     * @param foData
-     * @return
-     */
-    JSONObject setDetailOthers(int fnRow, String fsCol, Object foData);
-
-    /**
-     *
-     * @param fnRow
-     * @param fsCol
-     * @param fsValue
-     * @param bln
-     * @return
-     */
-    JSONObject setDetailOthers(int fnRow, int fnCol, Object foData);
+     
+    ArrayList<Model_Inv_Stock_Request_Master> getMasterModelList();
+    public JSONObject LoadModelMasterList();
+    public void cancelUpdate();
 }

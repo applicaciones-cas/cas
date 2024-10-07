@@ -447,7 +447,7 @@ public class Inventory implements GRecord{
         else
             lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
 
-        System.out.print("this is lsSQL == " + lsSQL + "\n");
+        System.out.print("this is searchRecord == " + lsSQL + "\n");
 
         if(p_bWithUI){
             poJSON = ShowDialogFX.Search(poGRider,
@@ -502,19 +502,19 @@ public class Inventory implements GRecord{
                 lsCondition += ", " + SQLUtil.toSQL(Character.toString(psTranStatus.charAt(lnCtr)));
             }
 
-            lsCondition = "cRecdStat IN (" + lsCondition.substring(2) + ")";
+            lsCondition = "a.cRecdStat IN (" + lsCondition.substring(2) + ")";
         } else {
-            lsCondition = "cRecdStat = " + SQLUtil.toSQL(psTranStatus);
+            lsCondition = "a.cRecdStat = " + SQLUtil.toSQL(psTranStatus);
         }
-        String lsSQL = poModel.makeSelectSQL();
+        String lsSQL = poModel.getSQL();
 
         if (fbByCode)
-            lsSQL = MiscUtil.addCondition(lsSQL, "sBarCodex LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
         else
-            lsSQL = MiscUtil.addCondition(lsSQL, "sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
 
         lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
-        System.out.print("this is lsSQL == " + lsSQL + "\n");
+        System.out.print("this is searchRecordWithContition == " + lsSQL + "\n");
         
         if(p_bWithUI){
             poJSON = ShowDialogFX.Search(poGRider,
@@ -522,7 +522,7 @@ public class Inventory implements GRecord{
                     fsValue,
                     "Stock ID»Barcode»Name",
                     "sStockIDx»sBarCodex»sDescript",
-                    "sStockIDx»sBarCodex»sDescript",
+                    "a.sStockIDx»a.sBarCodex»a.sDescript",
                     fbByCode ? 1: 2);
 
             if (poJSON != null) {

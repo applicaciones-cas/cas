@@ -1,12 +1,13 @@
-package org.guanzon.cas.inventory.stock;
+package org.guanzon.cas.inventory.stock.request.approval;
 
+import org.guanzon.cas.inventory.stock.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Master;
-import org.guanzon.cas.inventory.stock.request.RequestController;
+import org.guanzon.cas.inventory.stock.request.RequestApprovalController;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
 import org.json.simple.JSONObject;
 
@@ -14,13 +15,13 @@ import org.json.simple.JSONObject;
  *
  * @author Unclejo
  */
-public class Inv_Request implements RequestController  {
+public class Inv_Request_Approval implements RequestApprovalController  {
 
     GRider poGRider;
     boolean pbWthParent;
     int pnEditMode;
     String psTranStatus;
-    RequestController poTrans;
+    RequestApprovalController poTrans;
     RequestControllerFactory factory = new RequestControllerFactory();
         
     RequestControllerFactory.RequestType type; // Example type
@@ -30,6 +31,7 @@ public class Inv_Request implements RequestController  {
     JSONObject poJSON;
     
     // Get the appropriate controller
+
     /**
      *
      * @param types
@@ -37,7 +39,7 @@ public class Inv_Request implements RequestController  {
     @Override
     public void setType(RequestControllerFactory.RequestType types){
         type = types;
-        poTrans = factory.make(type, poGRider, p_bWithUI);
+        poTrans = factory.makeApproval(type, poGRider, p_bWithUI);
         poTrans.setType(type);
         
     }
@@ -53,7 +55,7 @@ public class Inv_Request implements RequestController  {
         p_bWithUI = fbValue;
 
     }
-    public Inv_Request(GRider foGRider, boolean fbWthParent) {
+    public Inv_Request_Approval(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
         
@@ -184,55 +186,29 @@ public class Inv_Request implements RequestController  {
     }
 
     @Override
-    public JSONObject OpenModelDetail(String fsTransNo) {
-        return poTrans.OpenModelDetail(fsTransNo);
-    }
-
-    @Override
-    public JSONObject SearchDetailRequest(String fsTransNo, String fsStockID) {
-        return poTrans.SearchDetailRequest(fsTransNo, fsStockID);
-    }
-
-    @Override
-    public JSONObject OpenModelDetailByStockID(String fsTransNo, String fsStockID) {
-        return poTrans.OpenModelDetailByStockID(fsTransNo, fsStockID);
-    }
-    @Override
-    public JSONObject AddModelDetail() {
-        return poTrans.AddModelDetail();
-    }
-
-    @Override
-    public void RemoveModelDetail(int fnRow) {
-        poTrans.RemoveModelDetail(fnRow);
-    }
-
-    @Override
     public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModel() {
-       return poTrans.getDetailModel();
+        return poTrans.getDetailModel();
     }
+
     @Override
-    public void cancelUpdate(){
+    public ArrayList<Model_Inv_Stock_Request_Master> getMasterModelList() {
+        return poTrans.getMasterModelList();
+    }
+    
+    @Override
+    public JSONObject LoadModelMasterList() {
+        return poTrans.LoadModelMasterList();
+    }
+
+    @Override
+    public void cancelUpdate() {
         poTrans.cancelUpdate();
     }
 
     @Override
-    public JSONObject loadAllInventoryMinimumLevel() {
-        return poTrans.loadAllInventoryMinimumLevel();
+    public JSONObject BrowseRequest(String fsColumn, String fsValue, boolean fbByCode) {
+        return poTrans.BrowseRequest(fsColumn, fsValue, fbByCode);
     }
-
-    @Override
-    public JSONObject setDetailOthers(int fnRow, String fsCol, Object foData) {
-        return poTrans.setDetailOthers(fnRow, fsCol, foData);
-    }
-
-    @Override
-    public JSONObject setDetailOthers(int fnRow, int fnCol, Object foData) {
-        return poTrans.setDetailOthers(fnRow, fnCol, foData);
-    }
-    @Override
-    public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModelOthers() {
-       return poTrans.getDetailModelOthers();
-    }
+    
     
 }
