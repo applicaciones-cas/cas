@@ -51,9 +51,9 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class InvRequestCancellationSPController implements Initializable, ScreenInterface {
+public class InvRequestCancellationHistoryController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Inventory Request Cancel SP";
+    private final String pxeModuleName = "Inventory Request Cancellation History";
     private GRider oApp;
     private int pnEditMode;
     private InvRequestCancel oTrans;
@@ -87,7 +87,8 @@ public class InvRequestCancellationSPController implements Initializable, Screen
             btnDelItem,
             btnCancel,
             btnClose,
-            btnStatistic;
+            btnStatistic,
+            btnConfirm;
 
     @FXML
     private TextField txtField01,
@@ -100,7 +101,10 @@ public class InvRequestCancellationSPController implements Initializable, Screen
             txtField09,
             txtField10,
             txtField11,
-            txtField12;
+            txtField12,
+            txtField13,
+            txtField14,
+            txtField15;
 
     @FXML
     private DatePicker dpField01;
@@ -124,7 +128,9 @@ public class InvRequestCancellationSPController implements Initializable, Screen
             index07,
             index08,
             index09,
-            index10;
+            index10,
+            index11,
+            index12;
 
     /**
      * Initializes the controller class.
@@ -153,6 +159,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         btnBrowse.setOnAction(this::handleButtonAction);
         btnAddItem.setOnAction(this::handleButtonAction);
         btnDelItem.setOnAction(this::handleButtonAction);
+        btnConfirm.setOnAction(this::handleButtonAction);
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -194,7 +201,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                     System.out.println(poJSON.toJSONString());
                     if ("success".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information("Record saved successfully.", "Computerized Acounting System", pxeModuleName);
                         initTrans();
                         clearAllFields();
                         initTabAnchor();
@@ -204,22 +211,15 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                     }
                     break;
                 case "btnUpdate":
+                    
                     poJSON = oTrans.updateTransaction();
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         break;
                     }
 
-//                        poJSON = oTrans.AddModelDetail();
-//                        System.out.println(poJSON.toJSONString());
-//                        if ("error".equals((String) poJSON.get("result"))){
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            break;
-//                        }
                     pnEditMode = oTrans.getEditMode();
                     pnRow = oTrans.getDetailModel().size() - 1;
-//                        
-//                        System.out.println("pnRow sa update= " + pnRow);
                     loadItemData();
                     initButton(pnEditMode);
                     initTblDetails();
@@ -230,13 +230,14 @@ public class InvRequestCancellationSPController implements Initializable, Screen
 
                 case "btnBrowse":
                     clearAllFields();
-                    poJSON = oTrans.searchTransaction("sTransNox", "", true);
+                    poJSON = oTrans.searchTransaction("sTransNox", "", false);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         break;
                     }
                     pnEditMode = oTrans.getEditMode();
-                    R1data.clear();
+                    R1data.clear();                    
+                    
                     loadTransaction();
                     initTblDetails();
                     loadItemData();
@@ -281,7 +282,22 @@ public class InvRequestCancellationSPController implements Initializable, Screen
 
                     }
                     break;
+                case "btnConfirm":
+                    if (ShowMessageFX.YesNo("Are you sure you want to confirm this  record? Please verify the details before proceeding.", "Computerized Acounting System", pxeModuleName)) {
 
+                        poJSON = oTrans.postTransaction(oTrans.getMasterModel().getTransactionNumber());
+                            System.out.println(poJSON.toJSONString());
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
+                            }
+                            clearAllFields();
+                            initTrans();
+                            initTabAnchor();
+                        
+
+                    }
+                    break;
             }
         }
     }
@@ -292,7 +308,8 @@ public class InvRequestCancellationSPController implements Initializable, Screen
             // Text fields related to specific sections
             {txtField01, txtField03, txtField04,
                 txtField05, txtField06, txtField07, txtField08, txtField09,
-                txtField10, txtField11, txtField12},};
+                txtField10, txtField11, txtField12, txtField13,
+                txtField14, txtField15},};
 
 // Loop through each array of TextFields and clear them
         for (TextField[] fields : allFields) {
@@ -322,7 +339,10 @@ public class InvRequestCancellationSPController implements Initializable, Screen
             txtField09,
             txtField10,
             txtField11,
-            txtField12};
+            txtField12,
+            txtField13,
+            txtField14,
+            txtField15};
 
 // Add the listener to each text field in the focusTextFields array
         for (TextField textField : focusTextFields) {
@@ -330,9 +350,9 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         }
 
 // Define arrays for text fields with setOnKeyPressed handlers
-        TextField[] keyPressedTextFields = {
-            txtField03, txtField04, txtField05, txtField08, txtField09,
-            txtField11,};
+        TextField[] keyPressedTextFields = {txtField03, txtField04, txtField05, txtField08, txtField09,
+            txtField11, txtField15
+        };
 
 // Set the same key pressed event handler for each text field in the keyPressedTextFields array
         for (TextField textField : keyPressedTextFields) {
@@ -390,58 +410,60 @@ public class InvRequestCancellationSPController implements Initializable, Screen
 //                   oTrans.getModel().setBarcode(lsValue);
                     System.out.println("Reference No == " + lsValue);
                     break;
-                case 3:/*ORDER No*/
-//                   oTrans.getModel().setBarcode(lsValue);
-                    System.out.println("ORDER No == " + lsValue);
-                    break;
-                case 4:/*BARRCODE*/
+                case 4:/*ITEM DESCRIPTION*/
 //                   oTrans.getModel().setBriefDescription(lsValue);
-                    System.out.print("BARRCODE == ");
-                    break;
-                case 5:/*ITEM DESCRIPTION*/
-//                   oTrans.getModel().setDescription(lsValue);
                     System.out.print("ITEM DESCRIPTION == ");
                     break;
-                case 6:/*ON TRANSIT*/
+                case 5:/*CLASSIFY*/
+//                   oTrans.getModel().setDescription(lsValue);
+                    System.out.print("CLASSIFY == ");
+                    break;
+                case 6:/*RSVD ORDER*/
+//                   oTrans.getModel().setDescription(lsValue);
+                    System.out.print("RSVD ORDER == ");
+                    break;
+
+                case 7:/*ON TRANSIT*/
 //                   oTrans.getModel().setDescription(lsValue);
                     System.out.print("ON TRANSIT == ");
                     break;
 
-                case 7:/*ON HAND*/
+                case 8:/*AMC*/
 //                   oTrans.getModel().setDescription(lsValue);
-                    System.out.print("ON HAND == ");
+                    System.out.print("AMC == ");
                     break;
 
-                case 8:/*BACK ORDER*/
+                case 9:/*BACK ORDER*/
 //                   oTrans.getModel().setDescription(lsValue);
                     System.out.print("BACK ORDER == ");
                     break;
 
-                case 9:/*REQUEST*/
+                case 10:/*ON HAND*/
 //                   oTrans.getModel().setDescription(lsValue);
-                    System.out.print("REQUEST == ");
+                    System.out.print("ON HAND == ");
                     break;
 
-                case 10:/*ISSUED*/
+                case 11:/*SERIES ROQ*/
 //                   oTrans.getModel().setDescription(lsValue);
-                    System.out.print("ISSUED == ");
+                    System.out.print("SERIES ROQ == ");
                     break;
 
-                case 11:/*PO QTY*/
+                case 12:/*COLORE ROQ*/
 //                   oTrans.getModel().setDescription(lsValue);
-                    System.out.print("PO QTY == ");
+                    System.out.print("COLORE ROQ == ");
                     break;
 
-                case 12:/*QTY Cancel*/
-                  if (lsValue.matches("\\d*")) {
-                        int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
-                        oTrans.setDetail(pnRow, "nQuantity", qty);
-                        loadItemData();
-                        break;
-                    }else 
-                    ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
-                    txtField.setText("0");
-                    txtField.requestFocus();
+                case 13:/*MODEL ROQ*/
+//                   oTrans.getModel().setDescription(lsValue);
+                    System.out.print("MODEL ROQ == ");
+                    break;
+
+                case 15:/*QTY Cancel*/
+                    System.out.println("case 11 == " + lsValue);
+                    int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
+                    oTrans.setDetail(pnRow, "nQuantity", qty);
+                    System.out.println("QTY Request == " + oTrans.getDetailModel(pnRow).getQuantity() + "\n");
+//                    loadItemData();
                     break;
 
             }
@@ -474,7 +496,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                         txtField.setText(oTrans.getMasterModel().getOrderNumber());
                         txtArea01.requestFocus();
                         break;
-                    case 04:/*search desciption*/
+                    case 04:/*search barrcode*/
                         poJson = new JSONObject();
                         poJson = oTrans.searchDetail(pnRow, 3, lsValue, true);
                         System.out.println("poJson = " + poJson.toJSONString());
@@ -482,9 +504,8 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                             break;
                         }
-                        txtField12.requestFocus();
+                        txtField15.requestFocus();
                         break;
-
                     case 05:/*search desciption*/
                         poJson = new JSONObject();
                         poJson = oTrans.searchDetail(pnRow, 3, lsValue, false);
@@ -493,9 +514,10 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                             break;
                         }
-                        txtField12.requestFocus();
+                        txtField15.requestFocus();
                         break;
                 }
+//                loadDetails();
         }
         switch (event.getCode()) {
             case ENTER:
@@ -539,7 +561,6 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                         break;
                 }
             case ENTER:
-
         }
         switch (event.getCode()) {
             case ENTER:
@@ -556,13 +577,13 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
 // Manage visibility and managed state of buttons
-        btnCancel.setVisible(lbShow);
+        btnCancel.setVisible(!lbShow);
         btnSearch.setVisible(lbShow);
         btnSave.setVisible(lbShow);
         btnAddItem.setVisible(lbShow);
         btnDelItem.setVisible(lbShow);
 
-        btnCancel.setManaged(lbShow);
+        btnCancel.setManaged(!lbShow);
         btnSearch.setManaged(lbShow);
         btnSave.setManaged(lbShow);
         btnAddItem.setManaged(lbShow);
@@ -577,16 +598,16 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         btnNew.setManaged(!lbShow);
         btnUpdate.setManaged(!lbShow);
         btnClose.setManaged(!lbShow);
-
-        btnAddItem.setVisible(lbShow);
-        btnAddItem.setManaged(lbShow);
-        btnDelItem.setVisible(lbShow);
-        btnDelItem.setManaged(lbShow);
-        btnPrint.setVisible(false);
-        btnPrint.setManaged(false);
-
+//        btnVoid.setVisible(!lbShow);
+//        btnVoid.setManaged(!lbShow);
+        btnConfirm.setVisible(!lbShow);
+        btnConfirm.setManaged(!lbShow);
+        
+        btnNew.setVisible(false);
+        btnNew.setManaged(false);
+        btnUpdate.setVisible(false);
+        btnUpdate.setManaged(false);
     }
-
     private void initTblDetails() {
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
@@ -598,6 +619,8 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index09.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index10.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index11.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index12.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
 
         index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
@@ -609,6 +632,8 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         index08.setCellValueFactory(new PropertyValueFactory<>("index08"));
         index09.setCellValueFactory(new PropertyValueFactory<>("index09"));
         index10.setCellValueFactory(new PropertyValueFactory<>("index10"));
+        index11.setCellValueFactory(new PropertyValueFactory<>("index11"));
+        index12.setCellValueFactory(new PropertyValueFactory<>("index12"));
 
         tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");
@@ -617,7 +642,6 @@ public class InvRequestCancellationSPController implements Initializable, Screen
             });
         });
         tblDetails.setItems(R1data);
-        tblDetails.getSelectionModel().select(pnRow);
         tblDetails.autosize();
     }
 
@@ -628,6 +652,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
 
             txtField01.setText((String) oTrans.getMasterModel().getTransactionNumber());
             txtArea01.setText((String) oTrans.getMasterModel().getRemarks());
+            txtField03.setText((String) oTrans.getMasterModel().getOrderNumber());
 //            dpField01.setValue((Date) oTrans.getMasterModel().getTransaction());
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -673,17 +698,21 @@ public class InvRequestCancellationSPController implements Initializable, Screen
     private void loadDetails() {
         if (!oTrans.getDetailModel().isEmpty()) {
             System.out.println("getClassify = " + String.valueOf(oTrans.getDetailModel().get(pnRow).getClassify()));
-            txtField03.setText((String) oTrans.getMasterModel().getOrderNumber());
+//            txtField03.setText((String) oTrans.getDetailModel().get(pnRow).getOrderNumber());
             txtField04.setText((String) oTrans.getDetailModel().get(pnRow).getBarcode());
             txtField05.setText((String) oTrans.getDetailModel().get(pnRow).getDescription());
-            txtField06.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getOnTransit()));
-            txtField07.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantityOnHand()));
-            txtField08.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getBackOrder()));
-            txtField09.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantityRequest()));
-            txtField10.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getIssueQuantity()));
-            txtField11.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getOrderQuantity()));
-            txtField12.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantity()));
+            txtField06.setText(oTrans.getDetailModel().get(pnRow).getClassify());
+            txtField07.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getReservedOrder()));
+            txtField08.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getOnTransit()));
+            txtField09.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getAverageMonthlySalary()));
+            txtField10.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getBackOrder()));
+            txtField11.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantityOnHand()));
+            txtField12.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantityRequest()));
+            txtField13.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getIssueQuantity()));
+            txtField14.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getOrderQuantity()));
+            txtField15.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantity()));
             txtArea02.setText((String) oTrans.getDetailModel().get(pnRow).getNotes());
+//            txtField15.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantity()));
         }
     }
 
@@ -699,8 +728,10 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                         (String) oTrans.getDetailModel().get(lnCtr).getDescription(),
                         (oTrans.getDetailModel().get(lnCtr).getBrandName() == null ? "" : oTrans.getDetailModel().get(lnCtr).getBrandName()),
                         (oTrans.getDetailModel().get(lnCtr).getModelName() == null ? "" : oTrans.getDetailModel().get(lnCtr).getModelName()),
+                        (oTrans.getDetailModel().get(lnCtr).getModelDescription() == null ? "" : oTrans.getDetailModel().get(lnCtr).getModelDescription()),
+                        "",
+                        "",
                         (oTrans.getDetailModel().get(lnCtr).getColorName() == null ? "" : oTrans.getDetailModel().get(lnCtr).getColorName()),
-                        (oTrans.getDetailModel().get(lnCtr).getMeasureName() == null ? "" : oTrans.getDetailModel().get(lnCtr).getMeasureName()),
                         String.valueOf(oTrans.getDetailModel().get(lnCtr).getUnserve()),
                         String.valueOf(oTrans.getDetailModel().get(lnCtr).getQuantity())));
             }
@@ -713,7 +744,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
             pnRow = tblDetails.getSelectionModel().getSelectedIndex();
             System.out.println("pnRow = " + pnRow);
             loadDetails();
-            txtField12.requestFocus();
+            txtField15.requestFocus();
         }
         tblDetails.setOnKeyReleased((KeyEvent t) -> {
             KeyCode key = t.getCode();
@@ -741,11 +772,11 @@ public class InvRequestCancellationSPController implements Initializable, Screen
     }
 
     private void clearItem() {
-        txtArea02.clear();
         TextField[][] allFields = {
             // Text fields related to specific sections
             {txtField04, txtField04, txtField05, txtField06, txtField07,
-                txtField08, txtField09, txtField10, txtField11, txtField12},};
+                txtField08, txtField09, txtField10, txtField11, txtField12,
+                txtField13, txtField14, txtField15},};
 
         for (TextField[] fields : allFields) {
             for (TextField field : fields) {
@@ -753,14 +784,62 @@ public class InvRequestCancellationSPController implements Initializable, Screen
             }
         }
     }
+//oTrans.setType((System.getProperty("store.inventory.industry").equals("0001")?RequestControllerFactory.RequestType.MC:RequestControllerFactory.RequestType.MP));
+//   private void initTrans() {
+//    clearAllFields();
+//    oTrans = new Inv_Request(oApp, true);
+//
+//    String industryType = String.valueOf(System.getProperty("store.inventory.industry")).replace(";", "");
+//    RequestControllerFactory.RequestType requestType = null;
+//
+//    switch (industryType) {
+//        case "0001":
+//            requestType = RequestControllerFactory.RequestType.MC;
+//            break;
+//        case "0002":
+//            requestType = RequestControllerFactory.RequestType.MP;
+//            break;
+//        case "0003":
+////            requestType = RequestControllerFactory.RequestType.Auto;
+//            break;
+//        default:
+//            requestType = null; // Handle the default case if needed
+//            break;
+//    }
+//
+//    oTrans.setType(requestType);
+//    oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
+//    oTrans.setTransactionStatus("0123");
+//    pnEditMode = EditMode.UNKNOWN;
+//    initButton(pnEditMode);
+//}
 
     private void initTrans() {
+        Properties po_props = new Properties();
         clearAllFields();
-        oTrans = new InvRequestCancel(oApp, true);
-        oTrans.setType(RequestControllerFactory.RequestType.SP);
+        oTrans = new InvRequestCancel(oApp, false);
+        String industry = System.getProperty("store.inventory.industry");
+
+        RequestControllerFactory.RequestType types = null;
+        String[] category = industry.split(";");
+// Print the resulting array
+        for (String type : category) {
+            if (types == null) {
+                if ("0001".equals(type)) {
+                    types = RequestControllerFactory.RequestType.MC;
+                    oTrans.setType(types);
+                } else if ("0002".equals(type)) {
+                    types = RequestControllerFactory.RequestType.MP;
+                    oTrans.setType(types);
+                }
+
+                System.out.println("type value = " + types);
+            }
+        }
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
+
 }

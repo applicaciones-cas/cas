@@ -244,6 +244,8 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                     initTblDetails();
                     loadItemData();
                     initTabAnchor();
+                    tblDetails.getSelectionModel().select(0);
+                    loadDetails();
                     break;
 
                 case "btnAddItem":
@@ -388,7 +390,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                     System.out.print("TRANSACTION NO == ");
                     break;
                 case 2:/*Reference No*/
-//                   oTrans.getModel().setBarcode(lsValue);
+                    oTrans.getMasterModel().setReferenceNumber(lsValue);
                     System.out.println("Reference No == " + lsValue);
                     break;
                 case 3:/*BARRCODE*/
@@ -444,11 +446,15 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                     break;
 
                 case 14:/*QTY Request*/
-                    System.out.println("case 11 == " + lsValue);
-                    int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
-                    oTrans.getDetailModel().get(pnRow).setQuantity(qty);
-                    System.out.println("QTY Request == " + lsValue + "\n");
-                    loadItemData();
+                    if (lsValue.matches("\\d*")) {
+                        int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
+                        oTrans.getDetailModel().get(pnRow).setQuantity(qty);
+                        loadItemData();
+                        break;
+                    }else 
+                    ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
+                    txtField.setText("0");
+                    txtField.requestFocus();
                     break;
 
             }
@@ -614,8 +620,8 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                 || pnEditMode == EditMode.UPDATE) {
 
             txtField01.setText((String) oTrans.getMasterModel().getTransactionNumber());
+            txtField02.setText((String) oTrans.getMasterModel().getReferenceNumber()== null ? "": (String) oTrans.getMasterModel().getReferenceNumber());
             txtArea01.setText((String) oTrans.getMasterModel().getRemarks());
-//            dpField01.setValue((Date) oTrans.getMasterModel().getTransaction());
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

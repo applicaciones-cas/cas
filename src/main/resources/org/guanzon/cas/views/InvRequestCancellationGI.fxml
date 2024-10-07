@@ -226,7 +226,6 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Barrcode" GridPane.halignment="RIGHT">
@@ -248,7 +247,7 @@
                                                 </Text>
                                                 <TextField fx:id="txtField05" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="1" />
                                                 <Separator prefWidth="200.0" GridPane.columnSpan="7" GridPane.rowIndex="2" />
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Class" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="On Transit" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -257,7 +256,7 @@
                                                    </GridPane.margin>
                                                 </Text>
                                                 <TextField fx:id="txtField06" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Rsvd. Order" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="On Hand" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -266,7 +265,8 @@
                                                    </GridPane.margin>
                                                 </Text>
                                                 <TextField fx:id="txtField07" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="On Transit" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+                                                <TextField fx:id="txtField08" editable="false" styleClass="text-field" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Notes" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -274,8 +274,9 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <TextField fx:id="txtField08" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Notes" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                                                <TextArea fx:id="txtArea02" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5" GridPane.rowSpan="2" />
+                                                <TextField fx:id="txtField09" editable="false" styleClass="text-field" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Back Order" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -283,8 +284,9 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <TextArea fx:id="txtArea02" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" GridPane.rowSpan="2" />
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="AMC" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                                                <TextField fx:id="txtField10" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtField11" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Request" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -292,8 +294,8 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <TextField fx:id="txtField09" editable="false" styleClass="text-field" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Back Order" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                                                <TextField fx:id="txtField12" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.rowIndex="5" GridPane.rowSpan="2" />
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Issued" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -301,8 +303,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <TextField fx:id="txtField10" editable="false" styleClass="text-field" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="On Hand" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="PO Qty" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -310,35 +311,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <TextField fx:id="txtField11" editable="false" styleClass="text-field" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Request" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
-                                                <TextField fx:id="txtField12" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Issued" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
-                                                <TextField fx:id="txtField13" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.rowIndex="4" />
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="PO Qty" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                   <GridPane.margin>
-                                                      <Insets right="10.0" />
-                                                   </GridPane.margin>
-                                                </Text>
-                                                <TextField fx:id="txtField14" editable="false" styleClass="text-field" GridPane.columnIndex="5" GridPane.rowIndex="5" />
-                                                <Text fill="#f20000" strokeType="OUTSIDE" strokeWidth="0.0" text="Cancel" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.rowSpan="2">
+                                                <Text fill="#f20000" strokeType="OUTSIDE" strokeWidth="0.0" text="Cancel" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.rowSpan="2">
                                                    <font>
                                                       <Font name="System Bold" size="16.0" />
                                                    </font>
@@ -346,7 +319,6 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                 </Text>
-                                                <TextField fx:id="txtField15" styleClass="text-field" GridPane.columnIndex="5" GridPane.rowIndex="6" GridPane.rowSpan="2" />
                                                 <Button fx:id="btnStatistic" alignment="BASELINE_LEFT" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="141.0" styleClass="button_process" text="Show Statistics" textAlignment="JUSTIFY" wrapText="true" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="RIGHT">
                                                    <tooltip>
                                                       <Tooltip text="Show Statistics" />

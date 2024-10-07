@@ -241,11 +241,14 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
                         break;
                     }
                     pnEditMode = oTrans.getEditMode();
-                    R1data.clear();
+                    R1data.clear();                    
+                    System.out .println("cancel browse stat== " + pnEditMode);
                     loadTransaction();
                     initTblDetails();
                     loadItemData();
                     initTabAnchor();
+                    tblDetails.getSelectionModel().select(0);
+                    loadDetails();
                     break;
 
                 case "btnAddItem":
@@ -307,6 +310,7 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
         R1data.clear();
         txtArea01.clear();
         txtArea02.clear();
+        lblStatus.setText("UNKNOWN");        
     }
 
 
@@ -446,11 +450,15 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
                     break;
 
                 case 15:/*QTY Cancel*/
-                    System.out.println("case 11 == " + lsValue);
-                    int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
-                    oTrans.setDetail(pnRow, "nQuantity", qty);
-                    System.out.println("QTY Request == " + oTrans.getDetailModel(pnRow).getQuantity() + "\n");
-//                    loadItemData();
+                    if (lsValue.matches("\\d*")) {
+                        int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
+                        oTrans.setDetail(pnRow, "nQuantity", qty);
+                        loadItemData();
+                        break;
+                    }else 
+                    ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
+                    txtField.setText("0");
+                    txtField.requestFocus();
                     break;
 
             }
@@ -483,7 +491,7 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
                         txtField.setText(oTrans.getMasterModel().getOrderNumber());
                         txtArea01.requestFocus();
                         break;
-                    case 04:/*search desciption*/
+                    case 04:/*search barrcode*/
                         poJson = new JSONObject();
                         poJson = oTrans.searchDetail(pnRow, 3, lsValue, true);
                         System.out.println("poJson = " + poJson.toJSONString());
@@ -493,7 +501,6 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
                         }
                         txtField15.requestFocus();
                         break;
-
                     case 05:/*search desciption*/
                         poJson = new JSONObject();
                         poJson = oTrans.searchDetail(pnRow, 3, lsValue, false);
@@ -529,7 +536,7 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
         anchorDetails.setDisable(!pbValue);
         anchorTable.setDisable(!pbValue);
         if (pnEditMode == EditMode.READY) {
-            anchorTable.setDisable(false);
+            anchorTable.setDisable(false);            
             btnStatistic.setDisable(false);
         }
     }

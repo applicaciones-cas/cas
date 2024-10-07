@@ -238,6 +238,8 @@ public class InvRequestHistoryGIController implements Initializable, ScreenInter
                     initTblDetails();
                     loadItemData();
                     initTabAnchor();
+                    tblDetails.getSelectionModel().select(0);
+                    loadDetails();
                     break;
 
                 case "btnAddItem":
@@ -267,14 +269,31 @@ public class InvRequestHistoryGIController implements Initializable, ScreenInter
                     break;
                 case "btnCancel":
                     if (pnEditMode == 1) {
-                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-
-                            if (pnEditMode == EditMode.UPDATE) {
-                                oTrans.cancelUpdate();
+                        if (ShowMessageFX.YesNo("Do you really want to cancel this transaction?", "Computerized Acounting System", pxeModuleName)) {
+                            poJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getTransactionNumber());
+                            System.out.println(poJSON.toJSONString());
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
                             }
+                            clearAllFields();
                             initTrans();
                             initTabAnchor();
-
+                        }
+                    }
+                    break;
+                case "btnVoid":
+                    if (pnEditMode == 1) {
+                        if (ShowMessageFX.YesNo("Do you really want to void this transaction?", "Computerized Acounting System", pxeModuleName)) {
+                            poJSON = oTrans.voidTransaction(oTrans.getMasterModel().getTransactionNumber());
+                            System.out.println(poJSON.toJSONString());
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
+                            }
+                            clearAllFields();
+                            initTrans();
+                            initTabAnchor();
                         }
                     }
                     break;

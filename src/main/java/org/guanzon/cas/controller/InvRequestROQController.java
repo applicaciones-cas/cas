@@ -244,6 +244,8 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
                     initTblDetails();
                     loadItemData();
                     initTabAnchor();
+                    tblDetails.getSelectionModel().select(0);
+                    loadDetails();
                     break;
 
                 case "btnAddItem":
@@ -444,11 +446,15 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
                     break;
 
                 case 14:/*QTY Request*/
-                    System.out.println("case 11 == " + lsValue);
-                    int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
-                    oTrans.getDetailModel().get(pnRow).setQuantity(qty);
-                    System.out.println("QTY Request == " + lsValue + "\n");
-                    loadItemData();
+                    if (lsValue.matches("\\d*")) {
+                        int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
+                        oTrans.getDetailModel().get(pnRow).setQuantity(qty);
+                        loadItemData();
+                        break;
+                    }else 
+                    ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
+                    txtField.setText("0");
+                    txtField.requestFocus();
                     break;
 
             }

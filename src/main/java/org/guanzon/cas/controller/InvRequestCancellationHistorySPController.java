@@ -51,9 +51,9 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class InvRequestCancellationSPController implements Initializable, ScreenInterface {
+public class InvRequestCancellationHistorySPController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Inventory Request Cancel SP";
+    private final String pxeModuleName = "Inventory Request Cancellation History SP";
     private GRider oApp;
     private int pnEditMode;
     private InvRequestCancel oTrans;
@@ -87,7 +87,8 @@ public class InvRequestCancellationSPController implements Initializable, Screen
             btnDelItem,
             btnCancel,
             btnClose,
-            btnStatistic;
+            btnStatistic,
+            btnConfirm;
 
     @FXML
     private TextField txtField01,
@@ -153,6 +154,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         btnBrowse.setOnAction(this::handleButtonAction);
         btnAddItem.setOnAction(this::handleButtonAction);
         btnDelItem.setOnAction(this::handleButtonAction);
+        btnConfirm.setOnAction(this::handleButtonAction);
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -281,7 +283,22 @@ public class InvRequestCancellationSPController implements Initializable, Screen
 
                     }
                     break;
+                case "btnConfirm":
+                    if (ShowMessageFX.YesNo("Are you sure you want to confirm this  record? Please verify the details before proceeding.", "Computerized Acounting System", pxeModuleName)) {
 
+                        poJSON = oTrans.postTransaction(oTrans.getMasterModel().getTransactionNumber());
+                            System.out.println(poJSON.toJSONString());
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
+                            }
+                            clearAllFields();
+                            initTrans();
+                            initTabAnchor();
+                        
+
+                    }
+                    break;
             }
         }
     }
@@ -433,15 +450,11 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                     break;
 
                 case 12:/*QTY Cancel*/
-                  if (lsValue.matches("\\d*")) {
-                        int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
-                        oTrans.setDetail(pnRow, "nQuantity", qty);
-                        loadItemData();
-                        break;
-                    }else 
-                    ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
-                    txtField.setText("0");
-                    txtField.requestFocus();
+//                  System.out.println("case 11 == " + lsValue);
+                    int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
+                    oTrans.setDetail(pnRow, "nQuantity", qty);
+                    System.out.println("QTY Request == " + oTrans.getDetailModel(pnRow).getQuantity() + "\n");
+//                    loadItemData();
                     break;
 
             }
@@ -556,13 +569,13 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
 // Manage visibility and managed state of buttons
-        btnCancel.setVisible(lbShow);
+        btnCancel.setVisible(!lbShow);
         btnSearch.setVisible(lbShow);
         btnSave.setVisible(lbShow);
         btnAddItem.setVisible(lbShow);
         btnDelItem.setVisible(lbShow);
 
-        btnCancel.setManaged(lbShow);
+        btnCancel.setManaged(!lbShow);
         btnSearch.setManaged(lbShow);
         btnSave.setManaged(lbShow);
         btnAddItem.setManaged(lbShow);
@@ -577,14 +590,15 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         btnNew.setManaged(!lbShow);
         btnUpdate.setManaged(!lbShow);
         btnClose.setManaged(!lbShow);
-
-        btnAddItem.setVisible(lbShow);
-        btnAddItem.setManaged(lbShow);
-        btnDelItem.setVisible(lbShow);
-        btnDelItem.setManaged(lbShow);
-        btnPrint.setVisible(false);
-        btnPrint.setManaged(false);
-
+//        btnVoid.setVisible(!lbShow);
+//        btnVoid.setManaged(!lbShow);
+        btnConfirm.setVisible(!lbShow);
+        btnConfirm.setManaged(!lbShow);
+        
+        btnNew.setVisible(false);
+        btnNew.setManaged(false);
+        btnUpdate.setVisible(false);
+        btnUpdate.setManaged(false);
     }
 
     private void initTblDetails() {

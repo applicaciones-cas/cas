@@ -40,6 +40,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inventory.stock.Inv_Request;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
+import org.guanzon.cas.inventory.stock.request.cancel.InvRequestCancel;
 import org.guanzon.cas.model.ModelStockRequest;
 import org.json.simple.JSONObject;
 
@@ -53,7 +54,7 @@ public class InvRequestCancellationGIController implements Initializable, Screen
     private final String pxeModuleName = "Inventory Request GI";
     private GRider oApp;
     private int pnEditMode;
-    private Inv_Request oTrans;
+    private InvRequestCancel oTrans;
     private boolean pbLoaded = false;
     private ObservableList<ModelStockRequest> R1data = FXCollections.observableArrayList();
     private ObservableList<ModelStockRequest> R2data = FXCollections.observableArrayList();
@@ -93,7 +94,11 @@ public class InvRequestCancellationGIController implements Initializable, Screen
             txtField05,
             txtField06,
             txtField07,
-            txtField08;
+            txtField08,
+            txtField09,
+            txtField10,
+            txtField11,
+            txtField12;
 
     @FXML
     private DatePicker dpField01;
@@ -102,7 +107,7 @@ public class InvRequestCancellationGIController implements Initializable, Screen
     private Label lblStatus;
 
     @FXML
-    private TextArea txtArea01;
+    private TextArea txtArea01,txtArea02;
 
     @FXML
     private TableView tblDetails;
@@ -233,6 +238,8 @@ public class InvRequestCancellationGIController implements Initializable, Screen
                     initTblDetails();
                     loadItemData();
                     initTabAnchor();
+                    tblDetails.getSelectionModel().select(0);
+                    loadDetails();
                     break;
 
                 case "btnAddItem":
@@ -280,8 +287,17 @@ public class InvRequestCancellationGIController implements Initializable, Screen
 // Arrays of TextFields grouped by sections
         TextField[][] allFields = {
             // Text fields related to specific sections
-            {txtField01, txtField03, txtField04,
-                txtField05, txtField06, txtField07, txtField08},};
+            {txtField01,
+            txtField03,
+            txtField04,
+            txtField05,
+            txtField06,
+            txtField07,
+            txtField08,
+            txtField09,
+            txtField10,
+            txtField11,
+            txtField12},};
 
 // Loop through each array of TextFields and clear them
         for (TextField[] fields : allFields) {
@@ -305,7 +321,11 @@ public class InvRequestCancellationGIController implements Initializable, Screen
             txtField05,
             txtField06,
             txtField07,
-            txtField08};
+            txtField08,
+            txtField09,
+            txtField10,
+            txtField11,
+            txtField12};
 
 // Add the listener to each text field in the focusTextFields array
         for (TextField textField : focusTextFields) {
@@ -413,11 +433,15 @@ public class InvRequestCancellationGIController implements Initializable, Screen
                     break;
 
                 case 12:/*QTY Request*/
-                    System.out.println("case 11 == " + lsValue);
-                    int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
-                    oTrans.getDetailModel().get(pnRow).setQuantity(qty);
-                    System.out.println("QTY Request == " + lsValue + "\n");
-                    loadItemData();
+                    if (lsValue.matches("\\d*")) {
+                        int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
+                        oTrans.setDetail(pnRow, "nQuantity", qty);
+                        loadItemData();
+                        break;
+                    }else 
+                    ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
+                    txtField.setText("0");
+                    txtField.requestFocus();
                     break;
 
             }
@@ -446,10 +470,11 @@ public class InvRequestCancellationGIController implements Initializable, Screen
                             break;
                         }
 //                        System.out.println("order no.x == " + oTrans.getMasterModel().getOrderNumber());
-//                        txtField.setText(oTrans.getMasterModel().getOrderNumber());
+                        txtField.setText(oTrans.getMasterModel().getOrderNumber());
                         txtArea01.requestFocus();
                         break;
-                    case 04:/*search desciption*/
+                        
+                    case 04:/*search barrcode*/
                         poJson = new JSONObject();
                         poJson = oTrans.searchDetail(pnRow, 3, lsValue, true);
                         System.out.println("poJson = " + poJson.toJSONString());
@@ -600,7 +625,7 @@ public class InvRequestCancellationGIController implements Initializable, Screen
 
             txtField01.setText((String) oTrans.getMasterModel().getTransactionNumber());
             txtArea01.setText((String) oTrans.getMasterModel().getRemarks());
-//            dpField01.setValue((Date) oTrans.getMasterModel().getTransaction());
+            txtField03.setText((String) oTrans.getMasterModel().getOrderNumber());
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -644,18 +669,17 @@ public class InvRequestCancellationGIController implements Initializable, Screen
 
     private void loadDetails() {
         if (!oTrans.getDetailModel().isEmpty()) {
-            txtField03.setText((String) oTrans.getDetailModel().get(pnRow).getBarcode());
-            txtField04.setText((String) oTrans.getDetailModel().get(pnRow).getDescription());
-            txtField05.setText((String) oTrans.getDetailModel().get(pnRow).getClassify());
-            txtField06.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getReservedOrder()));
-            txtField07.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getOnTransit()));
-            txtField08.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getReservedOrder()));
-//            txtField09.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getAverageMonthlySalary()));
-//            txtField10.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getBackOrder()));
-//            txtField11.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantityOnHand()));
-//            txtField12.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantity()));
-//            txtField13.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantity().toString()));
-//            txtField14.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getOrderQuantity()));
+            txtField04.setText((String) oTrans.getDetailModel().get(pnRow).getBarcode());
+            txtField05.setText((String) oTrans.getDetailModel().get(pnRow).getDescription());            
+            txtField06.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getOnTransit()));
+            txtField07.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantityOnHand()));
+            txtField08.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getBackOrder()));
+            txtField09.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantityRequest()));
+            txtField10.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getIssueQuantity()));
+            txtField11.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getOrderQuantity()));
+            txtField12.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantity()));
+            txtArea02.setText((String) oTrans.getDetailModel().get(pnRow).getNotes());
+            
         }
     }
 
@@ -726,7 +750,7 @@ public class InvRequestCancellationGIController implements Initializable, Screen
 
     private void initTrans() {
         clearAllFields();
-        oTrans = new Inv_Request(oApp, true);
+        oTrans = new InvRequestCancel(oApp, true);
         oTrans.setType(RequestControllerFactory.RequestType.GENERAL);
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
