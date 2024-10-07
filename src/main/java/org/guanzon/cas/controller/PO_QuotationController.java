@@ -526,7 +526,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
 
                     case 3:
                         /*sSupplier*/
-                        poJSON = oTrans.searchMaster(4, lsValue, false);
+                        poJSON = oTrans.searchMaster(3, lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -647,6 +647,10 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
         
 
         txtField03.setText(oTrans.getMasterModel().getSupplierName());
+        txtField05.setText(oTrans.getMasterModel().getAddress());
+        txtField07.setText(oTrans.getMasterModel().getContactNo());
+        
+        
         txtField04.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getModifiedDate()));
 
         txtField09.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getValidity()));
