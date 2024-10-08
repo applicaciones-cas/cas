@@ -293,7 +293,7 @@
                                                                   <Insets />
                                                                </VBox.margin>
                                                                <children>
-                                                                  <TableView prefHeight="200.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+                                                                  <TableView fx:id="tblTransactionIssues" prefHeight="200.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                                                      <columns>
                                                                         <TableColumn fx:id="index12" maxWidth="25.0" minWidth="30.0" prefWidth="30.0" text="No." />
                                                                         <TableColumn fx:id="index13" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" text="Particular" />
@@ -397,13 +397,10 @@
                                                 <TableColumn fx:id="index06" editable="false" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" sortable="false" text="Model Name" />
                                                 <TableColumn fx:id="index07" editable="false" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" sortable="false" text="Model Variant" />
                                                 <TableColumn fx:id="index08" editable="false" maxWidth="-1.0" minWidth="100.0" prefWidth="1500.0" sortable="false" text="Year Model" />
-                                                <TableColumn fx:id="index09" editable="false" maxWidth="343.0" minWidth="0.0" prefWidth="252.0" sortable="false" text="Color" />
-                                                <TableColumn fx:id="index10" editable="false" maxWidth="343.0" minWidth="0.0" prefWidth="263.33331298828125" sortable="false" text="Cost" />
+                                                <TableColumn fx:id="index09" editable="false" maxWidth="100.0" minWidth="0.0" prefWidth="100.0" sortable="false" text="Color" />
+                                                <TableColumn fx:id="index10" editable="false" maxWidth="343.0" minWidth="0.0" prefWidth="100.0" sortable="false" text="Cost" />
                                                 <TableColumn fx:id="index11" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" sortable="false" text="Order" />
                                              </columns>
-                                             <columnResizePolicy>
-                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                             </columnResizePolicy>
                                           </TableView>
                                        </children>
                                        <padding>

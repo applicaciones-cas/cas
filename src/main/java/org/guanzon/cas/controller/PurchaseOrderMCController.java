@@ -39,6 +39,7 @@ import org.guanzon.cas.clients.Client_Master;
 import org.guanzon.cas.controller.ScreenInterface;
 import org.guanzon.cas.controller.unloadForm;
 import org.guanzon.cas.inventory.base.Inventory;
+import org.guanzon.cas.inventory.base.PO_Quotation;
 import org.guanzon.cas.model.ModelPurchaseOrder;
 import org.guanzon.cas.model.clients.Model_Client_Institution_Contact;
 import org.guanzon.cas.model.clients.Model_Client_Mobile;
@@ -188,23 +189,34 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 break;
             case "btnFindSource":
-                if (pnIndex > 3 || pnIndex < 1) {
-                    pnIndex = 1;
+                if (pnIndex < 98) {
+                    pnIndex = 99;
                 }
-                switch (pnIndex) {
-                    case 1:
-                        /* Barcode & Description */
-                        poJSON = oTrans.searchDetail(pnDetailRow, 1, (pnIndex == 1) ? txtDetail01.getText() : "", pnIndex == 1);
-//                        System.out.println("poJson Result = " + poJSON.toJSONString());
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
 
-                        loadTableDetail();
-                        break;
+                poJSON = oTrans.searchDetail(pnDetailRow, 1, "", false);
+                //start
+                if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                    txtField01.requestFocus();
+                    pnEditMode = EditMode.UNKNOWN;
+                    return;
+                } else {
+                    loadTableDetail();
+
+                    //possible fix create another loadtabledetail for poquotation
+                    // or reset cachedrowset and fill data with po_quotation_detail 
                 }
                 break;
 
+//                /* Barcode & Description */
+//                poJSON = oTrans.searchDetail(pnDetailRow, 1, "", false);
+////                        System.out.println("poJson Result = " + poJSON.toJSONString());
+//                if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+//                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                }
+//
+//                loadTableDetail();
             case "btnSearch":
                 if (pnIndex > 3 || pnIndex < 1) {
                     pnIndex = 1;
@@ -270,6 +282,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 }
+                oTrans.AddModelDetail();
                 pnDetailRow = oTrans.getItemCount() - 1;
                 loadTableDetail();
                 tblDetails.getSelectionModel().select(pnDetailRow + 1);
@@ -374,7 +387,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
         }
 
-//        setDetail( "sStockIDx", (String) loInventory.getMaster("sDescript"));
         double lnTotalTransaction = 0;
         for (lnCtr = 0; lnCtr <= oTrans.getItemCount() - 1; lnCtr++) {
             String lsStockIDx = (String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx");
@@ -394,17 +406,17 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         (String) loInventory.getMaster("sBarCodex"),
                         (String) oTrans.getDetailModel(lnCtr).getDescription(),
                         (String) loInventory.getMaster("xBrandNme"),
-                        (String)loMdl.getModel().getModelCode(),
-                        (String)loMdl.getModel().getDescription(),
+                        (String) loMdl.getModel().getModelCode(),
+                        (String) loMdl.getModel().getDescription(),
                         // loMdl.getModel().getModelCode(),
                         // loMdl.getModel().getModelName(),
                         "",
                         //getYearModel method in Model is missing
-//                        String.valueOf(loMdl.getModel().getYearModel()),
+                        //                        String.valueOf(loMdl.getModel().getYearModel()),
                         "",
-                        (String)loColor.getModel().getDescription(),
-                        (String)loInventory.getMaster("nUnitPrce").toString(),
-                        (String)oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
+                        (String) loColor.getModel().getDescription(),
+                        (String) loInventory.getMaster("nUnitPrce").toString(),
+                        (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
                 ));
 
                 try {
@@ -452,6 +464,8 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         }
         initDetailsGrid();
     }
+
+
 
     public void initDetailsGrid() {
         index01.setStyle("-fx-alignment: CENTER;");
@@ -803,6 +817,12 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         btnNew.setManaged(!lbShow);
         btnUpdate.setManaged(!lbShow);
         btnClose.setManaged(!lbShow);
+        
+        
+        apBrowse.setDisable(lbShow);
+        apMaster.setDisable(!lbShow);
+        apDetail.setDisable(!lbShow);
+        apTable.setDisable(!lbShow);
 
     }
 
