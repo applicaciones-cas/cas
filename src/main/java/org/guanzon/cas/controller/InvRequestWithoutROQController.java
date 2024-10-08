@@ -5,19 +5,31 @@
 package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -36,6 +48,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -44,6 +57,16 @@ import org.guanzon.cas.inventory.stock.Inv_Request;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
 import org.guanzon.cas.model.ModelStockRequest;
 import org.json.simple.JSONObject;
+import javafx.stage.Modality;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.swing.JRViewer;
+import net.sf.jasperreports.view.JasperViewer;
+import static org.apache.commons.lang3.StringUtils.overlay;
+import org.json.simple.JSONArray;
 
 /**
  * FXML Controller class
@@ -51,7 +74,7 @@ import org.json.simple.JSONObject;
  * @author User
  */
 public class InvRequestWithoutROQController implements Initializable, ScreenInterface {
-
+    
     private final String pxeModuleName = "Inventory Request";
     private GRider oApp;
     private int pnEditMode;
@@ -60,12 +83,15 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
     private ObservableList<ModelStockRequest> R1data = FXCollections.observableArrayList();
     private ObservableList<ModelStockRequest> R2data = FXCollections.observableArrayList();
     private int pnRow = 0;
-
+    private JasperPrint jasperPrint;
+    private JRViewer jrViewer;
+    private String categForm = "";
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
-
+    @FXML
+    private VBox root;
     @FXML
     private AnchorPane anchorMain,
             anchorMaster,
@@ -156,6 +182,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         btnBrowse.setOnAction(this::handleButtonAction);
         btnAddItem.setOnAction(this::handleButtonAction);
         btnDelItem.setOnAction(this::handleButtonAction);
+        btnPrint.setOnAction(this::handleButtonAction);
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -282,6 +309,12 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                         initTrans();
                         initTabAnchor();
 
+                    }
+                    break;
+
+                case "btnPrint":
+                    if (pnEditMode == 1 && ShowMessageFX.YesNo("Do you want to print this record?", "Computerized Accounting System", pxeModuleName)) {
+                        loadPrint();
                     }
                     break;
 
@@ -451,8 +484,9 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                         oTrans.getDetailModel().get(pnRow).setQuantity(qty);
                         loadItemData();
                         break;
-                    }else 
-                    ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
+                    } else {
+                        ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
+                    }
                     txtField.setText("0");
                     txtField.requestFocus();
                     break;
@@ -518,7 +552,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         anchorDetails.setDisable(!pbValue);
         anchorTable.setDisable(!pbValue);
         if (pnEditMode == EditMode.READY) {
-            anchorTable.setDisable(false);            
+            anchorTable.setDisable(false);
             btnStatistic.setDisable(false);
         }
     }
@@ -620,7 +654,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                 || pnEditMode == EditMode.UPDATE) {
 
             txtField01.setText((String) oTrans.getMasterModel().getTransactionNumber());
-            txtField02.setText((String) oTrans.getMasterModel().getReferenceNumber()== null ? "": (String) oTrans.getMasterModel().getReferenceNumber());
+            txtField02.setText((String) oTrans.getMasterModel().getReferenceNumber() == null ? "" : (String) oTrans.getMasterModel().getReferenceNumber());
             txtArea01.setText((String) oTrans.getMasterModel().getRemarks());
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -777,7 +811,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
 //    initButton(pnEditMode);
 //}
 
-private void initTrans() {
+    private void initTrans() {
         Properties po_props = new Properties();
         clearAllFields();
         oTrans = new Inv_Request(oApp, true);
@@ -787,15 +821,17 @@ private void initTrans() {
         String[] category = industry.split(";");
         // Print the resulting array
         for (String type : category) {
-            if(types == null){
-                if("0001".equals(type)){
+            if (types == null) {
+                if ("0001".equals(type)) {
                     types = RequestControllerFactory.RequestType.MC;
+                    categForm = " MC";
                     oTrans.setType(types);
-                }else if("0002".equals(type)){
+                } else if ("0002".equals(type)) {
                     types = RequestControllerFactory.RequestType.MP;
+                    categForm = " MP";
                     oTrans.setType(types);
                 }
-                
+
                 System.out.println("type value = " + types);
             }
         }
@@ -805,8 +841,76 @@ private void initTrans() {
         initButton(pnEditMode);
     }
 
+//    private boolean loadPrint() {
+//        Map<String, Object> params = new HashMap<>();
+//        params.put("sPrintdBy", System.getProperty("user.name"));
+//        params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
+//        params.put("sCompnyNm", "Guanzon Group of Companies");        
+//        params.put("sReportNm", pxeModuleName);
+//        params.put("sBranchNm", oApp.getBranchName());
+//        params.put("sAddressx", oApp.getAddress());
+//
+//        String sourceFileName = "D://GGC_Maven_Systems/Reports/InvRequest.jasper";
+//        String printFileName = null;
+//        JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(R1data);
+//        try {
+//            jasperPrint = JasperFillManager.fillReport(
+//                    sourceFileName, params, beanColDataSource1);
+//
+//            printFileName = jasperPrint.toString();
+//            if (printFileName != null) {
+//                jrViewer = new JRViewer(jasperPrint);
+//                jrViewer.setFitPageZoomRatio();
+//                JasperViewer.viewReport(jasperPrint, false);
+//            }
+//        } catch (JRException ex) {
+//            Logger.getLogger(InvRequestWithoutROQController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return true;
+//    }
+    private boolean loadPrint() {
+        JSONObject loJSON = new JSONObject();
+        if (oTrans.getMasterModel().getTransactionNumber() == null) {
+            ShowMessageFX.Warning("Unable to print transaction.", "Warning", "No record loaded.");
+            loJSON.put("result", "error");
+            loJSON.put("message", "Model Master is null");
+            return false;
+        }
 
+        // Prepare report parameters
+        Map<String, Object> params = new HashMap<>();
+        params.put("sPrintdBy", "Printed By: " + oApp.getLogName());
+        params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
+        params.put("sReportNm", pxeModuleName + categForm);
+        params.put("sReportDt", CommonUtils.xsDateMedium((Date) oApp.getServerDate()));
+        params.put("sBranchNm", oApp.getBranchName());
+        params.put("sAddressx", oApp.getAddress());
+        
+        params.put("sTransNox", oTrans.getMasterModel().getTransactionNumber());
+        params.put("sTranDte", CommonUtils.xsDateMedium((Date) oTrans.getMasterModel().getTransaction()));
+        params.put("sRemarks", oTrans.getMasterModel().getRemarks());
 
-    
+        // Define report file paths
+        String sourceFileName = "D://GGC_Maven_Systems/Reports/InventoryRequest.jasper";
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(R1data);
 
+        try {
+            // Fill the report
+            jasperPrint = JasperFillManager.fillReport(sourceFileName, params, dataSource);
+
+            // Show the report
+            if (jasperPrint != null) {
+                jrViewer = new JRViewer(jasperPrint);
+                jrViewer.setFitPageZoomRatio();
+                JasperViewer.viewReport(jasperPrint, false);
+            }
+        } catch (JRException ex) {
+            Logger.getLogger(InvRequestWithoutROQController.class.getName())
+                    .log(Level.SEVERE, "Error filling report", ex);
+        }
+
+        return true;
+    }
+
+   
 }
