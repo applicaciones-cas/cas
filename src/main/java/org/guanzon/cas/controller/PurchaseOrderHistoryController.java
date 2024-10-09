@@ -35,10 +35,8 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.controller.ScreenInterface;
 import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.model.ModelPurchaseOrder;
-import org.guanzon.cas.parameters.Branch;
 import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Model;
 import org.guanzon.cas.parameters.Model_Variant;
@@ -51,8 +49,8 @@ import org.junit.Assert;
  *
  * @author User
  */
-public class PurchaseOrderConfirmationController  implements Initializable, ScreenInterface{
-    private final String pxeModuleName = "Purchase Order(for Motorcycle, Mobile Phone, Cars)";
+public class PurchaseOrderHistoryController implements Initializable, ScreenInterface {
+    private final String pxeModuleName = "Purchase Order History";
     private GRider oApp;
     private PurchaseOrder oTrans;
     private JSONObject poJSON;
@@ -62,9 +60,8 @@ public class PurchaseOrderConfirmationController  implements Initializable, Scre
     private boolean pbLoaded = false;
     private int pnIndex;
     private int pnDetailRow;
-    
-    
-    
+    private ObservableList<ModelPurchaseOrder> data = FXCollections.observableArrayList();
+
     @FXML
     private AnchorPane MainAnchorPane;
     @FXML
@@ -84,9 +81,7 @@ public class PurchaseOrderConfirmationController  implements Initializable, Scre
     @FXML
     private Button btnPrint;
     @FXML
-    private Button btnConfirm;
-    @FXML
-    private Button btnCancel;
+    private Button btnVoid;
     @FXML
     private Button btnClose;
     @FXML
@@ -173,9 +168,21 @@ public class PurchaseOrderConfirmationController  implements Initializable, Scre
     /**
      * Initializes the controller class.
      */
-    private ObservableList<ModelPurchaseOrder> data = FXCollections.observableArrayList();
-
     
+    
+    private void setSelectedDetail() {
+        txtDetail01.setText((String) data.get(pnDetailRow).getIndex02());
+        txtDetail02.setText((String) data.get(pnDetailRow).getIndex03());
+        txtDetail03.setText((String) data.get(pnDetailRow).getIndex10());
+        txtDetail04.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQtyOnHand()));
+        txtDetail05.setText((String) data.get(pnDetailRow).getIndex10());
+        try {
+            txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getRecOrder()));
+        } catch (Exception e) {
+        }
+        txtDetail07.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQuantity()));
+
+    }
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         if (!pbLoaded) {
             return;
@@ -370,7 +377,179 @@ public class PurchaseOrderConfirmationController  implements Initializable, Scre
         }
 
     };
-    private void txtField_KeyPressed(KeyEvent event) {
+    private void loadRecord() {
+        String lsActive = oTrans.getMasterModel().getTransactionStatus();
+
+        switch (lsActive) {
+            case "0":
+                lblStatus.setText("OPEN");
+                break;
+            case "1":
+                lblStatus.setText("CLOSED");
+                break;
+            case "2":
+                lblStatus.setText("POSTED");
+                break;
+            case "3":
+                lblStatus.setText("CANCELLED");
+                break;
+            default:
+                lblStatus.setText("UNKNOWN");
+                break;
+
+        }
+
+        //get supplier id and search contctp & contctno
+        String lsClientID = oTrans.getMasterModel().getSupplier();
+        if (!lsClientID.isEmpty()) {
+            oTrans.searchMaster("sSupplier", lsClientID, pbLoaded);
+        }
+
+        psPrimary = oTrans.getMasterModel().getTransactionNo();
+        txtField01.setText(psPrimary);
+        txtField02.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
+        txtField03.setText(oTrans.getMasterModel().getDestinationOther());
+        txtField04.setText(oTrans.getMasterModel().getSupplierName());
+        txtField05.setText(oTrans.getMasterModel().getContactPerson1());
+        txtField06.setText(oTrans.getMasterModel().getMobileNo());
+        txtField07.setText(oTrans.getMasterModel().getRemarks());
+        txtField08.setText(oTrans.getMasterModel().getReferenceNo());
+        txtField09.setText(oTrans.getMasterModel().getTermName());
+
+        try {
+            txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
+            txtField11.setText(String.valueOf(oTrans.getMasterModel().getAddDiscount()));
+            txtField12.setText(String.valueOf(oTrans.getMasterModel().getTransactionTotal()));
+
+        } catch (Exception e) {
+        }
+        loadTableDetail();
+    }
+
+    private void loadTableDetail() {
+        int lnCtr;
+        data.clear();
+
+        int lnItem = oTrans.getItemCount();
+        if (lnItem < 0) {
+            return;
+        }
+        //count size
+        for (lnCtr = 0; lnCtr < oTrans.getDetailModel(); lnCtr++) {
+            System.out.println((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"));
+
+        }
+
+        double lnTotalTransaction = 0;
+        for (lnCtr = 0; lnCtr <= oTrans.getItemCount() - 1; lnCtr++) {
+            String lsStockIDx = (String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx");
+            Inventory loInventory;
+            Color loColor;
+            Model loMdl;
+            Model_Variant loMdlVrnt;
+            if (lsStockIDx != null && !lsStockIDx.equals("")) {
+
+                loInventory = oTrans.GetInventory((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"), true);
+                //for the meantime try-catch for Model
+                loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
+                loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
+                loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
+
+//                String.valueOf(loMdl.getModel().getYearModel());
+                data.add(new ModelPurchaseOrder(String.valueOf(lnCtr + 1),
+                        (String) loInventory.getMaster("sBarCodex"),
+                        (String) oTrans.getDetailModel(lnCtr).getDescription(),
+                        (String) loInventory.getMaster("xBrandNme"),
+                        (String) loMdl.getModel().getModelCode(),
+                        (String) loMdl.getModel().getModelDescription(),
+                        loMdlVrnt.getModel().getVariantName(),
+                        String.valueOf(loMdl.getModel().getYearModel()),
+                        (String) loColor.getModel().getDescription(),
+                        oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString(),
+                        (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
+                ));
+
+                try {
+                    if (oTrans.getDetailModel(lnCtr).getQuantity() != 0) {
+                        lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString())) * Double.parseDouble(String.valueOf(oTrans.getDetailModel(lnCtr).getQuantity()));
+                    } else {
+                        lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString()));
+                        System.out.println(lnTotalTransaction);
+                    }
+                } catch (Exception e) {
+                }
+
+            } else {
+                data.add(new ModelPurchaseOrder(String.valueOf(lnCtr + 1),
+                        "",
+                        (String) oTrans.getDetailModel(lnCtr).getValue("sDescript"),
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()));
+
+            }
+        }
+        txtField12.setText(String.valueOf(lnTotalTransaction));
+//        txtField12.setText(String.valueOf(oTrans.getMasterModel().getTransactionTotal()));
+        lnTotalTransaction = 0;
+
+        /*FOCUS ON FIRST ROW*/
+        if (pnDetailRow < 0 || pnDetailRow >= data.size()) {
+            if (!data.isEmpty()) {
+                /* FOCUS ON FIRST ROW */
+                tblDetails.getSelectionModel().select(0);
+                tblDetails.getFocusModel().focus(0);
+                pnDetailRow = tblDetails.getSelectionModel().getSelectedIndex();
+            }
+            setSelectedDetail(); //textfield data
+        } else {
+            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+            tblDetails.getSelectionModel().select(pnDetailRow);
+            tblDetails.getFocusModel().focus(pnDetailRow);
+            setSelectedDetail();
+        }
+        initDetailsGrid();
+    }
+    public void initDetailsGrid() {
+        index01.setStyle("-fx-alignment: CENTER;");
+        index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index09.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index10.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index11.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+
+        index01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index01"));
+        index02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index02"));
+        index03.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index03"));
+        index04.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index04"));
+        index05.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index05"));
+        index06.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index06"));
+        index07.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index07"));
+        index08.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index08"));
+        index09.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index09"));
+        index10.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index10"));
+        index11.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index11"));
+
+        tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
+        tblDetails.setItems(data);
+    }
+        private void txtField_KeyPressed(KeyEvent event) {
 
         TextField textField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
@@ -462,197 +641,6 @@ public class PurchaseOrderConfirmationController  implements Initializable, Scre
 
         pnIndex = lnIndex;
     }
-    
-    
-    private void loadRecord() {
-        String lsActive = oTrans.getMasterModel().getTransactionStatus();
-
-        switch (lsActive) {
-            case "0":
-                lblStatus.setText("OPEN");
-                break;
-            case "1":
-                lblStatus.setText("CLOSED");
-                break;
-            case "2":
-                lblStatus.setText("POSTED");
-                break;
-            case "3":
-                lblStatus.setText("CANCELLED");
-                break;
-            default:
-                lblStatus.setText("UNKNOWN");
-                break;
-        }
-
-        //get supplier id and search contctp & contctno
-        String lsClientID = oTrans.getMasterModel().getSupplier();
-        if (!lsClientID.isEmpty()) {
-            oTrans.searchMaster("sSupplier", lsClientID, pbLoaded);
-        }
-
-        psPrimary = oTrans.getMasterModel().getTransactionNo();
-        txtField01.setText(psPrimary);
-        txtField02.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
-        txtField03.setText(oTrans.getMasterModel().getDestinationOther());
-        txtField04.setText(oTrans.getMasterModel().getSupplierName());
-        txtField05.setText(oTrans.getMasterModel().getContactPerson1());
-        txtField06.setText(oTrans.getMasterModel().getMobileNo());
-        txtField07.setText(oTrans.getMasterModel().getRemarks());
-        txtField08.setText(oTrans.getMasterModel().getReferenceNo());
-        txtField09.setText(oTrans.getMasterModel().getTermName());
-
-        try {
-            txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
-            txtField11.setText(String.valueOf(oTrans.getMasterModel().getAddDiscount()));
-            txtField12.setText(String.valueOf(oTrans.getMasterModel().getTransactionTotal()));
-
-        } catch (Exception e) {
-        }
-        loadTableDetail();
-    }
-    
-    private void loadTableDetail() {
-        int lnCtr;
-        data.clear();
-
-        int lnItem = oTrans.getItemCount();
-        if (lnItem < 0) {
-            return;
-        }
-        //count size
-        for (lnCtr = 0; lnCtr < oTrans.getDetailModel(); lnCtr++) {
-            System.out.println((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"));
-
-        }
-
-        double lnTotalTransaction = 0;
-        for (lnCtr = 0; lnCtr <= oTrans.getItemCount() - 1; lnCtr++) {
-            String lsStockIDx = (String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx");
-            Inventory loInventory;
-            Color loColor;
-            Model loMdl;
-            Model_Variant loMdlVrnt;
-            if (lsStockIDx != null && !lsStockIDx.equals("")) {
-
-                loInventory = oTrans.GetInventory((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"), true);
-                //for the meantime try-catch for Model
-                loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
-                loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
-                loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
-
-//                String.valueOf(loMdl.getModel().getYearModel());
-                data.add(new ModelPurchaseOrder(String.valueOf(lnCtr + 1),
-                        (String) loInventory.getMaster("sBarCodex"),
-                        (String) oTrans.getDetailModel(lnCtr).getDescription(),
-                        (String) loInventory.getMaster("xBrandNme"),
-                        (String) loMdl.getModel().getModelCode(),
-                        (String) loMdl.getModel().getModelDescription(),
-                        loMdlVrnt.getModel().getVariantName(),
-                        String.valueOf(loMdl.getModel().getYearModel()),
-                        (String) loColor.getModel().getDescription(),
-                        oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString(),
-                        (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
-                ));
-
-                try {
-                    if (oTrans.getDetailModel(lnCtr).getQuantity() != 0) {
-                        lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString())) * Double.parseDouble(String.valueOf(oTrans.getDetailModel(lnCtr).getQuantity()));
-                    } else {
-                        lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString()));
-                        System.out.println(lnTotalTransaction);
-                    }
-                } catch (Exception e) {
-                }
-
-            } else {
-                data.add(new ModelPurchaseOrder(String.valueOf(lnCtr + 1),
-                        "",
-                        (String) oTrans.getDetailModel(lnCtr).getValue("sDescript"),
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()));
-
-            }
-        }
-        txtField12.setText(String.valueOf(lnTotalTransaction));
-//        txtField12.setText(String.valueOf(oTrans.getMasterModel().getTransactionTotal()));
-        lnTotalTransaction = 0;
-
-        /*FOCUS ON FIRST ROW*/
-        if (pnDetailRow < 0 || pnDetailRow >= data.size()) {
-            if (!data.isEmpty()) {
-                /* FOCUS ON FIRST ROW */
-                tblDetails.getSelectionModel().select(0);
-                tblDetails.getFocusModel().focus(0);
-                pnDetailRow = tblDetails.getSelectionModel().getSelectedIndex();
-            }
-            setSelectedDetail(); //textfield data
-        } else {
-            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-            tblDetails.getSelectionModel().select(pnDetailRow);
-            tblDetails.getFocusModel().focus(pnDetailRow);
-            setSelectedDetail();
-        }
-        initDetailsGrid();
-    }
-
-
-    
-     private void setSelectedDetail() {
-        txtDetail01.setText((String) data.get(pnDetailRow).getIndex02());
-        txtDetail02.setText((String) data.get(pnDetailRow).getIndex03());
-        txtDetail03.setText((String) data.get(pnDetailRow).getIndex10());
-        txtDetail04.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQtyOnHand()));
-        txtDetail05.setText((String) data.get(pnDetailRow).getIndex10());
-        try {
-            txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getRecOrder()));
-        } catch (Exception e) {
-        }
-        txtDetail07.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQuantity()));
-
-    }
-
-    public void initDetailsGrid() {
-        index01.setStyle("-fx-alignment: CENTER;");
-        index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-        index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index09.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index10.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index11.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-
-        index01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index01"));
-        index02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index02"));
-        index03.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index03"));
-        index04.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index04"));
-        index05.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index05"));
-        index06.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index06"));
-        index07.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index07"));
-        index08.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index08"));
-        index09.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index09"));
-        index10.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index10"));
-        index11.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index11"));
-
-        tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-
-        tblDetails.setItems(data);
-
-    }
 
     private void txtDetail_KeyPressed(KeyEvent event) {
 
@@ -703,9 +691,6 @@ public class PurchaseOrderConfirmationController  implements Initializable, Scre
 
         pnIndex = lnIndex;
     }
-    
-
-    
         private void initTextFields() {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
@@ -745,39 +730,6 @@ public class PurchaseOrderConfirmationController  implements Initializable, Scre
         txtDetail01.setOnKeyPressed(this::txtDetail_KeyPressed);//barcode
         txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);
     }
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        oTrans = new PurchaseOrder(oApp, false);
-        oTrans.setTransactionStatus("12340");
-
-        initTextFields();
-        initDetailsGrid();
-        clearFields();
-
-        pnEditMode = EditMode.UNKNOWN;
-        initButton(pnEditMode);
-        pbLoaded = true;
-    }
-    
-    private void initButton(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-
-        btnBrowse.setVisible(!lbShow);
-        btnPrint.setVisible(!lbShow);
-        btnClose.setVisible(!lbShow);
-        btnBrowse.setManaged(!lbShow);
-        btnPrint.setManaged(!lbShow);
-        btnClose.setManaged(!lbShow);
-        
-        apBrowse.setDisable(lbShow);
-        apMaster.setDisable(!lbShow);
-        apDetail.setDisable(!lbShow);
-        apTable.setDisable(!lbShow);
-
-    }
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
@@ -813,9 +765,40 @@ public class PurchaseOrderConfirmationController  implements Initializable, Scre
         data.clear();
 
     }
+        private void initButton(int fnValue) {
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
- @FXML
-    void cmdButton_Click(ActionEvent event) {
+
+// Manage visibility and managed state of other buttons
+        btnBrowse.setVisible(!lbShow);
+        btnPrint.setVisible(!lbShow);
+        btnClose.setVisible(!lbShow);
+        btnBrowse.setManaged(!lbShow);
+        btnPrint.setManaged(!lbShow);
+        btnClose.setManaged(!lbShow);
+
+        apBrowse.setDisable(lbShow);
+        apMaster.setDisable(!lbShow);
+        apDetail.setDisable(!lbShow);
+        apTable.setDisable(!lbShow);
+
+    }
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        oTrans = new PurchaseOrder(oApp, false);
+        oTrans.setTransactionStatus("12340");
+
+        initTextFields();
+        initDetailsGrid();
+        clearFields();
+
+        pnEditMode = EditMode.UNKNOWN;
+        initButton(pnEditMode);
+        pbLoaded = true;
+    }
+
+    @FXML
+    private void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
 
         switch (lsButton) {
@@ -836,38 +819,6 @@ public class PurchaseOrderConfirmationController  implements Initializable, Scre
                     loadRecord();
                 }
                 break;
-
-            case "btnNew":
-                oTrans.setSavingStatus(true);
-
-                poJSON = oTrans.newTransaction();
-                Branch loCompanyID = oTrans.GetBranch(oApp.getBranchCode());
-
-                oTrans.setMaster("sCompnyID", loCompanyID.getModel().getCompanyID());
-                oTrans.getMasterModel().setDiscount(0.00);
-                oTrans.getMasterModel().setAddDiscount(0.00);
-                oTrans.getMasterModel().setTransactionTotal(0.00);
-                loadRecord();
-                pnEditMode = oTrans.getMasterModel().getEditMode();
-                oTrans.setTransactionStatus("12340");
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
-
-                break;
-            case "btnUpdate":
-                oTrans.setSavingStatus(true);
-                poJSON = oTrans.updateTransaction();
-                pnEditMode = oTrans.getMasterModel().getEditMode();
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                    pnEditMode = EditMode.UNKNOWN;
-                    return;
-                }
-                break;
             case "btnPrint":
                 poJSON = oTrans.printRecord();
                 if ("error".equals((String) poJSON.get("result"))) {
@@ -885,83 +836,37 @@ public class PurchaseOrderConfirmationController  implements Initializable, Scre
                 }
 
                 break;
-            case "btnConfirm":
-                if (!psPrimary.isEmpty()) {
-                    if (btnConfirm.getText().equals("Activate")) {
-                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
-                            poJSON = oTrans.closeTransaction(psPrimary);
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                System.err.println((String) poJSON.get("message"));
-                                
-                                return;
-                            } else {
-                                clearFields();
-                                pnEditMode = EditMode.UNKNOWN;
-                                initButton(pnEditMode);
-                                oTrans = new PurchaseOrder(oApp, false);
-                                oTrans.setTransactionStatus("12340");
-                                pbLoaded = true;
+  
 
-                            }
-                        } else {
-                            return;
-                        }
-                    } else {
-                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
-                            poJSON = oTrans.cancelTransaction(psPrimary);
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                System.err.println((String) poJSON.get("message"));
-                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                return;
-                            } else {
-                                clearFields();
-                                pnEditMode = EditMode.UNKNOWN;
-                                initButton(pnEditMode);
-                                oTrans = new PurchaseOrder(oApp, false);
-                                oTrans.setTransactionStatus("12340");
-                                pbLoaded = true;
-
-                            }
-                        } else {
-                            return;
-                        }
-                    }
-                } else {
-                    ShowMessageFX.Warning(null, pxeModuleName, "Please select a record to confirm!");
+            case "btnVoid":
+                if (pnIndex > 3 || pnIndex < 1) {
+                    pnIndex = 1;
                 }
+                poJSON = oTrans.voidTransaction(oTrans.getMasterModel().getTransactionNo());
+                if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                }
+
+                loadTableDetail();
                 break;
-
-            case "btnCancel":
-                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                    oTrans = new PurchaseOrder(oApp, true);
-                    oTrans.setTransactionStatus("12340");
-                    pbLoaded = true;
-                    pnEditMode = EditMode.UNKNOWN;
-                    clearFields();
-                    break;
-                } else {
-                    return;
-                }
             default:
                 ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                 return;
         }
         initButton(pnEditMode);
-
     }
 
     @FXML
-    void tblDetails_Clicked(MouseEvent event) {
+    private void tblDetails_Clicked(MouseEvent event) {
         pnDetailRow = tblDetails.getSelectionModel().getSelectedIndex();
         if (pnDetailRow >= 0) {
             setSelectedDetail();
         }
-
     }
 
     @Override
     public void setGRider(GRider foValue) {
-     oApp = foValue;
+        oApp = foValue;
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
