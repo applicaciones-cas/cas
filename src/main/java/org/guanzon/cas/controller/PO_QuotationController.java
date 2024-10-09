@@ -647,8 +647,8 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
         
 
         txtField03.setText(oTrans.getMasterModel().getSupplierName());
-        txtField05.setText(oTrans.getMasterModel().getAddress());
-        txtField07.setText(oTrans.getMasterModel().getContactNo());
+//        txtField05.setText(oTrans.getMasterModel().getAddress());
+//        txtField07.setText(oTrans.getMasterModel().getContactNo());
         
         
         txtField04.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getModifiedDate()));
