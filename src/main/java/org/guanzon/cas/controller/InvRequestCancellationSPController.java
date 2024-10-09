@@ -58,6 +58,7 @@ import org.guanzon.cas.inventory.stock.Inv_Request;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
 import org.guanzon.cas.inventory.stock.request.cancel.InvRequestCancel;
 import org.guanzon.cas.model.ModelStockRequest;
+import org.guanzon.cas.model.ReportPrinter;
 import org.json.simple.JSONObject;
 
 /**
@@ -79,6 +80,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
     private JRViewer jrViewer;
     private String categForm = "";
     private boolean isReportRunning = false; // Flag to track if report is running
+    ReportPrinter printer = new ReportPrinter();
        
     @Override
     public void setGRider(GRider foValue) {
@@ -303,11 +305,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                 case "btnPrint":
                     if (pnEditMode == 1 && ShowMessageFX.YesNo("Do you want to print this record?", "Computerized Accounting System", pxeModuleName)) {
                         // Check if the report is already running
-                        if (!isReportRunning) {
-                            loadPrint(); // Call loadPrint only if the report is not running
-                        } else {
-                            ShowMessageFX.Warning("Report already running.", "Warning", "Please close the existing report before opening a new one.");
-                        }
+                        loadPrint();
                     }
                     break;
   
@@ -793,7 +791,6 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
-    
     private boolean loadPrint() {
         JSONObject loJSON = new JSONObject();
         if (oTrans.getMasterModel().getTransactionNumber() == null) {
@@ -803,19 +800,10 @@ public class InvRequestCancellationSPController implements Initializable, Screen
             return false;
         }
 
-        // Check if the report is already running
-        if (isReportRunning) {
-            ShowMessageFX.Warning("Report already running.", "Warning", "Please close the existing report before opening a new one.");
-            return false;
-        }
-
-        // Set the flag to true
-        isReportRunning = true;
-
         // Prepare report parameters
         Map<String, Object> params = new HashMap<>();
         params.put("sPrintdBy", "Printed By: " + oApp.getLogName());
-        params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
+//        params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
         params.put("sReportNm", pxeModuleName);
         params.put("sReportDt", CommonUtils.xsDateMedium((Date) oApp.getServerDate()));
         params.put("sBranchNm", oApp.getBranchName());
@@ -823,50 +811,13 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         params.put("sTransNox", oTrans.getMasterModel().getTransactionNumber());
         params.put("sTranDte", CommonUtils.xsDateMedium((Date) oTrans.getMasterModel().getTransaction()));
         params.put("sRemarks", oTrans.getMasterModel().getRemarks());
+//        params.put("sTranType", "Unprcd Qty");
+//        params.put("sTranQty", "Cancel");
 
         // Define report file paths
         String sourceFileName = "D://GGC_Maven_Systems/Reports/InventoryRequestSPCancellation.jasper";
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(R1data);
 
-        try {
-            // Fill the report
-            jasperPrint = JasperFillManager.fillReport(sourceFileName, params, dataSource);
-
-            // Show the report
-            if (jasperPrint != null) {
-                jrViewer = new JRViewer(jasperPrint);
-                jrViewer.setFitPageZoomRatio();
-                
-                Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-                int width = (int) (screenBounds.getWidth() * .6);
-                int height = (int) (screenBounds.getHeight() * .82);
-                
-                // Create a new JFrame for the JasperViewer
-                JFrame frame = new JFrame(pxeModuleName + categForm);
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                frame.setResizable(false); // Set the frame to be non-resizable
-                frame.setPreferredSize(new Dimension(width, height)); // Adjust width and height as needed
-                frame.add(jrViewer);
-
-                // Add a window listener to reset the flag when the frame is closed
-                frame.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                        isReportRunning = false; // Reset the flag when the window is closed
-                    }
-                });
-
-                // Pack the frame to fit the components and make it visible
-                frame.pack();
-                frame.setLocationRelativeTo(null); // Center the frame on the screen
-                frame.setVisible(true);
-            }
-        } catch (JRException ex) {
-            Logger.getLogger(InvRequestCancellationSPController.class.getName())
-                    .log(Level.SEVERE, "Error filling report", ex);
-            isReportRunning = false; // Reset the flag in case of error
-        }
-
-        return true;
+        return printer.loadAndShowReport(sourceFileName, params, R1data, pxeModuleName);
     }
 }
