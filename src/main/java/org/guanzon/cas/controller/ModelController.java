@@ -393,33 +393,33 @@ public class ModelController implements Initializable, ScreenInterface {
             switch (lnIndex) {
 
                 case 3:
-                    poJSON = oTrans.getModel().setModelName(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-
-                        return;
-                    }
+//                    poJSON = oTrans.getModel().setModelName(lsValue);
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        System.err.println((String) poJSON.get("message"));
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//
+//                        return;
+//                    }
                     break;
 
                 case 4:
-                    poJSON = oTrans.getModel().setDescription(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-
-                        return;
-                    }
+//                    poJSON = oTrans.getModel().setDescription(lsValue);
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        System.err.println((String) poJSON.get("message"));
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//
+//                        return;
+//                    }
                     break;
 
                 case 5:
-                    poJSON = oTrans.getModel().setBriefDescription(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-
-                        return;
-                    }
+//                    poJSON = oTrans.getModel().setBriefDescription(lsValue);
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        System.err.println((String) poJSON.get("message"));
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//
+//                        return;
+//                    }
                     break;
             }
         } else {
@@ -433,10 +433,10 @@ public class ModelController implements Initializable, ScreenInterface {
 
         psPrimary = oTrans.getModel().getModelID();
         txtField01.setText(psPrimary);
-        txtField02.setText(oTrans.getModel().getBrandName());
-        txtField03.setText(oTrans.getModel().getModelName());
-        txtField04.setText(oTrans.getModel().getDescription());
-        txtField05.setText(oTrans.getModel().getBriefDescription());
+//        txtField02.setText(oTrans.getModel().getBrandName());
+//        txtField03.setText(oTrans.getModel().getModelName());
+//        txtField04.setText(oTrans.getModel().getDescription());
+//        txtField05.setText(oTrans.getModel().getBriefDescription());
 
         cbActive.setSelected(lbActive);
 
@@ -481,15 +481,15 @@ public class ModelController implements Initializable, ScreenInterface {
             return;
         }
 
-        for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
-            ListData.add(new ModelParameter(
-                    (String) oTrans.getModelList().get(lnCtr).getModelID(),
-                    (String) oTrans.getModelList().get(lnCtr).getModelName(),
-                    "",
-                    "",
-                    ""));
-
-        }
+//        for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
+//            ListData.add(new ModelParameter(
+//                    (String) oTrans.getModelList().get(lnCtr).getModelID(),
+//                    (String) oTrans.getModelList().get(lnCtr).getModelName(),
+//                    "",
+//                    "",
+//                    ""));
+//
+//        }
 
         initListGrid();
     }
