@@ -5,10 +5,16 @@
 package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.awt.Dimension;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -17,6 +23,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -34,6 +41,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Screen;
+import javax.swing.JFrame;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.swing.JRViewer;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -58,7 +72,10 @@ public class InvRequestHistorySPController implements Initializable, ScreenInter
     private ObservableList<ModelStockRequest> R1data = FXCollections.observableArrayList();
     private ObservableList<ModelStockRequest> R2data = FXCollections.observableArrayList();
     private int pnRow = 0;
-
+    private JasperPrint jasperPrint;
+    private JRViewer jrViewer;
+    private String categForm = "";
+    private boolean isReportRunning = false; // Flag to track if report is running
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -154,6 +171,7 @@ public class InvRequestHistorySPController implements Initializable, ScreenInter
         btnAddItem.setOnAction(this::handleButtonAction);
         btnDelItem.setOnAction(this::handleButtonAction);
         btnVoid.setOnAction(this::handleButtonAction);
+        btnPrint.setOnAction(this::handleButtonAction);
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -283,6 +301,31 @@ public class InvRequestHistorySPController implements Initializable, ScreenInter
                             clearAllFields();
                             initTrans();
                             initTabAnchor();
+                        }
+                    }
+                    break;
+                case "btnVoid":
+                    if (pnEditMode == 1) {
+                        if (ShowMessageFX.YesNo("Do you really want to void this transaction?", "Computerized Acounting System", pxeModuleName)) {
+                            poJSON = oTrans.voidTransaction(oTrans.getMasterModel().getTransactionNumber());
+                            System.out.println(poJSON.toJSONString());
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
+                            }
+                            clearAllFields();
+                            initTrans();
+                            initTabAnchor();
+                        }
+                    }
+                    break;
+                case "btnPrint":
+                    if (pnEditMode == 1 && ShowMessageFX.YesNo("Do you want to print this record?", "Computerized Accounting System", pxeModuleName)) {
+                        // Check if the report is already running
+                        if (!isReportRunning) {
+                            loadPrint(); // Call loadPrint only if the report is not running
+                        } else {
+                            ShowMessageFX.Warning("Report already running.", "Warning", "Please close the existing report before opening a new one.");
                         }
                     }
                     break;
@@ -772,4 +815,81 @@ public class InvRequestHistorySPController implements Initializable, ScreenInter
         initButton(pnEditMode);
     }
 
+
+    private boolean loadPrint() {
+        JSONObject loJSON = new JSONObject();
+        if (oTrans.getMasterModel().getTransactionNumber() == null) {
+            ShowMessageFX.Warning("Unable to print transaction.", "Warning", "No record loaded.");
+            loJSON.put("result", "error");
+            loJSON.put("message", "Model Master is null");
+            return false;
+        }
+
+// Check if the report is already running
+        if (isReportRunning) {
+            ShowMessageFX.Warning("Report already running.", "Warning", "Please close the existing report before opening a new one.");
+            return false;
+        }
+
+// Set the flag to true
+        isReportRunning = true;
+
+// Prepare report parameters
+        Map<String, Object> params = new HashMap<>();
+        params.put("sPrintdBy", "Printed By: " + oApp.getLogName());
+        params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
+        params.put("sReportNm", pxeModuleName);
+        params.put("sReportDt", CommonUtils.xsDateMedium((Date) oApp.getServerDate()));
+        params.put("sBranchNm", oApp.getBranchName());
+        params.put("sAddressx", oApp.getAddress());
+        params.put("sTransNox", oTrans.getMasterModel().getTransactionNumber());
+        params.put("sTranDte", CommonUtils.xsDateMedium((Date) oTrans.getMasterModel().getTransaction()));
+        params.put("sRemarks", oTrans.getMasterModel().getRemarks());
+
+// Define report file paths
+        String sourceFileName = "D://GGC_Maven_Systems/Reports/InventoryRequestSPROQ.jasper";
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(R1data);
+
+        try {
+// Fill the report
+            jasperPrint = JasperFillManager.fillReport(sourceFileName, params, dataSource);
+
+// Show the report
+            if (jasperPrint != null) {
+                jrViewer = new JRViewer(jasperPrint);
+                jrViewer.setFitPageZoomRatio();
+
+                Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+                int width = (int) (screenBounds.getWidth() * .6);
+                int height = (int) (screenBounds.getHeight() * .82);
+                
+                // Create a new JFrame for the JasperViewer
+                JFrame frame = new JFrame(pxeModuleName + categForm);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setResizable(false); // Set the frame to be non-resizable
+                frame.setPreferredSize(new Dimension(width, height)); // Adjust width and height as needed
+                frame.add(jrViewer);
+                
+
+// Add a window listener to reset the flag when the frame is closed
+                frame.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        isReportRunning = false; // Reset the flag when the window is closed
+                    }
+                });
+
+// Pack the frame to fit the components and make it visible
+                frame.pack();
+                frame.setLocationRelativeTo(null); // Center the frame on the screen
+                frame.setVisible(true);
+            }
+        } catch (JRException ex) {
+            Logger.getLogger(InvRequestROQSPController.class.getName())
+                    .log(Level.SEVERE, "Error filling report", ex);
+            isReportRunning = false; // Reset the flag in case of error
+        }
+
+        return true;
+    }
 }

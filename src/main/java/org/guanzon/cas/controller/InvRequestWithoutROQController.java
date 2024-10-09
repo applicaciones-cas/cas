@@ -5,6 +5,7 @@
 package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -61,6 +62,7 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javax.swing.JFrame;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.swing.JRViewer;
@@ -86,6 +88,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
     private JasperPrint jasperPrint;
     private JRViewer jrViewer;
     private String categForm = "";
+    private boolean isReportRunning = false; // Flag to track if report is running
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -314,7 +317,12 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
 
                 case "btnPrint":
                     if (pnEditMode == 1 && ShowMessageFX.YesNo("Do you want to print this record?", "Computerized Accounting System", pxeModuleName)) {
-                        loadPrint();
+                        // Check if the report is already running
+                        if (!isReportRunning) {
+                            loadPrint(); // Call loadPrint only if the report is not running
+                        } else {
+                            ShowMessageFX.Warning("Report already running.", "Warning", "Please close the existing report before opening a new one.");
+                        }
                     }
                     break;
 
@@ -841,33 +849,6 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         initButton(pnEditMode);
     }
 
-//    private boolean loadPrint() {
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("sPrintdBy", System.getProperty("user.name"));
-//        params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
-//        params.put("sCompnyNm", "Guanzon Group of Companies");        
-//        params.put("sReportNm", pxeModuleName);
-//        params.put("sBranchNm", oApp.getBranchName());
-//        params.put("sAddressx", oApp.getAddress());
-//
-//        String sourceFileName = "D://GGC_Maven_Systems/Reports/InvRequest.jasper";
-//        String printFileName = null;
-//        JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(R1data);
-//        try {
-//            jasperPrint = JasperFillManager.fillReport(
-//                    sourceFileName, params, beanColDataSource1);
-//
-//            printFileName = jasperPrint.toString();
-//            if (printFileName != null) {
-//                jrViewer = new JRViewer(jasperPrint);
-//                jrViewer.setFitPageZoomRatio();
-//                JasperViewer.viewReport(jasperPrint, false);
-//            }
-//        } catch (JRException ex) {
-//            Logger.getLogger(InvRequestWithoutROQController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return true;
-//    }
     private boolean loadPrint() {
         JSONObject loJSON = new JSONObject();
         if (oTrans.getMasterModel().getTransactionNumber() == null) {
@@ -877,6 +858,15 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
             return false;
         }
 
+        // Check if the report is already running
+        if (isReportRunning) {
+            ShowMessageFX.Warning("Report already running.", "Warning", "Please close the existing report before opening a new one.");
+            return false;
+        }
+
+        // Set the flag to true
+        isReportRunning = true;
+
         // Prepare report parameters
         Map<String, Object> params = new HashMap<>();
         params.put("sPrintdBy", "Printed By: " + oApp.getLogName());
@@ -885,13 +875,12 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         params.put("sReportDt", CommonUtils.xsDateMedium((Date) oApp.getServerDate()));
         params.put("sBranchNm", oApp.getBranchName());
         params.put("sAddressx", oApp.getAddress());
-        
         params.put("sTransNox", oTrans.getMasterModel().getTransactionNumber());
         params.put("sTranDte", CommonUtils.xsDateMedium((Date) oTrans.getMasterModel().getTransaction()));
         params.put("sRemarks", oTrans.getMasterModel().getRemarks());
 
         // Define report file paths
-        String sourceFileName = "D://GGC_Maven_Systems/Reports/InventoryRequest.jasper";
+        String sourceFileName = "D://GGC_Maven_Systems/Reports/InventoryRequestROQ.jasper";
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(R1data);
 
         try {
@@ -902,15 +891,38 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
             if (jasperPrint != null) {
                 jrViewer = new JRViewer(jasperPrint);
                 jrViewer.setFitPageZoomRatio();
-                JasperViewer.viewReport(jasperPrint, false);
+
+                Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+                int width = (int) (screenBounds.getWidth() * .6);
+                int height = (int) (screenBounds.getHeight() * .82);
+                
+                // Create a new JFrame for the JasperViewer
+                JFrame frame = new JFrame(pxeModuleName + categForm);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setResizable(false); // Set the frame to be non-resizable
+                frame.setPreferredSize(new Dimension(width, height)); // Adjust width and height as needed
+                frame.add(jrViewer);
+                
+                // Add a window listener to reset the flag when the frame is closed
+                frame.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        isReportRunning = false; // Reset the flag when the window is closed
+                    }
+                });
+
+                // Pack the frame to fit the components and make it visible
+                frame.pack();
+                frame.setLocationRelativeTo(null); // Center the frame on the screen
+                frame.setVisible(true);
             }
         } catch (JRException ex) {
             Logger.getLogger(InvRequestWithoutROQController.class.getName())
                     .log(Level.SEVERE, "Error filling report", ex);
+            isReportRunning = false; // Reset the flag in case of error
         }
 
         return true;
     }
 
-   
 }

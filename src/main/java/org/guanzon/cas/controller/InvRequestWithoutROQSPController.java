@@ -5,6 +5,7 @@
 package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.awt.Dimension;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -22,6 +23,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -39,6 +41,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Screen;
+import javax.swing.JFrame;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -71,6 +75,7 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
     private int pnRow = 0;
     private JasperPrint jasperPrint;
     private JRViewer jrViewer;
+    private boolean isReportRunning = false; // Flag to track if report is running
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -763,36 +768,68 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
             return false;
         }
 
-        // Prepare report parameters
-        Map<String, Object> params = new HashMap<>();        
+// Check if the report is already running
+        if (isReportRunning) {
+            ShowMessageFX.Warning("Report already running.", "Warning", "Please close the existing report before opening a new one.");
+            return false;
+        }
+
+// Set the flag to true
+        isReportRunning = true;
+
+// Prepare report parameters
+        Map<String, Object> params = new HashMap<>();
         params.put("sPrintdBy", "Printed By: " + oApp.getLogName());
         params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
         params.put("sReportNm", pxeModuleName);
         params.put("sReportDt", CommonUtils.xsDateMedium((Date) oApp.getServerDate()));
         params.put("sBranchNm", oApp.getBranchName());
         params.put("sAddressx", oApp.getAddress());
-        
         params.put("sTransNox", oTrans.getMasterModel().getTransactionNumber());
         params.put("sTranDte", CommonUtils.xsDateMedium((Date) oTrans.getMasterModel().getTransaction()));
         params.put("sRemarks", oTrans.getMasterModel().getRemarks());
 
-        // Define report file paths
-        String sourceFileName = "D://GGC_Maven_Systems/Reports/InventoryRequestSP.jasper";
+// Define report file paths
+        String sourceFileName = "D://GGC_Maven_Systems/Reports/InventoryRequestGI.jasper";
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(R1data);
 
         try {
-            // Fill the report
+// Fill the report
             jasperPrint = JasperFillManager.fillReport(sourceFileName, params, dataSource);
 
-            // Show the report
+// Show the report
             if (jasperPrint != null) {
                 jrViewer = new JRViewer(jasperPrint);
                 jrViewer.setFitPageZoomRatio();
-                JasperViewer.viewReport(jasperPrint, false);
+
+                Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+                int width = (int) (screenBounds.getWidth() * .6);
+                int height = (int) (screenBounds.getHeight() * .82);
+                
+                // Create a new JFrame for the JasperViewer
+                JFrame frame = new JFrame(pxeModuleName);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setResizable(false); // Set the frame to be non-resizable
+                frame.setPreferredSize(new Dimension(width, height)); // Adjust width and height as needed
+                frame.add(jrViewer);
+                
+// Add a window listener to reset the flag when the frame is closed
+                frame.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                        isReportRunning = false; // Reset the flag when the window is closed
+                    }
+                });
+
+// Pack the frame to fit the components and make it visible
+                frame.pack();
+                frame.setLocationRelativeTo(null); // Center the frame on the screen
+                frame.setVisible(true);
             }
         } catch (JRException ex) {
-            Logger.getLogger(InvRequestWithoutROQController.class.getName())
+            Logger.getLogger(InvRequestHistoryGIController.class.getName())
                     .log(Level.SEVERE, "Error filling report", ex);
+            isReportRunning = false; // Reset the flag in case of error
         }
 
         return true;
