@@ -526,7 +526,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
 
                     case 3:
                         /*sSupplier*/
-                        poJSON = oTrans.searchMaster(4, lsValue, false);
+                        poJSON = oTrans.searchMaster(3, lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -647,6 +647,10 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
         
 
         txtField03.setText(oTrans.getMasterModel().getSupplierName());
+        txtField05.setText(oTrans.getMasterModel().getAddress());
+        txtField07.setText(oTrans.getMasterModel().getContactNo());
+        
+        
         txtField04.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getModifiedDate()));
 
         txtField09.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getValidity()));
@@ -765,6 +769,7 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
                         "",
                         oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString(),
                         oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString() ));
+                
             }
 
         }
@@ -1129,6 +1134,35 @@ public class PO_QuotationController implements Initializable, ScreenInterface {
                     }
 
                     poJSON = oTrans.setDetail(pnDetailRow, "nDiscRate", zz);
+                    
+                    
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+
+                    loadTableDetail();
+                    break;
+                    
+                      case 7:
+                    /*this must be numeric*/
+                    Double z = 0.00;
+                    try {
+
+                        z = Double.valueOf(lsValue);
+                        if (z > 99999999) {
+                            z = 0.00;
+
+                            ShowMessageFX.Warning("Please input not greater than 99999999", pxeModuleName, "");
+                            txtField.requestFocus();
+                        }
+                    } catch (Exception e) {
+                        ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
+                        txtField.requestFocus();
+                    }
+
+                    poJSON = oTrans.setDetail(pnDetailRow, "nUnitPrce", z);
                     
                     
                     if ("error".equals((String) poJSON.get("result"))) {
