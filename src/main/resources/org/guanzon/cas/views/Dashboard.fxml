@@ -253,6 +253,7 @@
                                                 <Menu mnemonicParsing="false" text="_Purchasing">
                                                     <items>
                                           <MenuItem fx:id="mnuAccountsAccreditation" mnemonicParsing="false" onAction="#mnuAccountsAccreditation_Clicked" text="Accounts Accreditations" />
+                                          <MenuItem fx:id="mnuPurchaseOrderMC" mnemonicParsing="false" onAction="#mnuPurchaseOrderMCClick" text="Purchase Order" />
                                           <Menu mnemonicParsing="false" text="PO Quotation">
                                             <items>
                                                 <MenuItem fx:id="mnuPOQuotation" mnemonicParsing="false" onAction="#mnuPOQuotationClick" text="PO Quotation" />

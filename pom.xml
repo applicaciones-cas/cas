@@ -136,8 +136,10 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>7.0.0</version> <!-- JasperReports 7.0 -->
+            <version>6.19.0</version>
+            <type>jar</type>
         </dependency>
+        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -172,6 +174,18 @@
             <groupId>org.guanzon</groupId>
             <artifactId>appdriver-base</artifactId>
             <version>0.1-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.guanzon</groupId>
+            <artifactId>cas-purchasing</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.1</version>
             <type>jar</type>
         </dependency>
     </dependencies>
