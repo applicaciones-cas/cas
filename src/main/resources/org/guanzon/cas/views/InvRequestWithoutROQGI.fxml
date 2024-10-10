@@ -94,6 +94,25 @@
                               <Blend />
                            </effect>
                         </Button>
+                        <Button fx:id="btnApprove" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Approve">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="CHECK_CIRCLE" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnCancelTrans" contentDisplay="TOP" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Disapprove" textAlignment="CENTER">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="TIMES_CIRCLE" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </Button>
                         <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Cancel">
                            <graphic>
                               <FontAwesomeIconView glyphName="CLOSE" size="20" />

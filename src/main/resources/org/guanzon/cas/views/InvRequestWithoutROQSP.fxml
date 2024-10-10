@@ -102,6 +102,25 @@
                               <Blend />
                            </effect>
                         </Button>
+                        <Button fx:id="btnApprove" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Approve">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="CHECK_CIRCLE" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnCancelTrans" contentDisplay="TOP" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Disapprove" textAlignment="CENTER">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="TIMES_CIRCLE" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </Button>
                         <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Close">
                            <graphic>
                               <FontAwesomeIconView glyphName="POWER_OFF" size="20" />

@@ -358,6 +358,7 @@ public class InvRequestHistoryController implements Initializable, ScreenInterfa
         }
         R1data.clear();
         txtArea01.clear();
+        lblStatus.setText("UNKNOWN");
     }
 
 
