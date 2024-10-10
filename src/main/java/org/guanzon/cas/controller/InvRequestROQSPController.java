@@ -104,6 +104,8 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
             btnDelItem,
             btnCancel,
             btnClose,
+            btnCancelTrans,
+            btnApprove,
             btnStatistic;
 
     @FXML
@@ -171,6 +173,9 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
         btnAddItem.setOnAction(this::handleButtonAction);
         btnDelItem.setOnAction(this::handleButtonAction);
         btnPrint.setOnAction(this::handleButtonAction);
+        btnCancelTrans.setOnAction(this::handleButtonAction);
+        btnApprove.setOnAction(this::handleButtonAction);
+        
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -305,7 +310,36 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
                         loadPrint();
                     }
                     break;
-
+                case "btnCancelTrans":
+                    if (pnEditMode == 1) {
+                        if (ShowMessageFX.YesNo("Do you really want to cancel this transaction?", "Computerized Acounting System", pxeModuleName)) {
+                            poJSON = oTrans.cancelTrans(oTrans.getMasterModel().getTransactionNumber());
+                            System.out.println(poJSON.toJSONString());
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
+                            }
+                            ShowMessageFX.Information("Transaction cancelled succesfully.", "Computerized Acounting System", pxeModuleName);
+                            clearAllFields();
+                            initTrans();
+                            initTabAnchor();
+                        }
+                    }
+                case "btnApprove":
+                    if (pnEditMode == 1) {
+                        if (ShowMessageFX.YesNo("Do you really want to post this transaction?", "Computerized Acounting System", pxeModuleName)) {
+                            poJSON = oTrans.postTransaction(oTrans.getMasterModel().getTransactionNumber());
+                            System.out.println(poJSON.toJSONString());
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
+                            }
+                            ShowMessageFX.Information("Transaction successfully approve.", "Computerized Acounting System", pxeModuleName);
+                            clearAllFields();
+                            initTrans();
+                            initTabAnchor();
+                        }
+                    }
             }
         }
     }
@@ -326,6 +360,7 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
         }
         R1data.clear();
         txtArea01.clear();
+        lblStatus.setText("UNKNOWN");
     }
 
 
@@ -584,6 +619,10 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
         btnNew.setManaged(!lbShow);
         btnUpdate.setManaged(!lbShow);
         btnClose.setManaged(!lbShow);
+        btnCancelTrans.setVisible(!lbShow);
+        btnCancelTrans.setManaged(!lbShow);
+        btnApprove.setVisible(!lbShow);
+        btnApprove.setManaged(!lbShow);
 
         btnAddItem.setVisible(false);
         btnAddItem.setManaged(false);

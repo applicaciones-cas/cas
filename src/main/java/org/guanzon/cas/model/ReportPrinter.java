@@ -78,6 +78,7 @@ public class ReportPrinter {
 // Center the stage on the screen
                 stage.setX((screenBounds.getWidth() - width) / 2);
                 stage.setY((screenBounds.getHeight() - height) / 2);
+//                stage.setAlwaysOnTop(true);
 
                 stage.setOnCloseRequest(event -> isReportRunning = false); // Reset the flag when the window is closed
 
