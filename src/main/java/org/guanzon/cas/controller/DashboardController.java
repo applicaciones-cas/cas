@@ -344,6 +344,9 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/PO_Quotation.fxml":
                 return "Purchase Quotation";
                 
+            case "/org/guanzon/cas/views/PurchaseOrderMC.fxml":
+                return "Purchase Order";
+                
                 
             /*History Menu*/
             case "/org/guanzon/cas/views/InvRequestHistory.fxml":
@@ -739,6 +742,9 @@ public class DashboardController implements Initializable {
                 
             case "/org/guanzon/cas/views/PO_Quotation.fxml":
                 return new PO_QuotationController();
+                
+            case "/org/guanzon/cas/views/PurchaseOrderMC.fxml":
+                return new PurchaseOrderMCController();
                
             /*History Menu*/
             
@@ -1234,6 +1240,14 @@ public class DashboardController implements Initializable {
     @FXML
     private void mnuPOQuotationRequestClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/PO_Quotation_Request.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    @FXML
+    private void mnuPurchaseOrderMCClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/PurchaseOrderMC.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
