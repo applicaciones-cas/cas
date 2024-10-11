@@ -773,14 +773,14 @@ public class Inventory implements GRecord{
                     loJSON.put("message", "No record found.");
                     return loJSON;
                 }
-            case 10: //sBrandCde
+            case 10: //sBrandIDx
                 Brand loBrands = new Brand(poGRider, true);
                 loBrands.setRecordStatus(psTranStatus);
                 loJSON = loBrands.searchRecord(fsValue, fbByCode);
 
                 if (loJSON != null){
 //                    setMaster(fnCol, (String) loBrands.getMaster("sBrandCde"));
-                    poModel.setBrandID((String) loBrands.getMaster("sBrandCde"));
+                    poModel.setBrandID((String) loBrands.getMaster("sBrandIDx"));
                     return setMaster("xBrandNme", (String) loBrands.getMaster("sDescript"));
                 } else {
                     loJSON = new JSONObject();
@@ -788,27 +788,27 @@ public class Inventory implements GRecord{
                     loJSON.put("message", "No record found.");
                     return loJSON;
                 }
-            case 11: //sModelCde
+            case 11: //sModelIDx
                 Model loModel = new Model(poGRider, false);
                 loModel.setRecordStatus(psTranStatus);
                 loJSON = loModel.searchRecord(fsValue, fbByCode);
 
                 if (loJSON != null){
-                    setMaster(fnCol, (String) loModel.getMaster("sModelCde"));
-                    return setMaster("xModelNme", (String) loModel.getMaster("sModelNme"));
+                    setMaster(fnCol, (String) loModel.getMaster("sModelIDx"));
+                    return setMaster("xModelNme", (String) loModel.getMaster("sDescript"));
                 } else {
                     loJSON = new JSONObject();
                     loJSON.put("result", "error");
                     loJSON.put("message", "No record found.");
                     return loJSON;
                 }
-            case 12: //sColorCde
+            case 12: //sColorIDx
                 Color loColor = new Color(poGRider, false);
                 loColor.setRecordStatus(psTranStatus);
                 loJSON = loColor.searchRecord(fsValue, fbByCode);
 
                 if (loJSON != null){
-                    setMaster(fnCol, (String) loColor.getMaster("sColorCde"));
+                    setMaster(fnCol, (String) loColor.getMaster("sColorIDx"));
                     return setMaster("xColorNme", (String) loColor.getMaster("sDescript"));
                 } else {
                     loJSON = new JSONObject();

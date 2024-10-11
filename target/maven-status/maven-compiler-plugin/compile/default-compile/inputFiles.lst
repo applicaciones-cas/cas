@@ -27,14 +27,17 @@ D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelCategory4.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\Inv_Request.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\request\approval\Inv_Request_General_Approval.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\request\issuance\Inv_Request_General_Issuance.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\Inv_Request_Without_ROQ.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\Inv_Request_General.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\request\RequestApprovalController.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\Inv_Request_MP.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInventoryStockRequestCancelMaster.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\request\approval\Inv_Request_MC_Approval.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\request\issuance\Inv_Request_MP_Issuance.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\request\RequestController.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\InventorySubUnit.java
+D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\request\issuance\Inv_Request_MC_Issuance.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\stock\request\issuance\Inv_Request_SP_Issuance.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\resultSet2XML\ModelInvSerial.java
 D:\Guanzon latest\computerized accounting system\cas-inventory\src\main\java\org\guanzon\cas\inventory\base\Inventory.java
