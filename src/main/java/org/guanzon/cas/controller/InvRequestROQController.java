@@ -5,8 +5,6 @@
 package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -15,8 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -25,7 +21,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -33,7 +28,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
@@ -44,12 +38,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.Screen;
-import javax.swing.JFrame;
-import javax.swing.JRootPane;
-import javax.swing.border.LineBorder;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.swing.JRViewer;
@@ -314,7 +302,7 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
                 case "btnCancelTrans":
                     if (pnEditMode == 1) {
                         if (ShowMessageFX.YesNo("Do you really want to cancel this transaction?", "Computerized Acounting System", pxeModuleName)) {
-                            poJSON = oTrans.cancelTrans(oTrans.getMasterModel().getTransactionNumber());
+                            poJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getTransactionNumber());
                             System.out.println(poJSON.toJSONString());
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -326,6 +314,7 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
                             initTabAnchor();
                         }
                     }
+                    break;
                 case "btnApprove":
                     if (pnEditMode == 1) {
                         if (ShowMessageFX.YesNo("Do you really want to post this transaction?", "Computerized Acounting System", pxeModuleName)) {
@@ -341,6 +330,7 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
                             initTabAnchor();
                         }
                     }
+                    break;
             }
         }
     }
@@ -410,7 +400,7 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
         }
 
         TextArea txtArea = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(txtArea.getId().substring(8, 10));
+        int lnIndex = Integer.parseInt(txtArea.getId().substring(7, 9));
         String lsValue = (txtArea.getText() == null ? "" : txtArea.getText());
         JSONObject jsonObject = new JSONObject();
         if (lsValue == null) {
@@ -840,6 +830,7 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
         }
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITH_ROQ);
         oTrans.setTransactionStatus("0123");
+        oTrans.isHistory(false);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }

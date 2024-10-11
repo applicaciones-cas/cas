@@ -5,11 +5,7 @@
 package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -17,31 +13,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
@@ -51,7 +37,6 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -62,20 +47,10 @@ import org.guanzon.cas.inventory.stock.Inv_Request;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
 import org.guanzon.cas.model.ModelStockRequest;
 import org.json.simple.JSONObject;
-import javafx.stage.Modality;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javax.swing.JFrame;
-import javax.swing.JRootPane;
-import javax.swing.border.LineBorder;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.swing.JRViewer;
-import net.sf.jasperreports.view.JasperViewer;
-import static org.apache.commons.lang3.StringUtils.overlay;
 import org.guanzon.cas.model.ReportPrinter;
-import org.json.simple.JSONArray;
 
 /**
  * FXML Controller class
@@ -342,7 +317,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                 case "btnCancelTrans":
                     if (pnEditMode == 1) {
                         if (ShowMessageFX.YesNo("Do you really want to cancel this transaction?", "Computerized Acounting System", pxeModuleName)) {
-                            poJSON = oTrans.cancelTrans(oTrans.getMasterModel().getTransactionNumber());
+                            poJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getTransactionNumber());
                             System.out.println(poJSON.toJSONString());
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -354,6 +329,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                             initTabAnchor();
                         }
                     }
+                    break;
                 case "btnApprove":
                     if (pnEditMode == 1) {
                         if (ShowMessageFX.YesNo("Do you really want to post this transaction?", "Computerized Acounting System", pxeModuleName)) {
@@ -369,6 +345,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                             initTabAnchor();
                         }
                     }
+                    break;
             }
         }
     }
@@ -438,7 +415,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         }
 
         TextArea txtArea = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(txtArea.getId().substring(8, 10));
+        int lnIndex = Integer.parseInt(txtArea.getId().substring(7, 9));
         String lsValue = (txtArea.getText() == null ? "" : txtArea.getText());
         JSONObject jsonObject = new JSONObject();
         if (lsValue == null) {
@@ -531,14 +508,15 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                     break;
 
                 case 14:/*QTY Request*/
-                    if (lsValue.matches("\\d*")) {
+                    if (lsValue.matches("\\d{0,3}")) { // Allow up to 3 digits
                         int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
                         oTrans.getDetailModel().get(pnRow).setQuantity(qty);
                         loadItemData();
                         break;
                     } else {
-                        ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information("Invalid Input: Please enter a valid quantity", "Computerized Accounting System", pxeModuleName);
                     }
+
                     txtField.setText("0");
                     txtField.requestFocus();
                     break;
@@ -893,10 +871,11 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         }
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
+        oTrans.isHistory(false);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
-private boolean loadPrint() {
+    private boolean loadPrint() {
         JSONObject loJSON = new JSONObject();
         if (oTrans.getMasterModel().getTransactionNumber() == null) {
             ShowMessageFX.Warning("Unable to print transaction.", "Warning", "No record loaded.");
@@ -921,7 +900,6 @@ private boolean loadPrint() {
 
         // Define report file paths
         String sourceFileName = "D://GGC_Maven_Systems/Reports/InventoryRequest.jasper";
-        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(R1data);
 
         return printer.loadAndShowReport(sourceFileName, params, R1data, pxeModuleName);
     }

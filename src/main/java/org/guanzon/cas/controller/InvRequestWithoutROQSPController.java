@@ -5,7 +5,6 @@
 package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import java.awt.Dimension;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -13,8 +12,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,7 +20,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -41,14 +37,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.Screen;
-import javax.swing.JFrame;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.swing.JRViewer;
-import net.sf.jasperreports.view.JasperViewer;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -280,7 +271,6 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
                     pnEditMode = oTrans.getEditMode();
                     loadItemData();
                     tblDetails.getSelectionModel().select(pnRow + 1);
-
                     break;
 
                 case "btnDelItem":
@@ -294,12 +284,16 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
                     break;
                 case "btnCancel":
                     if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-
-                        if (pnEditMode == EditMode.UPDATE) {
-                            oTrans.cancelUpdate();
-                        }
-                        initTrans();
-                        initTabAnchor();
+                            poJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getTransactionNumber());
+                            System.out.println(poJSON.toJSONString());
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
+                            }
+                            ShowMessageFX.Information("Transaction cancelled succesfully.", "Computerized Acounting System", pxeModuleName);
+                            clearAllFields();
+                            initTrans();
+                            initTabAnchor();
 
                     }
                     break;
@@ -311,7 +305,7 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
                 case "btnCancelTrans":
                     if (pnEditMode == 1) {
                         if (ShowMessageFX.YesNo("Do you really want to cancel this transaction?", "Computerized Acounting System", pxeModuleName)) {
-                            poJSON = oTrans.cancelTrans(oTrans.getMasterModel().getTransactionNumber());
+                            poJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getTransactionNumber());
                             System.out.println(poJSON.toJSONString());
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -323,6 +317,7 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
                             initTabAnchor();
                         }
                     }
+                    break;
                 case "btnApprove":
                     if (pnEditMode == 1) {
                         if (ShowMessageFX.YesNo("Do you really want to post this transaction?", "Computerized Acounting System", pxeModuleName)) {
@@ -338,6 +333,7 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
                             initTabAnchor();
                         }
                     }
+                    break;
             }
         }
     }
@@ -404,7 +400,7 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
         }
 
         TextArea txtArea = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        int lnIndex = Integer.parseInt(txtArea.getId().substring(8, 10));
+        int lnIndex = Integer.parseInt(txtArea.getId().substring(7, 9));
         String lsValue = (txtArea.getText() == null ? "" : txtArea.getText());
         JSONObject jsonObject = new JSONObject();
         if (lsValue == null) {
@@ -797,6 +793,7 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
         oTrans.setType(RequestControllerFactory.RequestType.SP);
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
+        oTrans.isHistory(false);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
