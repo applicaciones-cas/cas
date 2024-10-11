@@ -49,8 +49,13 @@ public class Inv_Request implements RequestController  {
         poTrans.setCategoryType(categ_type);
     }
     
+    @Override
+    public void isHistory(boolean fbValue) {
+        poTrans.isHistory(fbValue);
+    }
     public void setWithUI(boolean fbValue){
         p_bWithUI = fbValue;
+        poTrans.setWithUI(fbValue);
 
     }
     public Inv_Request(GRider foGRider, boolean fbWthParent) {
@@ -234,5 +239,6 @@ public class Inv_Request implements RequestController  {
     public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModelOthers() {
        return poTrans.getDetailModelOthers();
     }
+
     
 }

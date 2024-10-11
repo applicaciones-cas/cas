@@ -1,11 +1,15 @@
 testInventoryLedger.class
+testInventory.class
+testInvRequestMC.class
+testInvStockRequestCancel.class
+testInvRequestGeneral.class
 testInvStockRequest.class
 testInventoryTrans.class
 testPOQuotationRequest.class
-testInventory.class
 testInventorySerial.class
 testInventorySubItem.class
 testInventoryMaster.class
-testInvStockRequestCancel.class
 testPOQuotation.class
 testInventoryHistLedger.class
+testInvRequestSP.class
+testInvRequestMP.class

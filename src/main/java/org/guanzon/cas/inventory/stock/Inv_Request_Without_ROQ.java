@@ -21,6 +21,7 @@ import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Master;
 import org.guanzon.cas.inventory.stock.request.RequestController;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
+import org.guanzon.cas.inventory.stock.request.cancel.InvRequestCancel;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Inv_Type;
 import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_MC_Detail;
@@ -50,7 +51,14 @@ public class Inv_Request_Without_ROQ implements RequestController {
 
     int roqSaveCount = 0;
     JSONObject poJSON;
+    private boolean pbIsHistory = false;
 
+    @Override
+    public void isHistory(boolean fbValue) {
+        pbIsHistory = fbValue;
+    }
+
+    @Override
     public void setWithUI(boolean fbValue){
         p_bWithUI = fbValue;
     }
@@ -309,6 +317,42 @@ public class Inv_Request_Without_ROQ implements RequestController {
                 return poJSON;
             }
 
+            if(pbIsHistory){
+                InvRequestCancel loCancel = new InvRequestCancel(poGRider, pbWthParent);
+                loCancel.setType(type);
+                loCancel.setCategoryType(category_type);
+                loCancel.setTransactionStatus(psTranStatus);
+                poJSON = loCancel.newTransaction();
+
+                if ("error".equals((String) poJSON.get("result"))) {
+                    return poJSON;
+                }
+                loCancel.getMasterModel().setBranchCode((String)poModelMaster.getBranchCode());
+                loCancel.getMasterModel().setCategoryCode((String)poModelMaster.getCategoryCode());
+                loCancel.getMasterModel().setTransaction(poGRider.getServerDate());
+                loCancel.getMasterModel().setOrderNumber(poModelMaster.getTransactionNumber());
+                loCancel.getMasterModel().setRemarks(poModelMaster.getRemarks());
+                loCancel.getMasterModel().setApproved(poModelMaster.getApproved());
+                loCancel.getMasterModel().setApprovedDate(poModelMaster.getApprovedDate());
+                loCancel.getMasterModel().setApproveCode(poModelMaster.getApproveCode());
+
+                for(int lnCtr = 0; lnCtr < poModelDetail.size(); lnCtr++){
+                    loCancel.getDetailModel(lnCtr).setOrderNumber(poModelMaster.getTransactionNumber());
+                    loCancel.getDetailModel(lnCtr).setStockID(poModelDetail.get(lnCtr).getStockID());
+                    loCancel.getDetailModel(lnCtr).setBarcode(poModelDetail.get(lnCtr).getBarcode());
+                    loCancel.getDetailModel(lnCtr).setQuantity(Integer.parseInt(poModelDetail.get(lnCtr).getQuantity().toString()));
+                    loCancel.getDetailModel(lnCtr).setNotes(poModelDetail.get(lnCtr).getNotes());
+
+                    loCancel.AddModelDetail();
+                }
+
+
+                poJSON = loCancel.saveTransaction();
+
+                if ("error".equals((String) poJSON.get("result"))) {
+                    return poJSON;
+                }
+            }
             poJSON = poModelMaster.saveRecord();
         } else {
             poJSON = new JSONObject();
@@ -831,13 +875,15 @@ public class Inv_Request_Without_ROQ implements RequestController {
             ResultSet loRS = poGRider.executeQuery(lsSQLs);
             backupRecords = new ArrayList<>();
             try {
+                int lnCtr = 0;
                 while (loRS.next()) {
-                    
+
                     backupRecords.add(new Model_Inv_Stock_Request_Detail(poGRider));
-                    poJSON = backupRecords.get(poModelDetail.size() - 1).openRecord(loRS.getString("sTransNox"), loRS.getString("sStockIDx"));
+                    poJSON = backupRecords.get(lnCtr).openRecord(loRS.getString("sTransNox"), loRS.getString("sStockIDx"));
                     if ("error".equals((String) poJSON.get("result"))) {
                         return poJSON;
                     }
+                    lnCtr++;
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Inv_Request_SP.class.getName()).log(Level.SEVERE, null, ex);

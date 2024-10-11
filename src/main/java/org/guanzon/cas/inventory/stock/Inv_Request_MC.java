@@ -36,7 +36,7 @@ public class Inv_Request_MC implements RequestController {
     int pnEditMode;
     String psTranStatus;
 
-    private boolean p_bWithUI = true;
+    private boolean p_bWithUI;
     Model_Inv_Stock_Request_Master poModelMaster;
     ArrayList<Model_Inv_Stock_Request_Detail> poModelDetail;
     ArrayList<Model_Inv_Stock_Request_Detail> poModelDetailOthers;
@@ -47,8 +47,16 @@ public class Inv_Request_MC implements RequestController {
 
     int roqSaveCount = 0;
     JSONObject poJSON;
+    private boolean pbIsHistory = false;
 
+    @Override
+    public void isHistory(boolean fbValue) {
+        pbIsHistory = fbValue;
+    }
+    
+    @Override
     public void setWithUI(boolean fbValue){
+        System.out.println("fbValue = " + fbValue);
         p_bWithUI = fbValue;
     }
     public Inv_Request_MC(GRider foGRider, boolean fbWthParent) {
@@ -149,7 +157,16 @@ public class Inv_Request_MC implements RequestController {
     @Override
     public JSONObject updateTransaction() {
         poJSON = new JSONObject();
-        poJSON = new JSONObject();
+        
+        if (poModelMaster.getTransactionStatus().equalsIgnoreCase(TransactionStatus.STATE_CLOSED)){
+            poJSON.put("result", "error");
+            poJSON.put("message", "This transaction was already close.");
+            return poJSON;
+        }
+        poJSON = isProcessed("update");
+        if ("error".equals((String) poJSON.get("result"))) {
+            return poJSON;
+        }
         if (pnEditMode != EditMode.READY && pnEditMode != EditMode.UPDATE){
             poJSON.put("result", "error");
             poJSON.put("message", "Invalid edit mode.");
@@ -198,6 +215,9 @@ public class Inv_Request_MC implements RequestController {
             if (!pbWthParent) {
                 poGRider.commitTrans();
             }
+            
+            poJSON.put("result", "success");
+            poJSON.put("message", "Record saved successfully.");
         } else {
             if (!pbWthParent) {
                 poGRider.rollbackTrans();
@@ -303,40 +323,44 @@ public class Inv_Request_MC implements RequestController {
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
             }
-            InvRequestCancel loCancel = new InvRequestCancel(poGRider, pbWthParent);
-            loCancel.setType(type);
-            loCancel.setCategoryType(category_type);
-            loCancel.setTransactionStatus(psTranStatus);
-            poJSON = loCancel.newTransaction();
-            
-            if ("error".equals((String) poJSON.get("result"))) {
-                return poJSON;
-            }
-            loCancel.getMasterModel().setBranchCode((String)poModelMaster.getBranchCode());
-            loCancel.getMasterModel().setCategoryCode((String)poModelMaster.getCategoryCode());
-            loCancel.getMasterModel().setTransaction(poGRider.getServerDate());
-            loCancel.getMasterModel().setOrderNumber(poModelMaster.getTransactionNumber());
-            loCancel.getMasterModel().setRemarks(poModelMaster.getRemarks());
-            loCancel.getMasterModel().setApproved(poModelMaster.getApproved());
-            loCancel.getMasterModel().setApprovedDate(poModelMaster.getApprovedDate());
-            loCancel.getMasterModel().setApproveCode(poModelMaster.getApproveCode());
+            System.out.println("pbIsHistory = " + pbIsHistory);
+            if(pbIsHistory){
+                InvRequestCancel loCancel = new InvRequestCancel(poGRider, pbWthParent);
+                loCancel.setType(type);
+                loCancel.setCategoryType(category_type);
+                loCancel.setTransactionStatus(psTranStatus);
+                poJSON = loCancel.newTransaction();
 
-            for(int lnCtr = 0; lnCtr < poModelDetail.size(); lnCtr++){
-                loCancel.getDetailModel(lnCtr).setOrderNumber(poModelMaster.getTransactionNumber());
-                loCancel.getDetailModel(lnCtr).setStockID(poModelDetail.get(lnCtr).getStockID());
-                loCancel.getDetailModel(lnCtr).setBarcode(poModelDetail.get(lnCtr).getBarcode());
-                loCancel.getDetailModel(lnCtr).setQuantity(Integer.parseInt(poModelDetail.get(lnCtr).getQuantity().toString()));
-                loCancel.getDetailModel(lnCtr).setNotes(poModelDetail.get(lnCtr).getNotes());
-                
-                loCancel.AddModelDetail();
+                if ("error".equals((String) poJSON.get("result"))) {
+                    return poJSON;
+                }
+                loCancel.getMasterModel().setBranchCode((String)poModelMaster.getBranchCode());
+                loCancel.getMasterModel().setCategoryCode((String)poModelMaster.getCategoryCode());
+                loCancel.getMasterModel().setTransaction(poGRider.getServerDate());
+                loCancel.getMasterModel().setOrderNumber(poModelMaster.getTransactionNumber());
+                loCancel.getMasterModel().setRemarks(poModelMaster.getRemarks());
+                loCancel.getMasterModel().setApproved(poModelMaster.getApproved());
+                loCancel.getMasterModel().setApprovedDate(poModelMaster.getApprovedDate());
+                loCancel.getMasterModel().setApproveCode(poModelMaster.getApproveCode());
+
+                for(int lnCtr = 0; lnCtr < poModelDetail.size(); lnCtr++){
+                    loCancel.getDetailModel(lnCtr).setOrderNumber(poModelMaster.getTransactionNumber());
+                    loCancel.getDetailModel(lnCtr).setStockID(poModelDetail.get(lnCtr).getStockID());
+                    loCancel.getDetailModel(lnCtr).setBarcode(poModelDetail.get(lnCtr).getBarcode());
+                    loCancel.getDetailModel(lnCtr).setQuantity(Integer.parseInt(poModelDetail.get(lnCtr).getQuantity().toString()));
+                    loCancel.getDetailModel(lnCtr).setNotes(poModelDetail.get(lnCtr).getNotes());
+
+                    loCancel.AddModelDetail();
+                }
+
+
+                poJSON = loCancel.saveTransaction();
+
+                if ("error".equals((String) poJSON.get("result"))) {
+                    return poJSON;
+                }
             }
             
-            
-            poJSON = loCancel.saveTransaction();
-            
-            if ("error".equals((String) poJSON.get("result"))) {
-                return poJSON;
-            }
             
             poJSON = poModelMaster.saveRecord();
             
@@ -410,11 +434,12 @@ public class Inv_Request_MC implements RequestController {
                     poJSON.put("message", "Please choose a category first..");
                     return poJSON;
                 }
+                System.out.println("searchDetail p_bWithUI = " + p_bWithUI);
                 Inventory loInventory = new Inventory(poGRider, true);
                 loInventory.setRecordStatus(psTranStatus);
                 loInventory.setWithUI(p_bWithUI);
                 poJSON = loInventory.searchRecordWithContition(fsValue, "a.sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()) + " AND a.sCategCd2 != " + SQLUtil.toSQL("0007"), fbByCode);
-
+                System.out.println("poJSON = " + poJSON);
                 if (poJSON != null) {
                     for(int lnCtr = 0; lnCtr < poModelDetail.size(); lnCtr++){
                         if(poModelDetail.get(lnCtr).getStockID().equalsIgnoreCase((String) loInventory.getModel().getStockID())){
@@ -889,13 +914,15 @@ public class Inv_Request_MC implements RequestController {
             ResultSet loRS = poGRider.executeQuery(lsSQLs);
             backupRecords = new ArrayList<>();
             try {
+                int lnCtr = 0;
                 while (loRS.next()) {
-                    
+
                     backupRecords.add(new Model_Inv_Stock_Request_Detail(poGRider));
-                    poJSON = backupRecords.get(poModelDetail.size() - 1).openRecord(loRS.getString("sTransNox"), loRS.getString("sStockIDx"));
+                    poJSON = backupRecords.get(lnCtr).openRecord(loRS.getString("sTransNox"), loRS.getString("sStockIDx"));
                     if ("error".equals((String) poJSON.get("result"))) {
                         return poJSON;
                     }
+                    lnCtr++;
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Inv_Request_SP.class.getName()).log(Level.SEVERE, null, ex);

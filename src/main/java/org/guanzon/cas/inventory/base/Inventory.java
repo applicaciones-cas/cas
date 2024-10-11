@@ -40,7 +40,7 @@ import org.json.simple.JSONObject;
 public class Inventory implements GRecord{
     GRider poGRider;
     boolean pbWthParent;
-    private boolean p_bWithUI = true;
+    private boolean p_bWithUI;
     String psBranchCd;
     boolean pbWtParent;
     public JSONObject poJSON;
@@ -514,9 +514,9 @@ public class Inventory implements GRecord{
             lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
 
         lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
-        System.out.print("this is searchRecordWithContition == " + lsSQL + "\n");
-        
+        System.out.println("this is searchRecordWithContition == " + lsSQL + "\n");
         if(p_bWithUI){
+        System.out.println("p_bWithUI inventory = true");
             poJSON = ShowDialogFX.Search(poGRider,
                     lsSQL,
                     fsValue,
@@ -537,6 +537,14 @@ public class Inventory implements GRecord{
         }
             
         
+        System.out.println("p_bWithUI inventory = false");
+        lsSQL = poModel.getSQL();
+        if (fbByCode)
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sBarCodex = " + SQLUtil.toSQL(fsValue)) + " AND " + lsCondition;
+        else
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%")) + " AND " + lsCondition;
+
+        lsSQL = MiscUtil.addCondition(lsSQL, fsCondition);
         
         lsSQL += " LIMIT 1";
         System.out.print("this is test lsSQL == " + lsSQL + "\n");
@@ -544,6 +552,8 @@ public class Inventory implements GRecord{
         
         try {
             if (!loRS.next()){
+                
+                System.out.println("loRS = loRS.next()");
                 MiscUtil.close(loRS);
                 poJSON.put("result", "error");
                 poJSON.put("message", "No record loaded.");
