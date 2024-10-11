@@ -160,6 +160,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         initTblDetails();
         initTabAnchor();
         lblStatus.setText("UNKNOWN");
+        oTrans.setWithUI(true);
         pbLoaded = true;
     }
 
@@ -250,7 +251,6 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                     break;
 
                 case "btnBrowse":
-                    clearAllFields();
                     poJSON = oTrans.searchTransaction("sTransNox", "", true);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);

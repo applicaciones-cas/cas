@@ -165,6 +165,7 @@ public class InvRequestCancellationGIController implements Initializable, Screen
         initTblDetails();
         initTabAnchor();
         lblStatus.setText("UNKNOWN");
+        oTrans.setWithUI(true);
         pbLoaded = true;
     }
 
@@ -248,7 +249,6 @@ public class InvRequestCancellationGIController implements Initializable, Screen
                     break;
 
                 case "btnBrowse":
-                    clearAllFields();
                     poJSON = oTrans.searchTransaction("sTransNox", "", pbLoaded);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);

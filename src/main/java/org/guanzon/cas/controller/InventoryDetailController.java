@@ -305,7 +305,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         }
         oTrans.setRecordStatus("0123");
 //        dpField01.setValue(LocalDate.now());
-        pnEditMode = EditMode.UNKNOWN;        
+        pnEditMode = EditMode.UNKNOWN;    
+        oTrans.setWithUI(true);    
         initButton(pnEditMode);
         initTabAnchor();
         ClickButton();
@@ -355,6 +356,7 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
                         if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
                             oTrans = new InvMaster(oApp, true);
                             oTrans.setRecordStatus("0123"); 
+                            oTrans.setWithUI(true);
                             pnEditMode = EditMode.UNKNOWN;     
                             initButton(pnEditMode);
                             initTabAnchor();

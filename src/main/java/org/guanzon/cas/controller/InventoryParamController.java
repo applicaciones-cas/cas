@@ -272,9 +272,11 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
         }
+        
         oTrans.setRecordStatus("0123");
         oTrans.getModel().setUnitType("0");
-        pnEditMode = EditMode.UNKNOWN;    
+        pnEditMode = EditMode.UNKNOWN;  
+        oTrans.setWithUI(true);
         InitTextFields();
         initButton(pnEditMode);
         initTabAnchor();
@@ -346,6 +348,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                             clearAllFields();
                             oTrans = new Inventory(oApp, true);
                             oTrans.setRecordStatus("0123");
+                            oTrans.setWithUI(true);
                             pnEditMode = EditMode.UNKNOWN;     
                             initButton(pnEditMode);
                             initTabAnchor();

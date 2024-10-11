@@ -158,6 +158,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         initTblDetails();
         initTabAnchor();
         lblStatus.setText("UNKNOWN");
+        oTrans.setWithUI(true);
         pbLoaded = true;
     }
 
@@ -250,7 +251,6 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                     break;
 
                 case "btnBrowse":
-                    clearAllFields();
                     poJSON = oTrans.searchTransaction("sTransNox", "", pbLoaded);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);

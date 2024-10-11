@@ -155,6 +155,7 @@ public class InvRequestHistoryGIController implements Initializable, ScreenInter
         initTblDetails();
         initTabAnchor();
         lblStatus.setText("UNKNOWN");
+        oTrans.setWithUI(true);
         pbLoaded = true;
     }
 
@@ -795,6 +796,7 @@ public class InvRequestHistoryGIController implements Initializable, ScreenInter
         oTrans.setType(RequestControllerFactory.RequestType.GENERAL);
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
+        oTrans.isHistory(true);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
