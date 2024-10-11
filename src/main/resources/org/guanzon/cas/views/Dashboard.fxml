@@ -312,7 +312,7 @@
                 </AnchorPane>
             </center>
             <bottom>
-                <AnchorPane prefWidth="200.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+                <AnchorPane prefWidth="200.0" style="-fx-background-color: CFCFCF;" BorderPane.alignment="CENTER">
                     <children>
                         <ImageView fitHeight="40.0" fitWidth="441.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <image>

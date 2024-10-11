@@ -642,8 +642,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                     }
                     break;    
                 case 18:/*cost*/
-                   oTrans.getModel().setUnitPrice((Double.parseDouble(lsValue)));
-                   System.out.print( "discount 3 == " + oTrans.getModel().setUnitPrice(Double.parseDouble(lsValue)));
+                   oTrans.getModel().setUnitPrice((Double.parseDouble(lsValue.replace(",", lsValue))));
+                   System.out.print( "discount 3 == " + oTrans.getModel().setUnitPrice(Double.parseDouble(lsValue.replace(",", lsValue))));
                    if ("error".equals((String) jsonObject.get("result"))) {
                         System.err.println((String) jsonObject.get("message"));
                         return;
@@ -651,8 +651,8 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                    txtField.setText(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00"));
                     break;
                 case 19:/*SRP*/
-                   oTrans.getModel().setSelPrice((Double.parseDouble(lsValue)));
-                   System.out.print( "discount 3 == " + oTrans.getModel().setSelPrice(Double.parseDouble(lsValue)));
+                   oTrans.getModel().setSelPrice((Double.parseDouble(lsValue.replace(",", lsValue))));
+                   System.out.print( "discount 3 == " + oTrans.getModel().setSelPrice(Double.parseDouble(lsValue.replace(",", lsValue))));
                    if ("error".equals((String) jsonObject.get("result"))) {
                         System.err.println((String) jsonObject.get("message"));
                         return;
