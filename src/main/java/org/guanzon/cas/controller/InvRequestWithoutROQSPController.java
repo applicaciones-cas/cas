@@ -618,11 +618,6 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
         btnApprove.setVisible(!lbShow);
         btnApprove.setManaged(!lbShow);
 
-        btnAddItem.setVisible(false);
-        btnAddItem.setManaged(false);
-        btnDelItem.setVisible(false);
-        btnDelItem.setManaged(false);
-
     }
 
     private void initTblDetails() {
