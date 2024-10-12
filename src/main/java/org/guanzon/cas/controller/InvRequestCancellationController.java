@@ -824,6 +824,7 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
         oTrans.setTransactionStatus("0123");
         pnEditMode = EditMode.UNKNOWN;
         oTrans.setWithUI(true);
+        oTrans.isHistory(false);
         initButton(pnEditMode);
     }
 

@@ -788,6 +788,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
         oTrans.setWithUI(true);
+        oTrans.isHistory(false);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }

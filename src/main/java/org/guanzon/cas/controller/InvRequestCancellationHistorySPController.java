@@ -801,6 +801,7 @@ public class InvRequestCancellationHistorySPController implements Initializable,
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
         oTrans.setWithUI(true);
+        oTrans.isHistory(true);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
