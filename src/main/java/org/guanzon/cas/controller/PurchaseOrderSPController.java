@@ -42,6 +42,7 @@ import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.inventory.base.PO_Quotation;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.model.ModelPurchaseOrder;
+import org.guanzon.cas.model.ModelPurchaseOrderSP;
 import org.guanzon.cas.model.clients.Model_Client_Institution_Contact;
 import org.guanzon.cas.model.clients.Model_Client_Mobile;
 import org.guanzon.cas.parameters.Branch;
@@ -59,9 +60,9 @@ import org.junit.Assert;
  * @author User
  */
 //PO_Main_1Controller
-public class PurchaseOrderMCController implements Initializable, ScreenInterface {
+public class PurchaseOrderSPController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Purchase Order";
+    private final String pxeModuleName = "Purchase Order SP";
     private GRider oApp;
     private PurchaseOrder oTrans;
     private JSONObject poJSON;
@@ -109,8 +110,8 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     private TableView tblDetails;
 
     @FXML
-    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08, index09, index10, index11;
-    private ObservableList<ModelPurchaseOrder> data = FXCollections.observableArrayList();
+    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08, index09;
+    private ObservableList<ModelPurchaseOrderSP> data = FXCollections.observableArrayList();
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -258,7 +259,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     poJSON = oTrans.AddModelDetail();
                     pnDetailRow = oTrans.getItemCount() - 1;
                     loadTableDetail();
-                } else {
+                }  else {
                     if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
                         poJSON.put("result", "error");
                         poJSON.put("message", "'Please Fill all the required fields'");
@@ -269,11 +270,13 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         }
                     }
                 }
+                
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 }
+               
 
                 break;
             case "btnRemoveItem":
@@ -385,15 +388,13 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
                 loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
 
-                data.add(new ModelPurchaseOrder(String.valueOf(lnCtr + 1),
+                data.add(new ModelPurchaseOrderSP(String.valueOf(lnCtr + 1),
                         (String) loInventory.getMaster("sBarCodex"),
                         (String) oTrans.getDetailModel(lnCtr).getDescription(),
                         (String) loInventory.getMaster("xBrandNme"),
-                        (String) loMdl.getModel().getModelCode(),
                         (String) loMdl.getModel().getModelDescription(),
-                        loMdlVrnt.getModel().getVariantName(),
-                        String.valueOf(loMdl.getModel().getYearModel()),
                         (String) loColor.getModel().getDescription(),
+                        (String) loInventory.getModel().getMeasureName(),
                         oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString(),
                         (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
                 ));
@@ -408,11 +409,9 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 }
 
             } else {
-                data.add(new ModelPurchaseOrder(String.valueOf(lnCtr + 1),
+                data.add(new ModelPurchaseOrderSP(String.valueOf(lnCtr + 1),
                         "",
                         (String) oTrans.getDetailModel(lnCtr).getValue("sDescript"),
-                        "",
-                        "",
                         "",
                         "",
                         "",
@@ -453,8 +452,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
         index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index09.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index10.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index11.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
 
         index01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index02"));
@@ -465,8 +462,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         index07.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index07"));
         index08.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index08"));
         index09.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index09"));
-        index10.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index10"));
-        index11.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index11"));
 
         tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");
@@ -479,7 +474,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     }
 
     private void setSelectedDetail() {
-
         Model_Inv_Stock_Request_Detail loModel_Inv_Stock_Request_Detail;
         loModel_Inv_Stock_Request_Detail = oTrans.GetModel_Inv_Stock_Request_Detail(oTrans.getDetailModel(pnDetailRow).getStockID());
 
@@ -487,7 +481,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         txtDetail02.setText((String) data.get(pnDetailRow).getIndex03());
         txtDetail03.setText(String.format("%.2f", oTrans.getDetailModel(pnDetailRow).getOriginalCost()));
         txtDetail04.setText(String.valueOf(loModel_Inv_Stock_Request_Detail.getApproved()));
-        txtDetail05.setText((String) data.get(pnDetailRow).getIndex10());
+        txtDetail05.setText((String) data.get(pnDetailRow).getIndex08());
         txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getRecOrder()));
         txtDetail07.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQuantity()));
     }
