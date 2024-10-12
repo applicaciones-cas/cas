@@ -794,6 +794,7 @@ public class InvRequestCancellationHistoryGIController implements Initializable,
         oTrans.setType(RequestControllerFactory.RequestType.GENERAL);
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
+        oTrans.setWithUI(true);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }

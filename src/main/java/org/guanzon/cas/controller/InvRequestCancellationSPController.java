@@ -160,7 +160,6 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         initTblDetails();
         initTabAnchor();
         lblStatus.setText("UNKNOWN");
-        oTrans.setWithUI(true);
         pbLoaded = true;
     }
 
@@ -788,6 +787,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         oTrans.setType(RequestControllerFactory.RequestType.SP);
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
+        oTrans.setWithUI(true);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }

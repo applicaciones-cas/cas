@@ -586,7 +586,6 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
                         break;
                 }
             case ENTER:
-
         }
         switch (event.getCode()) {
             case ENTER:
@@ -696,7 +695,7 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
 // Set the value of the DatePicker to the parsed LocalDate
                 dpField01.setValue(localbdate);
             }
-
+            
             switch (oTrans.getMasterModel().getTransactionStatus()) {
                 case "0":
                     lblStatus.setText("OPEN");
@@ -831,9 +830,11 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITH_ROQ);
         oTrans.setTransactionStatus("0123");
         oTrans.isHistory(false);
+        oTrans.setWithUI(true);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
+    
     private boolean loadPrint() {
         JSONObject loJSON = new JSONObject();
         if (oTrans.getMasterModel().getTransactionNumber() == null) {
@@ -863,5 +864,4 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
 
         return printer.loadAndShowReport(sourceFileName, params, R1data, pxeModuleName);
     }
-
 }

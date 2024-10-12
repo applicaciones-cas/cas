@@ -810,6 +810,7 @@ public class InvRequestHistorySPController implements Initializable, ScreenInter
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITH_ROQ);
         oTrans.setTransactionStatus("0123");
         oTrans.isHistory(true);
+        oTrans.setWithUI(true);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }

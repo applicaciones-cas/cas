@@ -158,7 +158,6 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         initTblDetails();
         initTabAnchor();
         lblStatus.setText("UNKNOWN");
-        oTrans.setWithUI(true);
         pbLoaded = true;
     }
 
@@ -872,6 +871,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
         oTrans.isHistory(false);
+        oTrans.setWithUI(true);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }

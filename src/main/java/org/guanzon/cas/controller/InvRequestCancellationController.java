@@ -823,6 +823,7 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
         pnEditMode = EditMode.UNKNOWN;
+        oTrans.setWithUI(true);
         initButton(pnEditMode);
     }
 

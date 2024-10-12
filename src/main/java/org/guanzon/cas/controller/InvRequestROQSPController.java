@@ -795,6 +795,7 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITH_ROQ);
         oTrans.setTransactionStatus("0123");
         oTrans.isHistory(false);
+        oTrans.setWithUI(true);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
