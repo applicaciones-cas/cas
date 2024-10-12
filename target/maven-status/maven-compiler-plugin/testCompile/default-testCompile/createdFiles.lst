@@ -2,7 +2,7 @@ testInventoryLedger.class
 testInventory.class
 testInvRequestMC.class
 testInvStockRequestCancel.class
-testInvRequestGeneral.class
+testInvRequestMPCancel.class
 testInvStockRequest.class
 testInventoryTrans.class
 testPOQuotationRequest.class
@@ -13,3 +13,5 @@ testPOQuotation.class
 testInventoryHistLedger.class
 testInvRequestSP.class
 testInvRequestMP.class
+testInvRequestSPCancel.class
+testInvRequestMCCancel.class

@@ -146,7 +146,7 @@ public class Inv_Request_SP implements RequestController {
         poJSON = new JSONObject();
         
         poModelMaster = new Model_Inv_Stock_Request_Master(poGRider);
-        poModelMaster.openRecord(fsValue);
+        poJSON = poModelMaster.openRecord(fsValue);
         if ("error".equals((String) poJSON.get("result"))) {
             return poJSON;
         }

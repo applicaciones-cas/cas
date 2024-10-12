@@ -37,7 +37,7 @@ public class Inv_Request_MP implements RequestController {
     int pnEditMode;
     String psTranStatus;
 
-    private boolean p_bWithUI = true;
+    private boolean p_bWithUI;
     Model_Inv_Stock_Request_Master poModelMaster;
     ArrayList<Model_Inv_Stock_Request_Detail> poModelDetail;
     ArrayList<Model_Inv_Stock_Request_Detail> poModelDetailOthers;
@@ -520,6 +520,8 @@ public class Inv_Request_MP implements RequestController {
 
         poJSON = new JSONObject();
         System.out.println("searchTransaction = " + lsSQL);
+        System.out.println("p_bWithUI = " + p_bWithUI);
+        
         if (p_bWithUI){
             poJSON = ShowDialogFX.Search(poGRider,
                     lsSQL,
@@ -537,7 +539,11 @@ public class Inv_Request_MP implements RequestController {
                 return openTransaction((String) poJSON.get("sTransNox"));
             }
         }
+        
         //use for testing 
+        lsSQL = MiscUtil.addCondition(getSQL(), " a.sTransNox = "
+                + SQLUtil.toSQL(fsValue) + " AND f.sCategCd1 = '0002' AND " + 
+                 lsCondition + "  GROUP BY a.sTransNox ASC");
         lsSQL += " LIMIT 1";
         System.out.println(lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
