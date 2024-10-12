@@ -232,6 +232,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
+                oTrans.getDetailModel(0).getStockID();
                 poJSON = oTrans.saveTransaction();
 
                 pnEditMode = oTrans.getMasterModel().getEditMode();
@@ -346,14 +347,10 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         txtField07.setText(oTrans.getMasterModel().getRemarks());
         txtField08.setText(oTrans.getMasterModel().getReferenceNo());
         txtField09.setText(oTrans.getMasterModel().getTermName());
+        txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
+        txtField11.setText(String.valueOf(oTrans.getMasterModel().getAddDiscount()));
+        txtField12.setText(String.valueOf(oTrans.getMasterModel().getTransactionTotal()));
 
-        try {
-            txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
-            txtField11.setText(String.valueOf(oTrans.getMasterModel().getAddDiscount()));
-            txtField12.setText(String.valueOf(oTrans.getMasterModel().getTransactionTotal()));
-
-        } catch (Exception e) {
-        }
         loadTableDetail();
     }
 
@@ -366,9 +363,8 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             return;
         }
         //count size
-        for (lnCtr = 0; lnCtr < oTrans.getDetailModel(); lnCtr++) {
+        for (lnCtr = 0; lnCtr < oTrans.getItemCount()-1; lnCtr++) {
             System.out.println((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"));
-
         }
 
         double lnTotalTransaction = 0;
@@ -403,7 +399,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     if (oTrans.getDetailModel(lnCtr).getQuantity() != 0) {
                         lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString())) * Double.parseDouble(String.valueOf(oTrans.getDetailModel(lnCtr).getQuantity()));
                     } else {
-
                         System.out.println(lnTotalTransaction);
                     }
                 } catch (Exception e) {
@@ -419,12 +414,12 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         "",
                         "",
                         "",
-                        "",
+                        String.valueOf(oTrans.getDetailModel(lnCtr).getValue("nUnitPrce")) ,
                         oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()));
 
             }
         }
-        txtField12.setText(String.valueOf(lnTotalTransaction));
+        txtField12.setText(String.format("%.2f",lnTotalTransaction));
         lnTotalTransaction = 0;
 
         /*FOCUS ON FIRST ROW*/
@@ -487,7 +482,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 
         txtDetail01.setText((String) data.get(pnDetailRow).getIndex02());
         txtDetail02.setText((String) data.get(pnDetailRow).getIndex03());
-        txtDetail03.setText(String.valueOf(oTrans.getDetailModel(pnDetailRow).getOriginalCost()));
+        txtDetail03.setText(String.format("%.2f", oTrans.getDetailModel(pnDetailRow).getOriginalCost()));
         txtDetail04.setText(String.valueOf(loModel_Inv_Stock_Request_Detail.getApproved()));
         txtDetail05.setText((String) data.get(pnDetailRow).getIndex10());
         txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getRecOrder()));
@@ -565,7 +560,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         return;
                     }
                     break;
-
             }
 
         }
@@ -686,7 +680,9 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
     };
 
+
     private void initTextFields() {
+
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
@@ -916,7 +912,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 }
                 loadRecord();
-                loadTableDetail();
+               
                 break;
         }
         switch (event.getCode()) {
@@ -945,6 +941,8 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
         pbLoaded = true;
+        
+
     }
 
     @Override
