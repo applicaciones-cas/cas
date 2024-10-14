@@ -154,6 +154,7 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
         initTblDetails();
         initTabAnchor();
         lblStatus.setText("UNKNOWN");
+        oTrans.setWithUI(true);
         pbLoaded = true;
     }
 
@@ -244,7 +245,6 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
                     break;
 
                 case "btnBrowse":
-                    clearAllFields();
                     poJSON = oTrans.searchTransaction("sTransNox", "", false);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -823,6 +823,8 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
         pnEditMode = EditMode.UNKNOWN;
+        oTrans.setWithUI(true);
+        oTrans.isHistory(false);
         initButton(pnEditMode);
     }
 
