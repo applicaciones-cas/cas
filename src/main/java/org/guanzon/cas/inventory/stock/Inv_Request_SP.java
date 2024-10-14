@@ -279,6 +279,29 @@ public class Inv_Request_SP implements RequestController {
                 return poJSON;
             }
 
+            if (poGRider.getUserLevel() < UserRight.SUPERVISOR) {
+                JSONObject loJSON =  ShowDialogFX.getUserApproval(poGRider);
+                if ("success".equals((String) loJSON.get("result"))) {
+                    if ((int) loJSON.get("nUserLevl") < UserRight.SUPERVISOR) {
+                        restoreData();
+                        poJSON.put("result", "error");
+                        poJSON.put("message","Only managerial accounts can approved transactions.(Authentication failed!!!)");
+                        return poJSON;
+                    }
+                    System.out.println("loJSON = " + loJSON.toJSONString());
+                    poModelMaster.setApproved((String)loJSON.get("sUserIDxx"));
+                    poModelMaster.setApprovedDate(poGRider.getServerDate());
+    //                            poModelMaster.setApproveCode();
+                }else{
+                    restoreData();
+                    poJSON.put("result", "error");
+                    poJSON.put("message","Seek Manager's Approval for this Stock Request!.(Authentication required!!!)");
+                    return poJSON;
+                }
+            }else{
+                poModelMaster.setApproved(poGRider.getUserID());
+                poModelMaster.setApprovedDate(poGRider.getServerDate());
+            }
             poJSON = poModelMaster.saveRecord();
         } else {
             poJSON = new JSONObject();
