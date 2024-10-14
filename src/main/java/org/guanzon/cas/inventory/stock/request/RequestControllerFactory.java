@@ -4,19 +4,22 @@
  */
 package org.guanzon.cas.inventory.stock.request;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.cas.inventory.stock.Inv_Request_General;
 import org.guanzon.cas.inventory.stock.Inv_Request_MC;
-import org.guanzon.cas.inventory.stock.Inv_Request_Without_ROQ;
 import org.guanzon.cas.inventory.stock.Inv_Request_MP;
 import org.guanzon.cas.inventory.stock.Inv_Request_SP;
-import org.guanzon.cas.inventory.stock.Inv_Request_SP_Without_ROQ;
+import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_General_Approval;
 import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_MC_Approval;
+import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_MP_Approval;
 import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_SP_Approval;
+import org.guanzon.cas.inventory.stock.request.issuance.Inv_Request_General_Issuance;
+import org.guanzon.cas.inventory.stock.request.issuance.Inv_Request_MC_Issuance;
+import org.guanzon.cas.inventory.stock.request.issuance.Inv_Request_MP_Issuance;
 import org.guanzon.cas.inventory.stock.request.issuance.Inv_Request_SP_Issuance;
+import org.guanzon.cas.inventory.stock.request.purchase.Inv_Request_General_Purchase;
+import org.guanzon.cas.inventory.stock.request.purchase.Inv_Request_MC_Purchase;
+import org.guanzon.cas.inventory.stock.request.purchase.Inv_Request_MP_Purchase;
 import org.guanzon.cas.inventory.stock.request.purchase.Inv_Request_SP_Purchase;
 /**
  *
@@ -68,9 +71,11 @@ public class RequestControllerFactory {
             case MC:
                 return (RequestApprovalController) new Inv_Request_MC_Approval(oApp, fbVal);
             case MP:
-                return (RequestApprovalController) new Inv_Request_MC(oApp, fbVal);
+                return (RequestApprovalController) new Inv_Request_MP_Approval(oApp, fbVal);
             case SP:
                 return (RequestApprovalController) new Inv_Request_SP_Approval(oApp, fbVal);
+            case GENERAL:
+                return (RequestApprovalController) new Inv_Request_General_Approval(oApp, fbVal);
             default:
                 return null;
         }
@@ -79,27 +84,31 @@ public class RequestControllerFactory {
     public static RequestIssuanceController makeIssuance(RequestType foType, GRider oApp, boolean fbVal) {
         switch (foType) {
             case MC:
-                return (RequestIssuanceController) new Inv_Request_MC_Approval(oApp, fbVal);
+                return (RequestIssuanceController) new Inv_Request_MC_Issuance(oApp, fbVal);
             case MP:
-                return (RequestIssuanceController) new Inv_Request_MC(oApp, fbVal);
+                return (RequestIssuanceController) new Inv_Request_MP_Issuance(oApp, fbVal);
             case SP:
                 return (RequestIssuanceController) new Inv_Request_SP_Issuance(oApp, fbVal);
-            default:
-                return null;
-        }
-    }
-    public static RequestPurchaseController maakePurchase(RequestType foType, GRider oApp, boolean fbVal) {
-        switch (foType) {
-            case MC:
-                return (RequestPurchaseController) new Inv_Request_MC_Approval(oApp, fbVal);
-            case MP:
-                return (RequestPurchaseController) new Inv_Request_MC(oApp, fbVal);
-            case SP:
-                return (RequestPurchaseController) new Inv_Request_SP_Purchase(oApp, fbVal);
+            case GENERAL:
+                return (RequestIssuanceController) new Inv_Request_General_Issuance(oApp, fbVal);
             default:
                 return null;
         }
     }
     
+    public static RequestPurchaseController maakePurchase(RequestType foType, GRider oApp, boolean fbVal) {
+        switch (foType) {
+            case MC:
+                return (RequestPurchaseController) new Inv_Request_MC_Purchase(oApp, fbVal);
+            case MP:
+                return (RequestPurchaseController) new Inv_Request_MP_Purchase(oApp, fbVal);
+            case SP:
+                return (RequestPurchaseController) new Inv_Request_SP_Purchase(oApp, fbVal);
+            case GENERAL:
+                return (RequestPurchaseController) new Inv_Request_General_Purchase(oApp, fbVal);
+            default:
+                return null;
+        }
+    }
     
 }
