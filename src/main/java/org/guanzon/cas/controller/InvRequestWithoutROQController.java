@@ -250,7 +250,6 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                     break;
 
                 case "btnBrowse":
-                    clearAllFields();
                     poJSON = oTrans.searchTransaction("sTransNox", "", pbLoaded);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -872,6 +871,7 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
         oTrans.isHistory(false);
+        oTrans.setWithUI(true);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }

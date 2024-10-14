@@ -164,6 +164,7 @@ public class InvRequestHistoryController implements Initializable, ScreenInterfa
         initTblDetails();
         initTabAnchor();
         lblStatus.setText("UNKNOWN");
+        oTrans.setWithUI(true);
         System.out.println("Edit mode on load == " + pnEditMode);
         pbLoaded = true;
     }
@@ -858,6 +859,8 @@ private void initTrans() {
         }
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
+        oTrans.setWithUI(true);
+        oTrans.isHistory(true);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }

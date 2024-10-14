@@ -166,6 +166,7 @@ public class InvRequestCancellationHistoryController implements Initializable, S
         initTblDetails();
         initTabAnchor();
         lblStatus.setText("UNKNOWN");
+        oTrans.setWithUI(true);
         pbLoaded = true;
     }
 
@@ -250,7 +251,6 @@ public class InvRequestCancellationHistoryController implements Initializable, S
                     break;
 
                 case "btnBrowse":
-                    clearAllFields();
                     poJSON = oTrans.searchTransaction("sTransNox", "", false);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -840,6 +840,8 @@ public class InvRequestCancellationHistoryController implements Initializable, S
         }
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
+        oTrans.setWithUI(true);
+        oTrans.isHistory(true);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }

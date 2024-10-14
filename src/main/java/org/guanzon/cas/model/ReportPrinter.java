@@ -14,6 +14,7 @@ import javafx.embed.swing.SwingNode;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -59,7 +60,7 @@ public class ReportPrinter {
 // Create a new Stage for the JasperViewer
                 Stage stage = new Stage();
                 stage.setTitle(windowTitle);
-//                stage.initModality(Modality.APPLICATION_MODAL); // Optional: Block input to other windows
+                stage.initModality(Modality.APPLICATION_MODAL); // Optional: Block input to other windows
                 stage.initStyle(StageStyle.UTILITY); // Use UTILITY style for close button
 
                 BorderPane root = new BorderPane();
