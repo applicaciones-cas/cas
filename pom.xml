@@ -169,6 +169,7 @@
             <groupId>org.guanzon.cas.inventory</groupId>
             <artifactId>cas-inventory</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.guanzon</groupId>

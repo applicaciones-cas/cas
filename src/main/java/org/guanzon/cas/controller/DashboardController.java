@@ -346,7 +346,13 @@ public class DashboardController implements Initializable {
                 
             case "/org/guanzon/cas/views/PurchaseOrderMC.fxml":
                 return "Purchase Order";
+            case "/org/guanzon/cas/views/PurchaseOrderConfirmation.fxml":
+                return "Purchase Order Confirmation";
+            case "/org/guanzon/cas/views/PurchaseOrderHistory.fxml":
+                return "Purchase Order History";
                 
+            case "/org/guanzon/cas/views/PurchaseOrderSP.fxml":
+                return "Purchase Order SP";
                 
             /*History Menu*/
             case "/org/guanzon/cas/views/InvRequestHistory.fxml":
@@ -745,6 +751,13 @@ public class DashboardController implements Initializable {
                 
             case "/org/guanzon/cas/views/PurchaseOrderMC.fxml":
                 return new PurchaseOrderMCController();
+            case "/org/guanzon/cas/views/PurchaseOrderConfirmation.fxml":
+                return new PurchaseOrderConfirmationController();
+            case "/org/guanzon/cas/views/PurchaseOrderHistory.fxml":
+                return new PurchaseOrderHistoryController();
+                
+            case "/org/guanzon/cas/views/PurchaseOrderSP.fxml":
+                return new PurchaseOrderSPController();
                
             /*History Menu*/
             
@@ -1248,6 +1261,30 @@ public class DashboardController implements Initializable {
     @FXML
     private void mnuPurchaseOrderMCClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/PurchaseOrderMC.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    @FXML
+    private void mnuPurchaseOrderConfirmationClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/PurchaseOrderConfirmation.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    @FXML
+    private void mnuPurchaseOrderHistoryClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/PurchaseOrderHistory.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    @FXML
+    private void mnuPurchaseOrderSPClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/PurchaseOrderSP.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

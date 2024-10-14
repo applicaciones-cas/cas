@@ -513,6 +513,11 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     break;
 
                 case 8://Reference No
+                    if (txtField.getText().length() > 12) {
+                        ShowMessageFX.Warning("Max characters for `Reference No` exceeds the limit.", pxeModuleName, "Please verify your entry.");
+                        txtField.requestFocus();
+                        return;
+                    }
                     poJSON = oTrans.getMasterModel().setReferenceNo(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -521,6 +526,17 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     }
                     break;
                 case 10://Disc
+                    if (txtField.getText().length() > 7) {
+                        ShowMessageFX.Warning("Max characters for `Discount Rate` exceeds the limit.", pxeModuleName, "Please verify your entry.");
+                        txtField.requestFocus();
+                        return;
+                    }
+                    try {
+                        double x = Double.valueOf(lsValue);
+                    } catch (Exception e) {
+                        ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
+                        txtField.requestFocus();
+                    }
                     poJSON = oTrans.getMasterModel().setDiscount(Integer.valueOf(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -529,13 +545,24 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     }
                     break;
                 case 11://AddDisc Rate
-                    poJSON = oTrans.getMasterModel().setAddDiscount(Integer.valueOf(lsValue));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
+                    try {
+                    double x = Double.valueOf(lsValue);
+                } catch (Exception e) {
+                    ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
+                    txtField.requestFocus();
+                }
+                if (txtField.getText().length() > 10) {
+                    ShowMessageFX.Warning("Max characters for `Discount Rate` exceeds the limit.", pxeModuleName, "Please verify your entry.");
+                    txtField.requestFocus();
+                    return;
+                }
+                poJSON = oTrans.getMasterModel().setAddDiscount(Integer.valueOf(lsValue));
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    return;
+                }
+                break;
                 case 12://Total Order
                     poJSON = oTrans.getMasterModel().setTransactionTotal(Integer.valueOf(lsValue)); // computation
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -616,7 +643,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     String lsStockID = (String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx");
                     if (lsStockID == null || lsStockID.isEmpty()) {
                         if (txtField.getText().length() > 128) {
-                            ShowMessageFX.Warning("Max characters for `Descript` exceeds the limit.", pxeModuleName, "Please verify your entry.");
+                            ShowMessageFX.Warning("Max characters for `Item Description` exceeds the limit.", pxeModuleName, "Please verify your entry.");
                             txtField.requestFocus();
                             return;
                         }
@@ -630,10 +657,16 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     break;
                 case 5:
                     //New Cost inputted by user
-                    if (txtField.getText().length() > 128) {
-                        ShowMessageFX.Warning("Max characters for `ROQ` exceeds the limit.", pxeModuleName, "Please verify your entry.");
+                    if (txtField.getText().length() > 12) {
+                        ShowMessageFX.Warning("Max characters for `New Cost` exceeds the limit.", pxeModuleName, "Please verify your entry.");
                         txtField.requestFocus();
                         return;
+                    }
+                    try {
+                        double x = Double.valueOf(lsValue);
+                    } catch (Exception e) {
+                        ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
+                        txtField.requestFocus();
                     }
                     poJSON = oTrans.setDetail(pnDetailRow, "nUnitPrce", Double.valueOf(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
