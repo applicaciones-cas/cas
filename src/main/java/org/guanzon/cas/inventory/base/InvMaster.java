@@ -41,7 +41,7 @@ public class InvMaster implements GRecord{
     boolean pbWtParent;     
     public JSONObject poJSON;
     
-    private boolean p_bWithUI = true;
+    private boolean p_bWithUI;
     int pnEditMode;
     String psMessagex;
     String psTranStatus;
@@ -376,6 +376,7 @@ public class InvMaster implements GRecord{
     }
     
     public JSONObject SearchInventory(String fsStockIDx, boolean fbByCode){
+        poInventory.setWithUI(p_bWithUI);
         poJSON = poInventory.searchRecord(fsStockIDx, fbByCode);
         if ("success".equals((String) poJSON.get("result"))){
             poJSON = poModel.openRecord(poInventory.getModel().getStockID());
@@ -461,7 +462,7 @@ public class InvMaster implements GRecord{
                 
                 
                 lsSQL = "SELECT" +
-                            "  a.sLocatnCd" +
+                            "  a.sLocatnID" +
                             ", a.sDescript" +
                             ", a.sWHouseID" +
                             ", a.sSectnIDx" +
@@ -502,11 +503,11 @@ public class InvMaster implements GRecord{
                                 lsSQL, 
                                 fsValue, 
                                 "Code»Name»Warehouse»Section",
-                                "sLocatnCd»sDescript»xWHouseNm»xSectnNme",
-                                "a.sLocatnCd»a.sDescript»b.sWHouseNm»c.sSectnNme",
+                                "sLocatnID»sDescript»xWHouseNm»xSectnNme",
+                                "a.sLocatnID»a.sDescript»b.sWHouseNm»c.sSectnNme",
                                 fbByCode ? 0 : 1);
                 if (loJSON != null) {
-                    setMaster(fnCol, (String) loJSON.get("sLocatnCd"));
+                    setMaster(fnCol, (String) loJSON.get("sLocatnID"));
                     setMaster("xLocatnNm", (String) loJSON.get("sDescript"));
 //                    setMaster("sSectnIDx", (String) loJSON.get("sSectnIDx"));
                     setMaster("sWHouseID", (String) loJSON.get("sWHouseID"));

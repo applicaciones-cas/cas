@@ -18,6 +18,11 @@ public interface RequestController extends GTranDet  {
     
     /**
      *
+     * @param fbValue
+     */
+    void setWithUI(boolean fbValue);
+    /**
+     *
      * @return
      */
     @Override
@@ -256,4 +261,7 @@ public interface RequestController extends GTranDet  {
      * @return
      */
     JSONObject setDetailOthers(int fnRow, int fnCol, Object foData);
+    
+    void isHistory(boolean fbValue);
+    
 }

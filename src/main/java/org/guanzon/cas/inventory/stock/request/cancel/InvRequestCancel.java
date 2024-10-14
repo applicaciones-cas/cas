@@ -35,7 +35,7 @@ public class InvRequestCancel implements GTranDet {
     int pnEditMode;
     String psTranStatus;
 
-    private boolean p_bWithUI = true;
+    private boolean p_bWithUI;
     Inv_Request poRequest;
     Model_Inv_Stock_Req_Cancel_Master poModelMaster;
     ArrayList<Model_Inv_Stock_Req_Cancel_Master> poMasterList;
@@ -45,6 +45,11 @@ public class InvRequestCancel implements GTranDet {
     RequestControllerFactory.RequestType type;
     RequestControllerFactory.RequestCategoryType category_type;
     JSONObject poJSON;
+    private boolean pbIsHistory = false;
+
+    public void isHistory(boolean fbValue) {
+        pbIsHistory = fbValue;
+    }
 
     public void setWithUI(boolean fbValue) {
         p_bWithUI = fbValue;
@@ -451,7 +456,6 @@ public class InvRequestCancel implements GTranDet {
         return poModelDetail.get(fnRow);
     }
 //    @Override
-
     public ArrayList<Model_Inv_Stock_Req_Cancel_Detail> getDetailModel() {
         return poModelDetail;
     }
@@ -698,7 +702,26 @@ public class InvRequestCancel implements GTranDet {
                 return openTransaction((String) poJSON.get("sTransNox"));
             }
         }
-//use for testing 
+        //use for testing 
+         lsSQL = MiscUtil.addCondition(getSQL_Master(), " a.sTransNox = "
+                + SQLUtil.toSQL(fsValue) + " AND LEFT(a.sTransNox,4) = " + SQLUtil.toSQL(poGRider.getBranchCode()));
+        switch (type) {
+            case MC:
+                lsSQL = MiscUtil.addCondition(lsSQL, " f.sCategCd1 = '0001' AND f.sCategCd2 != '0007'");
+                break;
+            case MP:
+                lsSQL = MiscUtil.addCondition(lsSQL, " f.sCategCd1 = '0002'");
+                break;
+            case SP:
+                lsSQL = MiscUtil.addCondition(lsSQL, " f.sCategCd1 = '0001' AND f.sCategCd2 = '0007'");
+                break;
+            case GENERAL:
+                lsSQL = MiscUtil.addCondition(lsSQL, " f.sCategCd1 = '0004' AND d.sMainCatx = '0004'");
+                break;
+            default:
+                break;
+        }
+        lsSQL = MiscUtil.addCondition(lsSQL, lsCondition) + " GROUP BY a.sTransNox ASC";
         lsSQL += " LIMIT 1";
         System.out.println(lsSQL);
         ResultSet loRS = poGRider.executeQuery(lsSQL);
@@ -738,6 +761,7 @@ public class InvRequestCancel implements GTranDet {
                 poRequest.setCategoryType(category_type);
                 poRequest.setTransactionStatus("01");
                 poRequest.setWithUI(p_bWithUI);
+                poRequest.isHistory(pbIsHistory);
                 poJSON = poRequest.searchTransaction("sTransNox", fsValue, bln);
                 if (poJSON == null || "error".equals((String) poJSON.get("result"))) {
                     poJSON = new JSONObject();
@@ -855,7 +879,8 @@ public class InvRequestCancel implements GTranDet {
     public JSONObject OpenModelDetail(String fsTransNo) {
         poJSON = new JSONObject();
         try {
-            String lsSQL = MiscUtil.addCondition(new Model_Inv_Stock_Req_Cancel_Detail(poGRider).getSQL(), "a.sTransNox = " + SQLUtil.toSQL(fsTransNo));
+            String lsSQL = MiscUtil.addCondition(new Model_Inv_Stock_Req_Cancel_Detail(poGRider).getSQL(), "a.sTransNox = " + SQLUtil.toSQL(fsTransNo)) +
+                    " GROUP BY A.sTransNox";
             ResultSet loRS = poGRider.executeQuery(lsSQL);
 
             System.out.println("searchTransaction = " + lsSQL);
@@ -945,6 +970,7 @@ public class InvRequestCancel implements GTranDet {
         poRequest.setCategoryType(category_type);
         poRequest.setTransactionStatus("01");
         poRequest.setWithUI(p_bWithUI);
+        poRequest.isHistory(pbIsHistory);
         poJSON = poRequest.searchTransaction(fsColumn, fsValue, fbByCode);
         if (poJSON == null || "error".equals((String) poJSON.get("result"))) {
             poJSON = new JSONObject();
