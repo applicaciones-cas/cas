@@ -275,11 +275,17 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
 
                 break;
             case "btnRemoveItem":
-                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this item?") == true) {
-                    oTrans.RemoveModelDetail(pnDetailRow);
-                    pnDetailRow = oTrans.getItemCount() - 1;
-                    loadTableDetail();
-                    txtField04.requestFocus();
+                if(oTrans.getItemCount()-1<0){
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "'No rows in the table'");
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                }else{
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this item?") == true) {
+                        oTrans.RemoveModelDetail(pnDetailRow);
+                        pnDetailRow = oTrans.getItemCount() - 1;
+                        loadTableDetail();
+                        txtField04.requestFocus();
+                    }
                 }
                 break;
             case "btnCancel":

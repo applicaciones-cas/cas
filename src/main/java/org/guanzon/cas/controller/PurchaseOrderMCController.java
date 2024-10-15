@@ -194,7 +194,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
-                
+
             case "btnSearch":
                 if (pnIndex > 3 || pnIndex < 1) {
                     pnIndex = 1;
@@ -212,7 +212,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         break;
                 }
                 break;
-                
+
             case "btnSave":
                 poJSON = oTrans.getMasterModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
@@ -228,9 +228,9 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-                
+
                 poJSON = oTrans.saveTransaction();
-          
+
                 pnEditMode = oTrans.getMasterModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -248,25 +248,35 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 }
                 break;
             case "btnAddItem":
-                apMaster.setDisable(true);
-                if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() > 0
-                        && !oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
-                   
+                    apMaster.setDisable(true);
+                if (oTrans.getItemCount() - 1 < 0) {
                     poJSON = oTrans.AddModelDetail();
                     pnDetailRow = oTrans.getItemCount() - 1;
+                    pnEditMode = EditMode.UPDATE;
                     loadTableDetail();
-
+                    poJSON.put("result", "success");
+                    poJSON.put("message", "''");
                 } else {
-                    if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
-                        poJSON.put("result", "error");
-                        poJSON.put("message", "'Please Fill all the required fields'");
+                    if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() > 0
+                            && !oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
+
+                        poJSON = oTrans.AddModelDetail();
+                        pnDetailRow = oTrans.getItemCount() - 1;
+                        loadTableDetail();
+
                     } else {
-                        if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() <= 0) {
+                        if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
                             poJSON.put("result", "error");
-                            poJSON.put("message", "'Recent Order number should be greater than 0'");
+                            poJSON.put("message", "'Please Fill all the required fields'");
+                        } else {
+                            if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() <= 0) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "'Recent Order number should be greater than 0'");
+                            }
                         }
                     }
                 }
+
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
@@ -275,12 +285,19 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 break;
             case "btnRemoveItem":
-                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this item?") == true) {
-                    oTrans.RemoveModelDetail(pnDetailRow);
-                    pnDetailRow = oTrans.getItemCount() - 1;
-                    loadTableDetail();
-                    txtField04.requestFocus();
+                if (oTrans.getItemCount() - 1 < 0) {
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "'No rows in the table'");
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                } else {
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this item?") == true) {
+                        oTrans.RemoveModelDetail(pnDetailRow);
+                        pnDetailRow = oTrans.getItemCount() - 1;
+                        loadTableDetail();
+                        txtField04.requestFocus();
+                    }
                 }
+
                 break;
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
@@ -475,7 +492,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
         tblDetails.setItems(data);
     }
-    
 
     private void setSelectedDetail() {
 
@@ -551,23 +567,23 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     break;
                 case 11://AddDisc Rate
                     try {
-                        double x = Double.valueOf(lsValue);
-                    } catch (Exception e) {
-                        ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
-                        txtField.requestFocus();
-                    }
-                    if (txtField.getText().length() > 10) {
-                        ShowMessageFX.Warning("Max characters for `Discount Rate` exceeds the limit.", pxeModuleName, "Please verify your entry.");
-                        txtField.requestFocus();
-                        return;
-                    }
-                    poJSON = oTrans.getMasterModel().setAddDiscount(Integer.valueOf(lsValue));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
+                    double x = Double.valueOf(lsValue);
+                } catch (Exception e) {
+                    ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
+                    txtField.requestFocus();
+                }
+                if (txtField.getText().length() > 10) {
+                    ShowMessageFX.Warning("Max characters for `Discount Rate` exceeds the limit.", pxeModuleName, "Please verify your entry.");
+                    txtField.requestFocus();
+                    return;
+                }
+                poJSON = oTrans.getMasterModel().setAddDiscount(Integer.valueOf(lsValue));
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    return;
+                }
+                break;
                 case 12://Total Order
                     poJSON = oTrans.getMasterModel().setTransactionTotal(Integer.valueOf(lsValue)); // computation
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -613,7 +629,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
-                
+
                 case 7://Remarks
                     poJSON = oTrans.getMasterModel().setRemarks(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -669,7 +685,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         return;
                     }
                     try {
-                       double x = Double.valueOf(lsValue);
+                        double x = Double.valueOf(lsValue);
                     } catch (Exception e) {
                         ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
                         txtField.requestFocus();
@@ -754,7 +770,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
         txtDetail01.setOnKeyPressed(this::txtDetail_KeyPressed);//barcode
         txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);
-        
 
     }
 
