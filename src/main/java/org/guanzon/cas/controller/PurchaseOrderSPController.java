@@ -3,11 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package org.guanzon.cas.controller;
-
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -751,13 +748,6 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
 
         txtDetail01.setOnKeyPressed(this::txtDetail_KeyPressed);//barcode
         txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);
-        
-        List<TextField> textFields = Arrays.asList(txtField03, txtField04, txtField09, txtDetail01, txtDetail02);
-        for (TextField textField : textFields) {
-            textField.addEventFilter(javafx.scene.input.KeyEvent.KEY_TYPED, event -> {
-                event.consume(); // Ignore the key event
-            });
-        }
     }
 
     private void clearFields() {
@@ -935,7 +925,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
             case F3:
                 switch (lnIndex) {
                     case 1:
-                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, lnIndex == 1);
+                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, true);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }

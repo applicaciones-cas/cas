@@ -5,10 +5,7 @@
 package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import java.awt.event.KeyAdapter;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -619,6 +616,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
+                
                 case 7://Remarks
                     poJSON = oTrans.getMasterModel().setRemarks(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -760,12 +758,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         txtDetail01.setOnKeyPressed(this::txtDetail_KeyPressed);//barcode
         txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);
         
-        List<TextField> textFields = Arrays.asList(txtField03, txtField04, txtField09,txtDetail01,txtDetail02);
-        for (TextField textField : textFields) {
-            textField.addEventFilter(javafx.scene.input.KeyEvent.KEY_TYPED, event -> {
-                event.consume(); // Ignore the key event
-            });
-        }
+
     }
 
     private void clearFields() {
@@ -943,7 +936,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             case F3:
                 switch (lnIndex) {
                     case 1:
-                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, lnIndex == 1);
+                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, true);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
