@@ -35,15 +35,12 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.clients.Client_Master;
 import org.guanzon.cas.controller.ScreenInterface;
 import org.guanzon.cas.controller.unloadForm;
 import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.inventory.base.PO_Quotation;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
-import org.guanzon.cas.model.ModelPurchaseOrder;
-import org.guanzon.cas.model.clients.Model_Client_Institution_Contact;
-import org.guanzon.cas.model.clients.Model_Client_Mobile;
+import org.guanzon.cas.model.ModelPurchaseOrderMC;
 import org.guanzon.cas.parameters.Branch;
 import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Model;
@@ -110,7 +107,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
     @FXML
     private TableColumn index01, index02, index03, index04, index05, index06, index07, index08, index09, index10, index11;
-    private ObservableList<ModelPurchaseOrder> data = FXCollections.observableArrayList();
+    private ObservableList<ModelPurchaseOrderMC> data = FXCollections.observableArrayList();
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -231,7 +228,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-                oTrans.getDetailModel(0).getStockID();
+                
                 poJSON = oTrans.saveTransaction();
           
                 pnEditMode = oTrans.getMasterModel().getEditMode();
@@ -385,7 +382,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
                 loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
                 loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
-                data.add(new ModelPurchaseOrder(String.valueOf(lnCtr + 1),
+                data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
                         (String) loInventory.getMaster("sBarCodex"),
                         (String) oTrans.getDetailModel(lnCtr).getDescription(),
                         (String) loInventory.getMaster("xBrandNme"),
@@ -408,7 +405,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 }
 
             } else {
-                data.add(new ModelPurchaseOrder(String.valueOf(lnCtr + 1),
+                data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
                         "",
                         (String) oTrans.getDetailModel(lnCtr).getValue("sDescript"),
                         "",
@@ -457,17 +454,17 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         index10.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index11.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
 
-        index01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index01"));
-        index02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index02"));
-        index03.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index03"));
-        index04.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index04"));
-        index05.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index05"));
-        index06.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index06"));
-        index07.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index07"));
-        index08.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index08"));
-        index09.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index09"));
-        index10.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index10"));
-        index11.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index11"));
+        index01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index01"));
+        index02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index02"));
+        index03.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index03"));
+        index04.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index04"));
+        index05.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index05"));
+        index06.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index06"));
+        index07.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index07"));
+        index08.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index08"));
+        index09.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index09"));
+        index10.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index10"));
+        index11.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index11"));
 
         tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");
