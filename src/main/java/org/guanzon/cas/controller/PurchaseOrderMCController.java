@@ -944,7 +944,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         break;
                     case 2:
                         /* Description */
-                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, lnIndex == 1);
+                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
