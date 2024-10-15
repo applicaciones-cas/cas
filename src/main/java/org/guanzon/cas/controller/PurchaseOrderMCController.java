@@ -558,7 +558,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
                         txtField.requestFocus();
                     }
-                    poJSON = oTrans.getMasterModel().setDiscount(Integer.valueOf(lsValue));
+                    poJSON = oTrans.getMasterModel().setDiscount(Double.valueOf(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
@@ -577,7 +577,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     txtField.requestFocus();
                     return;
                 }
-                poJSON = oTrans.getMasterModel().setAddDiscount(Integer.valueOf(lsValue));
+                poJSON = oTrans.getMasterModel().setAddDiscount(Double.valueOf(lsValue));
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
