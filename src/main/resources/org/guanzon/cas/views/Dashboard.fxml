@@ -253,12 +253,27 @@
                                                 <Menu mnemonicParsing="false" text="_Purchasing">
                                                     <items>
                                           <MenuItem fx:id="mnuAccountsAccreditation" mnemonicParsing="false" onAction="#mnuAccountsAccreditation_Clicked" text="Accounts Accreditations" />
-                                          <MenuItem fx:id="mnuPurchaseOrderMC" mnemonicParsing="false" onAction="#mnuPurchaseOrderMCClick" text="Purchase Order" />
                                           <Menu mnemonicParsing="false" text="PO Quotation">
                                             <items>
                                                 <MenuItem fx:id="mnuPOQuotation" mnemonicParsing="false" onAction="#mnuPOQuotationClick" text="PO Quotation" />
                                               <MenuItem fx:id="mnuPOQuotationRequest" mnemonicParsing="false" onAction="#mnuPOQuotationRequestClick" text="PO Quotation Request" />
                                             </items>
+                                          </Menu>
+                                          <Menu mnemonicParsing="false" text="Purchase Order">
+                                             <items>
+                                                <Menu mnemonicParsing="false" text="PO MC">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuPurchaseOrderMC" mnemonicParsing="false" onAction="#mnuPurchaseOrderMCClick" text="Purchase Order MC" />
+                                                      <MenuItem fx:id="mnuPurchaseOrderConfirmation" mnemonicParsing="false" onAction="#mnuPurchaseOrderConfirmationClick" text="Purchase Order Confirmation" />
+                                                      <MenuItem fx:id="mnuPurchaseOrderHistory" mnemonicParsing="false" onAction="#mnuPurchaseOrderHistoryClick" text="Purchase Order History" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu mnemonicParsing="false" text="PO SP">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuPurchaseOrderSP" mnemonicParsing="false" onAction="#mnuPurchaseOrderSPClick" text="Purchase Order SP" />
+                                                   </items>
+                                                </Menu>
+                                             </items>
                                           </Menu>
                                                     </items>
                                                 </Menu>
