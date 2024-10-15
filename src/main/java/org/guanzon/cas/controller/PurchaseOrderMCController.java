@@ -254,9 +254,11 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 apMaster.setDisable(true);
                 if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() > 0
                         && !oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
+                   
                     poJSON = oTrans.AddModelDetail();
                     pnDetailRow = oTrans.getItemCount() - 1;
                     loadTableDetail();
+
                 } else {
                     if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
                         poJSON.put("result", "error");
@@ -421,6 +423,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             }
         }
         txtField12.setText(String.format("%.2f", lnTotalTransaction));
+        oTrans.getMasterModel().setTransactionTotal(Double.valueOf(String.format("%.2f", lnTotalTransaction)));
         lnTotalTransaction = 0;
 
         /*FOCUS ON FIRST ROW*/

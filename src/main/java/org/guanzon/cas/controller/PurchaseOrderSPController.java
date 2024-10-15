@@ -422,6 +422,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
             }
         }
         txtField12.setText(String.format("%.2f", lnTotalTransaction));
+        oTrans.getMasterModel().setTransactionTotal(Double.valueOf(String.format("%.2f", lnTotalTransaction)));
         lnTotalTransaction = 0;
 
         /*FOCUS ON FIRST ROW*/
