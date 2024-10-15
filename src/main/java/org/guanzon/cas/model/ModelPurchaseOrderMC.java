@@ -10,7 +10,7 @@ import javafx.beans.property.StringProperty;
  *
  * @author User
  */
-public class ModelPurchaseOrder {
+public class ModelPurchaseOrderMC {
 
     public StringProperty index01;
     public StringProperty index02;
@@ -33,7 +33,7 @@ public class ModelPurchaseOrder {
     public StringProperty index19;
     public StringProperty index20;
 
-    public ModelPurchaseOrder(String index01,
+    public ModelPurchaseOrderMC(String index01,
             String index02,
             String index03,
             String index04,
@@ -76,7 +76,7 @@ public class ModelPurchaseOrder {
         this.index20 = new SimpleStringProperty(index20);
     }
 
-    public ModelPurchaseOrder(String index01,
+    public ModelPurchaseOrderMC(String index01,
             String index02,
             String index03,
             String index04,
