@@ -802,14 +802,21 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
         btnSave.setVisible(lbShow);
         btnAddItem.setVisible(lbShow);
         btnRemoveItem.setVisible(lbShow);
-        btnFindSource.setVisible(lbShow);
+        
+        if (fnValue == EditMode.ADDNEW) {
+            btnFindSource.setManaged(lbShow);
+            btnFindSource.setVisible(lbShow);
+        } else {
+            btnFindSource.setManaged(!lbShow);
+            btnFindSource.setVisible(!lbShow);
+        }
 
         btnCancel.setManaged(lbShow);
         btnSearch.setManaged(lbShow);
         btnSave.setManaged(lbShow);
         btnAddItem.setManaged(lbShow);
         btnRemoveItem.setManaged(lbShow);
-        btnFindSource.setManaged(lbShow);
+        
 
 // Manage visibility and managed state of other buttons
         btnBrowse.setVisible(!lbShow);
