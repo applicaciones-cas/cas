@@ -71,105 +71,44 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
     @FXML
     private AnchorPane apBrowse;
     @FXML
-    private TextField txtField99;
-    @FXML
-    private TextField txtField98;
-    @FXML
-    private TextField txtField97;
-    @FXML
     private AnchorPane apButton;
-    @FXML
-    private HBox hbButtons;
-    @FXML
-    private Button btnBrowse;
-    @FXML
-    private Button btnPrint;
-    @FXML
-    private Button btnConfirm;
-    @FXML
-    private Button btnCancel;
-    @FXML
-    private Button btnClose;
-    @FXML
-    private AnchorPane apMaster;
-    @FXML
-    private Label lblStatus;
-    @FXML
-    private TextField txtField01;
-    @FXML
-    private TextField txtField02;
-    @FXML
-    private TextField txtField03;
-    @FXML
-    private TextField txtField06;
-    @FXML
-    private TextArea txtField07;
-    @FXML
-    private TextField txtField09;
-    @FXML
-    private TextField txtField10;
-    @FXML
-    private TextField txtField11;
-    @FXML
-    private TextField txtField12;
-    @FXML
-    private TextField txtField04;
-    @FXML
-    private TextField txtField05;
-    @FXML
-    private TextField txtField08;
-    @FXML
-    private AnchorPane apTransactionIssues;
-    @FXML
-    private Label lblStatus1;
-    @FXML
-    private TableView tblTransactionIssues;
-    @FXML
-    private TableColumn index12;
-    @FXML
-    private TableColumn index13;
-    @FXML
-    private AnchorPane apDetail;
-    @FXML
-    private TextField txtDetail01;
-    @FXML
-    private TextField txtDetail02;
-    @FXML
-    private TextField txtDetail03;
-    @FXML
-    private TextField txtDetail04;
-    @FXML
-    private TextField txtDetail05;
-    @FXML
-    private TextField txtDetail06;
-    @FXML
-    private TextField txtDetail07;
     @FXML
     private AnchorPane apTable;
     @FXML
-    private TableView tblDetails;
+    private AnchorPane apDetail;
+    
+    
     @FXML
-    private TableColumn index01;
+    private Button btnBrowse, btnPrint, btnCancel, btnClose, btnConfirm;
+    
     @FXML
-    private TableColumn index02;
+    private HBox hbButtons;
+
     @FXML
-    private TableColumn index03;
+    private AnchorPane apMaster;
     @FXML
-    private TableColumn index04;
+    private AnchorPane apTransactionIssues;
+    
     @FXML
-    private TableColumn index05;
+    private Label lblStatus;
     @FXML
-    private TableColumn index06;
+    private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10,
+            txtField11, txtField12, txtField99, txtField98, txtField97;
     @FXML
-    private TableColumn index07;
+    private TextArea txtField07;
+    
     @FXML
-    private TableColumn index08;
+    private Label lblStatus1;
+  
     @FXML
-    private TableColumn index09;
+    private TableColumn index12, index13;
     @FXML
-    private TableColumn index10;
+    private TextField txtDetail01, txtDetail02, txtDetail03, txtDetail04, txtDetail05, txtDetail06, txtDetail07;
     @FXML
-    private TableColumn index11;
+    private TableView tblDetails, tblTransactionIssues;
+    @FXML
+    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08, index09, index10, index11;
+    
 
     /**
      * Initializes the controller class.
@@ -587,6 +526,10 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
         if (lnItem < 0) {
             return;
         }
+        //count size
+        for (lnCtr = 0; lnCtr < oTrans.getItemCount() - 1; lnCtr++) {
+            System.out.println((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"));
+        }
 
         double lnTotalTransaction = 0;
         for (lnCtr = 0; lnCtr <= oTrans.getItemCount() - 1; lnCtr++) {
@@ -598,12 +541,10 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
             if (lsStockIDx != null && !lsStockIDx.equals("")) {
 
                 loInventory = oTrans.GetInventory((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"), true);
-                //for the meantime try-catch for Model
+
                 loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
                 loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
                 loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
-
-//                String.valueOf(loMdl.getModel().getYearModel());
                 data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
                         (String) loInventory.getMaster("sBarCodex"),
                         (String) oTrans.getDetailModel(lnCtr).getDescription(),
@@ -621,7 +562,6 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
                     if (oTrans.getDetailModel(lnCtr).getQuantity() != 0) {
                         lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString())) * Double.parseDouble(String.valueOf(oTrans.getDetailModel(lnCtr).getQuantity()));
                     } else {
-                        lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString()));
                         System.out.println(lnTotalTransaction);
                     }
                 } catch (Exception e) {
@@ -637,12 +577,13 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
                         "",
                         "",
                         "",
-                        String.valueOf(oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString()),
+                        String.valueOf(oTrans.getDetailModel(lnCtr).getValue("nUnitPrce")),
                         oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()));
 
             }
         }
-        txtField12.setText(String.format("%.2f",lnTotalTransaction));
+        txtField12.setText(String.format("%.2f", lnTotalTransaction));
+        oTrans.getMasterModel().setTransactionTotal(Double.valueOf(String.format("%.2f", lnTotalTransaction)));
         lnTotalTransaction = 0;
 
         /*FOCUS ON FIRST ROW*/
@@ -800,7 +741,6 @@ public class PurchaseOrderConfirmationController implements Initializable, Scree
         txtDetail06.focusedProperty().addListener(txtDetail_Focus);
         txtDetail07.focusedProperty().addListener(txtDetail_Focus);
 
-//      txtField01.setOnKeyPressed(this::txtField_KeyPressed); // TransactionNo
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
         txtField09.setOnKeyPressed(this::txtField_KeyPressed);

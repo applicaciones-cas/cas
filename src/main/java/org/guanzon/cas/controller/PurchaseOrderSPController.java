@@ -46,6 +46,7 @@ import org.guanzon.cas.parameters.Model;
 import org.guanzon.cas.parameters.Model_Variant;
 import org.guanzon.cas.purchasing.controller.PurchaseOrder;
 import org.guanzon.cas.validators.ValidatorFactory;
+import org.guanzon.cas.validators.purchaseorder.Validator_PurchaseOrder_Master;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 
@@ -90,7 +91,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
 
     @FXML
     private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10,
-            txtField11, txtField12, txtField99, txtField98, txtField97;
+            txtField11, txtField12;
 
     @FXML
     private TextArea txtField07;
@@ -149,6 +150,14 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
 
                 break;
             case "btnUpdate":
+                Validator_PurchaseOrder_Master ValidateMaster = new Validator_PurchaseOrder_Master(oTrans.getMasterModel());
+                if (!ValidateMaster.isEntryOkay()) {
+                    poJSON.put("result", "error");
+                    poJSON.put("message", ValidateMaster.getMessage());
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    return;
+                }
+            
                 poJSON = oTrans.updateTransaction();
                 pnEditMode = oTrans.getMasterModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
@@ -451,7 +460,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
         index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        index07.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index09.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
 
@@ -576,6 +585,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
 
             }
         } else {
+
 
             switch (lnIndex) {
                 case 2:
@@ -728,9 +738,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
         txtField11.focusedProperty().addListener(txtField_Focus);
         txtField12.focusedProperty().addListener(txtField_Focus);
 
-        txtField99.focusedProperty().addListener(txtField_Focus);
-        txtField98.focusedProperty().addListener(txtField_Focus);
-        txtField97.focusedProperty().addListener(txtField_Focus);
+
 
         txtDetail01.focusedProperty().addListener(txtDetail_Focus);
         txtDetail02.focusedProperty().addListener(txtDetail_Focus);
@@ -744,9 +752,6 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
         txtField09.setOnKeyPressed(this::txtField_KeyPressed);
 
-        txtField99.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField98.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField97.setOnKeyPressed(this::txtField_KeyPressed);
 
         txtDetail01.setOnKeyPressed(this::txtDetail_KeyPressed);//barcode
         txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);
@@ -766,9 +771,6 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
         txtField11.clear();
         txtField12.clear();
 
-        txtField99.clear();
-        txtField98.clear();
-        txtField97.clear();
 
         txtDetail01.clear();
         txtDetail02.clear();
