@@ -264,13 +264,15 @@
                                                 <Menu mnemonicParsing="false" text="PO MC">
                                                    <items>
                                                       <MenuItem fx:id="mnuPurchaseOrderMC" mnemonicParsing="false" onAction="#mnuPurchaseOrderMCClick" text="Purchase Order MC" />
-                                                      <MenuItem fx:id="mnuPurchaseOrderConfirmation" mnemonicParsing="false" onAction="#mnuPurchaseOrderConfirmationClick" text="Purchase Order Confirmation" />
-                                                      <MenuItem fx:id="mnuPurchaseOrderHistory" mnemonicParsing="false" onAction="#mnuPurchaseOrderHistoryClick" text="Purchase Order History" />
+                                                      <MenuItem fx:id="mnuPurchaseOrderConfirmationMC" mnemonicParsing="false" onAction="#mnuPurchaseOrderConfirmationMCClick" text="Purchase Order Confirmation MC" />
+                                                      <MenuItem fx:id="mnuPurchaseOrderHistoryMC" mnemonicParsing="false" onAction="#mnuPurchaseOrderHistoryMCClick" text="Purchase Order History MC" />
                                                    </items>
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="PO SP">
                                                    <items>
                                                       <MenuItem fx:id="mnuPurchaseOrderSP" mnemonicParsing="false" onAction="#mnuPurchaseOrderSPClick" text="Purchase Order SP" />
+                                                      <MenuItem fx:id="mnuPurchaseOrderConfirmationSP" mnemonicParsing="false" onAction="#mnuPurchaseOrderConfirmationSPClick" text="Purchase Order Confirmation SP" />
+                                                      <MenuItem fx:id="mnuPurchaseOrderHistorySP" mnemonicParsing="false" onAction="#mnuPurchaseOrderHistorySPClick" text="Purchase Order History SP" />
                                                    </items>
                                                 </Menu>
                                              </items>
