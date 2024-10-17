@@ -460,17 +460,21 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                     break;
 
                 case 12:/*QTY Cancel*/
-                  if (lsValue.matches("\\d*")) {
+                    if (lsValue.matches("\\d*")) {
                         int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
-                        oTrans.setDetail(pnRow, "nQuantity", qty);
+                        jsonObject = oTrans.setDetail(pnRow, "nQuantity", qty);
+                        System.out.println(jsonObject.toJSONString());
+                        if("error".equals((String) jsonObject.get("result"))){
+                            ShowMessageFX.Information((String) jsonObject.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
                         loadItemData();
                         break;
-                    }else 
-                    ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
+                    } else {
+                        ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
+                    }
                     txtField.setText("0");
                     txtField.requestFocus();
                     break;
-
             }
             loadItemData();
             loadDetails();
@@ -812,6 +816,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
         params.put("sTransNox", oTrans.getMasterModel().getTransactionNumber());
         params.put("sTranDte", CommonUtils.xsDateMedium((Date) oTrans.getMasterModel().getTransaction()));
         params.put("sRemarks", oTrans.getMasterModel().getRemarks());
+        params.put("status", oTrans.getMasterModel().getTransactionStatus());
 //        params.put("sTranType", "Unprcd Qty");
 //        params.put("sTranQty", "Cancel");
 

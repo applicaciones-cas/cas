@@ -383,8 +383,7 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
 
 // Define arrays for text fields with setOnKeyPressed handlers
         TextField[] keyPressedTextFields = {
-            txtField03, txtField04, txtField05, txtField08, txtField09,
-            txtField11
+          txtField05, txtField08, txtField09, txtField11
         };
 
 // Set the same key pressed event handler for each text field in the keyPressedTextFields array
@@ -855,6 +854,7 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
         params.put("sTransNox", oTrans.getMasterModel().getTransactionNumber());
         params.put("sTranDte", CommonUtils.xsDateMedium((Date) oTrans.getMasterModel().getTransaction()));
         params.put("sRemarks", oTrans.getMasterModel().getRemarks());
+        params.put("status", oTrans.getMasterModel().getTransactionStatus());
 //        params.put("sTranType", "Unprcd Qty");
 //        params.put("sTranQty", "Cancel");
 

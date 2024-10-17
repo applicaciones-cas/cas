@@ -467,9 +467,13 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
                     break;
 
                 case 15:/*QTY Cancel*/
-                    if (lsValue.matches("\\d*")) {
+                     if (lsValue.matches("\\d*")) {
                         int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
-                        oTrans.setDetail(pnRow, "nQuantity", qty);
+                        jsonObject = oTrans.setDetail(pnRow, "nQuantity", qty);
+                        System.out.println(jsonObject.toJSONString());
+                        if("error".equals((String) jsonObject.get("result"))){
+                            ShowMessageFX.Information((String) jsonObject.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
                         loadItemData();
                         break;
                     } else {
@@ -478,6 +482,17 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
                     txtField.setText("0");
                     txtField.requestFocus();
                     break;
+//                    if (lsValue.matches("\\d*")) {
+//                        int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
+//                        oTrans.setDetail(pnRow, "nQuantity", qty);
+//                        loadItemData();
+//                        break;
+//                    } else {
+//                        ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
+//                    }
+//                    txtField.setText("0");
+//                    txtField.requestFocus();
+//                    break;
 
             }
             loadItemData();
@@ -848,6 +863,7 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
         params.put("sTransNox", oTrans.getMasterModel().getTransactionNumber());
         params.put("sTranDte", CommonUtils.xsDateMedium((Date) oTrans.getMasterModel().getTransaction()));
         params.put("sRemarks", oTrans.getMasterModel().getRemarks());
+        params.put("status", oTrans.getMasterModel().getTransactionStatus());
 //        params.put("sTranType", "Unprcd Qty");
 //        params.put("sTranQty", "Cancel");
 

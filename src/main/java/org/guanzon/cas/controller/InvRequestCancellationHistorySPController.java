@@ -825,6 +825,7 @@ public class InvRequestCancellationHistorySPController implements Initializable,
         params.put("sTransNox", oTrans.getMasterModel().getTransactionNumber());
         params.put("sTranDte", CommonUtils.xsDateMedium((Date) oTrans.getMasterModel().getTransaction()));
         params.put("sRemarks", oTrans.getMasterModel().getRemarks());
+        params.put("status", oTrans.getMasterModel().getTransactionStatus());
 //        params.put("sTranType", "Unprcd Qty");
 //        params.put("sTranQty", "Cancel");
 
