@@ -767,7 +767,7 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
         apBrowse.setDisable(lbShow);
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
-        apTable.setDisable(!lbShow);
+//        apTable.setDisable(!lbShow);
         
         if (Integer.valueOf(oTrans.getMasterModel().getTransactionStatus()) != 0) {
                 btnVoid.setDisable(false);
