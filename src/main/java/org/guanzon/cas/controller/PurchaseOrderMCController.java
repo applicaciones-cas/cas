@@ -151,7 +151,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 break;
             case "btnUpdate":
-
                 Validator_PurchaseOrder_Master ValidateMaster = new Validator_PurchaseOrder_Master(oTrans.getMasterModel());
                 if (!ValidateMaster.isEntryOkay()) {
                     poJSON.put("result", "error");
@@ -159,11 +158,11 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 }
-
                 poJSON = oTrans.updateTransaction();
                 if ("error".equals((String) poJSON.get("result"))) {
                     Assert.fail((String) poJSON.get("message"));
                 }
+                btnFindSource.setManaged(true);
                 pnEditMode = oTrans.getMasterModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -193,7 +192,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 if (pnIndex < 98) {
                     pnIndex = 99;
                 }
-
                 poJSON = oTrans.searchDetail(pnDetailRow, 1, "", false);
                 //start
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
@@ -204,7 +202,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     return;
                 } else {
                     loadRecord();
-                    pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
 
@@ -823,14 +820,20 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         btnSave.setVisible(lbShow);
         btnAddItem.setVisible(lbShow);
         btnRemoveItem.setVisible(lbShow);
-        btnFindSource.setVisible(lbShow);
 
         btnCancel.setManaged(lbShow);
         btnSearch.setManaged(lbShow);
         btnSave.setManaged(lbShow);
         btnAddItem.setManaged(lbShow);
         btnRemoveItem.setManaged(lbShow);
-        btnFindSource.setManaged(lbShow);
+
+        if (fnValue == EditMode.ADDNEW) {
+            btnFindSource.setManaged(lbShow);
+            btnFindSource.setVisible(lbShow);
+        } else {
+            btnFindSource.setManaged(!lbShow);
+            btnFindSource.setVisible(!lbShow);
+        }
 
 // Manage visibility and managed state of other buttons
         btnBrowse.setVisible(!lbShow);
