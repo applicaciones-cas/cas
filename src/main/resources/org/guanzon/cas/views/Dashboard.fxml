@@ -271,7 +271,7 @@
                                                 <Menu mnemonicParsing="false" text="PO SP">
                                                    <items>
                                                       <MenuItem fx:id="mnuPurchaseOrderSP" mnemonicParsing="false" onAction="#mnuPurchaseOrderSPClick" text="Purchase Order SP" />
-                                                      <MenuItem fx:id="mnuPurchaseOrderConfirmationMC1" mnemonicParsing="false" onAction="#mnuPurchaseOrderConfirmationMCClick" text="Purchase Order Confirmation SP" />
+                                                      <MenuItem fx:id="mnuPurchaseOrderConfirmationSP" mnemonicParsing="false" onAction="#mnuPurchaseOrderConfirmationSPClick" text="Purchase Order Confirmation SP" />
                                                       <MenuItem fx:id="mnuPurchaseOrderHistorySP" mnemonicParsing="false" onAction="#mnuPurchaseOrderHistorySPClick" text="Purchase Order History SP" />
                                                    </items>
                                                 </Menu>

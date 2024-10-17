@@ -108,7 +108,7 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
     @FXML
     private TableView tblDetails, tblTransactionIssues;
     @FXML
-    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08, index09, index10, index11;
+    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08, index09;
     
 
     /**
@@ -625,8 +625,7 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
         index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
         index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index09.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index10.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index11.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+
 
         index01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index02"));
@@ -637,8 +636,7 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
         index07.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index07"));
         index08.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index08"));
         index09.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index09"));
-        index10.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index10"));
-        index11.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index11"));
+
 
         tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");
