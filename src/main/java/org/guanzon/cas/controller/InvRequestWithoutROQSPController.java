@@ -283,17 +283,27 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
                     }
                     break;
                 case "btnCancel":
+//                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+//                            poJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getTransactionNumber());
+//                            System.out.println(poJSON.toJSONString());
+//                            if ("error".equals((String) poJSON.get("result"))) {
+//                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                                break;
+//                            }
+//                            ShowMessageFX.Information("Transaction cancelled succesfully.", "Computerized Acounting System", pxeModuleName);
+//                            clearAllFields();
+//                            initTrans();
+//                            initTabAnchor();
+//
+//                    }
                     if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-                            poJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getTransactionNumber());
-                            System.out.println(poJSON.toJSONString());
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                                break;
-                            }
-                            ShowMessageFX.Information("Transaction cancelled succesfully.", "Computerized Acounting System", pxeModuleName);
-                            clearAllFields();
-                            initTrans();
-                            initTabAnchor();
+
+                        if (pnEditMode == EditMode.UPDATE) {
+//                            oTrans.cancelUpdate();
+                        }
+                        clearAllFields();
+                        initTrans();
+                        initTabAnchor();
 
                     }
                     break;
@@ -813,6 +823,7 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
         params.put("sTransNox", oTrans.getMasterModel().getTransactionNumber());
         params.put("sTranDte", CommonUtils.xsDateMedium((Date) oTrans.getMasterModel().getTransaction()));
         params.put("sRemarks", oTrans.getMasterModel().getRemarks());
+        params.put("status", oTrans.getMasterModel().getTransactionStatus());
 //        params.put("sTranType", "Unprcd Qty");
 //        params.put("sTranQty", "Cancel");
 
