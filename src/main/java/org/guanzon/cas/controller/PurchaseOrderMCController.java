@@ -151,16 +151,19 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 break;
             case "btnUpdate":
-                
-               Validator_PurchaseOrder_Master ValidateMaster = new Validator_PurchaseOrder_Master(oTrans.getMasterModel());
-            if (!ValidateMaster.isEntryOkay()) {
-                poJSON.put("result", "error");
-                poJSON.put("message", ValidateMaster.getMessage());
-                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                return;
-            }
-                
+
+                Validator_PurchaseOrder_Master ValidateMaster = new Validator_PurchaseOrder_Master(oTrans.getMasterModel());
+                if (!ValidateMaster.isEntryOkay()) {
+                    poJSON.put("result", "error");
+                    poJSON.put("message", ValidateMaster.getMessage());
+                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    return;
+                }
+
                 poJSON = oTrans.updateTransaction();
+                if ("error".equals((String) poJSON.get("result"))) {
+                    Assert.fail((String) poJSON.get("message"));
+                }
                 pnEditMode = oTrans.getMasterModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -258,7 +261,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 }
                 break;
             case "btnAddItem":
-                    apMaster.setDisable(true);
+                apMaster.setDisable(true);
                 if (oTrans.getItemCount() - 1 < 0) {
                     poJSON = oTrans.AddModelDetail();
                     pnDetailRow = oTrans.getItemCount() - 1;
@@ -407,6 +410,10 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 loInventory = oTrans.GetInventory((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"), true);
 
                 loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
+                String lsyrmdl = "0";
+                if (!loInventory.getMaster("sModelIDx").toString().isEmpty()) {
+                    lsyrmdl = String.valueOf(loMdl.getModel().getYearModel());
+                }
                 loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
                 loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
                 data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
@@ -416,7 +423,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         (String) loMdl.getModel().getModelCode(),
                         (String) loMdl.getModel().getModelDescription(),
                         loMdlVrnt.getModel().getVariantName(),
-                        String.valueOf(loMdl.getModel().getYearModel()),
+                        lsyrmdl,
                         (String) loColor.getModel().getDescription(),
                         oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString(),
                         (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
@@ -758,8 +765,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         txtField11.focusedProperty().addListener(txtField_Focus);
         txtField12.focusedProperty().addListener(txtField_Focus);
 
-
-
         txtDetail01.focusedProperty().addListener(txtDetail_Focus);
         txtDetail02.focusedProperty().addListener(txtDetail_Focus);
         txtDetail03.focusedProperty().addListener(txtDetail_Focus);
@@ -771,8 +776,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
         txtField09.setOnKeyPressed(this::txtField_KeyPressed);
-
-
 
         txtDetail01.setOnKeyPressed(this::txtDetail_KeyPressed);//barcode
         txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);
@@ -792,8 +795,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         txtField10.clear();
         txtField11.clear();
         txtField12.clear();
-
-
 
         txtDetail01.clear();
         txtDetail02.clear();

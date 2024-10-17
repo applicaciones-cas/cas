@@ -159,6 +159,9 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                 }
             
                 poJSON = oTrans.updateTransaction();
+                if ("error".equals((String) poJSON.get("result"))) {
+                    Assert.fail((String) poJSON.get("message"));
+                }
                 pnEditMode = oTrans.getMasterModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
