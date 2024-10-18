@@ -462,6 +462,7 @@ public class InvRequestCancel implements GTranDet {
 
     @Override
     public JSONObject setDetail(int fnRow, int fnCol, Object foData) {
+        poJSON = new JSONObject();
         if (fnCol == 5) {
 
             int lnQty = Integer.parseInt(String.valueOf(foData));
@@ -484,11 +485,14 @@ public class InvRequestCancel implements GTranDet {
                 lnQty = nQuantityRequest; // Prevent lnQty from exceeding the total request
                 nUnserved = computeUnserved(nQuantityRequest, nIssueQty, lnQty, nOrderQty);
                 System.out.println("fnCol >= " + nUnserved);
+                poJSON.put("result", "error");
+                poJSON.put("message", "Quantity exceeds unprocessed quantity. The quantity has been set to an unprocessed value.");
 
             }
 
             poModelDetail.get(fnRow).setUnserve(nUnserved);
-            return poModelDetail.get(fnRow).setValue(fnCol, lnQty);
+            poModelDetail.get(fnRow).setValue(fnCol, lnQty);
+            return poJSON;
         }
         return poModelDetail.get(fnRow).setValue(fnCol, foData);
     }
@@ -523,6 +527,8 @@ public class InvRequestCancel implements GTranDet {
                 } else {
                     lsSQL = MiscUtil.addCondition(lsSQL, "b.sDescript LIKE " + SQLUtil.toSQL("%" + fsValue + "%"));
                 }
+                
+                lsSQL = lsSQL + " AND (a.nQuantity - (a.nIssueQty + a.nCancelld + a.nOrderQty)) > 0";
                 System.out.println("searchDetail = " + lsSQL);
                 if (p_bWithUI) {
                     poJSON = ShowDialogFX.Search(poGRider,
@@ -595,6 +601,7 @@ public class InvRequestCancel implements GTranDet {
                 //use for testing 
                 lsSQL += " LIMIT 1";
                 System.out.println(lsSQL);
+                lsSQL = lsSQL + " AND (a.nQuantity - (a.nIssueQty + a.nCancelld + a.nOrderQty)) > 0";
                 ResultSet loRS = poGRider.executeQuery(lsSQL);
                 String lsStockId = "";
                 try {
@@ -777,7 +784,8 @@ public class InvRequestCancel implements GTranDet {
                 setMaster("sOrderNox", poRequest.getMasterModel().getTransactionNumber());
                 setMaster("dStartEnc", poRequest.getMasterModel().getStartEncDate());
                 System.out.println("getTransactionNumber = " + poRequest.getMasterModel().getTransactionNumber());
-
+                poModelDetail.clear();
+                poJSON = AddModelDetail();
                 break;
             default:
                 throw new AssertionError();

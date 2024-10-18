@@ -5,10 +5,12 @@
 package org.guanzon.cas.inventory.stock.request;
 
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.cas.inventory.stock.Inv_Request_Auto;
 import org.guanzon.cas.inventory.stock.Inv_Request_General;
 import org.guanzon.cas.inventory.stock.Inv_Request_MC;
 import org.guanzon.cas.inventory.stock.Inv_Request_MP;
 import org.guanzon.cas.inventory.stock.Inv_Request_SP;
+import org.guanzon.cas.inventory.stock.Inv_Request_SP_Auto;
 import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_General_Approval;
 import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_MC_Approval;
 import org.guanzon.cas.inventory.stock.request.approval.Inv_Request_MP_Approval;
@@ -27,6 +29,8 @@ import org.guanzon.cas.inventory.stock.request.purchase.Inv_Request_SP_Purchase;
  */
 public class RequestControllerFactory {
     public enum RequestType {
+        AUTO,
+        SP_AUTO,
         ASSET,
         MC,
         MP,
@@ -49,6 +53,10 @@ public class RequestControllerFactory {
                 return (RequestController) new Inv_Request_SP(oApp, fbVal);
             case GENERAL:
                 return (RequestController) new Inv_Request_General(oApp, fbVal);
+            case AUTO:
+                return (RequestController) new Inv_Request_Auto(oApp, fbVal);
+            case SP_AUTO:
+                return (RequestController) new Inv_Request_SP_Auto(oApp, fbVal);
             default:
                 return null;
         }

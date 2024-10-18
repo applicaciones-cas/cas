@@ -34,7 +34,7 @@ import org.json.simple.JSONObject;
  *
  * @author Unclejo
  */
-public class Inv_Request_SP implements RequestController {
+public class Inv_Request_SP_Auto implements RequestController {
 
     GRider poGRider;
     boolean pbWthParent;
@@ -63,7 +63,7 @@ public class Inv_Request_SP implements RequestController {
     public void setWithUI(boolean fbValue){
         p_bWithUI = fbValue;
     }
-    public Inv_Request_SP(GRider foGRider, boolean fbWthParent) {
+    public Inv_Request_SP_Auto(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
 
@@ -303,6 +303,7 @@ public class Inv_Request_SP implements RequestController {
                 poModelMaster.setApproved(poGRider.getUserID());
                 poModelMaster.setApprovedDate(poGRider.getServerDate());
             }
+            
             poJSON = saveInventoryTrans();
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
@@ -551,12 +552,12 @@ public class Inv_Request_SP implements RequestController {
         }
 
         String lsSQL = MiscUtil.addCondition(getSQL(), " a.sTransNox LIKE "
-                + SQLUtil.toSQL(fsValue + "%") + " AND f.sCategCd1 = '0001' AND f.sCategCd2 = '0007' AND " + 
+                + SQLUtil.toSQL(fsValue + "%") + " AND f.sCategCd1 = '0003' AND f.sCategCd2 = '0007' AND " + 
                 "LEFT(a.sTransNox,4) LIKE " + SQLUtil.toSQL(poGRider.getBranchCode() + "%") +
                 " AND " +  lsCondition + "  GROUP BY a.sTransNox ASC") +
-                " HAVING (SUM(e.nQuantity - (e.nIssueQty + e.nCancelld + e.nOrderQty))) > 0";
+                " AND (SUM(e.nQuantity - (e.nIssueQty + e.nCancelld + e.nOrderQty))) > 0";
 //        String lsSQL = MiscUtil.addCondition(getSQL(), " a.sTransNox LIKE "
-//                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition + " AND f.sCategCd1 = '0001' AND f.sCategCd2 = '0007' GROUP BY a.sTransNox ASC");
+//                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition + " AND f.sCategCd1 = '0003' AND f.sCategCd2 = '0007' GROUP BY a.sTransNox ASC");
 
         poJSON = new JSONObject();
         System.out.println("searchTransaction = " + lsSQL);
@@ -594,7 +595,7 @@ public class Inv_Request_SP implements RequestController {
             lsSQL = loRS.getString("sTransNox");
             MiscUtil.close(loRS);
         } catch (SQLException ex) {
-            Logger.getLogger(Inv_Request_SP.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Inv_Request_SP_Auto.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
@@ -903,7 +904,6 @@ public class Inv_Request_SP implements RequestController {
         }
         return poJSON;
     }
-    
     private JSONObject saveInventoryTrans(){
         poJSON = new JSONObject();
         
@@ -958,7 +958,7 @@ public class Inv_Request_SP implements RequestController {
                     lnCtr++;
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(Inv_Request_SP.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Inv_Request_SP_Auto.class.getName()).log(Level.SEVERE, null, ex);
             }
             Model_Inv_Stock_Request_Detail model = new Model_Inv_Stock_Request_Detail(poGRider);
             String lsSQL = "DELETE FROM " + model.getTable()+
@@ -1078,7 +1078,7 @@ public class Inv_Request_SP implements RequestController {
         poJSON = new JSONObject();
         try {
             String lsSQL = getSQL_Detail();
-            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0001' AND b.sCategCd2 = '0007'");
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0003' AND b.sCategCd2 = '0007'");
             ResultSet loRS = poGRider.executeQuery(lsSQL);
             System.out.println("\n" + lsSQL);
             poModelDetail =  new ArrayList<>();
