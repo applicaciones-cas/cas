@@ -37,6 +37,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
+import org.guanzon.cas.model.ModelPurchaseOrder2;
 import org.guanzon.cas.model.ModelPurchaseOrderMC;
 import org.guanzon.cas.model.ModelPurchaseOrderSP;
 import org.guanzon.cas.parameters.Color;
@@ -63,6 +64,7 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
     private int pnIndex;
     private int pnDetailRow;
     private ObservableList<ModelPurchaseOrderSP> data = FXCollections.observableArrayList();
+    private ObservableList<ModelPurchaseOrder2> data2 = FXCollections.observableArrayList();
 
     @FXML
     private AnchorPane MainAnchorPane;
@@ -426,6 +428,7 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         } catch (Exception e) {
         }
         loadTableDetail();
+        loadTableDetail2();
     }
 
     private void loadTableDetail() {
@@ -509,6 +512,70 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         }
         initDetailsGrid();
     }
+    
+    private void loadTableDetail2() {
+        int lnCtr;
+        data2.clear();
+        int lnItem = oTrans.getItemCount();
+        if (lnItem < 0) {
+            return;
+        }
+        //count size
+
+        double lnTotalTransaction = 0;
+        for (lnCtr = 0; lnCtr <= oTrans.getItemCount() - 1; lnCtr++) {
+            String lsStockIDx = (String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx");
+            Inventory loInventory;
+            Color loColor;
+            Model loMdl;
+            Model_Variant loMdlVrnt;
+            if (lsStockIDx != null && !lsStockIDx.equals("")) {
+
+                loInventory = oTrans.GetInventory((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"), true);
+                loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
+                loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
+                loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
+
+                data2.add(new ModelPurchaseOrder2(String.valueOf(lnCtr + 1),
+                        (String) loInventory.getMaster("sBarCodex")));
+
+                try {
+                    if (oTrans.getDetailModel(lnCtr).getQuantity() != 0) {
+                        lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString())) * Double.parseDouble(String.valueOf(oTrans.getDetailModel(lnCtr).getQuantity()));
+                    } else {
+                        lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString()));
+                        System.out.println(lnTotalTransaction);
+                    }
+                } catch (Exception e) {
+                }
+
+            } else {
+                data2.add(new ModelPurchaseOrder2(String.valueOf(lnCtr + 1),
+                        oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()));
+
+            }
+        }
+        txtField12.setText(String.valueOf(lnTotalTransaction));
+        lnTotalTransaction = 0;
+
+        /*FOCUS ON FIRST ROW*/
+        if (pnDetailRow < 0 || pnDetailRow >= data.size()) {
+            if (!data.isEmpty()) {
+                /* FOCUS ON FIRST ROW */
+                tblTransactionIssues.getSelectionModel().select(0);
+                tblTransactionIssues.getFocusModel().focus(0);
+                pnDetailRow = tblDetails.getSelectionModel().getSelectedIndex();
+            }
+//            setSelectedDetail(); //textfield data
+        } else {
+            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+            tblTransactionIssues.getSelectionModel().select(pnDetailRow);
+            tblTransactionIssues.getFocusModel().focus(pnDetailRow);
+//            setSelectedDetail();
+        }
+        initDetailsGrid2();
+    }
+    
     public void initDetailsGrid() {
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
@@ -543,6 +610,26 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
 
         tblDetails.setItems(data);
     }
+    
+    public void initDetailsGrid2() {
+        index12.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 5;");
+        index13.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 5;");
+
+        index12.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder2, String>("index12"));
+        index13.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder2, String>("index13"));
+
+        tblTransactionIssues.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblTransactionIssues.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
+        tblTransactionIssues.setItems(data2);
+
+    }
+    
+    
         private void txtField_KeyPressed(KeyEvent event) {
 
         TextField textField = (TextField) event.getSource();
@@ -781,6 +868,7 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
 
         initTextFields();
         initDetailsGrid();
+        initDetailsGrid2();
         clearFields();
 
         pnEditMode = EditMode.UNKNOWN;

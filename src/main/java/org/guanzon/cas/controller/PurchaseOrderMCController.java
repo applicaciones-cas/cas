@@ -59,7 +59,7 @@ import org.junit.Assert;
 //PO_Main_1Controller
 public class PurchaseOrderMCController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Purchase Order";
+    private final String pxeModuleName = "Purchase Order MC";
     private GRider oApp;
     private PurchaseOrder oTrans;
     private JSONObject poJSON;
@@ -151,26 +151,29 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 break;
             case "btnUpdate":
+                try {
                 Validator_PurchaseOrder_Master ValidateMaster = new Validator_PurchaseOrder_Master(oTrans.getMasterModel());
                 if (!ValidateMaster.isEntryOkay()) {
                     poJSON.put("result", "error");
                     poJSON.put("message", ValidateMaster.getMessage());
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                    return;
-                }
-                poJSON = oTrans.updateTransaction();
-                if ("error".equals((String) poJSON.get("result"))) {
-                    Assert.fail((String) poJSON.get("message"));
-                }
-                btnFindSource.setManaged(true);
-                pnEditMode = oTrans.getMasterModel().getEditMode();
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-                break;
+                btnFindSource.setManaged(true);
+            } catch (Exception e) {
+
+            }
+
+            pnEditMode = oTrans.getMasterModel().getEditMode();
+            poJSON = oTrans.updateTransaction();
+            if ("error".equals((String) poJSON.get("result"))) {
+                System.err.println((String) poJSON.get("message"));
+                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                pnEditMode = EditMode.UNKNOWN;
+                return;
+            }
+            break;
             case "btnPrint":
                 poJSON = oTrans.printRecord();
                 if ("error".equals((String) poJSON.get("result"))) {
@@ -826,13 +829,12 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         btnSave.setManaged(lbShow);
         btnAddItem.setManaged(lbShow);
         btnRemoveItem.setManaged(lbShow);
-
         if (fnValue == EditMode.ADDNEW) {
             btnFindSource.setManaged(lbShow);
             btnFindSource.setVisible(lbShow);
         } else {
-            btnFindSource.setManaged(!lbShow);
-            btnFindSource.setVisible(!lbShow);
+            btnFindSource.setManaged(false);
+            btnFindSource.setVisible(false);
         }
 
 // Manage visibility and managed state of other buttons

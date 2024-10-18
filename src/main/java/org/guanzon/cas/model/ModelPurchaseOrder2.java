@@ -88,16 +88,16 @@ public class ModelPurchaseOrder2 {
         return index12.get();
     }
 
-    public void setIndex12(String index01) {
-        this.index12.set(index01);
+    public void setIndex12(String index12) {
+        this.index12.set(index12);
     }
 
     public String getIndex13() {
         return index13.get();
     }
 
-    public void setIndex13(String index02) {
-        this.index13.set(index02);
+    public void setIndex13(String index13) {
+        this.index13.set(index13);
     }
 
 
