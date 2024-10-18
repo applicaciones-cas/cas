@@ -863,6 +863,10 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                     types = RequestControllerFactory.RequestType.MP;
                     categForm = " MP";
                     oTrans.setType(types);
+                }else if ("0003".equals(type)) {
+                    types = RequestControllerFactory.RequestType.AUTO;
+                    categForm = " Auto";
+                    oTrans.setType(types);
                 }
 
                 System.out.println("type value = " + types);
