@@ -71,103 +71,37 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
     @FXML
     private AnchorPane apBrowse;
     @FXML
-    private TextField txtField99;
-    @FXML
-    private TextField txtField98;
-    @FXML
-    private TextField txtField97;
-    @FXML
     private AnchorPane apButton;
-    @FXML
-    private HBox hbButtons;
-    @FXML
-    private Button btnBrowse;
-    @FXML
-    private Button btnPrint;
-    @FXML
-    private Button btnVoid;
-    @FXML
-    private Button btnClose;
-    @FXML
-    private AnchorPane apMaster;
-    @FXML
-    private Label lblStatus;
-    @FXML
-    private TextField txtField01;
-    @FXML
-    private TextField txtField02;
-    @FXML
-    private TextField txtField03;
-    @FXML
-    private TextField txtField06;
-    @FXML
-    private TextArea txtField07;
-    @FXML
-    private TextField txtField09;
-    @FXML
-    private TextField txtField10;
-    @FXML
-    private TextField txtField11;
-    @FXML
-    private TextField txtField12;
-    @FXML
-    private TextField txtField04;
-    @FXML
-    private TextField txtField05;
-    @FXML
-    private TextField txtField08;
-    @FXML
-    private AnchorPane apTransactionIssues;
-    @FXML
-    private Label lblStatus1;
-    @FXML
-    private TableView tblTransactionIssues;
-    @FXML
-    private TableColumn index12;
-    @FXML
-    private TableColumn index13;
-    @FXML
-    private AnchorPane apDetail;
-    @FXML
-    private TextField txtDetail01;
-    @FXML
-    private TextField txtDetail02;
-    @FXML
-    private TextField txtDetail03;
-    @FXML
-    private TextField txtDetail04;
-    @FXML
-    private TextField txtDetail05;
-    @FXML
-    private TextField txtDetail06;
-    @FXML
-    private TextField txtDetail07;
     @FXML
     private AnchorPane apTable;
     @FXML
-    private TableView tblDetails;
+    private AnchorPane apDetail;
     @FXML
-    private TableColumn index01;
+    private AnchorPane apMaster;
     @FXML
-    private TableColumn index02;
+    private AnchorPane apTransactionIssues;
+
     @FXML
-    private TableColumn index03;
+    private Button btnBrowse, btnPrint, btnClose, btnVoid;
     @FXML
-    private TableColumn index04;
+    private HBox hbButtons;
+
     @FXML
-    private TableColumn index05;
+    private Label lblStatus,lblStatus1;
     @FXML
-    private TableColumn index06;
+    private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10,
+            txtField11, txtField12, txtField99, txtField98, txtField97;
     @FXML
-    private TableColumn index07;
+    private TextArea txtField07;
+
     @FXML
-    private TableColumn index08;
+    private TableColumn index12, index13;
     @FXML
-    private TableColumn index09;
+    private TextField txtDetail01, txtDetail02, txtDetail03, txtDetail04, txtDetail05, txtDetail06, txtDetail07;
     @FXML
-    private TableColumn index10;
+    private TableView tblDetails, tblTransactionIssues;
     @FXML
-    private TableColumn index11;
+    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08, index09;
 
     /**
      * Initializes the controller class.
@@ -586,8 +520,7 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
         index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index09.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index10.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index11.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+
 
         index01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index02"));
@@ -598,8 +531,7 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         index07.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index07"));
         index08.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index08"));
         index09.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index09"));
-        index10.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index10"));
-        index11.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index11"));
+
 
         tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");

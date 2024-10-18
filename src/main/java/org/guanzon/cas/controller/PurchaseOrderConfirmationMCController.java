@@ -76,28 +76,23 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
     private AnchorPane apTable;
     @FXML
     private AnchorPane apDetail;
-
-    @FXML
-    private Button btnBrowse, btnPrint, btnCancel, btnClose, btnConfirm;
-
-    @FXML
-    private HBox hbButtons;
-
     @FXML
     private AnchorPane apMaster;
     @FXML
     private AnchorPane apTransactionIssues;
 
     @FXML
-    private Label lblStatus;
+    private Button btnBrowse, btnPrint, btnCancel, btnClose, btnConfirm;
+    @FXML
+    private HBox hbButtons;
+
+    @FXML
+    private Label lblStatus,lblStatus1;
     @FXML
     private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10,
             txtField11, txtField12, txtField99, txtField98, txtField97;
     @FXML
     private TextArea txtField07;
-
-    @FXML
-    private Label lblStatus1;
 
     @FXML
     private TableColumn index12, index13;

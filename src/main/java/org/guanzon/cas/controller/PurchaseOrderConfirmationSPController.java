@@ -77,28 +77,23 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
     private AnchorPane apTable;
     @FXML
     private AnchorPane apDetail;
-
-    @FXML
-    private Button btnBrowse, btnPrint, btnCancel, btnClose, btnConfirm;
-
-    @FXML
-    private HBox hbButtons;
-
     @FXML
     private AnchorPane apMaster;
     @FXML
     private AnchorPane apTransactionIssues;
 
     @FXML
-    private Label lblStatus;
+    private Button btnBrowse, btnPrint, btnCancel, btnClose, btnConfirm;
+    @FXML
+    private HBox hbButtons;
+
+    @FXML
+    private Label lblStatus,lblStatus1;
     @FXML
     private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10,
             txtField11, txtField12, txtField99, txtField98, txtField97;
     @FXML
     private TextArea txtField07;
-
-    @FXML
-    private Label lblStatus1;
 
     @FXML
     private TableColumn index12, index13;
@@ -107,7 +102,7 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
     @FXML
     private TableView tblDetails, tblTransactionIssues;
     @FXML
-    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08, index09;
+    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08, index09, index10, index11;
 
     /**
      * Initializes the controller class.
@@ -186,9 +181,7 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
                         return;
                     }
                     break;
-
             }
-
         }
 
         txtField.selectAll();
@@ -273,7 +266,6 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
                             return;
                         }
                     }
-
                     loadTableDetail();
                     break;
                 case 7:

@@ -265,7 +265,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 if (oTrans.getItemCount() - 1 < 0) {
                     poJSON = oTrans.AddModelDetail();
                     pnDetailRow = oTrans.getItemCount() - 1;
-                    pnEditMode = EditMode.UPDATE;
                     loadTableDetail();
                     poJSON.put("result", "success");
                     poJSON.put("message", "''");
@@ -289,7 +288,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         }
                     }
                 }
-
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
