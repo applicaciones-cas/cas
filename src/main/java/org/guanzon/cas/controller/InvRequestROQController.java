@@ -148,6 +148,7 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 // TODO
+        ShowMessageFX.Information(oApp.getBranchCode(), "Computerized Acounting System", pxeModuleName);
         initTrans();
         ClickButton();
         clearAllFields();
@@ -820,6 +821,9 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
                     oTrans.setType(types);
                 } else if ("0002".equals(type)) {
                     types = RequestControllerFactory.RequestType.MP;
+                    oTrans.setType(types);
+                }else if ("0003".equals(type)) {
+                    types = RequestControllerFactory.RequestType.AUTO;
                     oTrans.setType(types);
                 }
 

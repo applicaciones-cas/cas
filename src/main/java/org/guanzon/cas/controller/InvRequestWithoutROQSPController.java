@@ -795,7 +795,26 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
     private void initTrans() {
         clearAllFields();
         oTrans = new Inv_Request(oApp, true);
-        oTrans.setType(RequestControllerFactory.RequestType.SP);
+        String industry = System.getProperty("store.inventory.industry");
+
+        RequestControllerFactory.RequestType types = null;
+        String[] category = industry.split(";");
+        // Print the resulting array
+        for (String type : category) {
+            if (types == null) {
+                if ("0001".equals(type)) {
+                    types = RequestControllerFactory.RequestType.SP;
+//                    categForm = " MC";
+                    oTrans.setType(types);
+                } else if ("0003".equals(type)) {
+                    types = RequestControllerFactory.RequestType.SP_AUTO;
+//                    categForm = " MP";
+                    oTrans.setType(types);
+                }
+
+                System.out.println("type value = " + types);
+            }
+        }
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
         oTrans.isHistory(false);
