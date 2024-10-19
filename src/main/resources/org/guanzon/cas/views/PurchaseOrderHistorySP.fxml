@@ -226,7 +226,7 @@
                                                                            </GridPane.margin>
                                                                         </Text>
                                                                         <TextField fx:id="txtField03" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" promptText="Press F3 to Search." styleClass="text-field" GridPane.columnIndex="1" />
-                                                                        <TextField fx:id="txtField06" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                                        <TextField fx:id="txtField06" disable="true" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                                            <GridPane.margin>
                                                                               <Insets />
                                                                            </GridPane.margin>
@@ -245,7 +245,7 @@
                                                                         <TextField fx:id="txtField11" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="25.0" GridPane.columnIndex="5" GridPane.rowIndex="3" />
                                                                         <TextField fx:id="txtField12" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="25.0" GridPane.columnIndex="5" GridPane.rowIndex="5" />
                                                                         <TextField fx:id="txtField04" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" promptText="Press F3 to Search." GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                        <TextField fx:id="txtField05" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                        <TextField fx:id="txtField05" disable="true" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                         <TextField fx:id="txtField08" prefHeight="26.0" GridPane.columnIndex="5" />
                                                                      </children>
                                                                   </GridPane>

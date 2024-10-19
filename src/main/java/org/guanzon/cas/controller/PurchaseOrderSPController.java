@@ -227,11 +227,9 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                 }
                 break;
             case "btnSave":
-
                 poJSON = oTrans.getMasterModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
@@ -242,15 +240,16 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-                oTrans.getDetailModel(0).getStockID();
+
                 poJSON = oTrans.saveTransaction();
 
                 pnEditMode = oTrans.getMasterModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                    pnEditMode = EditMode.UNKNOWN;
+//                    pnEditMode = EditMode.UNKNOWN;
                     return;
+
 
                 } else {
                     oTrans = new PurchaseOrder(oApp, true);
@@ -262,7 +261,6 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                 }
                 break;
             case "btnAddItem":
-                apMaster.setDisable(true);
                 if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() > 0
                         && !oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
                     poJSON = oTrans.AddModelDetail();

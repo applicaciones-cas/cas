@@ -230,7 +230,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 poJSON = oTrans.getMasterModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
@@ -248,8 +247,9 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                    pnEditMode = EditMode.UNKNOWN;
+//                    pnEditMode = EditMode.UNKNOWN;
                     return;
+
 
                 } else {
                     oTrans = new PurchaseOrder(oApp, true);
@@ -261,7 +261,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 }
                 break;
             case "btnAddItem":
-                apMaster.setDisable(true);
                 if (oTrans.getItemCount() - 1 < 0) {
                     poJSON = oTrans.AddModelDetail();
                     pnDetailRow = oTrans.getItemCount() - 1;
@@ -610,7 +609,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
             }
         } else {
-
             switch (lnIndex) {
                 case 2:
                     txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getTransactionDate(), "yyyy-MM-dd"));
@@ -621,9 +619,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     }
                     break;
             }
-
         }
-
         txtField.selectAll();
         pnIndex = lnIndex;
     };
