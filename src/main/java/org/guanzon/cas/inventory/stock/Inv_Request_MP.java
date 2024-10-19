@@ -13,7 +13,6 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
-import org.guanzon.appdriver.iface.GTranDet;
 import org.guanzon.cas.inventory.base.InvMaster;
 import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.inventory.base.InventoryTrans;
@@ -413,7 +412,7 @@ public class Inv_Request_MP implements RequestController {
             || poModelMaster.getTransactionStatus().equalsIgnoreCase(TransactionStatus.STATE_VOID)) {
             
             poJSON.put("result", "error");
-            poJSON.put("message","Unable to " + lsMessage + " proccesed transaction.");
+            poJSON.put("message","Unable to " + lsMessage + " proccessed transaction.");
             return poJSON;
         }
         poJSON.put("result", "success");

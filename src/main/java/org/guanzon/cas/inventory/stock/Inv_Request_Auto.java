@@ -416,7 +416,7 @@ public class Inv_Request_Auto implements RequestController {
             || poModelMaster.getTransactionStatus().equalsIgnoreCase(TransactionStatus.STATE_VOID)) {
             
             poJSON.put("result", "error");
-            poJSON.put("message","Unable to " + lsMessage + " proccesed transaction.");
+            poJSON.put("message","Unable to " + lsMessage + " proccessed transaction.");
             return poJSON;
         }
         poJSON.put("result", "success");
@@ -689,7 +689,6 @@ public class Inv_Request_Auto implements RequestController {
                     return poJSON;
                 }
                 
-
             }
             
 
