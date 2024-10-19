@@ -19,6 +19,7 @@ import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.iface.GRecord;
 import org.guanzon.cas.inventory.models.Model_Inventory;
 import org.guanzon.cas.inventory.models.Model_Inventory_Sub_Unit;
+import org.guanzon.cas.parameters.Branch;
 import org.guanzon.cas.parameters.Brand;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Category_Level2;
@@ -95,7 +96,21 @@ public class Inventory implements GRecord{
         
     }
 
-
+    public JSONObject isWareHose(){
+        poJSON = new JSONObject();
+        System.out.println("getBranchCode == " + poGRider.getBranchCode());
+        Branch loBranch = new Branch(poGRider, pbWthParent);
+        loBranch.openRecord(poGRider.getBranchCode());
+        System.out.println("isActiveWarehouse == " + loBranch.getModel().isActiveWarehouse());
+        if(!loBranch.getModel().isActiveWarehouse()){
+            poJSON.put("result", "error");
+            poJSON.put("message", "This branch is not a warehouse branch. Please use a designated branch to create new inventory. Thank you!");
+            return poJSON;
+        }
+        poJSON.put("result", "success");
+        poJSON.put("message", "This branch is warehouse.");
+        return poJSON;
+    }
     @Override
     public JSONObject setMaster(int fnCol, Object foData) {
 
@@ -168,10 +183,8 @@ public class Inventory implements GRecord{
 
     @Override
     public JSONObject newRecord() {
-
-            poJSON = new JSONObject();
+        poJSON = new JSONObject();
         try{
-
             poModel = new Model_Inventory(poGRider);
             Connection loConn = null;
             loConn = setConnection();
@@ -204,7 +217,7 @@ public class Inventory implements GRecord{
                 case "3"://Hospitality
                 case "4"://Pedritos Group
                     loCateg.openRecord("0004");
-                    break;
+                    break;  
 
                 case "7"://Guanzon Services Office
                      break;

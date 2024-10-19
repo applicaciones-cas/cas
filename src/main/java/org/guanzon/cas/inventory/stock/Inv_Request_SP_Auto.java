@@ -19,30 +19,31 @@ import org.guanzon.cas.inventory.base.InventoryTrans;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Master;
 import org.guanzon.cas.inventory.stock.request.RequestController;
-import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
+import org.guanzon.cas.inventory.stock.request.RequestControllerFactory.RequestType;
+import org.guanzon.cas.inventory.stock.request.RequestControllerFactory.RequestCategoryType;
 import org.guanzon.cas.inventory.stock.request.cancel.InvRequestCancel;
 import org.guanzon.cas.parameters.Category;
 import org.guanzon.cas.parameters.Inv_Type;
-import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_MC_Detail;
+import org.guanzon.cas.validators.inventory.Validator_Inv_Stock_Request_SP_Detail;
 import org.json.simple.JSONObject;
 
 /**
  *
  * @author Unclejo
  */
-public class Inv_Request_MC implements RequestController {
+public class Inv_Request_SP_Auto implements RequestController {
 
     GRider poGRider;
     boolean pbWthParent;
     int pnEditMode;
     String psTranStatus;
 
-    private boolean p_bWithUI;
+    private boolean p_bWithUI = true;
     Model_Inv_Stock_Request_Master poModelMaster;
     ArrayList<Model_Inv_Stock_Request_Detail> poModelDetail;
     ArrayList<Model_Inv_Stock_Request_Detail> poModelDetailOthers;
-    RequestControllerFactory.RequestType type;
-    RequestControllerFactory.RequestCategoryType category_type;
+    RequestType type;
+    RequestCategoryType category_type;
     // Create a backup list to store deleted records temporarily
     private List<Model_Inv_Stock_Request_Detail> backupRecords = new ArrayList<>();
 
@@ -54,13 +55,12 @@ public class Inv_Request_MC implements RequestController {
     public void isHistory(boolean fbValue) {
         pbIsHistory = fbValue;
     }
-    
+
     @Override
     public void setWithUI(boolean fbValue){
-        System.out.println("fbValue = " + fbValue);
         p_bWithUI = fbValue;
     }
-    public Inv_Request_MC(GRider foGRider, boolean fbWthParent) {
+    public Inv_Request_SP_Auto(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
 
@@ -113,7 +113,7 @@ public class Inv_Request_MC implements RequestController {
         poModelMaster.setCategoryCode((String) loCateg.getMaster("sCategrCd"));
         poModelMaster.setCategoryName((String) loCateg.getMaster("sDescript"));
         
-        if(category_type == RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ){
+        if(category_type == RequestCategoryType.WITHOUT_ROQ){
             poModelDetail = new ArrayList<>();
             poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
             poModelDetail.get(getItemCount() - 1).newRecord();
@@ -142,7 +142,9 @@ public class Inv_Request_MC implements RequestController {
     public JSONObject openTransaction(String fsValue) {
         
         poJSON = new JSONObject();
-        poModelMaster.openRecord(fsValue);
+        
+        poModelMaster = new Model_Inv_Stock_Request_Master(poGRider);
+        poJSON = poModelMaster.openRecord(fsValue);
         if ("error".equals((String) poJSON.get("result"))) {
             return poJSON;
         }
@@ -206,7 +208,7 @@ public class Inv_Request_MC implements RequestController {
             }
             return poJSON;
         }
-        if(category_type == RequestControllerFactory.RequestCategoryType.WITH_ROQ){
+        if(category_type == RequestCategoryType.WITH_ROQ){
             poModelMaster.setEntryNumber(roqSaveCount);
         }else{
             poModelMaster.setEntryNumber(poModelDetail.size());
@@ -216,11 +218,9 @@ public class Inv_Request_MC implements RequestController {
             if (!pbWthParent) {
                 poGRider.commitTrans();
             }
-            
-            poJSON.put("result", "success");
-            poJSON.put("message", "Record saved successfully.");
         } else {
             if (!pbWthParent) {
+                restoreData();
                 poGRider.rollbackTrans();
                 poJSON.put("result", "error");
                 poJSON.put("message", "Unable to Save Transaction.");
@@ -276,7 +276,7 @@ public class Inv_Request_MC implements RequestController {
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
             }
-            
+
             if (poGRider.getUserLevel() < UserRight.SUPERVISOR) {
                 JSONObject loJSON =  ShowDialogFX.getUserApproval(poGRider);
                 if ("success".equals((String) loJSON.get("result"))) {
@@ -355,7 +355,7 @@ public class Inv_Request_MC implements RequestController {
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
             }
-            System.out.println("pbIsHistory = " + pbIsHistory);
+            
             if(pbIsHistory){
                 InvRequestCancel loCancel = new InvRequestCancel(poGRider, pbWthParent);
                 loCancel.setType(type);
@@ -392,7 +392,6 @@ public class Inv_Request_MC implements RequestController {
                     return poJSON;
                 }
             }
-            
             
             poJSON = poModelMaster.saveRecord();
             
@@ -434,7 +433,8 @@ public class Inv_Request_MC implements RequestController {
         return poModelDetail.get(fnRow);
 
     }
-//    @Override
+
+    @Override
     public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModel() {
         return poModelDetail;
     }
@@ -466,12 +466,11 @@ public class Inv_Request_MC implements RequestController {
                     poJSON.put("message", "Please choose a category first..");
                     return poJSON;
                 }
-                System.out.println("searchDetail p_bWithUI = " + p_bWithUI);
                 Inventory loInventory = new Inventory(poGRider, true);
                 loInventory.setRecordStatus(psTranStatus);
                 loInventory.setWithUI(p_bWithUI);
-                poJSON = loInventory.searchRecordWithContition(fsValue, "a.sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()) + " AND a.sCategCd2 != " + SQLUtil.toSQL("0007"), fbByCode);
-                System.out.println("poJSON = " + poJSON);
+                poJSON = loInventory.searchRecordWithContition(fsValue, "a.sCategCd1 = " + SQLUtil.toSQL(poModelMaster.getCategoryCode()) + " AND a.sCategCd2 = " + SQLUtil.toSQL("0007"), fbByCode);
+
                 if (poJSON != null) {
                     for(int lnCtr = 0; lnCtr < poModelDetail.size(); lnCtr++){
                         if(poModelDetail.get(lnCtr).getStockID().equalsIgnoreCase((String) loInventory.getModel().getStockID())){
@@ -550,14 +549,13 @@ public class Inv_Request_MC implements RequestController {
         }
 
         String lsSQL = MiscUtil.addCondition(getSQL(), " a.sTransNox LIKE "
-                + SQLUtil.toSQL(fsValue + "%") + " AND f.sCategCd1 = '0001' AND f.sCategCd2 != '0007' AND " + 
+                + SQLUtil.toSQL(fsValue + "%") + " AND f.sCategCd1 = '0003' AND f.sCategCd2 = '0007' AND " + 
                 "LEFT(a.sTransNox,4) LIKE " + SQLUtil.toSQL(poGRider.getBranchCode() + "%") +
-                " AND " + lsCondition + "  GROUP BY a.sTransNox ASC") +
-                " HAVING (SUM(e.nQuantity - (e.nIssueQty + e.nCancelld + e.nOrderQty))) > 0";
-                
+                " AND " +  lsCondition + "  GROUP BY a.sTransNox ASC") +
+                " AND (SUM(e.nQuantity - (e.nIssueQty + e.nCancelld + e.nOrderQty))) > 0";
 //        String lsSQL = MiscUtil.addCondition(getSQL(), " a.sTransNox LIKE "
-//                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition + " AND f.sCategCd1 = '0001' AND f.sCategCd2 != '0007' GROUP BY a.sTransNox ASC");
-    
+//                + SQLUtil.toSQL(fsValue + "%") + " AND " + lsCondition + " AND f.sCategCd1 = '0003' AND f.sCategCd2 = '0007' GROUP BY a.sTransNox ASC");
+
         poJSON = new JSONObject();
         System.out.println("searchTransaction = " + lsSQL);
         if (p_bWithUI){
@@ -594,7 +592,7 @@ public class Inv_Request_MC implements RequestController {
             lsSQL = loRS.getString("sTransNox");
             MiscUtil.close(loRS);
         } catch (SQLException ex) {
-            Logger.getLogger(Inv_Request_SP.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Inv_Request_SP_Auto.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
@@ -679,17 +677,15 @@ public class Inv_Request_MC implements RequestController {
             String lsSQL = MiscUtil.addCondition(new Model_Inv_Stock_Request_Detail(poGRider).getSQL(), "a.sTransNox = " + SQLUtil.toSQL(fsTransNo));
             lsSQL = MiscUtil.addCondition(lsSQL, "j.sBranchCd = " + SQLUtil.toSQL(poModelMaster.getBranchCode()));
             lsSQL = lsSQL + " AND (a.nQuantity - (a.nIssueQty + a.nCancelld + a.nOrderQty)) > 0";
-            System.out.println(lsSQL);
             ResultSet loRS = poGRider.executeQuery(lsSQL);
             poModelDetail = new ArrayList<>();
             while (loRS.next()) {
+
                 poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
                 poJSON = poModelDetail.get(poModelDetail.size() - 1).openRecord(loRS.getString("sTransNox"), loRS.getString("sStockIDx"));
                 if ("error".equals((String) poJSON.get("result"))) {
                     return poJSON;
                 }
-                
-
             }
             
 
@@ -772,40 +768,6 @@ public class Inv_Request_MC implements RequestController {
 
     public JSONObject AddModelDetail() {
         poJSON = new JSONObject();
-        if(category_type == RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ){
-            if (poModelDetail.isEmpty()){
-                poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
-                poModelDetail.get(0).newRecord();
-                poModelDetail.get(0).setTransactionNumber(poModelMaster.getTransactionNumber());
-                poJSON.put("result", "success");
-                poJSON.put("message", "Inventory request add record.");
-
-
-            } else {
-                Validator_Inv_Stock_Request_MC_Detail validator = new Validator_Inv_Stock_Request_MC_Detail(poModelDetail.get(poModelDetail.size()-1));
-                if (!validator.isEntryOkay()){
-                    poJSON.put("result", "error");
-                    poJSON.put("message", validator.getMessage());
-                    return poJSON;
-
-                }
-                poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
-                poModelDetail.get(poModelDetail.size()-1).newRecord();
-                poModelDetail.get(poModelDetail.size() - 1).setTransactionNumber(poModelMaster.getTransactionNumber());
-
-                poJSON.put("result", "success");
-                poJSON.put("message", "Inventory request add record.");
-            }
-            System.out.println(poModelDetail.size());
-            
-        }else{
-            poJSON = AddModelDetailROQ();
-        }
-
-        return poJSON;
-    }
-    private JSONObject AddModelDetailROQ(){
-        poJSON = new JSONObject();
         if (poModelDetail.isEmpty()){
             poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
             poModelDetail.get(0).newRecord();
@@ -815,11 +777,17 @@ public class Inv_Request_MC implements RequestController {
             
 
         } else {
-            
+            Validator_Inv_Stock_Request_SP_Detail validator = new Validator_Inv_Stock_Request_SP_Detail(poModelDetail.get(poModelDetail.size()-1));
+            if (!validator.isEntryOkay()){
+                poJSON.put("result", "error");
+                poJSON.put("message", validator.getMessage());
+                return poJSON;
+
+            }
             poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
             poModelDetail.get(poModelDetail.size()-1).newRecord();
             poModelDetail.get(poModelDetail.size() - 1).setTransactionNumber(poModelMaster.getTransactionNumber());
-
+            
             poJSON.put("result", "success");
             poJSON.put("message", "Inventory request add record.");
         }
@@ -841,11 +809,21 @@ public class Inv_Request_MC implements RequestController {
             }
             // After cleaning, check if any valid items are left
             if (getItemCount() > 0) {
-                if(category_type == RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ){
+                System.out.print("category_type = " + category_type);
+                if(category_type == RequestCategoryType.WITHOUT_ROQ){
                     poJSON = saveDetailWithoutROQ();
                 }else{
                     poJSON = saveDetailWithROQ();
                 }
+                
+                if ("error".equals((String) poJSON.get("result"))) {
+                    return poJSON;
+                }
+                // Proceed with saving remaining items
+                
+                poJSON.put("result", "success");
+                poJSON.put("message", "Save item record successfuly.");
+                
             } else {
                 restoreData();
                 poJSON.put("result", "error");
@@ -853,6 +831,7 @@ public class Inv_Request_MC implements RequestController {
                 return poJSON;
             }
         } else {
+            restoreData();
             poJSON.put("result", "error");
             poJSON.put("message", "Unable to Save empty Transaction.");
             return poJSON;
@@ -862,26 +841,23 @@ public class Inv_Request_MC implements RequestController {
     }
     private JSONObject saveDetailWithoutROQ(){
         poJSON = new JSONObject();
-        
         for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
             poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
             poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
-            Validator_Inv_Stock_Request_MC_Detail validator = new Validator_Inv_Stock_Request_MC_Detail(poModelDetail.get(poModelDetail.size()-1));
-                if (!validator.isEntryOkay()){
-                    restoreData();
-                    poJSON.put("result", "error");
-                    poJSON.put("message", validator.getMessage());
-                    return poJSON;
 
-                }
+            Validator_Inv_Stock_Request_SP_Detail validator = new Validator_Inv_Stock_Request_SP_Detail(poModelDetail.get(poModelDetail.size()-1));
+            if (!validator.isEntryOkay()){
+                restoreData();
+                poJSON.put("result", "error");
+                poJSON.put("message", validator.getMessage());
+                return poJSON;
+
+            }
             poJSON = poModelDetail.get(lnCtr).saveRecord();
 
 
             if ("error".equals((String) poJSON.get("result"))) {
-                if (!pbWthParent) {
-                    restoreData();
-                    poGRider.rollbackTrans();
-                }
+                restoreData();
                 return poJSON;
             }
             poJSON.put("result", "success");
@@ -891,7 +867,6 @@ public class Inv_Request_MC implements RequestController {
     }
     private JSONObject saveDetailWithROQ(){
         poJSON = new JSONObject();
-        System.out.print("category_type = " + category_type);
         boolean allZero = true;
         for (Model_Inv_Stock_Request_Detail items : poModelDetail) {
             if (Integer.parseInt(items.getQuantity().toString()) != 0) {
@@ -900,34 +875,30 @@ public class Inv_Request_MC implements RequestController {
             }
         }
         if (allZero) {
-            restoreData();
             poJSON.put("result", "error");
             poJSON.put("message", "Quantities are currently set to 0. Update them to continue.");
             return poJSON;
         }
-        
-        // Proceed with saving remaining items
         roqSaveCount = 0;
         for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
-            System.out.println("getItemCount() = " + getItemCount());
             poModelDetail.get(lnCtr).setEditMode(EditMode.ADDNEW);
-            poModelDetail.get(lnCtr).setEntryNumber(lnCtr + 1);
-            poJSON = poModelDetail.get(lnCtr).saveRecord();
+            int lnQty = Integer.parseInt(poModelDetail.get(lnCtr).getQuantity().toString());
+            if(lnQty>0){
+                
+                poModelDetail.get(lnCtr).setEntryNumber(roqSaveCount + 1);
+                poJSON = poModelDetail.get(lnCtr).saveRecord();
 
 
-            if ("error".equals((String) poJSON.get("result"))) {
-                if (!pbWthParent) {
+                if ("error".equals((String) poJSON.get("result"))) {
                     restoreData();
-                    poGRider.rollbackTrans();
+                    return poJSON;
                 }
-                return poJSON;
+                roqSaveCount++;
             }
-           roqSaveCount++;
-
+            
             poJSON.put("result", "success");
             poJSON.put("message", "Save item record successfuly.");
-        
-         }
+        }
         return poJSON;
     }
     private JSONObject saveInventoryTrans(){
@@ -946,8 +917,8 @@ public class Inv_Request_MC implements RequestController {
         }
         
         return loTrans.BranchOrder(poModelMaster.getTransactionNumber(), poModelMaster.getTransaction(), EditMode.ADDNEW);
-    }       
-    
+    }
+        
     /**
      *
      * @param fnRow
@@ -964,6 +935,11 @@ public class Inv_Request_MC implements RequestController {
     public JSONObject deleteRecord() {
         poJSON = new JSONObject();
         if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UPDATE) {
+//            if (poGRider.getUserLevel() < UserRight.SUPERVISOR){
+//                poJSON.put("result", "error");
+//                poJSON.put("message", "User is not allowed delete transaction.");
+//                return poJSON;
+//            }
             String lsSQLs = MiscUtil.addCondition(new Model_Inv_Stock_Request_Detail(poGRider).getSQL(), "a.sTransNox = " + SQLUtil.toSQL(poModelMaster.getTransactionNumber()));
             ResultSet loRS = poGRider.executeQuery(lsSQLs);
             backupRecords = new ArrayList<>();
@@ -979,7 +955,7 @@ public class Inv_Request_MC implements RequestController {
                     lnCtr++;
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(Inv_Request_SP.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Inv_Request_SP_Auto.class.getName()).log(Level.SEVERE, null, ex);
             }
             Model_Inv_Stock_Request_Detail model = new Model_Inv_Stock_Request_Detail(poGRider);
             String lsSQL = "DELETE FROM " + model.getTable()+
@@ -1023,16 +999,17 @@ public class Inv_Request_MC implements RequestController {
     }
 
     @Override
-    public void setType(RequestControllerFactory.RequestType types) {
+    public void setType(RequestType types) {
         type = types;
     }
     
     
     @Override
-    public void setCategoryType(RequestControllerFactory.RequestCategoryType type) {
+    public void setCategoryType(RequestCategoryType type) {
         category_type = type;
     }
 
+    
     @Override
     public void cancelUpdate(){
         poJSON =  new JSONObject();
@@ -1089,14 +1066,18 @@ public class Inv_Request_MC implements RequestController {
         }
     
     }
+    /*
+    * Use for loading Inventory below minimum 
+    *
+    */
     @Override
     public JSONObject loadAllInventoryMinimumLevel(){
         poJSON = new JSONObject();
         try {
             String lsSQL = getSQL_Detail();
-            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0001' AND b.sCategCd2 != '0007'");
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0003' AND b.sCategCd2 = '0007'");
             ResultSet loRS = poGRider.executeQuery(lsSQL);
-            System.out.println(" " + lsSQL);
+            System.out.println("\n" + lsSQL);
             poModelDetail =  new ArrayList<>();
             while (loRS.next()) {
                 poModelDetail.add(new Model_Inv_Stock_Request_Detail(poGRider));
@@ -1177,7 +1158,6 @@ public class Inv_Request_MC implements RequestController {
             "  LEFT JOIN Inventory f " +
             "	on f.sStockIDx = e.sStockIDx";
     }
-    
     private String getSQL_Detail(){
         return "SELECT " +
                 "  a.sStockIDx, " +
@@ -1221,16 +1201,15 @@ public class Inv_Request_MC implements RequestController {
 
     @Override
     public JSONObject setDetailOthers(int fnRow, String fsCol, Object foData) {
-        return poModelDetail.get(fnRow).setValue(fsCol, foData);
-    }
+        return poModelDetailOthers.get(fnRow).setValue(fsCol, foData);}
 
     @Override
-    public JSONObject setDetailOthers(int fnRow, int fnCol, Object foData) {
-        return poModelDetail.get(fnRow).setValue(fnCol, foData);
+    public JSONObject setDetailOthers(int fnRow, int fsCol, Object foData) {
+        return setDetail(fnRow, poModelDetailOthers.get(fnRow).getColumn(fsCol), foData); 
     }
+
     @Override
     public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModelOthers() {
         return poModelDetailOthers;
     }
-
 }

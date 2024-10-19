@@ -30,7 +30,7 @@ import org.json.simple.JSONObject;
  *
  * @author Unclejo
  */
-public class Inv_Request_MC implements RequestController {
+public class Inv_Request_Auto implements RequestController {
 
     GRider poGRider;
     boolean pbWthParent;
@@ -60,7 +60,7 @@ public class Inv_Request_MC implements RequestController {
         System.out.println("fbValue = " + fbValue);
         p_bWithUI = fbValue;
     }
-    public Inv_Request_MC(GRider foGRider, boolean fbWthParent) {
+    public Inv_Request_Auto(GRider foGRider, boolean fbWthParent) {
         poGRider = foGRider;
         pbWthParent = fbWthParent;
 
@@ -300,7 +300,7 @@ public class Inv_Request_MC implements RequestController {
                 poModelMaster.setApproved(poGRider.getUserID());
                 poModelMaster.setApprovedDate(poGRider.getServerDate());
             }
-            
+
             poJSON = saveInventoryTrans();
             if ("error".equals((String) poJSON.get("result"))) {
                 return poJSON;
@@ -550,7 +550,7 @@ public class Inv_Request_MC implements RequestController {
         }
 
         String lsSQL = MiscUtil.addCondition(getSQL(), " a.sTransNox LIKE "
-                + SQLUtil.toSQL(fsValue + "%") + " AND f.sCategCd1 = '0001' AND f.sCategCd2 != '0007' AND " + 
+                + SQLUtil.toSQL(fsValue + "%") + " AND f.sCategCd1 = '0003' AND f.sCategCd2 != '0007' AND " + 
                 "LEFT(a.sTransNox,4) LIKE " + SQLUtil.toSQL(poGRider.getBranchCode() + "%") +
                 " AND " + lsCondition + "  GROUP BY a.sTransNox ASC") +
                 " HAVING (SUM(e.nQuantity - (e.nIssueQty + e.nCancelld + e.nOrderQty))) > 0";
@@ -689,7 +689,6 @@ public class Inv_Request_MC implements RequestController {
                     return poJSON;
                 }
                 
-
             }
             
 
@@ -927,7 +926,7 @@ public class Inv_Request_MC implements RequestController {
             poJSON.put("result", "success");
             poJSON.put("message", "Save item record successfuly.");
         
-         }
+        }
         return poJSON;
     }
     private JSONObject saveInventoryTrans(){
@@ -946,7 +945,8 @@ public class Inv_Request_MC implements RequestController {
         }
         
         return loTrans.BranchOrder(poModelMaster.getTransactionNumber(), poModelMaster.getTransaction(), EditMode.ADDNEW);
-    }       
+    }
+            
     
     /**
      *
@@ -1094,7 +1094,7 @@ public class Inv_Request_MC implements RequestController {
         poJSON = new JSONObject();
         try {
             String lsSQL = getSQL_Detail();
-            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0001' AND b.sCategCd2 != '0007'");
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.nQtyOnHnd < a.nMinLevel AND  b.sCategCd1 = '0003' AND b.sCategCd2 != '0007'");
             ResultSet loRS = poGRider.executeQuery(lsSQL);
             System.out.println(" " + lsSQL);
             poModelDetail =  new ArrayList<>();

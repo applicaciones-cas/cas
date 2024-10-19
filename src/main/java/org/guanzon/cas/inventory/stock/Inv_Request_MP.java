@@ -13,9 +13,9 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.TransactionStatus;
 import org.guanzon.appdriver.constant.UserRight;
-import org.guanzon.appdriver.iface.GTranDet;
 import org.guanzon.cas.inventory.base.InvMaster;
 import org.guanzon.cas.inventory.base.Inventory;
+import org.guanzon.cas.inventory.base.InventoryTrans;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Master;
 import org.guanzon.cas.inventory.stock.request.RequestController;
@@ -296,7 +296,15 @@ public class Inv_Request_MP implements RequestController {
                 poModelMaster.setApproved(poGRider.getUserID());
                 poModelMaster.setApprovedDate(poGRider.getServerDate());
             }
+            
+            poJSON = saveInventoryTrans();
+            if ("error".equals((String) poJSON.get("result"))) {
+                return poJSON;
+            }
             poJSON = poModelMaster.saveRecord();
+            if ("error".equals((String) poJSON.get("result"))) {
+                return poJSON;
+            }
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "error");
@@ -404,7 +412,7 @@ public class Inv_Request_MP implements RequestController {
             || poModelMaster.getTransactionStatus().equalsIgnoreCase(TransactionStatus.STATE_VOID)) {
             
             poJSON.put("result", "error");
-            poJSON.put("message","Unable to " + lsMessage + " proccesed transaction.");
+            poJSON.put("message","Unable to " + lsMessage + " proccessed transaction.");
             return poJSON;
         }
         poJSON.put("result", "success");
@@ -539,7 +547,8 @@ public class Inv_Request_MP implements RequestController {
         String lsSQL = MiscUtil.addCondition(getSQL(), " a.sTransNox LIKE "
                 + SQLUtil.toSQL(fsValue + "%") + " AND f.sCategCd1 = '0002' AND " + 
                 "LEFT(a.sTransNox,4) LIKE " + SQLUtil.toSQL(poGRider.getBranchCode() + "%") +
-                " AND " +  lsCondition + "  GROUP BY a.sTransNox ASC");
+                " AND " +  lsCondition + "  GROUP BY a.sTransNox ASC") +
+                " HAVING (SUM(e.nQuantity - (e.nIssueQty + e.nCancelld + e.nOrderQty))) > 0";
 
         poJSON = new JSONObject();
         System.out.println("searchTransaction = " + lsSQL);
@@ -666,6 +675,7 @@ public class Inv_Request_MP implements RequestController {
         try {
             String lsSQL = MiscUtil.addCondition(new Model_Inv_Stock_Request_Detail(poGRider).getSQL(), "a.sTransNox = " + SQLUtil.toSQL(fsTransNo));
             lsSQL = MiscUtil.addCondition(lsSQL, "j.sBranchCd = " + SQLUtil.toSQL(poModelMaster.getBranchCode()));
+            lsSQL = lsSQL + " AND (a.nQuantity - (a.nIssueQty + a.nCancelld + a.nOrderQty)) > 0";
             ResultSet loRS = poGRider.executeQuery(lsSQL);
             poModelDetail = new ArrayList<>();
             while (loRS.next()) {
@@ -915,6 +925,23 @@ public class Inv_Request_MP implements RequestController {
         
          }
         return poJSON;
+    }
+    private JSONObject saveInventoryTrans(){
+        poJSON = new JSONObject();
+        
+        InventoryTrans loTrans = new InventoryTrans(poGRider, pbWthParent);
+        int pnCtr = 0;
+        for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
+            double lnQuantity = Double.parseDouble(String.valueOf(getDetailModel(lnCtr).getQuantity()));
+            double lnCancelld = Double.parseDouble(String.valueOf(getDetailModel(lnCtr).getCancelled()));
+            if ((lnQuantity - lnCancelld) > 0){
+                loTrans.setDetail(pnCtr, "sStockIDx", getDetailModel(lnCtr).getStockID());
+                loTrans.setDetail(pnCtr, "nQuantity", (lnQuantity - lnCancelld));
+                pnCtr++;
+            }
+        }
+        
+        return loTrans.BranchOrder(poModelMaster.getTransactionNumber(), poModelMaster.getTransaction(), EditMode.ADDNEW);
     }
     /**
      *
