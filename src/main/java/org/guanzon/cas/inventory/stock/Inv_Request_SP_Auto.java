@@ -905,6 +905,7 @@ public class Inv_Request_SP_Auto implements RequestController {
         poJSON = new JSONObject();
         
         InventoryTrans loTrans = new InventoryTrans(poGRider, pbWthParent);
+        loTrans.newTransaction();
         int pnCtr = 0;
         for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
             double lnQuantity = Double.parseDouble(String.valueOf(getDetailModel(lnCtr).getQuantity()));
