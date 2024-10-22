@@ -174,7 +174,7 @@ public class InvRequestWithoutROQGIController implements Initializable, ScreenIn
             unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
                 case "btnClose":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Accounting System", pxeModuleName)) {
                         clearAllFields();
                         appUnload.unloadForm(anchorMain, oApp, pxeModuleName);
                     }
@@ -205,26 +205,26 @@ public class InvRequestWithoutROQGIController implements Initializable, ScreenIn
                     System.out.println(poJSON.toJSONString());
                     if ("success".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         initTrans();
                         clearAllFields();
                         initTabAnchor();
                     } else {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         loadItemData();
                     }
                     break;
                 case "btnUpdate":
                     poJSON = oTrans.updateTransaction();
                     if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         break;
                     }
 
 //                        poJSON = oTrans.AddModelDetail();
 //                        System.out.println(poJSON.toJSONString());
 //                        if ("error".equals((String) poJSON.get("result"))){
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
 //                            break;
 //                        }
                     pnEditMode = oTrans.getEditMode();
@@ -242,7 +242,7 @@ public class InvRequestWithoutROQGIController implements Initializable, ScreenIn
                 case "btnBrowse":
                     poJSON = oTrans.searchTransaction("sTransNox", "", pbLoaded);
                     if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         break;
                     }
                     pnEditMode = oTrans.getEditMode();
@@ -260,7 +260,7 @@ public class InvRequestWithoutROQGIController implements Initializable, ScreenIn
                     poJSON = oTrans.AddModelDetail();
                     System.out.println(poJSON.toJSONString());
                     if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         break;
                     }
                     pnRow = oTrans.getDetailModel().size() - 1;
@@ -281,7 +281,7 @@ public class InvRequestWithoutROQGIController implements Initializable, ScreenIn
                     }
                     break;
                 case "btnCancel":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Accounting System", pxeModuleName)) {
 
                         if (pnEditMode == EditMode.UPDATE) {
                             oTrans.cancelUpdate();
@@ -299,14 +299,14 @@ public class InvRequestWithoutROQGIController implements Initializable, ScreenIn
                     
                 case "btnCancelTrans":
                     if (pnEditMode == 1) {
-                        if (ShowMessageFX.YesNo("Do you really want to cancel this transaction?", "Computerized Acounting System", pxeModuleName)) {
+                        if (ShowMessageFX.YesNo("Do you really want to cancel this transaction?", "Computerized Accounting System", pxeModuleName)) {
                             poJSON = oTrans.cancelTransaction(oTrans.getMasterModel().getTransactionNumber());
                             System.out.println(poJSON.toJSONString());
                             if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 break;
                             }
-                            ShowMessageFX.Information("Transaction cancelled succesfully.", "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information("Transaction cancelled succesfully.", "Computerized Accounting System", pxeModuleName);
                             clearAllFields();
                             initTrans();
                             initTabAnchor();
@@ -315,14 +315,14 @@ public class InvRequestWithoutROQGIController implements Initializable, ScreenIn
                     break;
                 case "btnApprove":
                     if (pnEditMode == 1) {
-                        if (ShowMessageFX.YesNo("Do you really want to post this transaction?", "Computerized Acounting System", pxeModuleName)) {
+                        if (ShowMessageFX.YesNo("Do you really want to post this transaction?", "Computerized Accounting System", pxeModuleName)) {
                             poJSON = oTrans.postTransaction(oTrans.getMasterModel().getTransactionNumber());
                             System.out.println(poJSON.toJSONString());
                             if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 break;
                             }
-                            ShowMessageFX.Information("Transaction successfully approve.", "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information("Transaction successfully approve.", "Computerized Accounting System", pxeModuleName);
                             clearAllFields();
                             initTrans();
                             initTabAnchor();
@@ -478,7 +478,7 @@ public class InvRequestWithoutROQGIController implements Initializable, ScreenIn
                         loadItemData();
                         break;
                     }else 
-                    ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
+                    ShowMessageFX.Information("Invalid Input", "Computerized Accounting System", pxeModuleName);
                     txtField.setText("0");
                     txtField.requestFocus();
                     break;
@@ -505,7 +505,7 @@ public class InvRequestWithoutROQGIController implements Initializable, ScreenIn
                         poJson = oTrans.searchDetail(pnRow, 3, lsValue, true);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Accounting System", pxeModuleName);
                             break;
                         }
                         break;
@@ -514,7 +514,7 @@ public class InvRequestWithoutROQGIController implements Initializable, ScreenIn
                         poJson = oTrans.searchDetail(pnRow, 3, lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Accounting System", pxeModuleName);
                             break;
                         }
                         break;

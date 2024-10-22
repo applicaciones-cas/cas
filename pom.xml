@@ -136,10 +136,8 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>6.19.0</version>
-            <type>jar</type>
+            <version>7.0.0</version> <!-- JasperReports 7.0 -->
         </dependency>
-        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

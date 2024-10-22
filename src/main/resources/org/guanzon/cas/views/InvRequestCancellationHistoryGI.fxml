@@ -78,6 +78,14 @@
                               <Blend />
                            </effect>
                         </Button>
+                        <Button fx:id="btnConfirm" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Confirm">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="CHECK_CIRCLE" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
                         <Button fx:id="btnAddItem" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Add Item">
                            <graphic>
                               <FontAwesomeIconView glyphName="PLUS_CIRCLE" size="20" />

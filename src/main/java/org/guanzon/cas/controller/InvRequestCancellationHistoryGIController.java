@@ -184,7 +184,7 @@ public class InvRequestCancellationHistoryGIController implements Initializable,
             unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
                 case "btnClose":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Accounting System", pxeModuleName)) {
                         clearAllFields();
                         appUnload.unloadForm(anchorMain, oApp, pxeModuleName);
                     }
@@ -215,26 +215,26 @@ public class InvRequestCancellationHistoryGIController implements Initializable,
                     System.out.println(poJSON.toJSONString());
                     if ("success".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         initTrans();
                         clearAllFields();
                         initTabAnchor();
                     } else {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         loadItemData();
                     }
                     break;
                 case "btnUpdate":
                     poJSON = oTrans.updateTransaction();
                     if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         break;
                     }
 
 //                        poJSON = oTrans.AddModelDetail();
 //                        System.out.println(poJSON.toJSONString());
 //                        if ("error".equals((String) poJSON.get("result"))){
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
 //                            break;
 //                        }
                     pnEditMode = oTrans.getEditMode();
@@ -252,7 +252,7 @@ public class InvRequestCancellationHistoryGIController implements Initializable,
                 case "btnBrowse":
                     poJSON = oTrans.searchTransaction("sTransNox", "", pbLoaded);
                     if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         break;
                     }
                     pnEditMode = oTrans.getEditMode();
@@ -270,7 +270,7 @@ public class InvRequestCancellationHistoryGIController implements Initializable,
                     poJSON = oTrans.AddModelDetail();
                     System.out.println(poJSON.toJSONString());
                     if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         break;
                     }
                     pnRow = oTrans.getDetailModel().size() - 1;
@@ -291,7 +291,7 @@ public class InvRequestCancellationHistoryGIController implements Initializable,
                     }
                     break;
                 case "btnCancel":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Accounting System", pxeModuleName)) {
 
                         if (pnEditMode == EditMode.UPDATE) {
                             oTrans.cancelUpdate();
@@ -302,12 +302,12 @@ public class InvRequestCancellationHistoryGIController implements Initializable,
                     }
                     break;
                 case "btnConfirm":
-                    if (ShowMessageFX.YesNo("Are you sure you want to confirm this  record? Please verify the details before proceeding.", "Computerized Acounting System", pxeModuleName)) {
+                    if (ShowMessageFX.YesNo("Are you sure you want to confirm this  record? Please verify the details before proceeding.", "Computerized Accounting System", pxeModuleName)) {
 
                         poJSON = oTrans.postTransaction(oTrans.getMasterModel().getTransactionNumber());
                             System.out.println(poJSON.toJSONString());
                             if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 break;
                             }
                             clearAllFields();
@@ -505,7 +505,7 @@ public class InvRequestCancellationHistoryGIController implements Initializable,
 //                        poJson =  oTrans.BrowseRequest("sTransNox",lsValue, true);
                         poJson = oTrans.searchMaster(5, lsValue, true);
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Accounting System", pxeModuleName);
                             break;
                         }
 //                        System.out.println("order no.x == " + oTrans.getMasterModel().getOrderNumber());
@@ -518,7 +518,7 @@ public class InvRequestCancellationHistoryGIController implements Initializable,
                         poJson = oTrans.searchDetail(pnRow, 3, lsValue, true);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Accounting System", pxeModuleName);
                             break;
                         }
 //                        txtField15.requestFocus();
@@ -529,7 +529,7 @@ public class InvRequestCancellationHistoryGIController implements Initializable,
                         poJson = oTrans.searchDetail(pnRow, 3, lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Accounting System", pxeModuleName);
                             break;
                         }
 //                        txtField15.requestFocus();
