@@ -44,6 +44,7 @@ org\guanzon\cas\inventory\stock\request\issuance\Inv_Request_SP_Issuance.class
 org\guanzon\cas\inventory\stock\request\issuance\Inv_Request_MC_Issuance.class
 org\guanzon\cas\inventory\stock\InvStockRequest.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInventory.class
+org\guanzon\cas\inventory\resultSet2XML\ModelPOReceivingDetail.class
 org\guanzon\cas\inventory\base\InvTransfer.class
 org\guanzon\cas\inventory\resultSet2XML\ModelInvRequestSupplies.class
 org\guanzon\cas\inventory\resultSet2XML\ModelCategory3.class

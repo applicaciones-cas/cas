@@ -925,6 +925,7 @@ public class Inv_Request_General implements RequestController {
         poJSON = new JSONObject();
         
         InventoryTrans loTrans = new InventoryTrans(poGRider, pbWthParent);
+        loTrans.newTransaction();
         int pnCtr = 0;
         for (int lnCtr = 0; lnCtr < getItemCount(); lnCtr++) {
             double lnQuantity = Double.parseDouble(String.valueOf(getDetailModel(lnCtr).getQuantity()));
@@ -1218,4 +1219,5 @@ public class Inv_Request_General implements RequestController {
     public ArrayList<Model_Inv_Stock_Request_Detail> getDetailModelOthers() {
         return poModelDetailOthers;
     }
+    
 }
