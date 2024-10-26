@@ -39,7 +39,6 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inventory.base.Inventory;
-import org.guanzon.cas.model.ModelInvLedger;
 import org.guanzon.cas.model.ModelInvSubUnit;
 import org.json.simple.JSONObject;
 
@@ -444,6 +443,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
     
     /*TO CONTROL BUTTONS BASE ON INITMODE*/
     private void initButton(int fnValue){
+        
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         btnCancel.setVisible(lbShow);
         btnSearch.setVisible(lbShow);
@@ -452,9 +452,17 @@ public class InventoryParamController implements Initializable,ScreenInterface {
         btnSave.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
         btnSearch.setManaged(lbShow);
-        btnUpdate.setVisible(!lbShow);
         btnBrowse.setVisible(!lbShow);
-        btnNew.setVisible(!lbShow);
+        if("success".equals(oTrans.isWareHose().get("result"))){
+            btnNew.setVisible(!lbShow);
+            btnUpdate.setVisible(!lbShow);
+        }else{
+            btnNew.setVisible(false);
+            btnNew.setManaged(false);
+            btnUpdate.setVisible(false);
+            btnUpdate.setManaged(false);
+        }
+        
         cmbField01.setDisable(!lbShow);
 
         txtSeeks01.setDisable(!lbShow);
@@ -469,12 +477,15 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             btnCancel.setVisible(lbShow);
             btnSearch.setVisible(lbShow);
             btnSave.setVisible(lbShow);
-            btnUpdate.setVisible(!lbShow);
             btnBrowse.setVisible(!lbShow);
-            btnNew.setVisible(!lbShow);
+            
+            if("success".equals(oTrans.isWareHose().get("result"))){
+                btnNew.setVisible(!lbShow);
+                btnNew.setManaged(false);
+                btnUpdate.setVisible(!lbShow);
+                btnUpdate.setManaged(false);
+            }
             btnBrowse.setManaged(false);
-            btnNew.setManaged(false);
-            btnUpdate.setManaged(false);
             btnClose.setManaged(false);
         }
         else{
@@ -682,6 +693,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                 case 25: /*Quantity*/
                     oTrans.getSubUnit().getMaster().get(pnRow).setQuantity(Integer.parseInt(lsValue));
                     loadSubUnitData();
+                    break;
                     
             }                  
         } else
@@ -710,6 +722,7 @@ public class InventoryParamController implements Initializable,ScreenInterface {
                                txtField07.clear();
                            }
                            txtField06.setText((String) oTrans.getModel().getCategName1()); 
+                           System.out.println(oTrans.getModel().getCategCd1());
                            initSubItemForm();
                         break;
                     case 7:

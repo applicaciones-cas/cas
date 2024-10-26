@@ -184,7 +184,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
             unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
                 case "btnClose":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Accounting System", pxeModuleName)) {
                         clearAllFields();
                         appUnload.unloadForm(anchorMain, oApp, pxeModuleName);
                     }
@@ -215,26 +215,26 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                     System.out.println(poJSON.toJSONString());
                     if ("success".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         initTrans();
                         clearAllFields();
                         initTabAnchor();
                     } else {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         loadItemData();
                     }
                     break;
                 case "btnUpdate":
                     poJSON = oTrans.updateTransaction();
                     if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         break;
                     }
 
 //                        poJSON = oTrans.AddModelDetail();
 //                        System.out.println(poJSON.toJSONString());
 //                        if ("error".equals((String) poJSON.get("result"))){
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
 //                            break;
 //                        }
                     pnEditMode = oTrans.getEditMode();
@@ -252,7 +252,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                 case "btnBrowse":
                     poJSON = oTrans.searchTransaction("sTransNox", "", true);
                     if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         break;
                     }
                     pnEditMode = oTrans.getEditMode();
@@ -270,7 +270,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                     poJSON = oTrans.AddModelDetail();
                     System.out.println(poJSON.toJSONString());
                     if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         break;
                     }
                     pnRow = oTrans.getDetailModel().size() - 1;
@@ -291,7 +291,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                     }
                     break;
                 case "btnCancel":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Accounting System", pxeModuleName)) {
 
                         if (pnEditMode == EditMode.UPDATE) {
 //                            oTrans.cancelUpdate();
@@ -465,12 +465,12 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                         jsonObject = oTrans.setDetail(pnRow, "nQuantity", qty);
                         System.out.println(jsonObject.toJSONString());
                         if("error".equals((String) jsonObject.get("result"))){
-                            ShowMessageFX.Information((String) jsonObject.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information((String) jsonObject.get("message"), "Computerized Accounting System", pxeModuleName);
                         }
                         loadItemData();
                         break;
                     } else {
-                        ShowMessageFX.Information("Invalid Input", "Computerized Acounting System", pxeModuleName);
+                        ShowMessageFX.Information("Invalid Input", "Computerized Accounting System", pxeModuleName);
                     }
                     txtField.setText("0");
                     txtField.requestFocus();
@@ -498,7 +498,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
 //                        poJson =  oTrans.BrowseRequest("sTransNox",lsValue, true);
                         poJson = oTrans.searchMaster(5, lsValue, true);
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Accounting System", pxeModuleName);
                             break;
                         }
                         System.out.println("order no.x == " + oTrans.getMasterModel().getOrderNumber());
@@ -510,7 +510,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                         poJson = oTrans.searchDetail(pnRow, 3, lsValue, true);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Accounting System", pxeModuleName);
                             break;
                         }
                         txtField12.requestFocus();
@@ -521,7 +521,7 @@ public class InvRequestCancellationSPController implements Initializable, Screen
                         poJson = oTrans.searchDetail(pnRow, 3, lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Accounting System", pxeModuleName);
                             break;
                         }
                         txtField12.requestFocus();
@@ -788,7 +788,24 @@ public class InvRequestCancellationSPController implements Initializable, Screen
     private void initTrans() {
         clearAllFields();
         oTrans = new InvRequestCancel(oApp, true);
-        oTrans.setType(RequestControllerFactory.RequestType.SP);
+        String industry = System.getProperty("store.inventory.industry");
+
+        RequestControllerFactory.RequestType types = null;
+        String[] category = industry.split(";");
+        // Print the resulting array
+        for (String type : category) {
+            if (types == null) {
+                if ("0001".equals(type)) {
+                    types = RequestControllerFactory.RequestType.SP;
+                    oTrans.setType(types);
+                } else if ("0003".equals(type)) {
+                    types = RequestControllerFactory.RequestType.SP_AUTO;
+                    oTrans.setType(types);
+                }
+
+                System.out.println("type value = " + types);
+            }
+        }
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITHOUT_ROQ);
         oTrans.setTransactionStatus("0123");
         oTrans.setWithUI(true);
