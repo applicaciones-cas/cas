@@ -226,7 +226,7 @@
                                                                            </GridPane.margin>
                                                                         </Text>
                                                                         <TextField fx:id="txtField03" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" promptText="Press F3 to Search." styleClass="text-field" GridPane.columnIndex="1" />
-                                                                        <TextField fx:id="txtField06" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                                        <TextField fx:id="txtField06" disable="true" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                                            <GridPane.margin>
                                                                               <Insets />
                                                                            </GridPane.margin>
@@ -245,7 +245,7 @@
                                                                         <TextField fx:id="txtField11" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="25.0" GridPane.columnIndex="5" GridPane.rowIndex="3" />
                                                                         <TextField fx:id="txtField12" alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="25.0" GridPane.columnIndex="5" GridPane.rowIndex="5" />
                                                                         <TextField fx:id="txtField04" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" promptText="Press F3 to Search." GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                        <TextField fx:id="txtField05" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                        <TextField fx:id="txtField05" disable="true" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                         <TextField fx:id="txtField08" prefHeight="26.0" GridPane.columnIndex="5" />
                                                                      </children>
                                                                   </GridPane>
@@ -385,13 +385,11 @@
                                                 <TableColumn fx:id="index02" editable="false" maxWidth="-1.0" minWidth="150.0" prefWidth="150.0" sortable="false" text="Barcode" />
                                                 <TableColumn fx:id="index03" editable="false" maxWidth="-1.0" minWidth="250.0" prefWidth="250.0" sortable="false" text="Item Description" />
                                                 <TableColumn fx:id="index04" editable="false" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" sortable="false" text="Brand" />
-                                                <TableColumn fx:id="index05" editable="false" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" sortable="false" text="Model Code" />
-                                                <TableColumn fx:id="index06" editable="false" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" sortable="false" text="Model Name" />
-                                                <TableColumn fx:id="index07" editable="false" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" sortable="false" text="Model Variant" />
-                                                <TableColumn fx:id="index08" editable="false" maxWidth="-1.0" minWidth="100.0" prefWidth="1500.0" sortable="false" text="Year Model" />
-                                                <TableColumn fx:id="index09" editable="false" maxWidth="100.0" minWidth="0.0" prefWidth="100.0" sortable="false" text="Color" />
-                                                <TableColumn fx:id="index10" editable="false" maxWidth="343.0" minWidth="0.0" prefWidth="100.0" sortable="false" text="Cost" />
-                                                <TableColumn fx:id="index11" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" sortable="false" text="Order" />
+                                                <TableColumn fx:id="index05" editable="false" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" sortable="false" text="Model Name" />
+                                                <TableColumn fx:id="index06" editable="false" maxWidth="100.0" minWidth="0.0" prefWidth="100.0" sortable="false" text="Color" />
+                                                <TableColumn fx:id="index07" editable="false" maxWidth="-1.0" minWidth="100.0" prefWidth="1500.0" sortable="false" text="Measurement" />
+                                                <TableColumn fx:id="index08" editable="false" maxWidth="343.0" minWidth="0.0" prefWidth="100.0" sortable="false" text="Cost" />
+                                                <TableColumn fx:id="index09" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" sortable="false" text="Order" />
                                              </columns>
                                           </TableView>
                                        </children>

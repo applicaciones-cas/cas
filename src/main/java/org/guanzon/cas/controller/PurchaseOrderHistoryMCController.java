@@ -36,6 +36,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inventory.base.Inventory;
+import org.guanzon.cas.model.ModelPurchaseOrder2;
 import org.guanzon.cas.model.ModelPurchaseOrderMC;
 import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Model;
@@ -61,109 +62,44 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
     private int pnIndex;
     private int pnDetailRow;
     private ObservableList<ModelPurchaseOrderMC> data = FXCollections.observableArrayList();
+    private ObservableList<ModelPurchaseOrder2> data2 = FXCollections.observableArrayList();
 
     @FXML
     private AnchorPane MainAnchorPane;
     @FXML
     private AnchorPane apBrowse;
     @FXML
-    private TextField txtField99;
-    @FXML
-    private TextField txtField98;
-    @FXML
-    private TextField txtField97;
-    @FXML
     private AnchorPane apButton;
-    @FXML
-    private HBox hbButtons;
-    @FXML
-    private Button btnBrowse;
-    @FXML
-    private Button btnPrint;
-    @FXML
-    private Button btnVoid;
-    @FXML
-    private Button btnClose;
-    @FXML
-    private AnchorPane apMaster;
-    @FXML
-    private Label lblStatus;
-    @FXML
-    private TextField txtField01;
-    @FXML
-    private TextField txtField02;
-    @FXML
-    private TextField txtField03;
-    @FXML
-    private TextField txtField06;
-    @FXML
-    private TextArea txtField07;
-    @FXML
-    private TextField txtField09;
-    @FXML
-    private TextField txtField10;
-    @FXML
-    private TextField txtField11;
-    @FXML
-    private TextField txtField12;
-    @FXML
-    private TextField txtField04;
-    @FXML
-    private TextField txtField05;
-    @FXML
-    private TextField txtField08;
-    @FXML
-    private AnchorPane apTransactionIssues;
-    @FXML
-    private Label lblStatus1;
-    @FXML
-    private TableView tblTransactionIssues;
-    @FXML
-    private TableColumn index12;
-    @FXML
-    private TableColumn index13;
-    @FXML
-    private AnchorPane apDetail;
-    @FXML
-    private TextField txtDetail01;
-    @FXML
-    private TextField txtDetail02;
-    @FXML
-    private TextField txtDetail03;
-    @FXML
-    private TextField txtDetail04;
-    @FXML
-    private TextField txtDetail05;
-    @FXML
-    private TextField txtDetail06;
-    @FXML
-    private TextField txtDetail07;
     @FXML
     private AnchorPane apTable;
     @FXML
-    private TableView tblDetails;
+    private AnchorPane apDetail;
     @FXML
-    private TableColumn index01;
+    private AnchorPane apMaster;
     @FXML
-    private TableColumn index02;
+    private AnchorPane apTransactionIssues;
+
     @FXML
-    private TableColumn index03;
+    private Button btnBrowse, btnPrint, btnClose, btnVoid;
     @FXML
-    private TableColumn index04;
+    private HBox hbButtons;
+
     @FXML
-    private TableColumn index05;
+    private Label lblStatus,lblStatus1;
     @FXML
-    private TableColumn index06;
+    private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10,
+            txtField11, txtField12, txtField99, txtField98, txtField97;
     @FXML
-    private TableColumn index07;
+    private TextArea txtField07;
+
     @FXML
-    private TableColumn index08;
+    private TableColumn index12, index13;
     @FXML
-    private TableColumn index09;
+    private TextField txtDetail01, txtDetail02, txtDetail03, txtDetail04, txtDetail05, txtDetail06, txtDetail07;
     @FXML
-    private TableColumn index10;
+    private TableView tblDetails, tblTransactionIssues;
     @FXML
-    private TableColumn index11;
+    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08, index09, index10, index11;
 
     /**
      * Initializes the controller class.
@@ -424,6 +360,7 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
         } catch (Exception e) {
         }
         loadTableDetail();
+        loadTableDetail2();
     }
 
     private void loadTableDetail() {
@@ -511,6 +448,70 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
         }
         initDetailsGrid();
     }
+        private void loadTableDetail2() {
+        int lnCtr;
+        data2.clear();
+        int lnItem = oTrans.getItemCount();
+        if (lnItem < 0) {
+            return;
+        }
+        //count size
+
+        double lnTotalTransaction = 0;
+        for (lnCtr = 0; lnCtr <= oTrans.getItemCount() - 1; lnCtr++) {
+            String lsStockIDx = (String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx");
+            Inventory loInventory;
+            Color loColor;
+            Model loMdl;
+            Model_Variant loMdlVrnt;
+            if (lsStockIDx != null && !lsStockIDx.equals("")) {
+
+                loInventory = oTrans.GetInventory((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"), true);
+                loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
+                loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
+                loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
+
+                data2.add(new ModelPurchaseOrder2(String.valueOf(lnCtr + 1),
+                        (String) loInventory.getMaster("sBarCodex")));
+
+                try {
+                    if (oTrans.getDetailModel(lnCtr).getQuantity() != 0) {
+                        lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString())) * Double.parseDouble(String.valueOf(oTrans.getDetailModel(lnCtr).getQuantity()));
+                    } else {
+                        lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString()));
+                        System.out.println(lnTotalTransaction);
+                    }
+                } catch (Exception e) {
+                }
+
+            } else {
+                data2.add(new ModelPurchaseOrder2(String.valueOf(lnCtr + 1),
+                        oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()));
+
+            }
+        }
+        txtField12.setText(String.valueOf(lnTotalTransaction));
+        lnTotalTransaction = 0;
+
+        /*FOCUS ON FIRST ROW*/
+        if (pnDetailRow < 0 || pnDetailRow >= data.size()) {
+            if (!data.isEmpty()) {
+                /* FOCUS ON FIRST ROW */
+                tblTransactionIssues.getSelectionModel().select(0);
+                tblTransactionIssues.getFocusModel().focus(0);
+                pnDetailRow = tblDetails.getSelectionModel().getSelectedIndex();
+            }
+//            setSelectedDetail(); //textfield data
+        } else {
+            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+            tblTransactionIssues.getSelectionModel().select(pnDetailRow);
+            tblTransactionIssues.getFocusModel().focus(pnDetailRow);
+//            setSelectedDetail();
+        }
+        initDetailsGrid2();
+    }
+    
+    
     public void initDetailsGrid() {
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
@@ -545,6 +546,27 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
 
         tblDetails.setItems(data);
     }
+        public void initDetailsGrid2() {
+        index12.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 5;");
+        index13.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 5;");
+
+        index12.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder2, String>("index12"));
+        index13.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder2, String>("index13"));
+
+        tblTransactionIssues.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblTransactionIssues.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
+        tblTransactionIssues.setItems(data2);
+
+    }
+    
+    
+    
+    
         private void txtField_KeyPressed(KeyEvent event) {
 
         TextField textField = (TextField) event.getSource();
@@ -783,6 +805,7 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
 
         initTextFields();
         initDetailsGrid();
+        initDetailsGrid2();
         clearFields();
 
         pnEditMode = EditMode.UNKNOWN;

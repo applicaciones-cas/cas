@@ -150,26 +150,29 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
 
                 break;
             case "btnUpdate":
+                try {
                 Validator_PurchaseOrder_Master ValidateMaster = new Validator_PurchaseOrder_Master(oTrans.getMasterModel());
                 if (!ValidateMaster.isEntryOkay()) {
                     poJSON.put("result", "error");
                     poJSON.put("message", ValidateMaster.getMessage());
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                    return;
-                }
-            
-                poJSON = oTrans.updateTransaction();
-                if ("error".equals((String) poJSON.get("result"))) {
-                    Assert.fail((String) poJSON.get("message"));
-                }
-                pnEditMode = oTrans.getMasterModel().getEditMode();
-                if ("error".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-                break;
+                btnFindSource.setManaged(true);
+            } catch (Exception e) {
+
+            }
+
+            pnEditMode = oTrans.getMasterModel().getEditMode();
+            poJSON = oTrans.updateTransaction();
+            if ("error".equals((String) poJSON.get("result"))) {
+                System.err.println((String) poJSON.get("message"));
+                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                pnEditMode = EditMode.UNKNOWN;
+                return;
+            }
+            break;
             case "btnPrint":
                 poJSON = oTrans.printRecord();
                 if ("error".equals((String) poJSON.get("result"))) {
@@ -202,7 +205,6 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     return;
                 } else {
                     loadRecord();
-                    pnEditMode = EditMode.UNKNOWN;
                 }
                 break;
 
@@ -225,11 +227,9 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                 }
                 break;
             case "btnSave":
-
                 poJSON = oTrans.getMasterModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
-
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
@@ -240,15 +240,16 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-                oTrans.getDetailModel(0).getStockID();
+
                 poJSON = oTrans.saveTransaction();
 
                 pnEditMode = oTrans.getMasterModel().getEditMode();
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                    pnEditMode = EditMode.UNKNOWN;
+//                    pnEditMode = EditMode.UNKNOWN;
                     return;
+
 
                 } else {
                     oTrans = new PurchaseOrder(oApp, true);
@@ -260,7 +261,6 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                 }
                 break;
             case "btnAddItem":
-                apMaster.setDisable(true);
                 if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() > 0
                         && !oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
                     poJSON = oTrans.AddModelDetail();
@@ -807,8 +807,8 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
             btnFindSource.setManaged(lbShow);
             btnFindSource.setVisible(lbShow);
         } else {
-            btnFindSource.setManaged(!lbShow);
-            btnFindSource.setVisible(!lbShow);
+            btnFindSource.setManaged(false);
+            btnFindSource.setVisible(false);
         }
 
         btnCancel.setManaged(lbShow);

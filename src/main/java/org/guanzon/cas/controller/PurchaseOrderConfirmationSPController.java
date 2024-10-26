@@ -77,30 +77,24 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
     private AnchorPane apTable;
     @FXML
     private AnchorPane apDetail;
-    
-    
-    @FXML
-    private Button btnBrowse, btnPrint, btnCancel, btnClose, btnConfirm;
-    
-    @FXML
-    private HBox hbButtons;
-
     @FXML
     private AnchorPane apMaster;
     @FXML
     private AnchorPane apTransactionIssues;
-    
+
     @FXML
-    private Label lblStatus;
+    private Button btnBrowse, btnPrint, btnCancel, btnClose, btnConfirm;
+    @FXML
+    private HBox hbButtons;
+
+    @FXML
+    private Label lblStatus,lblStatus1;
     @FXML
     private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10,
             txtField11, txtField12, txtField99, txtField98, txtField97;
     @FXML
     private TextArea txtField07;
-    
-    @FXML
-    private Label lblStatus1;
-  
+
     @FXML
     private TableColumn index12, index13;
     @FXML
@@ -108,8 +102,7 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
     @FXML
     private TableView tblDetails, tblTransactionIssues;
     @FXML
-    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08, index09;
-    
+    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08, index09, index10, index11;
 
     /**
      * Initializes the controller class.
@@ -188,9 +181,7 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
                         return;
                     }
                     break;
-
             }
-
         }
 
         txtField.selectAll();
@@ -275,7 +266,6 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
                             return;
                         }
                     }
-
                     loadTableDetail();
                     break;
                 case 7:
@@ -451,12 +441,12 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
         } catch (Exception e) {
         }
         loadTableDetail();
+        loadTableDetail2();
     }
-   
+
     private void loadTableDetail2() {
         int lnCtr;
-        data.clear();
-
+        data2.clear();
         int lnItem = oTrans.getItemCount();
         if (lnItem < 0) {
             return;
@@ -476,11 +466,9 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
                 loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
                 loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
                 loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
-                
 
                 data2.add(new ModelPurchaseOrder2(String.valueOf(lnCtr + 1),
                         (String) loInventory.getMaster("sBarCodex")));
-                
 
                 try {
                     if (oTrans.getDetailModel(lnCtr).getQuantity() != 0) {
@@ -626,7 +614,6 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
         index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index09.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
 
-
         index01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index02"));
         index03.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index03"));
@@ -636,7 +623,6 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
         index07.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index07"));
         index08.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index08"));
         index09.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index09"));
-
 
         tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");
@@ -648,13 +634,13 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
         tblDetails.setItems(data);
 
     }
-    public void initDetailsGrid2() {
-        index12.setStyle("-fx-alignment: CENTER;");
-        index13.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-       
 
-        index12.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index11"));
-        index13.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index12"));
+    public void initDetailsGrid2() {
+        index12.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 5;");
+        index13.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 5;");
+
+        index12.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder2, String>("index12"));
+        index13.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder2, String>("index13"));
 
         tblTransactionIssues.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblTransactionIssues.lookup("TableHeaderRow");
@@ -662,10 +648,8 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
                 header.setReordering(false);
             });
         });
-        
+
         tblTransactionIssues.setItems(data2);
-        
-        
 
     }
 
@@ -786,7 +770,6 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
         } else {
             btnConfirm.setDisable(true);
         }
-        
 
     }
 

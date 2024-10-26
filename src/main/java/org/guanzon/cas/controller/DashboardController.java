@@ -325,7 +325,7 @@ public class DashboardController implements Initializable {
                 return "Purchase Quotation";
                 
             case "/org/guanzon/cas/views/PurchaseOrderMC.fxml":
-                return "Purchase Order";
+                return "Purchase Order MC";
             case "/org/guanzon/cas/views/PurchaseOrderConfirmationMC.fxml":
                 return "Purchase Order Confirmation MC";
             case "/org/guanzon/cas/views/PurchaseOrderHistoryMC.fxml":
