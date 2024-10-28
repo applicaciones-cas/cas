@@ -195,7 +195,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     pnIndex = 99;
                 }
 
-                poJSON = oTrans.searchDetail(pnDetailRow, 1, "", false);
+                 poJSON = oTrans.searchMaster(9, "",  false);
                 //start
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
@@ -215,9 +215,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                 switch (pnIndex) {
                     case 1:
                     case 2:
-                        /* Barcode & Description */
-                        poJSON = oTrans.searchDetail(pnDetailRow, 3, (pnIndex == 1) ? txtDetail01.getText() : "", pnIndex == 1);
-//                        System.out.println("poJson Result = " + poJSON.toJSONString());
+                        poJSON =oTrans.searchTransactionDetail("", true);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
