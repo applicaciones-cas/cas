@@ -847,7 +847,7 @@ public class InvRequestWithoutROQSPController implements Initializable, ScreenIn
 //        params.put("sTranQty", "Cancel");
 
         // Define report file paths
-        String sourceFileName = "D://GGC_Maven_Systems/Reports/InventoryRequestGI.jasper";
+        String sourceFileName = "D://GGC_Maven_Systems/Reports/InventoryRequestSP.jasper";
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(R1data);
 
         return printer.loadAndShowReport(sourceFileName, params, R1data, pxeModuleName);
