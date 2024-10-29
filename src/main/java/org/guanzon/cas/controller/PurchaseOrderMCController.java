@@ -195,7 +195,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 if (pnIndex < 98) {
                     pnIndex = 99;
                 }
-                poJSON = oTrans.searchMaster(1, "",  false);
+                poJSON = oTrans.searchMaster("sSourceNo", "",  false);
                 //start
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 

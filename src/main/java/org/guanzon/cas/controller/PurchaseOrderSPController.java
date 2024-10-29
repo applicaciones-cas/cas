@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package org.guanzon.cas.controller;
+
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -195,7 +196,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     pnIndex = 99;
                 }
 
-                 poJSON = oTrans.searchMaster(1, "",  false);
+                poJSON = oTrans.searchMaster("sSourceNo", "", false);
                 //start
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
@@ -248,7 +249,6 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
 //                    pnEditMode = EditMode.UNKNOWN;
                     return;
 
-
                 } else {
                     oTrans = new PurchaseOrder(oApp, true);
                     pbLoaded = true;
@@ -264,7 +264,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     poJSON = oTrans.AddModelDetail();
                     pnDetailRow = oTrans.getItemCount() - 1;
                     loadTableDetail();
-                }  else {
+                } else {
                     if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
                         poJSON.put("result", "error");
                         poJSON.put("message", "'Please Fill all the required fields'");
@@ -275,21 +275,20 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                         }
                     }
                 }
-                
+
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 }
-               
 
                 break;
             case "btnRemoveItem":
-                if(oTrans.getItemCount()-1<0){
+                if (oTrans.getItemCount() - 1 < 0) {
                     poJSON.put("result", "error");
                     poJSON.put("message", "'No rows in the table'");
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                }else{
+                } else {
                     if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this item?") == true) {
                         oTrans.RemoveModelDetail(pnDetailRow);
                         pnDetailRow = oTrans.getItemCount() - 1;
@@ -587,7 +586,6 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
             }
         } else {
 
-
             switch (lnIndex) {
                 case 2:
                     txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getTransactionDate(), "yyyy-MM-dd"));
@@ -739,8 +737,6 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
         txtField11.focusedProperty().addListener(txtField_Focus);
         txtField12.focusedProperty().addListener(txtField_Focus);
 
-
-
         txtDetail01.focusedProperty().addListener(txtDetail_Focus);
         txtDetail02.focusedProperty().addListener(txtDetail_Focus);
         txtDetail03.focusedProperty().addListener(txtDetail_Focus);
@@ -752,7 +748,6 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
         txtField09.setOnKeyPressed(this::txtField_KeyPressed);
-
 
         txtDetail01.setOnKeyPressed(this::txtDetail_KeyPressed);//barcode
         txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);
@@ -771,7 +766,6 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
         txtField10.clear();
         txtField11.clear();
         txtField12.clear();
-
 
         txtDetail01.clear();
         txtDetail02.clear();
@@ -800,7 +794,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
         btnSave.setVisible(lbShow);
         btnAddItem.setVisible(lbShow);
         btnRemoveItem.setVisible(lbShow);
-        
+
         if (fnValue == EditMode.ADDNEW) {
             btnFindSource.setManaged(lbShow);
             btnFindSource.setVisible(lbShow);
@@ -814,7 +808,6 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
         btnSave.setManaged(lbShow);
         btnAddItem.setManaged(lbShow);
         btnRemoveItem.setManaged(lbShow);
-        
 
 // Manage visibility and managed state of other buttons
         btnBrowse.setVisible(!lbShow);
