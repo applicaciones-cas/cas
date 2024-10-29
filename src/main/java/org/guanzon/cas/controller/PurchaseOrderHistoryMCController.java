@@ -576,7 +576,7 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
             case F3:
                 switch (lnIndex) {
                     case 97:/*Browse Supplier*/
-                        poJSON = oTrans.searchSupplier("sSupplier", lsValue, lnIndex == 97);
+                        poJSON = oTrans.searchTransaction("sSupplier", lsValue, lnIndex == 97);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -586,7 +586,7 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
                         }
                         break;
                     case 98:/*Browse Destination*/
-                        poJSON = oTrans.searchDestination("sDestinat", lsValue, lnIndex == 98);
+                        poJSON = oTrans.searchTransaction("sDestinat", lsValue, lnIndex == 98);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);

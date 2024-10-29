@@ -195,7 +195,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 if (pnIndex < 98) {
                     pnIndex = 99;
                 }
-                poJSON = oTrans.searchDetail(pnDetailRow, 1, "", false);
+                poJSON = oTrans.searchMaster(1, "",  false);
                 //start
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
@@ -216,6 +216,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     case 1:
                     case 2:
                         /* Barcode & Description */
+//                        poJSON = oTrans.searchDetail(pnDetailRow, 3, (pnIndex == 1) ? txtDetail01.getText() : "", pnIndex == 1);
                         poJSON = oTrans.searchDetail(pnDetailRow, 3, (pnIndex == 1) ? txtDetail01.getText() : "", pnIndex == 1);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -240,7 +241,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-
                 poJSON = oTrans.saveTransaction();
 
                 pnEditMode = oTrans.getMasterModel().getEditMode();
@@ -356,7 +356,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             default:
                 lblStatus.setText("UNKNOWN");
                 break;
-
         }
 
         //get supplier id and search contctp & contctno
@@ -378,7 +377,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
         txtField11.setText(String.valueOf(oTrans.getMasterModel().getAddDiscount()));
         txtField12.setText(String.valueOf(oTrans.getMasterModel().getTransactionTotal()));
-
         loadTableDetail();
     }
 
@@ -425,7 +423,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString(),
                         (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
                 ));
-
+                    
                 try {
                     if (oTrans.getDetailModel(lnCtr).getQuantity() != 0) {
                         lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString())) * Double.parseDouble(String.valueOf(oTrans.getDetailModel(lnCtr).getQuantity()));
@@ -858,38 +856,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
-                    case 97:/*Browse Supplier*/
-                        poJSON = oTrans.searchSupplier("sSupplier", lsValue, lnIndex == 97);
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtField01.requestFocus();
-                        } else {
-                            loadRecord();
-                        }
-                        break;
-                    case 98:/*Browse Destination*/
-                        poJSON = oTrans.searchDestination("sDestinat", lsValue, lnIndex == 98);
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtField01.requestFocus();
-                        } else {
-                            loadRecord();
-                        }
-                        break;
-
-                    case 99:/*Browse Transaction*/
-                        poJSON = oTrans.searchTransaction("sTransNox", lsValue, lnIndex == 99);
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtField01.requestFocus();
-                        } else {
-                            loadRecord();
-                        }
-                        break;
-
                     case 3:
                         /*sDestinat*/
                         poJSON = oTrans.searchMaster(5, lsValue, false);
