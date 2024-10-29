@@ -195,7 +195,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     pnIndex = 99;
                 }
 
-                 poJSON = oTrans.searchMaster(9, "",  false);
+                 poJSON = oTrans.searchMaster(1, "",  false);
                 //start
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
