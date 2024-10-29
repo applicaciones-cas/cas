@@ -563,35 +563,35 @@ public class InventoryParamController implements Initializable,ScreenInterface {
             switch (lnIndex){
                 case 1: /*Stock ID*/
                    oTrans.getModel().setStockID(lsValue);
-                   System.out.print( "STOCK ID == " + oTrans.getModel().setStockID(lsValue));
+//                   System.out.print( "STOCK ID == " + oTrans.getModel().setStockID(lsValue));
                     break;
                 case 2:/*barrcode*/
                    oTrans.getModel().setBarcode(lsValue);
-                   System.out.print( "BARRCODE == " + oTrans.getModel().setBarcode(lsValue));
+//                   System.out.print( "BARRCODE == " + oTrans.getModel().setBarcode(lsValue));
                     break;
                 case 3:/*ALT barrcode*/   
                    oTrans.getModel().setAltBarcode (lsValue);
-                   System.out.print( "ALT BARRCODE == " + oTrans.getModel().setAltBarcode (lsValue));
+//                   System.out.print( "ALT BARRCODE == " + oTrans.getModel().setAltBarcode (lsValue));
                     break;
                 case 4:/*BRIEF DESC*/
                    oTrans.getModel().setBriefDescription(lsValue);
-                   System.out.print( "BRIEF DESC == " + oTrans.getModel().setBriefDescription (lsValue));
+//                   System.out.print( "BRIEF DESC == " + oTrans.getModel().setBriefDescription (lsValue));
                     break;
                 case 5:/*DESC*/
                    oTrans.getModel().setDescription(lsValue);
-                   System.out.print( "DESC == " + oTrans.getModel().setDescription(lsValue));
+//                   System.out.print( "DESC == " + oTrans.getModel().setDescription(lsValue));
                     break;
                 case 6:/*CATEGORY CODE 1*/
-                   System.out.print( "CATEGORY 1 == " + oTrans.getModel().setCategCd1(lsValue));
+//                   System.out.print( "CATEGORY 1 == " + oTrans.getModel().setCategCd1(lsValue));
                     break;
                 case 7:/*CATEGORY CODE 2*/
-                   System.out.print( "CATEGORY 2 == " + oTrans.getModel().setCategCd2(lsValue));
+//                   System.out.print( "CATEGORY 2 == " + oTrans.getModel().setCategCd2(lsValue));
                     break;
                 case 8:/*CATEGORY CODE 3*/
-                   System.out.print( "CATEGORY 3 == " + oTrans.getModel().setCategCd3(lsValue));
+//                   System.out.print( "CATEGORY 3 == " + oTrans.getModel().setCategCd3(lsValue));
                     break;
                 case 9:/*CATEGORY CODE 4*/
-                   System.out.print( "CATEGORY 4 == " + oTrans.getModel().setCategCd4(lsValue));
+//                   System.out.print( "CATEGORY 4 == " + oTrans.getModel().setCategCd4(lsValue));
                     break;
                 case 10:/*Brand*/
                     break;
