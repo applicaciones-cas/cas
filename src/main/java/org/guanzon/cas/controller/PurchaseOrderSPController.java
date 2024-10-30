@@ -371,6 +371,8 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
     }
 
     private void loadTableDetail() {
+        poJSON.put("result", "success");
+        poJSON.put("message", "''");
         int lnCtr;
         data.clear();
 
