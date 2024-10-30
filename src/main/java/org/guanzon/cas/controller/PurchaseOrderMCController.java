@@ -381,6 +381,8 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     }
 
     private void loadTableDetail() {
+        poJSON.put("result", "success");
+        poJSON.put("message", "''");
         int lnCtr;
         data.clear();
 
@@ -434,6 +436,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 }
 
             } else {
+
                 data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
                         "",
                         (String) oTrans.getDetailModel(lnCtr).getValue("sDescript"),
