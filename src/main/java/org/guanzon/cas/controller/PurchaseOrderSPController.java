@@ -216,7 +216,12 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                 switch (pnIndex) {
                     case 1:
                     case 2:
-                        poJSON = oTrans.searchDetail(pnDetailRow, 3, (pnIndex == 1) ? txtDetail01.getText() : "", pnIndex == 1);
+                        if (oTrans.getItemCount() - 1 < 0) {
+                            poJSON.put("result", "error");
+                            poJSON.put("message", "No row in the table");
+                        } else {
+                            poJSON = oTrans.searchDetail(pnDetailRow, 3,"", pnIndex == 1); //(pnIndex == 1) ? txtDetail01.getText() : ""
+                        }
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
@@ -265,14 +270,19 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     pnDetailRow = oTrans.getItemCount() - 1;
                     loadTableDetail();
                 } else {
-                    if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
+                    try {
+                        if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
+                            poJSON.put("result", "error");
+                            poJSON.put("message", "'Please Fill all the required fields'");
+                        } else {
+                            if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() <= 0) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "'Recent Order number should be greater than 0'");
+                            }
+                        }
+                    } catch (Exception e) {
                         poJSON.put("result", "error");
                         poJSON.put("message", "'Please Fill all the required fields'");
-                    } else {
-                        if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() <= 0) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "'Recent Order number should be greater than 0'");
-                        }
                     }
                 }
 
@@ -827,6 +837,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
         apTable.setDisable(!lbShow);
+        oTrans.setTransType("SP");
 
     }
 
@@ -937,7 +948,6 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
 
         oTrans = new PurchaseOrder(oApp, false);
         oTrans.setTransactionStatus("12340");
-
         initTextFields();
         initDetailsGrid();
         clearFields();

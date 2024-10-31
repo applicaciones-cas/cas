@@ -215,14 +215,17 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 switch (pnIndex) {
                     case 1:
                     case 2:
-                        /* Barcode & Description */
-//                        poJSON = oTrans.searchDetail(pnDetailRow, 3, (pnIndex == 1) ? txtDetail01.getText() : "", pnIndex == 1);
-                        poJSON = oTrans.searchDetail(pnDetailRow, 3, (pnIndex == 1) ? txtDetail01.getText() : "", pnIndex == 1);
+                        if (oTrans.getItemCount() - 1 < 0) {
+                            poJSON.put("result", "error");
+                            poJSON.put("message", "No row in the table");
+                        } else {
+                            poJSON = oTrans.searchDetail(pnDetailRow, 3,  "", pnIndex == 1); //(pnIndex == 1) ? txtDetail01.getText() :
+                        }
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
 
-                        loadTableDetail();
+                        loadTableDetail();                   
                         break;
                 }
                 break;
@@ -276,6 +279,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         loadTableDetail();
 
                     } else {
+                        try{
                         if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
                             poJSON.put("result", "error");
                             poJSON.put("message", "'Please Fill all the required fields'");
@@ -284,6 +288,10 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                                 poJSON.put("result", "error");
                                 poJSON.put("message", "'Recent Order number should be greater than 0'");
                             }
+                        }
+                        } catch (Exception e) {
+                            poJSON.put("result", "error");
+                            poJSON.put("message", "'Please Fill all the required fields'");
                         }
                     }
                 }
@@ -408,8 +416,11 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
                 String lsyrmdl = "0";
-                if (!loInventory.getMaster("sModelIDx").toString().isEmpty()) {
-                    lsyrmdl = String.valueOf(loMdl.getModel().getYearModel());
+                try{
+                    if (!loInventory.getMaster("sModelIDx").toString().isEmpty()) {
+                        lsyrmdl = String.valueOf(loMdl.getModel().getYearModel());
+                    }
+                } catch (Exception e) {
                 }
                 loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
                 loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
@@ -848,7 +859,9 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
         apTable.setDisable(!lbShow);
-
+        
+        
+        oTrans.setTransType("MC");
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -958,7 +971,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
         oTrans = new PurchaseOrder(oApp, false);
         oTrans.setTransactionStatus("12340");
-
         initTextFields();
         initDetailsGrid();
         clearFields();
