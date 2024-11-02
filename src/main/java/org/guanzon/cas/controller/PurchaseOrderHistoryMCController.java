@@ -388,6 +388,13 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
                 loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
 
 //                String.valueOf(loMdl.getModel().getYearModel());
+                String lsyrmdl = "0";
+                try {
+                    if (!loInventory.getMaster("sModelIDx").toString().isEmpty()) {
+                        lsyrmdl = String.valueOf(loMdl.getModel().getYearModel());
+                    }
+                } catch (Exception e) {
+                }
                 data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
                         (String) loInventory.getMaster("sBarCodex"),
                         (String) oTrans.getDetailModel(lnCtr).getDescription(),
@@ -395,7 +402,7 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
                         (String) loMdl.getModel().getModelCode(),
                         (String) loMdl.getModel().getModelDescription(),
                         loMdlVrnt.getModel().getVariantName(),
-                        String.valueOf(loMdl.getModel().getYearModel()),
+                        lsyrmdl,
                         (String) loColor.getModel().getDescription(),
                         oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString(),
                         (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
