@@ -53,6 +53,7 @@ import org.junit.Assert;
  * @author User
  */
 public class PurchaseOrderHistorySPController implements Initializable, ScreenInterface {
+
     private final String pxeModuleName = "Purchase Order History SP";
     private GRider oApp;
     private PurchaseOrder oTrans;
@@ -87,7 +88,7 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus,lblStatus1;
+    private Label lblStatus, lblStatus1;
     @FXML
     private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10,
             txtField11, txtField12, txtField99, txtField98, txtField97;
@@ -106,8 +107,6 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
     /**
      * Initializes the controller class.
      */
-    
-    
     private void setSelectedDetail() {
         Model_Inv_Stock_Request_Detail loModel_Inv_Stock_Request_Detail;
         loModel_Inv_Stock_Request_Detail = oTrans.GetModel_Inv_Stock_Request_Detail(oTrans.getDetailModel(pnDetailRow).getStockID());
@@ -315,6 +314,7 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         }
 
     };
+
     private void loadRecord() {
         String lsActive = oTrans.getMasterModel().getTransactionStatus();
 
@@ -374,7 +374,6 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
             return;
         }
 
-
         double lnTotalTransaction = 0;
         for (lnCtr = 0; lnCtr <= oTrans.getItemCount() - 1; lnCtr++) {
             String lsStockIDx = (String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx");
@@ -413,6 +412,8 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
                 }
 
             } else {
+                poJSON.put("result", "success");
+                poJSON.put("message", "''");
                 data.add(new ModelPurchaseOrderSP(String.valueOf(lnCtr + 1),
                         "",
                         (String) oTrans.getDetailModel(lnCtr).getValue("sDescript"),
@@ -446,7 +447,7 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         }
         initDetailsGrid();
     }
-    
+
     private void loadTableDetail2() {
         int lnCtr;
         data2.clear();
@@ -509,7 +510,7 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         }
         initDetailsGrid2();
     }
-    
+
     public void initDetailsGrid() {
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
@@ -521,7 +522,6 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index09.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
 
-
         index01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index02"));
         index03.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index03"));
@@ -532,7 +532,6 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         index08.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index08"));
         index09.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderSP, String>("index09"));
 
-
         tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -542,7 +541,7 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
 
         tblDetails.setItems(data);
     }
-    
+
     public void initDetailsGrid2() {
         index12.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 5;");
         index13.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 5;");
@@ -560,9 +559,8 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         tblTransactionIssues.setItems(data2);
 
     }
-    
-    
-        private void txtField_KeyPressed(KeyEvent event) {
+
+    private void txtField_KeyPressed(KeyEvent event) {
 
         TextField textField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
@@ -676,7 +674,7 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
                         break;
-                        //
+                    //
 
                 }
                 loadRecord();
@@ -695,7 +693,8 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
 
         pnIndex = lnIndex;
     }
-        private void initTextFields() {
+
+    private void initTextFields() {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
@@ -734,6 +733,7 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         txtDetail01.setOnKeyPressed(this::txtDetail_KeyPressed);//barcode
         txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);
     }
+
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
@@ -769,9 +769,9 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         data.clear();
 
     }
-        private void initButton(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
+    private void initButton(int fnValue) {
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
 // Manage visibility and managed state of other buttons
         btnBrowse.setVisible(!lbShow);
@@ -785,14 +785,16 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
 //        apTable.setDisable(!lbShow);
-        
+
         if (Integer.valueOf(oTrans.getMasterModel().getTransactionStatus()) != 0) {
-                btnVoid.setDisable(false);
+            btnVoid.setDisable(false);
         } else {
-                btnVoid.setDisable(true);
+            btnVoid.setDisable(true);
         }
+        oTrans.setTransType("SP");
 
     }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         oTrans = new PurchaseOrder(oApp, false);
@@ -847,7 +849,6 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
                 }
 
                 break;
-  
 
             case "btnVoid":
                 if (pnIndex > 3 || pnIndex < 1) {

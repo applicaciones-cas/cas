@@ -195,7 +195,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 if (pnIndex < 98) {
                     pnIndex = 99;
                 }
-                poJSON = oTrans.searchMaster("sSourceNo", "",  false);
+                poJSON = oTrans.searchMaster("sSourceNo", "", false);
                 //start
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
@@ -219,13 +219,17 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                             poJSON.put("result", "error");
                             poJSON.put("message", "No row in the table");
                         } else {
-                            poJSON = oTrans.searchDetail(pnDetailRow, 3,  "", pnIndex == 1); //(pnIndex == 1) ? txtDetail01.getText() :
+                            poJSON = oTrans.searchDetail(pnDetailRow, 3, "", pnIndex == 1); //(pnIndex == 1) ? txtDetail01.getText() :
+                            try {
+                                pnDetailRow = oTrans.getRowSelect();
+                            } catch (Exception e) {
+                            }
                         }
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
 
-                        loadTableDetail();                   
+                        loadTableDetail();
                         break;
                 }
                 break;
@@ -253,7 +257,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 //                    pnEditMode = EditMode.UNKNOWN;
                     return;
 
-
                 } else {
                     oTrans = new PurchaseOrder(oApp, true);
                     pbLoaded = true;
@@ -279,16 +282,16 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         loadTableDetail();
 
                     } else {
-                        try{
-                        if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "'Please Fill all the required fields'");
-                        } else {
-                            if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() <= 0) {
+                        try {
+                            if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
                                 poJSON.put("result", "error");
-                                poJSON.put("message", "'Recent Order number should be greater than 0'");
+                                poJSON.put("message", "'Please Fill all the required fields'");
+                            } else {
+                                if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() <= 0) {
+                                    poJSON.put("result", "error");
+                                    poJSON.put("message", "'Recent Order number should be greater than 0'");
+                                }
                             }
-                        }
                         } catch (Exception e) {
                             poJSON.put("result", "error");
                             poJSON.put("message", "'Please Fill all the required fields'");
@@ -416,7 +419,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
                 String lsyrmdl = "0";
-                try{
+                try {
                     if (!loInventory.getMaster("sModelIDx").toString().isEmpty()) {
                         lsyrmdl = String.valueOf(loMdl.getModel().getYearModel());
                     }
@@ -436,7 +439,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString(),
                         (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
                 ));
-                    
+
                 try {
                     if (oTrans.getDetailModel(lnCtr).getQuantity() != 0) {
                         lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString())) * Double.parseDouble(String.valueOf(oTrans.getDetailModel(lnCtr).getQuantity()));
@@ -481,6 +484,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             tblDetails.getFocusModel().focus(pnDetailRow);
             setSelectedDetail();
         }
+        oTrans.setRowSelect(oTrans.getItemCount() - 1);
         initDetailsGrid();
     }
 
@@ -859,8 +863,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
         apTable.setDisable(!lbShow);
-        
-        
+
         oTrans.setTransType("MC");
     }
 
@@ -935,6 +938,10 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 switch (lnIndex) {
                     case 1:
                         poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, true);
+                        try {
+                            pnDetailRow = oTrans.getRowSelect();
+                        } catch (Exception e) {
+                        }
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
@@ -943,6 +950,10 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     case 2:
                         /* Description */
                         poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, false);
+                        try {
+                            pnDetailRow = oTrans.getRowSelect();
+                        } catch (Exception e) {
+                        }
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }

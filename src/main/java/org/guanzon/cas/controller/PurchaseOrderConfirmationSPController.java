@@ -88,7 +88,7 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus,lblStatus1;
+    private Label lblStatus, lblStatus1;
     @FXML
     private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10,
             txtField11, txtField12, txtField99, txtField98, txtField97;
@@ -770,6 +770,7 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
         } else {
             btnConfirm.setDisable(true);
         }
+        oTrans.setTransType("SP");
 
     }
 

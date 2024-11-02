@@ -221,6 +221,10 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                             poJSON.put("message", "No row in the table");
                         } else {
                             poJSON = oTrans.searchDetail(pnDetailRow, 3,"", pnIndex == 1); //(pnIndex == 1) ? txtDetail01.getText() : ""
+                            try {
+                                pnDetailRow = oTrans.getRowSelect();
+                            } catch (Exception e) {
+                            }
                         }
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -462,6 +466,7 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
             tblDetails.getFocusModel().focus(pnDetailRow);
             setSelectedDetail();
         }
+        oTrans.setRowSelect(oTrans.getItemCount() - 1);
         initDetailsGrid();
     }
 
@@ -912,6 +917,10 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                 switch (lnIndex) {
                     case 1:
                         poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, true);
+                        try {
+                            pnDetailRow = oTrans.getRowSelect();
+                        } catch (Exception e) {
+                        }
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
@@ -920,6 +929,10 @@ public class PurchaseOrderSPController implements Initializable, ScreenInterface
                     case 2:
                         /* Description */
                         poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, false);
+                        try {
+                            pnDetailRow = oTrans.getRowSelect();
+                        } catch (Exception e) {
+                        }
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
