@@ -219,6 +219,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                             poJSON.put("result", "error");
                             poJSON.put("message", "No row in the table");
                         } else {
+                            oTrans.setRowSelect(pnDetailRow);
                             poJSON = oTrans.searchDetail(pnDetailRow, 3, "", pnIndex == 1); //(pnIndex == 1) ? txtDetail01.getText() :
                             try {
                                 pnDetailRow = oTrans.getRowSelect();
@@ -937,6 +938,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             case F3:
                 switch (lnIndex) {
                     case 1:
+                        oTrans.setRowSelect(pnDetailRow);
                         poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, true);
                         try {
                             pnDetailRow = oTrans.getRowSelect();
