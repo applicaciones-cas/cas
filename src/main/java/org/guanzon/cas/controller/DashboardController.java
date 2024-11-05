@@ -40,12 +40,14 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Menu;
 import javafx.scene.control.Tab;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
 
 public class DashboardController implements Initializable {
 
@@ -77,6 +79,21 @@ public class DashboardController implements Initializable {
     
     @FXML
     private MenuItem mnuPOQuotation;
+    @FXML
+    private Menu menuRequestRegular, menuRequestROQ, menuRequestCancel, menuHistStockRequest, menuHistStockRequestCancel;
+    
+    @FXML
+    private MenuItem mnuStockRequestWithoutROQ, mnuStockRequestWithoutROQSP, mnuStockRequestWithoutROQGI;
+    @FXML
+    private MenuItem mnuStockRequestROQ, mnuStockRequestROQSP, mnuStockRequestROQGI;
+    @FXML
+    private MenuItem mnuStockRequestCancellation, mnuStockRequestCancellationSP, mnuStockRequestCancellationGI;
+    
+    @FXML
+    private MenuItem mnuHistStockRequest, mnuHistStockRequestSP, mnuHistStockRequestGI;
+    @FXML
+    private MenuItem mnuHistStockRequestCancellation, mnuHistStockRequestSP1, mnuHistStockRequestGI1;
+    
 
     @FXML
     private TabPane tabpane;
@@ -102,6 +119,61 @@ public class DashboardController implements Initializable {
         } else {
             // Handle case where GRider object is not initialized
             System.out.println("GRider object is not properly initialized.");
+        }
+        
+        String industry = System.getProperty("store.inventory.industry");
+
+        RequestControllerFactory.RequestType types = null;
+        String[] category = industry.split(";");
+        
+        // Print the resulting array
+        for (String type : category) {
+            if (types == null) {
+                menuRequestRegular.getItems().clear();
+                menuRequestROQ.getItems().clear();
+                menuRequestCancel.getItems().clear();
+                menuHistStockRequest.getItems().clear();
+                menuHistStockRequestCancel.getItems().clear();
+                if ("0001".equals(type)) {
+                   menuRequestRegular.getItems().add(mnuStockRequestWithoutROQ);
+                   menuRequestRegular.getItems().add(mnuStockRequestWithoutROQSP);
+                   menuRequestROQ.getItems().add(mnuStockRequestROQ);
+                   menuRequestROQ.getItems().add(mnuStockRequestROQSP);
+                   menuRequestCancel.getItems().add(mnuStockRequestCancellation);
+                   menuRequestCancel.getItems().add(mnuStockRequestCancellationSP);
+                   menuHistStockRequest.getItems().add(mnuHistStockRequest);
+                   menuHistStockRequest.getItems().add(mnuHistStockRequestSP);
+                   menuHistStockRequestCancel.getItems().add(mnuHistStockRequestCancellation);
+                   menuHistStockRequestCancel.getItems().add(mnuHistStockRequestSP1);
+                } else if ("0002".equals(type)) {
+                   menuRequestRegular.getItems().add(mnuStockRequestWithoutROQ);
+                   menuRequestROQ.getItems().add(mnuStockRequestROQ);
+                   menuRequestCancel.getItems().add(mnuStockRequestCancellation);
+                   menuHistStockRequest.getItems().add(mnuHistStockRequest);
+                   menuHistStockRequest.getItems().add(mnuHistStockRequest);
+                   menuHistStockRequestCancel.getItems().add(mnuHistStockRequestCancellation);
+                } else if ("0003".equals(type)) {
+                   menuRequestRegular.getItems().add(mnuStockRequestWithoutROQ);
+                   menuRequestROQ.getItems().add(mnuStockRequestROQ);
+                   menuRequestCancel.getItems().add(mnuStockRequestCancellation);
+                   menuHistStockRequest.getItems().add(mnuHistStockRequest);
+                   menuHistStockRequest.getItems().add(mnuHistStockRequest);
+                   menuHistStockRequestCancel.getItems().add(mnuHistStockRequestCancellation);
+                }else if ("0004".equals(type)) {
+                   menuRequestRegular.getItems().add(mnuStockRequestWithoutROQGI);
+                   menuRequestROQ.getItems().add(mnuStockRequestROQGI);
+                   menuRequestCancel.getItems().add(mnuStockRequestCancellationGI);
+                   menuHistStockRequest.getItems().add(mnuHistStockRequestGI);
+                   menuHistStockRequestCancel.getItems().add(mnuHistStockRequestGI1);
+                }
+
+                System.out.println("type value = " + types);
+            }
+        }
+        for(int lnCtr = 0; lnCtr <= menuRequestRegular.getItems().size()-1; lnCtr++){
+            
+                
+            System.out.println(menuRequestRegular.getItems().get(lnCtr));
         }
         getTime();
         loadUserInfo();

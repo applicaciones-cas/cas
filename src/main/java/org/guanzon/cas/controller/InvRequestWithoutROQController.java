@@ -555,6 +555,8 @@ public class InvRequestWithoutROQController implements Initializable, ScreenInte
                             break;
                         }
                         break;
+                        
+                         
                 }
                 loadDetails();
                 txtField14.requestFocus();

@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -383,7 +384,7 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
 
 // Define arrays for text fields with setOnKeyPressed handlers
         TextField[] keyPressedTextFields = {
-        txtField05, txtField08, txtField09,txtField11
+        txtField05, txtField08, txtField09,txtField11,txtField12
         };
 
 // Set the same key pressed event handler for each text field in the keyPressedTextFields array
@@ -528,6 +529,24 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
                             break;
                         }
                         break;
+                    case 12:
+                        tblDetails.requestFocus();
+                        Platform.runLater(() -> {
+                            if (pnRow < tblDetails.getItems().size() - 1) {
+                                pnRow++;
+
+                                tblDetails.getSelectionModel().select(pnRow);
+                                tblDetails.scrollTo(pnRow); // Scroll to ensure the row is visible
+                                loadDetails();
+
+                                // Update focus to txtField14 after loading details
+                                Platform.runLater(() -> txtField12.requestFocus());
+
+                                // Optionally refresh the table to make sure selection is visually updated
+                                tblDetails.refresh();
+                            }
+                        });
+                    
                 }
                 loadDetails();
                 txtField12.requestFocus();

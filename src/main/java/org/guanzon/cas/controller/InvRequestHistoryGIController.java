@@ -312,6 +312,7 @@ public class InvRequestHistoryGIController implements Initializable, ScreenInter
                                 ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 break;
                             }
+                            ShowMessageFX.Information("Transaction successfully void.", "Computerized Accounting System", pxeModuleName);
                             clearAllFields();
                             initTrans();
                             initTabAnchor();
