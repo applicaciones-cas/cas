@@ -312,6 +312,7 @@ public class InvRequestCancellationHistoryController implements Initializable, S
                                 ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 break;
                             }
+                            ShowMessageFX.Information("Transaction successfully confirm.", "Computerized Accounting System", pxeModuleName);
                             clearAllFields();
                             initTrans();
                             initTabAnchor();

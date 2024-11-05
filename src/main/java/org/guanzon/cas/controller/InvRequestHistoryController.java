@@ -325,6 +325,7 @@ public class InvRequestHistoryController implements Initializable, ScreenInterfa
                                 ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 break;
                             }
+                            ShowMessageFX.Information("Transaction successfully void.", "Computerized Accounting System", pxeModuleName);
                             clearAllFields();
                             initTrans();
                             initTabAnchor();
@@ -508,6 +509,7 @@ public class InvRequestHistoryController implements Initializable, ScreenInterfa
                     oTrans.getDetailModel().get(pnRow).setQuantity(qty);
                     System.out.println("QTY Request == " + lsValue + "\n");
                     loadItemData();
+//                    pnRow = tblDetails.getSelectionModel().getSelectedIndex() + 1;
                     break;
 
             }

@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -70,7 +71,7 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
     private String categForm = "";
     private boolean isReportRunning = false; // Flag to track if report is running
     ReportPrinter printer = new ReportPrinter();
-    
+
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -168,7 +169,7 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
         btnPrint.setOnAction(this::handleButtonAction);
         btnCancelTrans.setOnAction(this::handleButtonAction);
         btnApprove.setOnAction(this::handleButtonAction);
-        
+
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -252,7 +253,7 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
                     }
                     pnEditMode = oTrans.getEditMode();
                     R1data.clear();
-                    System.out .println("roq browse stat== " + pnEditMode);
+                    System.out.println("roq browse stat== " + pnEditMode);
                     loadTransaction();
                     initTblDetails();
                     loadItemData();
@@ -383,7 +384,7 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
 
 // Define arrays for text fields with setOnKeyPressed handlers
         TextField[] keyPressedTextFields = {
-        txtField05, txtField08, txtField09,txtField11
+            txtField05, txtField08, txtField09, txtField11, txtField12
         };
 
 // Set the same key pressed event handler for each text field in the keyPressedTextFields array
@@ -482,14 +483,15 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
                     break;
 
                 case 12:/*QTY Request*/
-                    
+
                     if (lsValue.matches("\\d*")) {
                         int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
                         oTrans.getDetailModel().get(pnRow).setQuantity(qty);
                         loadItemData();
                         break;
-                    }else 
-                    ShowMessageFX.Information("Invalid Input", "Computerized Accounting System", pxeModuleName);
+                    } else {
+                        ShowMessageFX.Information("Invalid Input", "Computerized Accounting System", pxeModuleName);
+                    }
                     txtField.setText("0");
                     txtField.requestFocus();
                     break;
@@ -528,6 +530,24 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
                             break;
                         }
                         break;
+                    case 12:
+                        tblDetails.requestFocus();
+                        Platform.runLater(() -> {
+                            if (pnRow < tblDetails.getItems().size() - 1) {
+                                pnRow++;
+
+                                tblDetails.getSelectionModel().select(pnRow);
+                                tblDetails.scrollTo(pnRow); // Scroll to ensure the row is visible
+                                loadDetails();
+
+                                // Update focus to txtField14 after loading details
+                                Platform.runLater(() -> txtField12.requestFocus());
+
+                                // Optionally refresh the table to make sure selection is visually updated
+                                tblDetails.refresh();
+                            }
+                        });
+
                 }
                 loadDetails();
                 txtField12.requestFocus();
@@ -554,7 +574,7 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
         anchorDetails.setDisable(!pbValue);
         anchorTable.setDisable(!pbValue);
         if (pnEditMode == EditMode.READY) {
-            anchorTable.setDisable(false);            
+            anchorTable.setDisable(false);
             btnStatistic.setDisable(false);
         }
     }
@@ -726,7 +746,7 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
         R1data.clear();
         if (oTrans.getDetailModel() != null) {
             for (lnCtr = 0; lnCtr < oTrans.getDetailModel().size(); lnCtr++) {
-                
+
 //            oTrans.getDetailModel().get(lnCtr).list();
                 R1data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),
                         (String) oTrans.getDetailModel().get(lnCtr).getBarcode(),
@@ -817,7 +837,7 @@ public class InvRequestROQSPController implements Initializable, ScreenInterface
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
-    
+
     private boolean loadPrint() {
         JSONObject loJSON = new JSONObject();
         if (oTrans.getMasterModel().getTransactionNumber() == null) {

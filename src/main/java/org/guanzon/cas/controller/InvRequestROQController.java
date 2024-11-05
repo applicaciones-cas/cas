@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -384,7 +385,7 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
 
 // Define arrays for text fields with setOnKeyPressed handlers
         TextField[] keyPressedTextFields = {
-          txtField05, txtField08, txtField09, txtField11
+          txtField05, txtField08, txtField09, txtField11, txtField14
         };
 
 // Set the same key pressed event handler for each text field in the keyPressedTextFields array
@@ -539,6 +540,24 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Accounting System", pxeModuleName);
                             break;
                         }
+                        break;
+                    case 14:
+                        tblDetails.requestFocus();
+                        Platform.runLater(() -> {
+                            if (pnRow < tblDetails.getItems().size() - 1) {
+                                pnRow++;
+
+                                tblDetails.getSelectionModel().select(pnRow);
+                                tblDetails.scrollTo(pnRow); // Scroll to ensure the row is visible
+                                loadDetails();
+
+                                // Update focus to txtField14 after loading details
+                                Platform.runLater(() -> txtField14.requestFocus());
+
+                                // Optionally refresh the table to make sure selection is visually updated
+                                tblDetails.refresh();
+                            }
+                        });
                         break;
                 }
                 loadDetails();
@@ -822,7 +841,7 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
                 } else if ("0002".equals(type)) {
                     types = RequestControllerFactory.RequestType.MP;
                     oTrans.setType(types);
-                }else if ("0003".equals(type)) {
+                } else if ("0003".equals(type)) {
                     types = RequestControllerFactory.RequestType.AUTO;
                     oTrans.setType(types);
                 }
@@ -850,7 +869,7 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
         // Prepare report parameters
         Map<String, Object> params = new HashMap<>();
         params.put("sPrintdBy", "Printed By: " + oApp.getLogName());
-//        params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
+//      params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
         params.put("sReportNm", pxeModuleName);
         params.put("sReportDt", CommonUtils.xsDateMedium((Date) oApp.getServerDate()));
         params.put("sBranchNm", oApp.getBranchName());
@@ -859,11 +878,11 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
         params.put("sTranDte", CommonUtils.xsDateMedium((Date) oTrans.getMasterModel().getTransaction()));
         params.put("sRemarks", oTrans.getMasterModel().getRemarks());
         params.put("status", oTrans.getMasterModel().getTransactionStatus());
-//        params.put("sTranType", "Unprcd Qty");
-//        params.put("sTranQty", "Cancel");
+//      params.put("sTranType", "Unprcd Qty");
+//      params.put("sTranQty", "Cancel");
 
         // Define report file paths
-        String sourceFileName = "D://GGC_Maven_Systems/Reports/InventoryRequestROQ.jasper";
+        String sourceFileName = oApp.getReportPath() + "InventoryRequestROQ.jasper";
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(R1data);
 
         return printer.loadAndShowReport(sourceFileName, params, R1data, pxeModuleName);

@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
@@ -225,21 +225,21 @@
                                                         <MenuItem fx:id="mnuInventory" mnemonicParsing="false" onAction="#mnuInventoryClick" text="Inventory Details" />
                                           <Menu mnemonicParsing="false" text="Stock Request">
                                              <items>
-                                                <Menu mnemonicParsing="false" text="NEW UI Regular">
+                                                <Menu fx:id="menuRequestRegular" mnemonicParsing="false" text="NEW UI Regular">
                                                    <items>
                                                       <MenuItem fx:id="mnuStockRequestWithoutROQ" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQClick" style="-fx-font-weight: normal;" text="Regular" />
                                                       <MenuItem fx:id="mnuStockRequestWithoutROQSP" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQSPClick" style="-fx-font-weight: normal;" text="Regular SP" />
                                                       <MenuItem fx:id="mnuStockRequestWithoutROQGI" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQGIClick" style="-fx-font-weight: normal;" text="Regular GI" />
                                                    </items>
                                                 </Menu>
-                                                <Menu mnemonicParsing="false" styleClass="menu-item" text="NEW UI ROQ">
+                                                <Menu fx:id="menuRequestROQ" mnemonicParsing="false" styleClass="menu-item" text="NEW UI ROQ">
                                                    <items>
                                                       <MenuItem fx:id="mnuStockRequestROQ" mnemonicParsing="false" onAction="#mnuStockRequestROQClick" style="-fx-font-weight: normal;" text="ROQ" />
                                                       <MenuItem fx:id="mnuStockRequestROQSP" mnemonicParsing="false" onAction="#mnuStockRequestROQSPClick" style="-fx-font-weight: normal;" text="ROQ SP" />
                                                       <MenuItem fx:id="mnuStockRequestROQGI" mnemonicParsing="false" onAction="#mnuStockRequestROQGIClick" style="-fx-font-weight: normal;" text="ROQ GI" />
                                                    </items>
                                                 </Menu>
-                                                <Menu mnemonicParsing="false" text="NEW UI Cancellation">
+                                                <Menu fx:id="menuRequestCancel" mnemonicParsing="false" text="NEW UI Cancellation">
                                                    <items>
                                                       <MenuItem fx:id="mnuStockRequestCancellation" mnemonicParsing="false" onAction="#mnuStockRequestCancellationClick" style="-fx-font-weight: normal;" text="Cancellation" />
                                                       <MenuItem fx:id="mnuStockRequestCancellationSP" mnemonicParsing="false" onAction="#mnuStockRequestCancellationSPClick" style="-fx-font-weight: normal;" text="Cancellation SP" />
@@ -291,14 +291,14 @@
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="_History">
                                                     <items>
-                                          <Menu mnemonicParsing="false" text="Stock Request">
+                                          <Menu fx:id="menuHistStockRequest" mnemonicParsing="false" text="Stock Request">
                                             <items>
                                                               <MenuItem fx:id="mnuHistStockRequest" mnemonicParsing="false" onAction="#mnuHistStockRequestClick" text="Stock Request" />
                                               <MenuItem fx:id="mnuHistStockRequestSP" mnemonicParsing="false" onAction="#mnuHistStockRequestSPClick" text="Stock Request SP" />
                                                 <MenuItem fx:id="mnuHistStockRequestGI" mnemonicParsing="false" onAction="#mnuHistStockRequestGIClick" text="Stock Request GI" />
                                             </items>
                                           </Menu>
-                                          <Menu mnemonicParsing="false" text="Stock Request Cancellation">
+                                          <Menu fx:id="menuHistStockRequestCancel" mnemonicParsing="false" text="Stock Request Cancellation">
                                              <items>
                                                 <MenuItem fx:id="mnuHistStockRequestCancellation" mnemonicParsing="false" onAction="#mnuHistStockRequestCancellationClick" text="Stock Request Cancellation" />
                                                 <MenuItem fx:id="mnuHistStockRequestSP1" mnemonicParsing="false" onAction="#mnuHistStockRequestCancellationSPClick" text="Stock Request Cancellation SP" />
