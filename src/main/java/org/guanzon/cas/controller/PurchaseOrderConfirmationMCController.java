@@ -87,7 +87,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus,lblStatus1;
+    private Label lblStatus, lblStatus1;
     @FXML
     private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06, txtField08, txtField09, txtField10,
             txtField11, txtField12, txtField99, txtField98, txtField97;
@@ -537,6 +537,15 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
                 loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
                 loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
                 loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
+
+//                String.valueOf(loMdl.getModel().getYearModel());
+                String lsyrmdl = "0";
+                try {
+                    if (!loInventory.getMaster("sModelIDx").toString().isEmpty()) {
+                        lsyrmdl = String.valueOf(loMdl.getModel().getYearModel());
+                    }
+                } catch (Exception e) {
+                }
                 data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
                         (String) loInventory.getMaster("sBarCodex"),
                         (String) oTrans.getDetailModel(lnCtr).getDescription(),
@@ -544,7 +553,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
                         (String) loMdl.getModel().getModelCode(),
                         (String) loMdl.getModel().getModelDescription(),
                         loMdlVrnt.getModel().getVariantName(),
-                        String.valueOf(loMdl.getModel().getYearModel()),
+                        lsyrmdl,
                         (String) loColor.getModel().getDescription(),
                         oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString(),
                         (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
@@ -781,6 +790,8 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         } else {
             btnConfirm.setDisable(true);
         }
+
+        oTrans.setTransType("MC");
 
     }
 
