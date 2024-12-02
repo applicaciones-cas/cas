@@ -31,26 +31,29 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.controller.ScreenInterface;
+import org.guanzon.cas.controller.unloadForm;
 import org.guanzon.cas.inventory.base.Inventory;
+import org.guanzon.cas.inventory.base.PO_Quotation;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.model.ModelPurchaseOrderMC;
-import org.guanzon.cas.model.ModelPurchaseOrderSP;
 import org.guanzon.cas.parameters.Branch;
 import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Model;
 import org.guanzon.cas.parameters.Model_Variant;
 import org.guanzon.cas.purchasing.controller.PurchaseOrder;
+import org.guanzon.cas.validators.ValidatorFactory;
 import org.guanzon.cas.validators.purchaseorder.Validator_PurchaseOrder_Master;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 
-public class PurchaseOrderMCController implements Initializable, ScreenInterface {
-
+public class PurchaseOrderMCController implements Initializable, ScreenInterface{
     private final String pxeModuleName = "Purchase Order MC";
     private GRider oApp;
     private PurchaseOrder oTrans;
-    private int pnEditMode;
     private JSONObject poJSON;
+    private int pnEditMode;
+
     private String psPrimary = "";
     private boolean pbLoaded = false;
     private int pnIndex;
@@ -164,6 +167,9 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     private TextField txtDetail06;
 
     @FXML
+    private TextField txtDetail13;
+
+    @FXML
     private TextField txtDetail08;
 
     @FXML
@@ -181,22 +187,18 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     @FXML
     private TextField txtDetail12;
 
-    
-    @FXML
-    private TextField txtDetail13;
-            
     @FXML
     private TextField txtDetail14;
-            
-            
+
     @FXML
     private TextField txtDetail15;
-    
+
     @FXML
     private AnchorPane apTable;
 
     @FXML
     private TableView tblDetails;
+
     @FXML
     private TableColumn index01;
 
@@ -223,14 +225,17 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
     @FXML
     private TableColumn index09;
+            
+    @FXML
+    private TableColumn index10;
 
     @FXML
     private TableColumn index11;
 
     @FXML
     private AnchorPane apBrowse;
-
-    private ObservableList<ModelPurchaseOrderSP> data = FXCollections.observableArrayList();
+    
+     private ObservableList<ModelPurchaseOrderMC> data = FXCollections.observableArrayList();
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -317,7 +322,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 if (pnIndex < 98) {
                     pnIndex = 99;
                 }
-
                 poJSON = oTrans.searchMaster("sSourceNo", "", false);
                 //start
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
@@ -338,7 +342,17 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 switch (pnIndex) {
                     case 1:
                     case 2:
-                        poJSON = oTrans.searchDetail(pnDetailRow, 3, (pnIndex == 1) ? txtDetail01.getText() : "", pnIndex == 1);
+                        if (oTrans.getItemCount() - 1 < 0) {
+                            poJSON.put("result", "error");
+                            poJSON.put("message", "No row in the table");
+                        } else {
+                            oTrans.setRowSelect(pnDetailRow);
+                            poJSON = oTrans.searchDetail(pnDetailRow, 3, "", pnIndex == 1); //(pnIndex == 1) ? txtDetail01.getText() :
+                            try {
+                                pnDetailRow = oTrans.getRowSelect();
+                            } catch (Exception e) {
+                            }
+                        }
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
@@ -347,6 +361,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         break;
                 }
                 break;
+
             case "btnSave":
                 poJSON = oTrans.getMasterModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
@@ -361,7 +376,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-
                 poJSON = oTrans.saveTransaction();
 
                 pnEditMode = oTrans.getMasterModel().getEditMode();
@@ -381,23 +395,37 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 }
                 break;
             case "btnAddItem":
-                if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() > 0
-                        && !oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
+                if (oTrans.getItemCount() - 1 < 0) {
                     poJSON = oTrans.AddModelDetail();
                     pnDetailRow = oTrans.getItemCount() - 1;
                     loadTableDetail();
+                    poJSON.put("result", "success");
+                    poJSON.put("message", "''");
                 } else {
-                    if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
-                        poJSON.put("result", "error");
-                        poJSON.put("message", "'Please Fill all the required fields'");
+                    if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() > 0
+                            && !oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
+
+                        poJSON = oTrans.AddModelDetail();
+                        pnDetailRow = oTrans.getItemCount() - 1;
+                        loadTableDetail();
+
                     } else {
-                        if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() <= 0) {
+                        try {
+                            if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getStockID().isEmpty()) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "'Please Fill all the required fields'");
+                            } else {
+                                if (oTrans.getDetailModel(oTrans.getItemCount() - 1).getQuantity() <= 0) {
+                                    poJSON.put("result", "error");
+                                    poJSON.put("message", "'Recent Order number should be greater than 0'");
+                                }
+                            }
+                        } catch (Exception e) {
                             poJSON.put("result", "error");
-                            poJSON.put("message", "'Recent Order number should be greater than 0'");
+                            poJSON.put("message", "'Please Fill all the required fields'");
                         }
                     }
                 }
-
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
@@ -418,6 +446,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         txtField04.requestFocus();
                     }
                 }
+
                 break;
             case "btnCancel":
                 if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
@@ -446,7 +475,67 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         }
 
     }
+    private void loadRecord() {
+        String lsActive = oTrans.getMasterModel().getTransactionStatus();
 
+        switch (lsActive) {
+            case "0":
+                lblStatus.setText("OPEN");
+                break;
+            case "1":
+                lblStatus.setText("CLOSED");
+                break;
+            case "2":
+                lblStatus.setText("POSTED");
+                break;
+            case "3":
+                lblStatus.setText("CANCELLED");
+                break;
+            default:
+                lblStatus.setText("UNKNOWN");
+                break;
+        }
+
+        //get supplier id and search contctp & contctno
+        String lsClientID = oTrans.getMasterModel().getSupplier();
+        if (!lsClientID.isEmpty()) {
+            oTrans.searchMaster("sSupplier", lsClientID, pbLoaded);
+        }
+
+        psPrimary = oTrans.getMasterModel().getTransactionNo();
+        txtField01.setText(psPrimary);
+        txtField02.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
+        txtField03.setText(oTrans.getMasterModel().getCompanyName());
+        txtField04.setText(oTrans.getMasterModel().getDestinationOther());
+        txtField05.setText(oTrans.getMasterModel().getSupplierName());
+        txtField06.setText(oTrans.getMasterModel().getContactPerson1());
+        txtField07.setText(oTrans.getMasterModel().getRemarks());
+        
+        txtField08.setText(oTrans.getMasterModel().getTermName());
+        txtField09.setText(oTrans.getMasterModel().getReferenceNo());
+        txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
+        
+        txtField11.setText(String.valueOf(oTrans.getMasterModel().getAddDiscount()));
+        txtField12.setText(String.valueOf(oTrans.getMasterModel().getTransactionTotal()));
+        loadTableDetail();
+    }
+    
+    private void setSelectedDetail() {
+
+        Model_Inv_Stock_Request_Detail loModel_Inv_Stock_Request_Detail;
+        loModel_Inv_Stock_Request_Detail = oTrans.GetModel_Inv_Stock_Request_Detail(oTrans.getDetailModel(pnDetailRow).getStockID());
+
+        txtDetail01.setText((String) data.get(pnDetailRow).getIndex02());
+        txtDetail02.setText((String) data.get(pnDetailRow).getIndex03());
+//        txtDetail03.setText(String.format("%.2f", oTrans.getDetailModel(pnDetailRow).getOriginalCost()));
+        txtDetail03.setText("");
+        txtDetail04.setText(String.valueOf(loModel_Inv_Stock_Request_Detail.getApproved()));
+        txtDetail05.setText((String) data.get(pnDetailRow).getIndex10());
+        txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getRecOrder()));
+        txtDetail07.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQuantity()));
+    }
+    
+    
     private void loadTableDetail() {
         poJSON.put("result", "success");
         poJSON.put("message", "''");
@@ -474,16 +563,25 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 loInventory = oTrans.GetInventory((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"), true);
 
                 loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
+                String lsyrmdl = "0";
+                try {
+                    if (!loInventory.getMaster("sModelIDx").toString().isEmpty()) {
+                        lsyrmdl = String.valueOf(loMdl.getModel().getYearModel());
+                    }
+                } catch (Exception e) {
+                }
                 loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
                 loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
 
-                data.add(new ModelPurchaseOrderSP(String.valueOf(lnCtr + 1),
+                data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
                         (String) loInventory.getMaster("sBarCodex"),
                         (String) oTrans.getDetailModel(lnCtr).getDescription(),
                         (String) loInventory.getMaster("xBrandNme"),
+                        (String) loMdl.getModel().getModelCode(),
                         (String) loMdl.getModel().getModelDescription(),
+                        loMdlVrnt.getModel().getVariantName(),
+                        lsyrmdl,
                         (String) loColor.getModel().getDescription(),
-                        (String) loInventory.getModel().getMeasureName(),
                         oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString(),
                         (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
                 ));
@@ -498,9 +596,12 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 }
 
             } else {
-                data.add(new ModelPurchaseOrderSP(String.valueOf(lnCtr + 1),
+
+                data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
                         "",
                         (String) oTrans.getDetailModel(lnCtr).getValue("sDescript"),
+                        "",
+                        "",
                         "",
                         "",
                         "",
@@ -529,32 +630,9 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             tblDetails.getFocusModel().focus(pnDetailRow);
             setSelectedDetail();
         }
+        oTrans.setRowSelect(oTrans.getItemCount() - 1);
         initDetailsGrid();
     }
-
-    private void setSelectedDetail() {
-        Model_Inv_Stock_Request_Detail loModel_Inv_Stock_Request_Detail;
-        loModel_Inv_Stock_Request_Detail = oTrans.GetModel_Inv_Stock_Request_Detail(oTrans.getDetailModel(pnDetailRow).getStockID());
-
-        txtDetail01.setText((String) data.get(pnDetailRow).getIndex02());
-        txtDetail02.setText((String) data.get(pnDetailRow).getIndex03());
-        txtDetail03.setText(String.format("%.2f", oTrans.getDetailModel(pnDetailRow).getOriginalCost()));
-        txtDetail04.setText(String.valueOf(loModel_Inv_Stock_Request_Detail.getApproved()));
-        txtDetail05.setText((String) data.get(pnDetailRow).getIndex08());
-        txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getRecOrder()));
-        txtDetail07.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQuantity()));
-        
-        txtDetail08.setText("");
-        txtDetail09.setText("");
-        txtDetail10.setText("");
-        txtDetail11.setText("");
-        txtDetail12.setText("");
-        txtDetail13.setText("");
-        txtDetail14.setText("");
-        txtDetail15.setText("");
-
-    }
-
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         if (!pbLoaded) {
             return;
@@ -643,7 +721,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
             }
         } else {
-
             switch (lnIndex) {
                 case 2:
                     txtField.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getTransactionDate(), "yyyy-MM-dd"));
@@ -654,9 +731,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     }
                     break;
             }
-
         }
-
         txtField.selectAll();
         pnIndex = lnIndex;
     };
@@ -677,6 +752,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         if (!nv) {
             /*Lost Focus*/
             switch (lnIndex) {
+
                 case 7://Remarks
                     poJSON = oTrans.getMasterModel().setRemarks(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -778,9 +854,8 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         }
 
     };
-
+    
     private void txtField_KeyPressed(KeyEvent event) {
-
         TextField textField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
         String lsValue = textField.getText();
@@ -788,6 +863,18 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             case F3:
                 switch (lnIndex) {
                     case 3:
+                        /*sCompany*/
+                        poJSON = oTrans.searchMaster(4, lsValue, true);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            txtField01.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
+
+                    case 4:
                         /*sDestinat*/
                         poJSON = oTrans.searchMaster(5, lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
@@ -800,7 +887,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         }
                         break;
 
-                    case 4:
+                    case 5:
                         /*sSupplier*/
                         poJSON = oTrans.searchMaster(6, lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
@@ -811,7 +898,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                             loadRecord();
                         }
                         break;
-                    case 9:
+                    case 8:
                         /*sTermCode*/
                         poJSON = oTrans.searchMaster(10, lsValue, false);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
@@ -840,7 +927,106 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         pnIndex = lnIndex;
     }
 
-    private void initTextFields() {
+    private void txtDetail_KeyPressed(KeyEvent event) {
+
+        TextField textField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(9, 11));
+        String lsValue = textField.getText();
+        if (lsValue == null) {
+            lsValue = "";
+        }
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 1: //Brand
+                        oTrans.setRowSelect(pnDetailRow);
+                        poJSON = oTrans.searchDetail(pnDetailRow, "sBrandxxx", lsValue, false);
+                        try {
+                            pnDetailRow = oTrans.getRowSelect();
+                        } catch (Exception e) {
+                        }
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+
+                        break;
+                    case 2: //Model
+                        poJSON = oTrans.searchDetail(pnDetailRow, "sModelxxx", lsValue, false);
+                        try {
+                            pnDetailRow = oTrans.getRowSelect();
+                        } catch (Exception e) {
+                        }
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+                        break;
+
+                    case 3: //Color
+                        poJSON = oTrans.searchDetail(pnDetailRow, "sColorxxx", lsValue, false);
+                        try {
+                            pnDetailRow = oTrans.getRowSelect();
+                        } catch (Exception e) {
+                        }
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+                        break;
+
+                }
+                loadRecord();
+
+                break;
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                break;
+            case DOWN:
+                CommonUtils.SetNextFocus(textField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(textField);
+        }
+
+        pnIndex = lnIndex;
+    }
+
+    
+    public void initDetailsGrid() {
+        index01.setStyle("-fx-alignment: CENTER;");
+        index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index07.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index09.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index10.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index11.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+
+        index01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index01"));
+        index02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index02"));
+        index03.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index03"));
+        index04.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index04"));
+        index05.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index05"));
+        index06.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index06"));
+        index07.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index07"));
+        index08.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index08"));
+        index09.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index09"));
+        index10.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index10"));
+        index11.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index11"));
+
+        tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
+        tblDetails.setItems(data);
+    }
+    
+      private void initTextFields() {
 
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
@@ -866,98 +1052,15 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField09.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField05.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField08.setOnKeyPressed(this::txtField_KeyPressed);
 
         txtDetail01.setOnKeyPressed(this::txtDetail_KeyPressed);//barcode
         txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);
+        txtDetail03.setOnKeyPressed(this::txtDetail_KeyPressed);
+
     }
-
-    private void loadRecord() {
-        String lsActive = oTrans.getMasterModel().getTransactionStatus();
-
-        switch (lsActive) {
-            case "0":
-                lblStatus.setText("OPEN");
-                break;
-            case "1":
-                lblStatus.setText("CLOSED");
-                break;
-            case "2":
-                lblStatus.setText("POSTED");
-                break;
-            case "3":
-                lblStatus.setText("CANCELLED");
-                break;
-            default:
-                lblStatus.setText("UNKNOWN");
-                break;
-
-        }
-
-        //get supplier id and search contctp & contctno
-        String lsClientID = oTrans.getMasterModel().getSupplier();
-        if (!lsClientID.isEmpty()) {
-            oTrans.searchMaster("sSupplier", lsClientID, pbLoaded);
-        }
-
-        psPrimary = oTrans.getMasterModel().getTransactionNo();
-        txtField01.setText(psPrimary);
-        txtField02.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
-        txtField03.setText(oTrans.getMasterModel().getCompanyName());
-        txtField04.setText(oTrans.getMasterModel().getDestinationOther());
-        txtField05.setText(oTrans.getMasterModel().getSupplierName());
-        txtField06.setText(oTrans.getMasterModel().getContactPerson1());
-        txtField07.setText(oTrans.getMasterModel().getRemarks());
-        txtField08.setText(oTrans.getMasterModel().getTermName());
-        txtField09.setText(oTrans.getMasterModel().getReferenceNo());
-        txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
-        txtField11.setText(String.valueOf(oTrans.getMasterModel().getAddDiscount()));
-        txtField12.setText(String.valueOf(oTrans.getMasterModel().getTransactionTotal()));
-
-        loadTableDetail();
-    }
-
-    private void txtDetail_KeyPressed(KeyEvent event) {
-
-        TextField textField = (TextField) event.getSource();
-        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(9, 11));
-        String lsValue = textField.getText();
-        switch (event.getCode()) {
-            case F3:
-                switch (lnIndex) {
-                    case 1:
-                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, true);
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-
-                        break;
-                    case 2:
-                        /* Description */
-                        poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, false);
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-                        break;
-
-                }
-                loadRecord();
-
-                break;
-        }
-        switch (event.getCode()) {
-            case ENTER:
-                break;
-            case DOWN:
-                CommonUtils.SetNextFocus(textField);
-                break;
-            case UP:
-                CommonUtils.SetPreviousFocus(textField);
-        }
-
-        pnIndex = lnIndex;
-    }
-
+ 
     private void clearFields() {
         txtField01.clear();
         txtField02.clear();
@@ -989,7 +1092,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         data.clear();
 
     }
-
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
@@ -999,8 +1101,13 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         btnSave.setVisible(lbShow);
         btnAddItem.setVisible(lbShow);
         btnRemoveItem.setVisible(lbShow);
-        btnAttachment.setManaged(lbShow);
 
+        btnCancel.setManaged(lbShow);
+        btnSearch.setManaged(lbShow);
+        btnSave.setManaged(lbShow);
+        btnAddItem.setManaged(lbShow);
+        btnRemoveItem.setManaged(lbShow);
+        
         if (fnValue == EditMode.ADDNEW) {
             btnFindSource.setManaged(lbShow);
             btnFindSource.setVisible(lbShow);
@@ -1008,13 +1115,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             btnFindSource.setManaged(false);
             btnFindSource.setVisible(false);
         }
-
-        btnCancel.setManaged(lbShow);
-        btnSearch.setManaged(lbShow);
-        btnSave.setManaged(lbShow);
-        btnAddItem.setManaged(lbShow);
-        btnRemoveItem.setManaged(lbShow);
-        btnAttachment.setManaged(lbShow);
 
 // Manage visibility and managed state of other buttons
         btnBrowse.setVisible(!lbShow);
@@ -1033,44 +1133,15 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         apDetail.setDisable(!lbShow);
         apTable.setDisable(!lbShow);
 
+        oTrans.setTransType("MC");
     }
 
-    public void initDetailsGrid() {
-        index01.setStyle("-fx-alignment: CENTER;");
-        index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index07.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index09.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-
-        index01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index01"));
-        index02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index02"));
-        index03.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index03"));
-        index04.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index04"));
-        index05.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index05"));
-        index06.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index06"));
-        index07.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index07"));
-        index08.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index08"));
-        index09.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrderMC, String>("index09"));
-
-        tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-
-//        tblDetails.setItems(data);
-    }
-
+       
+      @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         oTrans = new PurchaseOrder(oApp, false);
         oTrans.setTransactionStatus("12340");
-
         initTextFields();
         initDetailsGrid();
         clearFields();
@@ -1081,6 +1152,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
     }
 
+    @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
