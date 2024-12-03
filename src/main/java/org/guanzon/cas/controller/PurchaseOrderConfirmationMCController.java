@@ -5,7 +5,10 @@
 package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.io.File;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -22,6 +25,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -30,6 +35,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -38,6 +45,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.controller.ScreenInterface;
 import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
+import org.guanzon.cas.model.ImageModel;
 import org.guanzon.cas.model.ModelPurchaseOrderMC;
 import org.guanzon.cas.model.ModelPurchaseOrder2;
 import org.guanzon.cas.parameters.Branch;
@@ -56,6 +64,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
     private JSONObject poJSON;
     private int pnEditMode;
 
+    private FileChooser fileChooser;
     private String psPrimary = "";
     private boolean pbLoaded = false;
     private int pnIndex;
@@ -90,6 +99,9 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
 
     @FXML
     private Button btnAttachment;
+
+    @FXML
+    private TableView tblAttachments;
 
     @FXML
     private AnchorPane apMaster;
@@ -221,6 +233,12 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
     private TableColumn index11;
 
     @FXML
+    private TableColumn index12;
+
+    @FXML
+    private TableColumn index13;
+
+    @FXML
     private AnchorPane apBrowse;
 
     @FXML
@@ -234,6 +252,12 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
 
     @FXML
     private TextField txtField96;
+
+    @FXML
+    private ImageView imageView;
+
+    private ObservableList<ModelPurchaseOrderMC> data = FXCollections.observableArrayList();
+    private final ObservableList<ImageModel> img_data = FXCollections.observableArrayList();
 
     private void clearFields() {
         txtField01.clear();
@@ -271,18 +295,86 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
 
     }
 
+    private static void configureFileChooser(final FileChooser fileChooser) {
+        fileChooser.setTitle("View Pictures");
+        fileChooser.setInitialDirectory(
+                new File(System.getProperty("user.home"))
+        );
+        fileChooser.getExtensionFilters().clear();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("All Images", "*.*"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                new FileChooser.ExtensionFilter("PNG", "*.png")
+        );
+    }
+    private Stage getStage(){
+	return (Stage) txtField01.getScene().getWindow();
+    }
     @FXML
     void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
 
         switch (lsButton) {
+            case "btnAttachment":
+                try {
+                    // Open file chooser dialog
+                    fileChooser = new FileChooser();
+                    fileChooser.setTitle("Choose Image");
+                    fileChooser.getExtensionFilters().addAll(
+                            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif")
+                    );
+                    java.io.File selectedFile = fileChooser.showOpenDialog((Stage) txtField02.getScene().getWindow());
+
+                    if (selectedFile != null) {
+                        // Read image from the selected file
+                        Path imgPath = selectedFile.toPath();
+                        Image loimage = new Image(Files.newInputStream(imgPath));
+                        imageView.setImage(loimage);
+
+                        String imgPath2 = selectedFile.toURI().toString();
+                        img_data.add(new ImageModel(String.valueOf(img_data.size()), imgPath2));
+                        initDetailsGrid2();
+//                        try (InputStream imgStream = Files.newInputStream(imgPath)) {
+//                            BufferedImage image = ImageIO.read(imgStream);
+//
+//                            // Define the directory path
+//                            Path directory = Paths.get(imagePath, (String) "sample");
+//                            if (!Files.exists(directory)) {
+//                                Files.createDirectories(directory);
+//                            }
+//
+//                            // Define the destination file path
+//                            Path imgFilePath = directory.resolve(selectedFile.getName());
+//                            try (OutputStream outputStream = Files.newOutputStream(imgFilePath)) {
+//                                ImageIO.write(image, "jpg", outputStream);
+//                            }
+//
+//                            // Generate image path for external reference
+//                            String imgPathString = "https://restgk.guanzongroup.com.ph/images/mp/uploads/listing/"
+//                                    + oTrans.getMasterModel() + "/" + selectedFile.getName();
+//
+//                            // Add the image to the transaction
+//                            if (oTrans.addImage(imgPathString)) {
+//                                pnEditMode = oTrans.getEditMode();
+//                                img_data.add(new ImageModel(String.valueOf(img_data.size()), imgFilePath.toUri().toString()));
+//                                generateImages();
+//                            } else {
+//                                System.out.println("Failed to add image to transaction.");
+//                            }
+//                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
             case "btnBrowse":
                 if (pnIndex < 98) {
                     pnIndex = 99;
                 }
                 poJSON = oTrans.searchTransaction("sTransNox", "", pnIndex == 99);
                 pnEditMode = EditMode.READY;
-                //start
+                
+               //start
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -327,7 +419,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
                                 oTrans = new PurchaseOrder(oApp, false);
                                 oTrans.setTransactionStatus("12340");
                                 pbLoaded = true;
-
+                                
                             }
                         } else {
                             return;
@@ -346,7 +438,6 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
                                 oTrans = new PurchaseOrder(oApp, false);
                                 oTrans.setTransactionStatus("12340");
                                 pbLoaded = true;
-
                             }
                         } else {
                             return;
@@ -400,6 +491,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
             btnConfirm.setDisable(true);
         }
         oTrans.setTransType("MC");
+        
     }
 
     @FXML
@@ -408,7 +500,6 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         if (pnDetailRow >= 0) {
             setSelectedDetail();
         }
-
     }
 
     private void setSelectedDetail() {
@@ -422,7 +513,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         txtDetail05.setText((String) data.get(pnDetailRow).getIndex10());
         txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getRecOrder()));
         txtDetail07.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQuantity()));
-
+    
     }
 
     public void initDetailsGrid() {
@@ -460,7 +551,6 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         tblDetails.setItems(data);
 
     }
-    private ObservableList<ModelPurchaseOrderMC> data = FXCollections.observableArrayList();
 
     private void loadTableDetail() {
         int lnCtr;
@@ -478,6 +568,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         double lnTotalTransaction = 0;
         for (lnCtr = 0; lnCtr <= oTrans.getItemCount() - 1; lnCtr++) {
             String lsStockIDx = (String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx");
+            
             Inventory loInventory;
             Color loColor;
             Model loMdl;
@@ -485,7 +576,6 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
             if (lsStockIDx != null && !lsStockIDx.equals("")) {
 
                 loInventory = oTrans.GetInventory((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"), true);
-
                 loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
                 loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
                 loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
@@ -501,6 +591,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
                         oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString(),
                         (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
                 ));
+
 
                 try {
                     if (oTrans.getDetailModel(lnCtr).getQuantity() != 0) {
@@ -668,6 +759,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         int lnIndex = Integer.parseInt(txtField.getId().substring(9, 11));
         String lsValue = txtField.getText();
         pnIndex = lnIndex;
+        
         if (lsValue == null) {
             return;
         }
@@ -748,13 +840,26 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         TextField textField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
         String lsValue = textField.getText();
+        
+        
+        textField = (TextField) event.getSource();
+        lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(0,10));
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
+                    case 96:
+                        /* Browse Company */
+                        poJSON = oTrans.searchTransaction("sSupplier", lsValue, lnIndex == 96);
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtField01.requestFocus();
+                        } else {
+                            loadRecord();
+                        }
+                        break;
                     case 97:/*Browse Supplier*/
                         poJSON = oTrans.searchTransaction("sSupplier", lsValue, lnIndex == 97);
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                             txtField01.requestFocus();
                         } else {
@@ -856,7 +961,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
                 lblStatus.setText("UNKNOWN");
                 break;
         }
-
+        
         //get supplier id and search contctp & contctno
         String lsClientID = oTrans.getMasterModel().getSupplier();
         if (!lsClientID.isEmpty()) {
@@ -878,7 +983,6 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
             txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
             txtField11.setText(String.valueOf(oTrans.getMasterModel().getAddDiscount()));
             txtField12.setText(String.valueOf(oTrans.getMasterModel().getTransactionTotal()));
-
         } catch (Exception e) {
         }
         loadTableDetail();
@@ -890,6 +994,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         TextField textField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(9, 11));
         String lsValue = textField.getText();
+        
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
@@ -907,7 +1012,6 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
                         break;
-
                 }
                 loadRecord();
                 break;
@@ -959,9 +1063,44 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
         txtField98.setOnKeyPressed(this::txtField_KeyPressed);
         txtField97.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField96.setOnKeyPressed(this::txtField_KeyPressed);
 
         txtDetail01.setOnKeyPressed(this::txtDetail_KeyPressed);//barcode
         txtDetail02.setOnKeyPressed(this::txtDetail_KeyPressed);
+    }
+
+    public void initDetailsGrid2() {
+        /*FOCUS ON FIRST ROW*/
+        if (pnDetailRow < 0 || pnDetailRow >= img_data.size()) {
+            if (!img_data.isEmpty()) {
+                /* FOCUS ON FIRST ROW */
+                tblAttachments.getSelectionModel().select(0);
+                tblAttachments.getFocusModel().focus(0);
+                pnDetailRow = tblAttachments.getSelectionModel().getSelectedIndex();
+            }
+//            setSelectedDetail(); //textfield data
+        } else {
+            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+            tblAttachments.getSelectionModel().select(pnDetailRow);
+            tblAttachments.getFocusModel().focus(pnDetailRow);
+//            setSelectedDetail();
+        }
+
+        index12.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 5;");
+        index13.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 5;");
+
+        index12.setCellValueFactory(new PropertyValueFactory<ImageModel, String>("index12"));
+        index13.setCellValueFactory(new PropertyValueFactory<ImageModel, String>("index13"));
+
+        tblAttachments.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblAttachments.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
+        tblAttachments.setItems(img_data);
+        
     }
 
     @Override
@@ -977,6 +1116,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
         pbLoaded = true;
+        
     }
 
     @Override

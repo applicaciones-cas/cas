@@ -11,6 +11,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Blend?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -583,10 +584,10 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
                                        <children>
-                                          <TableView prefHeight="200.0" prefWidth="200.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
+                                          <TableView fx:id="tblAttachments" prefHeight="200.0" prefWidth="200.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
                                             <columns>
-                                              <TableColumn maxWidth="1.7976931348623157E308" prefWidth="50.0" text="No." />
-                                              <TableColumn maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="200.0" text="File Name" />
+                                              <TableColumn fx:id="index12" maxWidth="1.7976931348623157E308" prefWidth="50.0" text="No." />
+                                              <TableColumn fx:id="index13" maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="200.0" text="File Name" />
                                             </columns>
                                           </TableView>
                                           <Label text="File Attachments" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -606,6 +607,9 @@
                                        <VBox.margin>
                                           <Insets left="5.0" top="5.0" />
                                        </VBox.margin>
+                                       <children>
+                                          <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
                                     </AnchorPane>
                                  </children>
                               </VBox>
