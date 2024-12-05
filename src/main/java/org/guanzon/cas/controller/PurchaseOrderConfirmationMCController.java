@@ -791,7 +791,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
             btnConfirm.setDisable(true);
         }
 
-        oTrans.setTransType("MC");
+//        oTrans.setTransType("MC");
 
     }
 

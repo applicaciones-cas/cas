@@ -219,10 +219,10 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                             poJSON.put("result", "error");
                             poJSON.put("message", "No row in the table");
                         } else {
-                            oTrans.setRowSelect(pnDetailRow);
+//                            oTrans.setRowSelect(pnDetailRow);
                             poJSON = oTrans.searchDetail(pnDetailRow, 3, "", pnIndex == 1); //(pnIndex == 1) ? txtDetail01.getText() :
                             try {
-                                pnDetailRow = oTrans.getRowSelect();
+//                                pnDetailRow = oTrans.getRowSelect();
                             } catch (Exception e) {
                             }
                         }
@@ -485,7 +485,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             tblDetails.getFocusModel().focus(pnDetailRow);
             setSelectedDetail();
         }
-        oTrans.setRowSelect(oTrans.getItemCount() - 1);
+//        oTrans.setRowSelect(oTrans.getItemCount() - 1);
         initDetailsGrid();
     }
 
@@ -865,7 +865,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         apDetail.setDisable(!lbShow);
         apTable.setDisable(!lbShow);
 
-        oTrans.setTransType("MC");
+//        oTrans.setTransType("MC");
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -938,10 +938,10 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             case F3:
                 switch (lnIndex) {
                     case 1:
-                        oTrans.setRowSelect(pnDetailRow);
+//                        oTrans.setRowSelect(pnDetailRow);
                         poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, true);
                         try {
-                            pnDetailRow = oTrans.getRowSelect();
+//                            pnDetailRow = oTrans.getRowSelect();
                         } catch (Exception e) {
                         }
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
@@ -953,7 +953,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         /* Description */
                         poJSON = oTrans.searchDetail(pnDetailRow, 3, lsValue, false);
                         try {
-                            pnDetailRow = oTrans.getRowSelect();
+//                            pnDetailRow = oTrans.getRowSelect();
                         } catch (Exception e) {
                         }
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {

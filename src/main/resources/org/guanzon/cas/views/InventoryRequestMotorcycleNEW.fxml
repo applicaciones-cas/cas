@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../css/StyleSheetNEW.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+                  <AnchorPane prefHeight="12.0" style="-fx-background-color: FF8201;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <AnchorPane prefHeight="10.0" style="-fx-background-color: A0A0A0;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </top>
+         <left>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+                  <AnchorPane fx:id="anchorMaster" prefHeight="225.0" style="-fx-border-color: FF8201;" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                     <children>
+                        <GridPane layoutY="3.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="125.0" prefWidth="125.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="125.0" prefWidth="125.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Transaction No" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <TextField fx:id="txtField01" editable="false" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Transaction Date" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <DatePicker fx:id="dpField01" maxWidth="250.0" minWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Remarks" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Label fx:id="lblStatus" alignment="CENTER" contentDisplay="CENTER" maxWidth="264.0" minWidth="150.0" prefHeight="37.0" prefWidth="264.0" style="-fx-background-color: FF8201;" stylesheets="@../css/StyleSheet.css" text="APPROVED" textAlignment="CENTER" textFill="#111111" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                 </padding>
+                              </Label>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Reference No" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <TextArea fx:id="txtArea01" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="4" GridPane.rowSpan="2" />
+                              <TextField fx:id="txtField02" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                           </children>
+                        </GridPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </AnchorPane>
+                  <AnchorPane fx:id="anchorDetails" style="-fx-border-color: FF8201;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="235.0">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <children>
+                        <GridPane vgap="1.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                           <columnConstraints>
+                              <ColumnConstraints />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="125.0" prefWidth="125.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="125.0" prefWidth="125.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints vgrow="SOMETIMES" />
+                              <RowConstraints vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Barrcode" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <TextField fx:id="txtField03" editable="false" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Item Description" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brand" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <TextField fx:id="txtField07" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                              <TextField fx:id="txtField04" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Series" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <TextField fx:id="txtField09" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                              <TextField fx:id="txtField08" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                              <TextField fx:id="txtField13" styleClass="text-field" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                              <TextField fx:id="txtField14" styleClass="text-field" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                              <TextField fx:id="txtField11" styleClass="text-field" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                              <TextField fx:id="txtField10" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                              <TextField fx:id="txtField12" styleClass="text-field" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                              <TextField fx:id="txtField15" styleClass="text-field" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+                              <TextField fx:id="txtField17" styleClass="text-field" GridPane.columnIndex="6" GridPane.rowIndex="9" />
+                              <TextField fx:id="txtField16" styleClass="text-field" GridPane.columnIndex="2" GridPane.rowIndex="11" />
+                              <TextField fx:id="txtField18" styleClass="text-field" GridPane.columnIndex="6" GridPane.rowIndex="10" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Variant" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Year" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Code" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Min Level" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Max Level" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="10">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Class" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="QOH" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="11">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="On Transit" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="10">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Button fx:id="btnStatistic" alignment="BASELINE_LEFT" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" styleClass="button_process" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="5" GridPane.halignment="LEFT" GridPane.rowIndex="1">
+                                 <tooltip>
+                                    <Tooltip text="Show Statistics" />
+                                 </tooltip>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="BAR_CHART_ALT" size="15" textOrigin="CENTER" />
+                                 </graphic>
+                              </Button>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Reserve" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="11">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Back Order" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="12">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <TextField fx:id="txtField19" styleClass="text-field" GridPane.columnIndex="6" GridPane.rowIndex="11" />
+                              <TextField fx:id="txtField20" styleClass="text-field" GridPane.columnIndex="6" GridPane.rowIndex="12" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="AMC" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="14">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ROQ" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="14">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Series" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="15">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="16">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Variant" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="17">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="18">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Series" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="15">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="16">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Variant" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="17">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.rowIndex="18">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ROQ" GridPane.columnIndex="6" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </Text>
+                              <TextField fx:id="txtField05" styleClass="text-field" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                              <TextField fx:id="txtField06" styleClass="text-field" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                              <TextField fx:id="txtField23" styleClass="text-field" GridPane.columnIndex="2" GridPane.rowIndex="17" />
+                              <TextField fx:id="txtField21" styleClass="text-field" GridPane.columnIndex="2" GridPane.rowIndex="15" />
+                              <TextField fx:id="txtField22" styleClass="text-field" GridPane.columnIndex="2" GridPane.rowIndex="16" />
+                              <TextField fx:id="txtField24" styleClass="text-field" GridPane.columnIndex="2" GridPane.rowIndex="18" />
+                              <TextField fx:id="txtField25" styleClass="text-field" GridPane.columnIndex="6" GridPane.rowIndex="15" />
+                              <TextField fx:id="txtField26" styleClass="text-field" GridPane.columnIndex="6" GridPane.rowIndex="16" />
+                              <TextField fx:id="txtField27" styleClass="text-field" GridPane.columnIndex="6" GridPane.rowIndex="17" />
+                              <TextField fx:id="txtField28" styleClass="text-field" GridPane.columnIndex="6" GridPane.rowIndex="18" />
+                              <Text fill="#f20000" strokeType="OUTSIDE" strokeWidth="0.0" text="Order  QTY" GridPane.columnIndex="6" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </left>
+         <center>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+                  <AnchorPane prefHeight="225.0" style="-fx-border-color: FF8201;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0">
+                     <children>
+                        <TableView prefWidth="1107.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <columns>
+                              <TableColumn prefWidth="75.0" text="No" />
+                              <TableColumn prefWidth="220.0" text="Model" />
+                              <TableColumn prefWidth="220.0" text="Variant" />
+                              <TableColumn prefWidth="150.0" text="Size" />
+                              <TableColumn prefWidth="160.0" text="Color" />
+                              <TableColumn prefWidth="90.0" text="QOH" />
+                              <TableColumn prefWidth="90.0" text="ROQ" />
+                              <TableColumn prefWidth="90.0" text="Order" />
+                           </columns>
+                        </TableView>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </AnchorPane>
+                  <AnchorPane fx:id="anchorTable" style="-fx-border-color: FF8201;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="235.0">
+                     <children>
+                        <TableView fx:id="tblDetails" onMouseClicked="#tblDetails_Clicked" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                           <columns>
+                              <TableColumn fx:id="index01" prefWidth="30.0" resizable="false" text="No." />
+                              <TableColumn fx:id="index02" minWidth="150.0" prefWidth="150.0" resizable="false" text="Brand" />
+                              <TableColumn fx:id="index03" minWidth="150.0" prefWidth="150.0" resizable="false" text="Model" />
+                              <TableColumn fx:id="index04" minWidth="150.0" prefWidth="150.0" resizable="false" text="Variant" />
+                              <TableColumn fx:id="index05" minWidth="120.0" prefWidth="120.0" resizable="false" text="Code" />
+                              <TableColumn fx:id="index06" minWidth="120.0" prefWidth="128.0" resizable="false" text="Color" />
+                              <TableColumn fx:id="index07" minWidth="75.0" prefWidth="75.0" resizable="false" text="Class" />
+                              <TableColumn fx:id="index08" minWidth="75.0" prefWidth="75.0" resizable="false" text="QOH" />
+                              <TableColumn fx:id="index09" minWidth="75.0" prefWidth="75.0" resizable="false" text="AMC" />
+                              <TableColumn fx:id="index10" minWidth="75.0" prefWidth="75.0" resizable="false" text="ROQ" />
+                              <TableColumn fx:id="index11" minWidth="75.0" prefWidth="75.0" resizable="false" text="Order" />
+                           </columns>
+                        </TableView>
+                     </children>
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding>
+                  </AnchorPane>
+               </children>
+               <padding>
+                  <Insets right="5.0" />
+               </padding>
+            </AnchorPane>
+         </center>
+         <bottom>
+            <AnchorPane prefHeight="80.0" style="-fx-background-color: E9E9E9;" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox fx:id="hbButtons" alignment="CENTER_LEFT" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Browse">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="New">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="FILE" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Save">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="SAVE" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Update">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="EDIT" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Search">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="SEARCH" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnPrint" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Print">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="PRINT" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnAddItem" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Add Item">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="PLUS_CIRCLE" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnDelItem" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Del Item">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="MINUS_CIRCLE" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnApprove" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Approve">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="CHECK_CIRCLE" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnCancelTrans" contentDisplay="TOP" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Disapprove" textAlignment="CENTER">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="TIMES_CIRCLE" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Cancel">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="CLOSE" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../../../../../../../../css/StyleSheet.css" text="Close">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+         </bottom>
+      </BorderPane>
+   </children>
+</AnchorPane>

@@ -802,7 +802,7 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
         } else {
             btnVoid.setDisable(true);
         }
-        oTrans.setTransType("MC");
+//        oTrans.setTransType("MC");
     }
 
     @Override

@@ -362,6 +362,22 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/InventoryDetail.fxml":
                 return "Inventory Details";  
                 
+            /*INVENTORY MENU*/    
+            case "/org/guanzon/cas/views/InventoryRequestMotorcycle.fxml":
+                return "Inventory Request MC"; 
+                
+            case "/org/guanzon/cas/views/InventoryRequestMobilephoneUnits.fxml":
+                return "Inventory Request Mobilephone Units";  
+            
+            case "/org/guanzon/cas/views/InventoryRequestAppliances.fxml":
+                return "Inventory Request Appliances"; 
+                
+            case "/org/guanzon/cas/views/InventoryRequestVehicle.fxml":
+                return "Inventory Request Vehicle"; 
+               
+            case "/org/guanzon/cas/views/InventoryRequestSpareparts.fxml":
+                return "Inventory Request Spareparts";    
+                
             /*Inventory Stock Request NEW UI*/    
             case "/org/guanzon/cas/views/InvRequestWithoutROQ.fxml":
                 return "Inventory Request";
@@ -772,6 +788,21 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/InventoryDetail.fxml":
                 return new InventoryDetailController();
                 
+            /*Inventory Stock Request NEW */
+             case "/org/guanzon/cas/views/InventoryRequestMotorcycle.fxml":
+                return  new InventoryRequestMotorcycleController();   
+                
+             case "/org/guanzon/cas/views/InventoryRequestMobilephoneUnits.fxml":
+                return  new InventoryRequestMobilephoneUnitsController();
+                
+             case "/org/guanzon/cas/views/InventoryRequestAppliances.fxml":
+                return  new InventoryRequestAppliancesController();
+             
+             case "/org/guanzon/cas/views/InventoryRequestVehicle.fxml":
+                return  new InventoryRequestVehicleController();
+             
+             case "/org/guanzon/cas/views/InventoryRequestSpareparts.fxml":
+                return  new InventoryRequestSparepartsController();
                 
             /*Inventory Stock Request NEW UI*/
              case "/org/guanzon/cas/views/InvRequestWithoutROQ.fxml":
@@ -1224,9 +1255,56 @@ public class DashboardController implements Initializable {
             setScene2(loadAnimate(sformname));
         }
     }
-     
-    /*Stock Request NEW UI*/
+    
+    /*STOCK REQUEST UI*/
+    @FXML
+    void mnuInvRequestMotorcycleClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryRequestMotorcycle.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
 
+    }
+    @FXML
+    void mnuInvRequestMobileUnitsClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryRequestMobilephoneUnits.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+
+    }
+    @FXML
+    void mnuInvRequestAppliancesClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryRequestAppliances.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+
+    }
+    @FXML
+    void mnuInvRequestVehicleClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryRequestVehicle.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+
+    }
+    
+    @FXML
+    void mnuInvRequestSpareparttsClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryRequestSpareparts.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    /*Stock Request NEW UI*/
+    
     @FXML
     private void mnuStockRequestWithoutROQClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/InvRequestWithoutROQ.fxml";

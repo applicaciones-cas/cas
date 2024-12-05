@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
@@ -244,6 +244,22 @@
                                                       <MenuItem fx:id="mnuStockRequestCancellation" mnemonicParsing="false" onAction="#mnuStockRequestCancellationClick" style="-fx-font-weight: normal;" text="Cancellation" />
                                                       <MenuItem fx:id="mnuStockRequestCancellationSP" mnemonicParsing="false" onAction="#mnuStockRequestCancellationSPClick" style="-fx-font-weight: normal;" text="Cancellation SP" />
                                                       <MenuItem fx:id="mnuStockRequestCancellationGI" mnemonicParsing="false" onAction="#mnuStockRequestCancellationGIClick" style="-fx-font-weight: normal;" text="Cancellation GI" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu fx:id="menuInventoryRequest" mnemonicParsing="false" text="Inventory Request">
+                                                   <items>
+                                                      <MenuItem fx:id="menuInventoryRequest" mnemonicParsing="false" text="Motorcycle" />
+                                                      <MenuItem mnemonicParsing="false" text="Spareparts" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu fx:id="menuInventoryRequestROQ" mnemonicParsing="false" text="Inventory Request ROQ">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuInvRequestMotorcycle" mnemonicParsing="false" onAction="#mnuInvRequestMotorcycleClick" text="Motorcycle" />
+                                                      <MenuItem fx:id="mnuInvRequestMobileUnits" mnemonicParsing="false" onAction="#mnuInvRequestMobileUnitsClick" text="Mobile Phone - Units" />
+                                                      <MenuItem fx:id="mnuInvRequestAppliance" mnemonicParsing="false" onAction="#mnuInvRequestAppliancesClick" text="Appliances" />
+                                                      <MenuItem fx:id="mnuInvRequestVehicle" mnemonicParsing="false" onAction="#mnuInvRequestVehicleClick" text="Vehicle" />
+                                                      <MenuItem mnemonicParsing="false" text="Mobile Phone - Accesories" />
+                                                      <MenuItem fx:id="mnuInvRequestSpareparts" mnemonicParsing="false" onAction="#mnuInvRequestSpareparttsClick" text="Spareparts" />
                                                    </items>
                                                 </Menu>
                                              </items>
