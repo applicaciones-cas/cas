@@ -43,12 +43,14 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.controller.ScreenInterface;
+import org.guanzon.cas.inventory.base.InvMaster;
 import org.guanzon.cas.inventory.base.Inventory;
 import org.guanzon.cas.inventory.models.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.model.ImageModel;
 import org.guanzon.cas.model.ModelPurchaseOrderMC;
 import org.guanzon.cas.model.ModelPurchaseOrder2;
 import org.guanzon.cas.parameters.Branch;
+import org.guanzon.cas.parameters.Brand;
 import org.guanzon.cas.parameters.Color;
 import org.guanzon.cas.parameters.Model;
 import org.guanzon.cas.parameters.Model_Variant;
@@ -307,9 +309,11 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
                 new FileChooser.ExtensionFilter("PNG", "*.png")
         );
     }
-    private Stage getStage(){
-	return (Stage) txtField01.getScene().getWindow();
+
+    private Stage getStage() {
+        return (Stage) txtField01.getScene().getWindow();
     }
+
     @FXML
     void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
@@ -317,23 +321,23 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         switch (lsButton) {
             case "btnAttachment":
                 try {
-                    // Open file chooser dialog
-                    fileChooser = new FileChooser();
-                    fileChooser.setTitle("Choose Image");
-                    fileChooser.getExtensionFilters().addAll(
-                            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif")
-                    );
-                    java.io.File selectedFile = fileChooser.showOpenDialog((Stage) txtField02.getScene().getWindow());
+                // Open file chooser dialog
+                fileChooser = new FileChooser();
+                fileChooser.setTitle("Choose Image");
+                fileChooser.getExtensionFilters().addAll(
+                        new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif")
+                );
+                java.io.File selectedFile = fileChooser.showOpenDialog((Stage) txtField02.getScene().getWindow());
 
-                    if (selectedFile != null) {
-                        // Read image from the selected file
-                        Path imgPath = selectedFile.toPath();
-                        Image loimage = new Image(Files.newInputStream(imgPath));
-                        imageView.setImage(loimage);
+                if (selectedFile != null) {
+                    // Read image from the selected file
+                    Path imgPath = selectedFile.toPath();
+                    Image loimage = new Image(Files.newInputStream(imgPath));
+                    imageView.setImage(loimage);
 
-                        String imgPath2 = selectedFile.toURI().toString();
-                        img_data.add(new ImageModel(String.valueOf(img_data.size()), imgPath2));
-                        initDetailsGrid2();
+                    String imgPath2 = selectedFile.toURI().toString();
+                    img_data.add(new ImageModel(String.valueOf(img_data.size()), imgPath2));
+                    initDetailsGrid2();
 //                        try (InputStream imgStream = Files.newInputStream(imgPath)) {
 //                            BufferedImage image = ImageIO.read(imgStream);
 //
@@ -362,19 +366,19 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
 //                                System.out.println("Failed to add image to transaction.");
 //                            }
 //                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-                break;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            break;
             case "btnBrowse":
                 if (pnIndex < 98) {
                     pnIndex = 99;
                 }
                 poJSON = oTrans.searchTransaction("sTransNox", "", pnIndex == 99);
                 pnEditMode = EditMode.READY;
-                
-               //start
+
+                //start
                 if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 
                     ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -419,7 +423,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
                                 oTrans = new PurchaseOrder(oApp, false);
                                 oTrans.setTransactionStatus("12340");
                                 pbLoaded = true;
-                                
+
                             }
                         } else {
                             return;
@@ -491,7 +495,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
             btnConfirm.setDisable(true);
         }
         oTrans.setTransType("MC");
-        
+
     }
 
     @FXML
@@ -513,7 +517,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         txtDetail05.setText((String) data.get(pnDetailRow).getIndex10());
         txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getRecOrder()));
         txtDetail07.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQuantity()));
-    
+
     }
 
     public void initDetailsGrid() {
@@ -553,6 +557,9 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
     }
 
     private void loadTableDetail() {
+        poJSON.put("result", "success");
+        poJSON.put("message", "''");
+
         int lnCtr;
         data.clear();
 
@@ -560,39 +567,30 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         if (lnItem < 0) {
             return;
         }
+        double lnTotalTransaction = 0;
+        double ln1=0;
         //count size
         for (lnCtr = 0; lnCtr < oTrans.getItemCount() - 1; lnCtr++) {
             System.out.println((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"));
         }
 
-        double lnTotalTransaction = 0;
         for (lnCtr = 0; lnCtr <= oTrans.getItemCount() - 1; lnCtr++) {
             String lsStockIDx = (String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx");
-            
+
             Inventory loInventory;
             Color loColor;
+            Brand loBrand;
             Model loMdl;
             Model_Variant loMdlVrnt;
+            String loInventory2 = "";
+            loBrand = oTrans.GetBrand(oTrans.getBrandID(), true);
             if (lsStockIDx != null && !lsStockIDx.equals("")) {
-
                 loInventory = oTrans.GetInventory((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"), true);
                 loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
                 loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
-                loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
-                data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
-                        (String) loInventory.getMaster("sBarCodex"),
-                        (String) oTrans.getDetailModel(lnCtr).getDescription(),
-                        (String) loInventory.getMaster("xBrandNme"),
-                        (String) loMdl.getModel().getModelCode(),
-                        (String) loMdl.getModel().getModelDescription(),
-                        loMdlVrnt.getModel().getVariantName(),
-                        String.valueOf(loMdl.getModel().getYearModel()),
-                        (String) loColor.getModel().getDescription(),
-                        oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString(),
-                        (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()
-                ));
-
-
+//                loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
+                ln1 = Double.parseDouble((oTrans.getDetailModel(lnCtr).getValue("nUnitPrce")).toString()) * Double.parseDouble(oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString());
+ 
                 try {
                     if (oTrans.getDetailModel(lnCtr).getQuantity() != 0) {
                         lnTotalTransaction += Double.parseDouble((oTrans.getDetailModel(lnCtr).getUnitPrice().toString())) * Double.parseDouble(String.valueOf(oTrans.getDetailModel(lnCtr).getQuantity()));
@@ -602,21 +600,73 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
                 } catch (Exception e) {
                 }
 
-            } else {
-                data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
-                        "",
-                        (String) oTrans.getDetailModel(lnCtr).getValue("sDescript"),
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        "",
-                        String.valueOf(oTrans.getDetailModel(lnCtr).getValue("nUnitPrce")),
-                        oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString()));
+                String lsMaxLevel = "0";
+                try {
+                    lsMaxLevel = (String) loInventory.getMaster("nMaxLevel");
+                } catch (Exception e) {
+                }
 
+                if (loInventory.getMaster("xBrandNme").toString().length() == 0) {
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        loInventory2 = (String) loBrand.getMaster("sDescript");
+                    }
+                } else {
+                    loInventory2 = (String) loInventory.getMaster("xBrandNme");
+                }
+                data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
+                        loInventory2,
+                        (String) loInventory.getMaster("xModelNme"),
+                        (String) loMdl.getModel().getModelCode(),
+                        (String) loInventory.getMaster("xColorNme"),
+                        lsMaxLevel,
+                        loMdlVrnt.getModel().getVariantName(),
+                        oTrans.getDetailModel(lnCtr).getValue("nRecOrder").toString(),
+                        oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString(),
+                        (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString(),
+                        String.valueOf(ln1)
+                ));
+                
+                System.out.println("THIS IS invmaster "+(String) loInventory.getMaster("sStockIDx") );
+                InvMaster loInv_Master = oTrans.GetInvMaster((String) loInventory.getMaster("sStockIDx"), true);
+
+                
+                TextField[] textFields = {txtDetail07, txtDetail08, txtDetail10, txtDetail11};
+                String[] keys = {"nQtyOnHnd", "nMaxLevel", "nResvOrdr", "nBackOrdr"};
+
+                for (int i = 0; i < textFields.length; i++) {
+                    try {
+                        textFields[i].setText((String) loInv_Master.getMaster(keys[i]));
+                    } catch (Exception e) {
+                        textFields[i].setText("0");
+                    }
+                }
+                try {
+                    txtDetail09.setText((String) loInv_Master.getMaster("cClassify"));
+                } catch (Exception e) {
+                   txtDetail09.setText("F");
+                }
+//                 
+
+            } else {
+
+                if (pnEditMode == EditMode.ADDNEW) {
+                    loInventory2 = (String) loBrand.getMaster("sDescript");
+                }
+                data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
+                        loInventory2,
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        oTrans.getDetailModel(lnCtr).getValue("nUnitPrce").toString(),
+                        (String) oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString(),
+                        "0.00"
+                ));
             }
         }
+
         txtField12.setText(String.format("%.2f", lnTotalTransaction));
         oTrans.getMasterModel().setTransactionTotal(Double.valueOf(String.format("%.2f", lnTotalTransaction)));
         lnTotalTransaction = 0;
@@ -635,7 +685,9 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
             tblDetails.getSelectionModel().select(pnDetailRow);
             tblDetails.getFocusModel().focus(pnDetailRow);
             setSelectedDetail();
+
         }
+        oTrans.setRowSelect(oTrans.getItemCount() - 1);
         initDetailsGrid();
     }
 
@@ -759,7 +811,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         int lnIndex = Integer.parseInt(txtField.getId().substring(9, 11));
         String lsValue = txtField.getText();
         pnIndex = lnIndex;
-        
+
         if (lsValue == null) {
             return;
         }
@@ -840,10 +892,9 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         TextField textField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
         String lsValue = textField.getText();
-        
-        
+
         textField = (TextField) event.getSource();
-        lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(0,10));
+        lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(0, 10));
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
@@ -961,7 +1012,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
                 lblStatus.setText("UNKNOWN");
                 break;
         }
-        
+
         //get supplier id and search contctp & contctno
         String lsClientID = oTrans.getMasterModel().getSupplier();
         if (!lsClientID.isEmpty()) {
@@ -970,7 +1021,8 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
 
         psPrimary = oTrans.getMasterModel().getTransactionNo();
         txtField01.setText(psPrimary);
-        txtField02.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
+//        txtField02.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
+        txtField02.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getTransactionDate(), "MM-dd-yyyy"));
         txtField03.setText(oTrans.getMasterModel().getDestinationOther());
         txtField04.setText(oTrans.getMasterModel().getSupplierName());
         txtField05.setText(oTrans.getMasterModel().getContactPerson1());
@@ -983,6 +1035,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
             txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
             txtField11.setText(String.valueOf(oTrans.getMasterModel().getAddDiscount()));
             txtField12.setText(String.valueOf(oTrans.getMasterModel().getTransactionTotal()));
+            
         } catch (Exception e) {
         }
         loadTableDetail();
@@ -994,7 +1047,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         TextField textField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(9, 11));
         String lsValue = textField.getText();
-        
+
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
@@ -1100,7 +1153,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         });
 
         tblAttachments.setItems(img_data);
-        
+
     }
 
     @Override
@@ -1116,7 +1169,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
         pbLoaded = true;
-        
+
     }
 
     @Override

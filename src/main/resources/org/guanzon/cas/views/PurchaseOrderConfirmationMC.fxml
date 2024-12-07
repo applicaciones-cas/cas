@@ -22,6 +22,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
 <AnchorPane id="AnchorPane" fx:id="MainAnchorPane" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -46,14 +47,6 @@
                                           <Button fx:id="btnPrint" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Print">
                                              <graphic>
                                                 <FontAwesomeIconView glyphName="PRINT" size="20" />
-                                             </graphic>
-                                             <effect>
-                                                <Blend />
-                                             </effect>
-                                          </Button>
-                                          <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Close">
-                                             <graphic>
-                                                <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
                                              </graphic>
                                              <effect>
                                                 <Blend />
@@ -91,6 +84,14 @@
                                           <Blend />
                                        </effect>
                                     </Button>
+                                          <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Close">
+                                             <graphic>
+                                                <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
+                                             </graphic>
+                                             <effect>
+                                                <Blend />
+                                             </effect>
+                                          </Button>
                                        </children>
                                        <padding>
                                           <Insets bottom="5.0" left="5.0" top="5.0" />
@@ -127,9 +128,9 @@
                                                                            <columnConstraints>
                                                                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="0.0" prefWidth="120.0" />
                                                                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="0.0" prefWidth="150.0" />
-                                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="10.0" prefWidth="27.0" />
-                                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="109.0" />
-                                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="131.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="10.0" prefWidth="15.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="101.0" minWidth="10.0" prefWidth="97.0" />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.0" minWidth="10.0" prefWidth="145.0" />
                                                                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="150.0" />
                                                                               <ColumnConstraints hgrow="SOMETIMES" />
                                                                            </columnConstraints>
@@ -158,7 +159,7 @@
                                                                                  </GridPane.margin>
                                                                               </Label>
                                                                               <TextField fx:id="txtField01" editable="false" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" GridPane.columnIndex="1" GridPane.valignment="BOTTOM" />
-                                                                              <TextField fx:id="txtField02" alignment="BOTTOM_CENTER" editable="false" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="100.0" styleClass="text-field" GridPane.columnIndex="3" GridPane.valignment="BOTTOM" />
+                                                                              <TextField fx:id="txtField02" alignment="BOTTOM_CENTER" editable="false" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="91.0" styleClass="text-field" GridPane.columnIndex="3" GridPane.valignment="BOTTOM" />
                                                                            </children>
                                                                         </GridPane>
                                                                      </children>
@@ -237,7 +238,7 @@
                                                                               </Text>
                                                                               <TextField fx:id="txtField03" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="26.0" prefWidth="265.0" promptText="Press F3 to Search." styleClass="text-field" GridPane.columnIndex="1" />
                                                                               <TextField fx:id="txtField04" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="265.0" promptText="Press F3 to Search." GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                              <TextField fx:id="txtField05" disable="true" minWidth="-Infinity" prefHeight="25.0" prefWidth="265.0" stylesheets="@../css/DisabledTextfield.css" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                              <TextField fx:id="txtField05" disable="true" minWidth="-Infinity" prefHeight="25.0" prefWidth="265.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                               <TextField fx:id="txtField06" disable="true" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="text-field" stylesheets="@../css/DisabledTextfield.css" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                                                  <GridPane.margin>
                                                                                     <Insets />
@@ -371,11 +372,6 @@
                                                                               <RowConstraints minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                            </rowConstraints>
                                                                            <children>
-                                                                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Inventory" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
-                                                                                 <GridPane.margin>
-                                                                                    <Insets left="10.0" right="10.0" />
-                                                                                 </GridPane.margin>
-                                                                              </Text>
                                                                               <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="97.0" prefWidth="566.0" style="-fx-border-color: #939393;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                                  <children>
                                                                                     <GridPane AnchorPane.topAnchor="1.0">
@@ -394,15 +390,15 @@
                                                                                         <RowConstraints minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                                       </rowConstraints>
                                                                                        <children>
-                                                                                          <TextField fx:id="txtDetail13" prefHeight="25.0" GridPane.columnIndex="5" />
-                                                                                          <TextField fx:id="txtDetail08" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                                          <TextField fx:id="txtDetail09" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                                          <TextField fx:id="txtDetail07" prefHeight="25.0" GridPane.columnIndex="1" />
-                                                                                          <TextField fx:id="txtDetail10" prefHeight="25.0" GridPane.columnIndex="3" />
-                                                                                          <TextField fx:id="txtDetail11" prefHeight="25.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                                                                          <TextField fx:id="txtDetail12" prefHeight="25.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                                                                          <TextField fx:id="txtDetail14" prefHeight="25.0" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-                                                                                          <TextField fx:id="txtDetail15" prefHeight="25.0" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                                                          <TextField fx:id="txtDetail09" disable="true" prefHeight="25.0" stylesheets="@../css/DisabledTextfield.css" GridPane.columnIndex="5" />
+                                                                                          <TextField fx:id="txtDetail11" disable="true" prefHeight="25.0" stylesheets="@../css/DisabledTextfield.css" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                                          <TextField fx:id="txtDetail13" disable="true" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                                          <TextField fx:id="txtDetail07" disable="true" prefHeight="25.0" stylesheets="@../css/DisabledTextfield.css" GridPane.columnIndex="1" />
+                                                                                          <TextField fx:id="txtDetail08" disable="true" prefHeight="25.0" stylesheets="@../css/DisabledTextfield.css" GridPane.columnIndex="3" />
+                                                                                          <TextField fx:id="txtDetail12" disable="true" prefHeight="25.0" stylesheets="@../css/DisabledTextfield.css" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                                          <TextField fx:id="txtDetail14" disable="true" prefHeight="25.0" stylesheets="@../css/DisabledTextfield.css" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                                                          <TextField fx:id="txtDetail13" disable="true" prefHeight="25.0" stylesheets="@../css/DisabledTextfield.css" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                                                                          <TextField fx:id="txtDetail15" disable="true" prefHeight="25.0" stylesheets="@../css/DisabledTextfield.css" GridPane.columnIndex="5" GridPane.rowIndex="2" />
                                                                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="On Hand" GridPane.halignment="RIGHT">
                                                                                              <GridPane.margin>
                                                                                                 <Insets left="10.0" right="10.0" />
@@ -467,6 +463,26 @@
                                                                                     <Insets top="5.0" />
                                                                                  </padding>
                                                                               </AnchorPane>
+                                                                              <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                                                                                 <children>
+                                                                                    <TextFlow nodeOrientation="RIGHT_TO_LEFT" prefHeight="200.0" prefWidth="200.0">
+                                                                                       <children>
+                                                                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Inventory" />
+                                                                                       </children>
+                                                                                       <VBox.margin>
+                                                                                          <Insets right="10.0" />
+                                                                                       </VBox.margin>
+                                                                                    </TextFlow>
+                                                                                    <TextFlow layoutX="10.0" layoutY="10.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="200.0" prefWidth="200.0">
+                                                                                       <children>
+                                                                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Information" />
+                                                                                       </children>
+                                                                                       <VBox.margin>
+                                                                                          <Insets right="10.0" />
+                                                                                       </VBox.margin>
+                                                                                    </TextFlow>
+                                                                                 </children>
+                                                                              </VBox>
                                                                            </children>
                                                                            <padding>
                                                                               <Insets top="5.0" />
