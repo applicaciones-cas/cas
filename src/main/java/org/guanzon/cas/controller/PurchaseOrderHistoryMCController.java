@@ -1042,12 +1042,12 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
 
         psPrimary = oTrans.getMasterModel().getTransactionNo();
         txtField01.setText(psPrimary);
-//        txtField02.setText(CommonUtils.xsDateLong(oTrans.getMasterModel().getTransactionDate()));
+        
         txtField02.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getTransactionDate(), "MM-dd-yyyy"));
-        txtField03.setText(oTrans.getMasterModel().getDestinationOther());
-        txtField04.setText(oTrans.getMasterModel().getSupplierName());
-        txtField05.setText(oTrans.getMasterModel().getContactPerson1());
-        txtField06.setText(oTrans.getMasterModel().getMobileNo());
+        txtField03.setText(oTrans.getMasterModel().getCompanyName());
+        txtField04.setText(oTrans.getMasterModel().getDestinationOther());
+        txtField05.setText(oTrans.getMasterModel().getSupplierName());
+        txtField06.setText(oTrans.getMasterModel().getContactPerson1());
         txtField07.setText(oTrans.getMasterModel().getRemarks());
         txtField08.setText(oTrans.getMasterModel().getTermName());
         txtField09.setText(oTrans.getMasterModel().getReferenceNo());
@@ -1059,7 +1059,6 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
         } catch (Exception e) {
         }
         loadTableDetail();
-//        loadTableDetail2();
     }
 
     private void txtDetail_KeyPressed(KeyEvent event) {
