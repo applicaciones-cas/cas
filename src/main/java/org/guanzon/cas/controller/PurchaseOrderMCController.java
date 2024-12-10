@@ -677,8 +677,8 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         txtField05.setText(oTrans.getMasterModel().getContactPerson1());
         txtField06.setText(oTrans.getMasterModel().getMobileNo());
         txtField07.setText(oTrans.getMasterModel().getRemarks());
-        txtField08.setText(oTrans.getMasterModel().getReferenceNo());
-        txtField09.setText(oTrans.getMasterModel().getTermName());
+        txtField08.setText(oTrans.getMasterModel().getTermName());
+        txtField09.setText(oTrans.getMasterModel().getReferenceNo());
 
         try {
             txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
@@ -712,13 +712,13 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             try {
                 textFields[i].setText((String) loInv_Master.getMaster(keys[i]));
             } catch (Exception e) {
-                textFields[i].setText("0");
+                textFields[i].setText("");
             }
         }
         try {
             txtDetail09.setText((String) loInv_Master.getMaster("cClassify"));
         } catch (Exception e) {
-            txtDetail09.setText("F");
+            txtDetail09.setText("");
         }
 
     }
@@ -817,10 +817,15 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 //                 
 
             } else {
-                loBrand = oTrans.GetBrand(oTrans.getBrandID(), true);
-                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                    loInventory2 = (String) loBrand.getMaster("sDescript");
+                try {
+                    loBrand = oTrans.GetBrand(oTrans.getBrandID(), true);
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        loInventory2 = (String) loBrand.getMaster("sDescript");
+                    }
+                } catch (Exception e) {
+
                 }
+         
                 data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
                         loInventory2,
                         "",
@@ -1164,10 +1169,11 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             case F3:
                 switch (lnIndex) {
                     case 1: //Brand
-//                        oTrans.setRowSelect(pnDetailRow);
                         oTrans.getDetailModel(pnDetailRow).setStockID("");
                         oTrans.getDetailModel(pnDetailRow).setUnitPrice(0);
                         oTrans.getDetailModel(pnDetailRow).setQuantity(0);
+                        oTrans.getDetailModel(pnDetailRow).setDescription("");
+                        txtDetail04.clear();
                         poJSON = oTrans.searchDetail(pnDetailRow, "sBrandIDx", lsValue, false);
                         try {
                             pnDetailRow = oTrans.getRowSelect();

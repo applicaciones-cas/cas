@@ -1049,9 +1049,8 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
         txtField05.setText(oTrans.getMasterModel().getContactPerson1());
         txtField06.setText(oTrans.getMasterModel().getMobileNo());
         txtField07.setText(oTrans.getMasterModel().getRemarks());
-        txtField08.setText(oTrans.getMasterModel().getReferenceNo());
-        txtField09.setText(oTrans.getMasterModel().getTermName());
-
+        txtField08.setText(oTrans.getMasterModel().getTermName());
+        txtField09.setText(oTrans.getMasterModel().getReferenceNo());
         try {
             txtField10.setText(String.valueOf(oTrans.getMasterModel().getDiscount()));
             txtField11.setText(String.valueOf(oTrans.getMasterModel().getAddDiscount()));
