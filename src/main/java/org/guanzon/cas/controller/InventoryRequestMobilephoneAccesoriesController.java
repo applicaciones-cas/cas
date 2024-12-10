@@ -54,9 +54,9 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class InventoryRequestSparepartsController implements Initializable, ScreenInterface {
+public class InventoryRequestMobilephoneAccesoriesController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Inventory Request Spareparts";
+    private final String pxeModuleName = "Inventory Request Mobilephone Accesories";
     private GRider oApp;
     private int pnEditMode;
     private Inv_Request oTrans;
@@ -80,7 +80,7 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
     private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06,
             txtField07, txtField08, txtField09, txtField10, txtField11, txtField12,
             txtField13, txtField14, txtField15, txtField16, txtField17, txtField18,
-            txtField19, txtField20, txtField21;
+            txtField19;
     @FXML
         private AnchorPane anchorMain,
             anchorMaster,
@@ -220,13 +220,11 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
                     break;
 
                 case "btnBrowse":
-                    /*LOAD BROWSE*/
                     poJSON = oTrans.searchTransaction("sTransNox", "", pbLoaded);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         break;
                     }
-                    
                     pnEditMode = oTrans.getEditMode();
                     R1data.clear();
                     loadTransaction();
@@ -234,10 +232,9 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
                     loadItemData();
                     initTabAnchor();
                     tblDetails.getSelectionModel().select(0);
-                    loadDetails();
-                    initButton(pnEditMode);
+                        loadDetails();
                     break;
-                    
+
                 case "btnAddItem":
 
                     poJSON = oTrans.AddModelDetail();
@@ -324,7 +321,7 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
             {txtField01, txtField02, txtField03, txtField04, txtField05, txtField06,
             txtField07, txtField08, txtField09, txtField10, txtField11, txtField12,
             txtField13, txtField14, txtField15, txtField16, txtField17, txtField18,
-            txtField19, txtField20, txtField21},};
+            txtField19},};
 
 // Loop through each array of TextFields and clear them
         for (TextField[] fields : allFields) {
@@ -347,7 +344,7 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
             txtField01, txtField02, txtField03, txtField04, txtField05, txtField06,
             txtField07, txtField08, txtField09, txtField10, txtField11, txtField12,
             txtField13, txtField14, txtField15, txtField16, txtField17, txtField18,
-            txtField19, txtField20, txtField21};
+            txtField19};
 
 // Add the listener to each text field in the focusTextFields array
         for (TextField textField : focusTextFields) {
@@ -560,8 +557,7 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
                 CommonUtils.SetPreviousFocus(txtSeeks);
         }
     }
-
-     private void initButton(int fnValue) {
+private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         
 // Manage visibility and managed state of buttons
@@ -603,6 +599,48 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
         btnApprove.setManaged(isVisible);
 
 }
+//    private void initButton(int fnValue) {
+//        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+//
+//// Manage visibility and managed state of buttons
+//        btnCancel.setVisible(lbShow);
+//        btnSearch.setVisible(lbShow);
+//        btnSave.setVisible(lbShow);
+//        btnAddItem.setVisible(lbShow);
+//        btnDelItem.setVisible(lbShow);
+//
+//        btnCancel.setManaged(lbShow);
+//        btnSearch.setManaged(lbShow);
+//        btnSave.setManaged(lbShow);
+//        btnAddItem.setManaged(lbShow);
+//        btnDelItem.setManaged(lbShow);
+//
+//// Manage visibility and managed state of other buttons
+//        
+//        btnNew.setVisible(!lbShow);
+//        btnClose.setVisible(!lbShow);
+//        btnBrowse.setManaged(!lbShow);
+//        btnNew.setManaged(!lbShow);
+//        btnClose.setManaged(!lbShow);
+//        
+//        btnBrowse.setVisible(false);
+//        btnBrowse.setManaged(false);
+//        
+//        btnUpdate.setVisible(false);
+//        btnUpdate.setManaged(false);
+//        
+//        btnApprove.setVisible(false);
+//        btnApprove.setManaged(false);
+//        
+//        btnCancelTrans.setVisible(false);
+//        btnCancelTrans.setManaged(false);
+//        
+//        btnAddItem.setVisible(false);
+//        btnAddItem.setManaged(false);
+//        btnDelItem.setVisible(false);
+//        btnDelItem.setManaged(false);
+//
+//    }
 
     private void initTblDetails() {
         index01.setStyle("-fx-alignment: CENTER;");
@@ -724,24 +762,23 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
             txtField03.setText((String) oTrans.getDetailModel().get(pnRow).getBarcode());
             txtField04.setText((String) oTrans.getDetailModel().get(pnRow).getDescription()); 
             txtField05.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getOnTransit()));
-            txtField06.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantity()));
+            txtField06.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getOrderQuantity()));
             
-            txtField07.setText((String) oTrans.getDetailModel().get(pnRow).getBrandName());
-            txtField08.setText((String) oTrans.getDetailModel().get(pnRow).getModelName()); 
-            txtField09.setText("");
-            txtField10.setText((String) oTrans.getDetailModel().get(pnRow).getMeasureName());
-            txtField11.setText((String) oTrans.getDetailModel().get(pnRow).getCategoryName());
-            txtField12.setText((String)oTrans.getDetailModel().get(pnRow).getColorName());
+            txtField07.setText((String)oTrans.getDetailModel().get(pnRow).getBrandName());
+            txtField08.setText((String)oTrans.getDetailModel().get(pnRow).getModelName());
+            txtField09.setText((String)oTrans.getDetailModel().get(pnRow).getCategoryName());
+            txtField10.setText((String)oTrans.getDetailModel().get(pnRow).getColorName());
             
-            txtField13.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getMinimumLevel()));
-            txtField14.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getMaximumLevel()));
-            txtField15.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantityOnHand()));
-            txtField16.setText((String)oTrans.getDetailModel().get(pnRow).getClassify());
-            txtField17.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getOnTransit()));
-            txtField18.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getReservedOrder()));
-            txtField19.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getBackOrder()));
-            txtField20.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getAverageMonthlySalary()));
-            txtField21.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getRecordOrder()));
+            txtField11.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getMinimumLevel()));
+            txtField12.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getMaximumLevel()));
+            txtField13.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantityOnHand()));
+            
+            txtField14.setText((String) oTrans.getDetailModel().get(pnRow).getClassify());
+            txtField15.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getOnTransit()));
+            txtField16.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getRecordOrder()));
+            txtField17.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getBackOrder()));
+            txtField18.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getAverageMonthlySalary()));
+            txtField19.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getRecordOrder()));
         }
     }
     private void loadDetailsOthers() {
@@ -749,24 +786,23 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
             txtField03.setText((String) oTrans.getDetailModelOthers().get(pnROQ).getBarcode());
             txtField04.setText((String) oTrans.getDetailModelOthers().get(pnROQ).getDescription()); 
             txtField05.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getOnTransit()));
-            txtField06.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getQuantity()));
+            txtField06.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getOrderQuantity()));
             
-            txtField07.setText((String) oTrans.getDetailModelOthers().get(pnROQ).getBrandName());
-            txtField08.setText((String) oTrans.getDetailModelOthers().get(pnROQ).getModelName()); 
-            txtField09.setText("");
-            txtField10.setText((String) oTrans.getDetailModelOthers().get(pnROQ).getMeasureName());
-            txtField11.setText((String) oTrans.getDetailModelOthers().get(pnROQ).getCategoryName());
-            txtField12.setText((String)oTrans.getDetailModelOthers().get(pnROQ).getColorName());
+            txtField07.setText((String)oTrans.getDetailModelOthers().get(pnROQ).getBrandName());
+            txtField08.setText((String)oTrans.getDetailModelOthers().get(pnROQ).getModelName());
+            txtField09.setText((String)oTrans.getDetailModelOthers().get(pnROQ).getCategoryName());
+            txtField10.setText((String)oTrans.getDetailModelOthers().get(pnROQ).getColorName());
             
-            txtField13.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getMinimumLevel()));
-            txtField14.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getMaximumLevel()));
-            txtField15.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getQuantityOnHand()));
-            txtField16.setText((String)oTrans.getDetailModelOthers().get(pnROQ).getClassify());
-            txtField17.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getOnTransit()));
-            txtField18.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getReservedOrder()));
-            txtField19.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getBackOrder()));
-            txtField20.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getAverageMonthlySalary()));
-            txtField21.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getRecordOrder()));
+            txtField11.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getMinimumLevel()));
+            txtField12.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getMaximumLevel()));
+            txtField13.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getQuantityOnHand()));
+            
+            txtField14.setText((String) oTrans.getDetailModelOthers().get(pnROQ).getClassify());
+            txtField15.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getOnTransit()));
+            txtField16.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getRecordOrder()));
+            txtField17.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getBackOrder()));
+            txtField18.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getAverageMonthlySalary()));
+            txtField19.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getRecordOrder()));
         }
     }
     private void loadItemData() {
@@ -774,17 +810,19 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
         R1data.clear();
         if (oTrans.getDetailModelOthers()!= null) {
             for  (lnCtr = 0; lnCtr < oTrans.getDetailModelOthers().size(); lnCtr++){
-            R1data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),            
-                    (String) oTrans.getDetailModelOthers().get(lnCtr).getBarcode(),
-                    (String) oTrans.getDetailModelOthers().get(lnCtr).getDescription(),
-                    "",
-                    "",
-                    (oTrans.getDetailModelOthers().get(lnCtr).getColorName() == null ? "" : oTrans.getDetailModelOthers().get(lnCtr).getColorName()),
-                    (oTrans.getDetailModelOthers().get(lnCtr).getClassify() == null ? "" : oTrans.getDetailModelOthers().get(lnCtr).getClassify()),
-                    oTrans.getDetailModelOthers().get(lnCtr).getQuantityOnHand().toString(),
-                    "",
-                    oTrans.getDetailModelOthers().get(lnCtr).getRecordOrder().toString(),
-                    oTrans.getDetailModelOthers().get(lnCtr).getQuantity().toString()));
+            R1data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),
+                
+            
+            (String) oTrans.getDetailModelOthers().get(lnCtr).getBrandName(),
+                (String) oTrans.getDetailModelOthers().get(lnCtr).getModelName(),
+                        "",                
+                            "",
+                        (oTrans.getDetailModelOthers().get(lnCtr).getColorName() == null ? "" : oTrans.getDetailModelOthers().get(lnCtr).getColorName()),
+                        (oTrans.getDetailModelOthers().get(lnCtr).getClassify() == null ? "" : oTrans.getDetailModelOthers().get(lnCtr).getClassify()),
+                        oTrans.getDetailModelOthers().get(lnCtr).getQuantityOnHand().toString(),
+                        "",
+                        oTrans.getDetailModelOthers().get(lnCtr).getRecordOrder().toString(),
+                        oTrans.getDetailModelOthers().get(lnCtr).getQuantity().toString()));
             }
         }
     }
@@ -793,6 +831,7 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
         R2data.clear();
         if (oTrans.getDetailModel() != null) {
             for (lnCtr = 0; lnCtr < oTrans.getDetailModel().size(); lnCtr++) {
+                ;
 //            oTrans.getDetailModel().get(lnCtr).list();
                 R2data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),
                         (String) oTrans.getDetailModel().get(lnCtr).getModelName(),
@@ -808,7 +847,7 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
         }
     }
 
-    @FXML
+       @FXML
     private void tblDetails_Clicked(MouseEvent event) {
         if (tblDetails.getSelectionModel().getSelectedIndex() >= 0) {
             pnROQ = tblDetails.getSelectionModel().getSelectedIndex();
@@ -881,12 +920,13 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
             }
         });
     }
+    
     private void clearItem() {
         TextField[][] allFields = {
             // Text fields related to specific sections
             {txtField05, txtField06,txtField07, txtField08, txtField09, txtField10, txtField11, txtField12,
             txtField13, txtField14, txtField15, txtField16, txtField17, txtField18,
-            txtField19, txtField20, txtField21},};
+            txtField19},};
 
         for (TextField[] fields : allFields) {
             for (TextField field : fields) {
@@ -907,10 +947,13 @@ public class InventoryRequestSparepartsController implements Initializable, Scre
         for (String type : category) {
             if (types == null) {
                 if ("0001".equals(type)) {
-                    types = RequestControllerFactory.RequestType.SP;
+                    types = RequestControllerFactory.RequestType.MC;
+                    oTrans.setType(types);
+                } else if ("0002".equals(type)) {
+                    types = RequestControllerFactory.RequestType.MP;
                     oTrans.setType(types);
                 } else if ("0003".equals(type)) {
-                    types = RequestControllerFactory.RequestType.SP_AUTO;
+                    types = RequestControllerFactory.RequestType.AUTO;
                     oTrans.setType(types);
                 }
 

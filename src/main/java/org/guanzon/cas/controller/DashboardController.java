@@ -374,7 +374,10 @@ public class DashboardController implements Initializable {
                 
             case "/org/guanzon/cas/views/InventoryRequestVehicle.fxml":
                 return "Inventory Request Vehicle"; 
-               
+            
+            case "/org/guanzon/cas/views/InventoryRequestMobilephoneAccesories.fxml":
+                return "Inventory Request Mobilephone Accesories"; 
+                
             case "/org/guanzon/cas/views/InventoryRequestSpareparts.fxml":
                 return "Inventory Request Spareparts";    
                 
@@ -801,6 +804,9 @@ public class DashboardController implements Initializable {
              case "/org/guanzon/cas/views/InventoryRequestVehicle.fxml":
                 return  new InventoryRequestVehicleController();
              
+             case "/org/guanzon/cas/views/InventoryRequestMobilephoneAccesories.fxml":
+                return  new InventoryRequestMobilephoneAccesoriesController();   
+                
              case "/org/guanzon/cas/views/InventoryRequestSpareparts.fxml":
                 return  new InventoryRequestSparepartsController();
                 
@@ -1269,6 +1275,15 @@ public class DashboardController implements Initializable {
     @FXML
     void mnuInvRequestMobileUnitsClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/InventoryRequestMobilephoneUnits.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+
+    }
+    @FXML
+    void mnuInvRequestMobileAccesoriesClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryRequestMobilephoneAccesories.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

@@ -56,7 +56,7 @@ import org.json.simple.JSONObject;
  */
 public class InventoryRequestMobilephoneUnitsController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Inventory Request MC";
+    private final String pxeModuleName = "Inventory Request Mobilephone Units";
     private GRider oApp;
     private int pnEditMode;
     private Inv_Request oTrans;
@@ -231,9 +231,8 @@ public class InventoryRequestMobilephoneUnitsController implements Initializable
                     loadTransaction();
                     initTblDetails();
                     loadItemData();
-                    loadItemDataROQ();
                     initTabAnchor();
-                    tblDetailsROQ.getSelectionModel().select(0);
+                    tblDetails.getSelectionModel().select(0);
                         loadDetails();
                     break;
 
@@ -561,10 +560,9 @@ public class InventoryRequestMobilephoneUnitsController implements Initializable
                 CommonUtils.SetPreviousFocus(txtSeeks);
         }
     }
-
-    private void initButton(int fnValue) {
+private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-
+        
 // Manage visibility and managed state of buttons
         btnCancel.setVisible(lbShow);
         btnSearch.setVisible(lbShow);
@@ -579,31 +577,73 @@ public class InventoryRequestMobilephoneUnitsController implements Initializable
         btnDelItem.setManaged(lbShow);
 
 // Manage visibility and managed state of other buttons
-        
+        btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
         btnClose.setVisible(!lbShow);
         btnBrowse.setManaged(!lbShow);
         btnNew.setManaged(!lbShow);
         btnClose.setManaged(!lbShow);
         
-        btnBrowse.setVisible(false);
-        btnBrowse.setManaged(false);
-        
+//        btnCancelTrans.setVisible(false);
+//        btnCancelTrans.setManaged(false);
+//        btnApprove.setVisible(false);
+//        btnApprove.setManaged(false);
         btnUpdate.setVisible(false);
         btnUpdate.setManaged(false);
-        
-        btnApprove.setVisible(false);
-        btnApprove.setManaged(false);
-        
-        btnCancelTrans.setVisible(false);
-        btnCancelTrans.setManaged(false);
-        
         btnAddItem.setVisible(false);
         btnAddItem.setManaged(false);
         btnDelItem.setVisible(false);
         btnDelItem.setManaged(false);
+        System.out.println("THIS IS YOUR INITIALIZE " + fnValue);
+        boolean isVisible = (fnValue == 1);
+        btnCancelTrans.setVisible(isVisible);
+        btnCancelTrans.setManaged(isVisible);
+        btnApprove.setVisible(isVisible);
+        btnApprove.setManaged(isVisible);
 
-    }
+}
+//    private void initButton(int fnValue) {
+//        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+//
+//// Manage visibility and managed state of buttons
+//        btnCancel.setVisible(lbShow);
+//        btnSearch.setVisible(lbShow);
+//        btnSave.setVisible(lbShow);
+//        btnAddItem.setVisible(lbShow);
+//        btnDelItem.setVisible(lbShow);
+//
+//        btnCancel.setManaged(lbShow);
+//        btnSearch.setManaged(lbShow);
+//        btnSave.setManaged(lbShow);
+//        btnAddItem.setManaged(lbShow);
+//        btnDelItem.setManaged(lbShow);
+//
+//// Manage visibility and managed state of other buttons
+//        
+//        btnNew.setVisible(!lbShow);
+//        btnClose.setVisible(!lbShow);
+//        btnBrowse.setManaged(!lbShow);
+//        btnNew.setManaged(!lbShow);
+//        btnClose.setManaged(!lbShow);
+//        
+//        btnBrowse.setVisible(false);
+//        btnBrowse.setManaged(false);
+//        
+//        btnUpdate.setVisible(false);
+//        btnUpdate.setManaged(false);
+//        
+//        btnApprove.setVisible(false);
+//        btnApprove.setManaged(false);
+//        
+//        btnCancelTrans.setVisible(false);
+//        btnCancelTrans.setManaged(false);
+//        
+//        btnAddItem.setVisible(false);
+//        btnAddItem.setManaged(false);
+//        btnDelItem.setVisible(false);
+//        btnDelItem.setManaged(false);
+//
+//    }
 
     private void initTblDetails() {
         index01.setStyle("-fx-alignment: CENTER;");
@@ -800,14 +840,21 @@ public class InventoryRequestMobilephoneUnitsController implements Initializable
         }
     }
 
-    @FXML
+       @FXML
     private void tblDetails_Clicked(MouseEvent event) {
         if (tblDetails.getSelectionModel().getSelectedIndex() >= 0) {
             pnROQ = tblDetails.getSelectionModel().getSelectedIndex();
             System.out.println("pnROQ = " + pnROQ);
+            for(int lnctr = 0; lnctr < tblDetailsROQ.getItems().size(); lnctr++){
+                if(oTrans.getDetailModelOthers().get(pnROQ).getStockID().equalsIgnoreCase(oTrans.getDetailModel().get(lnctr).getStockID())){
+                    pnRow = lnctr;
+                    tblDetailsROQ.getSelectionModel().select(pnRow);
+                }
+            }
+            System.out.println("pnROQ = " + pnROQ);
             loadDetailsOthers();
             txtField08.requestFocus();
-            txtField08.selectAll();
+//            txtField08.selectAll();
         }
         tblDetails.setOnKeyReleased((KeyEvent t) -> {
             KeyCode key = t.getCode();
@@ -822,7 +869,7 @@ public class InventoryRequestMobilephoneUnitsController implements Initializable
                     }
                     break;
                 case UP:
-//                    int pnROQ = 0;
+                    int pnROQ = 0;
                     int x = 1;
                     pnROQ = tblDetails.getSelectionModel().getSelectedIndex();
 
@@ -866,7 +913,7 @@ public class InventoryRequestMobilephoneUnitsController implements Initializable
             }
         });
     }
-
+    
     private void clearItem() {
         TextField[][] allFields = {
             // Text fields related to specific sections

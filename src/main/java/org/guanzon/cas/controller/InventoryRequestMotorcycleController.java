@@ -221,22 +221,24 @@ public class InventoryRequestMotorcycleController implements Initializable, Scre
                     break;
 
                 case "btnBrowse":
+                    /*LOAD BROWSE*/
                     poJSON = oTrans.searchTransaction("sTransNox", "", pbLoaded);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         break;
                     }
+                    
                     pnEditMode = oTrans.getEditMode();
                     R1data.clear();
                     loadTransaction();
                     initTblDetails();
                     loadItemData();
-                    loadItemDataROQ();
                     initTabAnchor();
-                    tblDetailsROQ.getSelectionModel().select(0);
-                        loadDetails();
+                    tblDetails.getSelectionModel().select(0);
+                    loadDetails();
+                    initButton(pnEditMode);
                     break;
-
+                    
                 case "btnAddItem":
 
                     poJSON = oTrans.AddModelDetail();
@@ -562,9 +564,9 @@ public class InventoryRequestMotorcycleController implements Initializable, Scre
         }
     }
 
-    private void initButton(int fnValue) {
+     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-
+        
 // Manage visibility and managed state of buttons
         btnCancel.setVisible(lbShow);
         btnSearch.setVisible(lbShow);
@@ -579,31 +581,31 @@ public class InventoryRequestMotorcycleController implements Initializable, Scre
         btnDelItem.setManaged(lbShow);
 
 // Manage visibility and managed state of other buttons
-        
+        btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
         btnClose.setVisible(!lbShow);
         btnBrowse.setManaged(!lbShow);
         btnNew.setManaged(!lbShow);
         btnClose.setManaged(!lbShow);
         
-        btnBrowse.setVisible(false);
-        btnBrowse.setManaged(false);
-        
+//        btnCancelTrans.setVisible(false);
+//        btnCancelTrans.setManaged(false);
+//        btnApprove.setVisible(false);
+//        btnApprove.setManaged(false);
         btnUpdate.setVisible(false);
         btnUpdate.setManaged(false);
-        
-        btnApprove.setVisible(false);
-        btnApprove.setManaged(false);
-        
-        btnCancelTrans.setVisible(false);
-        btnCancelTrans.setManaged(false);
-        
         btnAddItem.setVisible(false);
         btnAddItem.setManaged(false);
         btnDelItem.setVisible(false);
         btnDelItem.setManaged(false);
+        System.out.println("THIS IS YOUR INITIALIZE " + fnValue);
+        boolean isVisible = (fnValue == 1);
+        btnCancelTrans.setVisible(isVisible);
+        btnCancelTrans.setManaged(isVisible);
+        btnApprove.setVisible(isVisible);
+        btnApprove.setManaged(isVisible);
 
-    }
+}
 
     private void initTblDetails() {
         index01.setStyle("-fx-alignment: CENTER;");
@@ -763,19 +765,17 @@ public class InventoryRequestMotorcycleController implements Initializable, Scre
         R1data.clear();
         if (oTrans.getDetailModelOthers()!= null) {
             for  (lnCtr = 0; lnCtr < oTrans.getDetailModelOthers().size(); lnCtr++){
-            R1data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),
-                
-            
-            (String) oTrans.getDetailModelOthers().get(lnCtr).getBrandName(),
-                (String) oTrans.getDetailModelOthers().get(lnCtr).getModelName(),
-                        "",                
-                            "",
-                        (oTrans.getDetailModelOthers().get(lnCtr).getColorName() == null ? "" : oTrans.getDetailModelOthers().get(lnCtr).getColorName()),
-                        (oTrans.getDetailModelOthers().get(lnCtr).getClassify() == null ? "" : oTrans.getDetailModelOthers().get(lnCtr).getClassify()),
-                        oTrans.getDetailModelOthers().get(lnCtr).getQuantityOnHand().toString(),
-                        "",
-                        oTrans.getDetailModelOthers().get(lnCtr).getRecordOrder().toString(),
-                        oTrans.getDetailModelOthers().get(lnCtr).getQuantity().toString()));
+            R1data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),            
+                    (String) oTrans.getDetailModelOthers().get(lnCtr).getBrandName(),
+                    (String) oTrans.getDetailModelOthers().get(lnCtr).getModelName(),
+                    "",
+                    "",
+                    (oTrans.getDetailModelOthers().get(lnCtr).getColorName() == null ? "" : oTrans.getDetailModelOthers().get(lnCtr).getColorName()),
+                    (oTrans.getDetailModelOthers().get(lnCtr).getClassify() == null ? "" : oTrans.getDetailModelOthers().get(lnCtr).getClassify()),
+                    oTrans.getDetailModelOthers().get(lnCtr).getQuantityOnHand().toString(),
+                    "",
+                    oTrans.getDetailModelOthers().get(lnCtr).getRecordOrder().toString(),
+                    oTrans.getDetailModelOthers().get(lnCtr).getQuantity().toString()));
             }
         }
     }
@@ -784,7 +784,6 @@ public class InventoryRequestMotorcycleController implements Initializable, Scre
         R2data.clear();
         if (oTrans.getDetailModel() != null) {
             for (lnCtr = 0; lnCtr < oTrans.getDetailModel().size(); lnCtr++) {
-                ;
 //            oTrans.getDetailModel().get(lnCtr).list();
                 R2data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),
                         (String) oTrans.getDetailModel().get(lnCtr).getModelName(),
@@ -805,9 +804,16 @@ public class InventoryRequestMotorcycleController implements Initializable, Scre
         if (tblDetails.getSelectionModel().getSelectedIndex() >= 0) {
             pnROQ = tblDetails.getSelectionModel().getSelectedIndex();
             System.out.println("pnROQ = " + pnROQ);
+            for(int lnctr = 0; lnctr < tblDetailsROQ.getItems().size(); lnctr++){
+                if(oTrans.getDetailModelOthers().get(pnROQ).getStockID().equalsIgnoreCase(oTrans.getDetailModel().get(lnctr).getStockID())){
+                    pnRow = lnctr;
+                    tblDetailsROQ.getSelectionModel().select(pnRow);
+                }
+            }
+            System.out.println("pnROQ = " + pnROQ);
             loadDetailsOthers();
             txtField08.requestFocus();
-            txtField08.selectAll();
+//            txtField08.selectAll();
         }
         tblDetails.setOnKeyReleased((KeyEvent t) -> {
             KeyCode key = t.getCode();
@@ -822,7 +828,7 @@ public class InventoryRequestMotorcycleController implements Initializable, Scre
                     }
                     break;
                 case UP:
-//                    int pnROQ = 0;
+                    int pnROQ = 0;
                     int x = 1;
                     pnROQ = tblDetails.getSelectionModel().getSelectedIndex();
 
@@ -835,13 +841,13 @@ public class InventoryRequestMotorcycleController implements Initializable, Scre
     }
         @FXML
     private void tblDetailsROQ_Clicked(MouseEvent event) {
-            if (tblDetailsROQ.getSelectionModel().getSelectedIndex() >= 0) {
-                pnRow = tblDetailsROQ.getSelectionModel().getSelectedIndex();
-                System.out.println("pnRow = " + pnRow);
-                loadDetails();
-                txtField08.requestFocus();
-                txtField08.selectAll();
-            }
+        if (tblDetailsROQ.getSelectionModel().getSelectedIndex() >= 0) {
+            pnRow = tblDetailsROQ.getSelectionModel().getSelectedIndex();
+            System.out.println("pnRow = " + pnRow);
+            loadDetails();
+            txtField08.requestFocus();
+            txtField08.selectAll();
+        }
         tblDetails.setOnKeyReleased((KeyEvent t) -> {
             KeyCode key = t.getCode();
             switch (key) {
@@ -866,7 +872,6 @@ public class InventoryRequestMotorcycleController implements Initializable, Scre
             }
         });
     }
-
     private void clearItem() {
         TextField[][] allFields = {
             // Text fields related to specific sections

@@ -258,7 +258,7 @@
                                                       <MenuItem fx:id="mnuInvRequestMobileUnits" mnemonicParsing="false" onAction="#mnuInvRequestMobileUnitsClick" text="Mobile Phone - Units" />
                                                       <MenuItem fx:id="mnuInvRequestAppliance" mnemonicParsing="false" onAction="#mnuInvRequestAppliancesClick" text="Appliances" />
                                                       <MenuItem fx:id="mnuInvRequestVehicle" mnemonicParsing="false" onAction="#mnuInvRequestVehicleClick" text="Vehicle" />
-                                                      <MenuItem mnemonicParsing="false" text="Mobile Phone - Accesories" />
+                                                      <MenuItem fx:id="mnuInvRequestMobileAccesories" mnemonicParsing="false" onAction="#mnuInvRequestMobileAccesoriesClick" text="Mobile Phone - Accesories" />
                                                       <MenuItem fx:id="mnuInvRequestSpareparts" mnemonicParsing="false" onAction="#mnuInvRequestSpareparttsClick" text="Spareparts" />
                                                    </items>
                                                 </Menu>
