@@ -544,7 +544,7 @@
                                                 </VBox>
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane style="-fx-border-color: orange;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="705.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <AnchorPane style="-fx-border-color: #FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="705.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </padding>
@@ -595,7 +595,7 @@
                               </VBox>
                               <VBox prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <AnchorPane minHeight="300.0" style="-fx-border-color: orange;">
+                                    <AnchorPane minHeight="300.0" style="-fx-border-color: #FF8201;">
                                        <padding>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
@@ -619,7 +619,7 @@
                                           <Insets left="5.0" />
                                        </VBox.margin>
                                     </AnchorPane>
-                                    <AnchorPane prefHeight="456.0" prefWidth="250.0" style="-fx-border-color: orange;">
+                                    <AnchorPane prefHeight="456.0" prefWidth="250.0" style="-fx-border-color: #FF8201;">
                                        <VBox.margin>
                                           <Insets left="5.0" top="5.0" />
                                        </VBox.margin>

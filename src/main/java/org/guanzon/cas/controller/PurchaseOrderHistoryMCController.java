@@ -518,15 +518,14 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
         txtDetail05.setText((String) data.get(pnDetailRow).getIndex08());
         txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQuantity()));
 
-        Inventory loInventory = oTrans.GetInventory((String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx"), true);
-        InvMaster loInv_Master = oTrans.GetInvMaster((String) loInventory.getMaster("sStockIDx"), true);
+        InvMaster loInv_Master = oTrans.GetInvMaster((String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx"), true);
 
         TextField[] textFields = {txtDetail07, txtDetail08, txtDetail10, txtDetail11};
         String[] keys = {"nQtyOnHnd", "nMaxLevel", "nResvOrdr", "nBackOrdr"};
 
         for (int i = 0; i < textFields.length; i++) {
             try {
-                textFields[i].setText((String) loInv_Master.getMaster(keys[i]));
+                textFields[i].setText(String.valueOf(loInv_Master.getMaster(keys[i])));
             } catch (Exception e) {
                 textFields[i].setText("0");
             }
@@ -602,12 +601,12 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
             Model_Variant loMdlVrnt;
             String loInventory2 = "";
             if (lsStockIDx != null && !lsStockIDx.equals("")) {
-;
+                ;
                 loInventory = oTrans.GetInventory((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"), true);
-                
+
                 oTrans.setBrandID((String) loInventory.getMaster("sBrandIDx"));
                 loBrand = oTrans.GetBrand(oTrans.getBrandID(), true);
-                
+
                 loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
                 loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
 //                loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
@@ -649,25 +648,8 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
                 ));
 
                 System.out.println("THIS IS invmaster " + (String) loInventory.getMaster("sStockIDx"));
-                InvMaster loInv_Master = oTrans.GetInvMaster((String) loInventory.getMaster("sStockIDx"), true);
 
-                TextField[] textFields = {txtDetail07, txtDetail08, txtDetail10, txtDetail11};
-                String[] keys = {"nQtyOnHnd", "nMaxLevel", "nResvOrdr", "nBackOrdr"};
-
-                for (int i = 0; i < textFields.length; i++) {
-                    try {
-                        textFields[i].setText(String.valueOf(loInv_Master.getMaster(keys[i])) );
-                    } catch (Exception e) {
-                        textFields[i].setText("0");
-                    }
-                }
-                try {
-                    txtDetail09.setText((String) loInv_Master.getMaster("cClassify"));
-                } catch (Exception e) {
-                    txtDetail09.setText("F");
-                }
 //                 
-
             } else {
 //                loBrand = oTrans.GetBrand(oTrans.getBrandID(), true);
 //                if (pnEditMode == EditMode.ADDNEW) {
@@ -1042,7 +1024,7 @@ public class PurchaseOrderHistoryMCController implements Initializable, ScreenIn
 
         psPrimary = oTrans.getMasterModel().getTransactionNo();
         txtField01.setText(psPrimary);
-        
+
         txtField02.setText(CommonUtils.dateFormat(oTrans.getMasterModel().getTransactionDate(), "MM-dd-yyyy"));
         txtField03.setText(oTrans.getMasterModel().getCompanyName());
         txtField04.setText(oTrans.getMasterModel().getDestinationOther());

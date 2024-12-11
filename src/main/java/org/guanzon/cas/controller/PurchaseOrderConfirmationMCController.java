@@ -518,15 +518,14 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         txtDetail05.setText((String) data.get(pnDetailRow).getIndex08());
         txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQuantity()));
 
-        Inventory loInventory = oTrans.GetInventory((String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx"), true);
-        InvMaster loInv_Master = oTrans.GetInvMaster((String) loInventory.getMaster("sStockIDx"), true);
+        InvMaster loInv_Master = oTrans.GetInvMaster((String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx"), true);
 
         TextField[] textFields = {txtDetail07, txtDetail08, txtDetail10, txtDetail11};
         String[] keys = {"nQtyOnHnd", "nMaxLevel", "nResvOrdr", "nBackOrdr"};
 
         for (int i = 0; i < textFields.length; i++) {
             try {
-                textFields[i].setText((String) loInv_Master.getMaster(keys[i]));
+                textFields[i].setText(String.valueOf(loInv_Master.getMaster(keys[i])));
             } catch (Exception e) {
                 textFields[i].setText("0");
             }
@@ -649,23 +648,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
                 ));
 
                 System.out.println("THIS IS invmaster " + (String) loInventory.getMaster("sStockIDx"));
-                InvMaster loInv_Master = oTrans.GetInvMaster((String) loInventory.getMaster("sStockIDx"), true);
-
-                TextField[] textFields = {txtDetail07, txtDetail08, txtDetail10, txtDetail11};
-                String[] keys = {"nQtyOnHnd", "nMaxLevel", "nResvOrdr", "nBackOrdr"};
-
-                for (int i = 0; i < textFields.length; i++) {
-                    try {
-                        textFields[i].setText(String.valueOf(loInv_Master.getMaster(keys[i])) );
-                    } catch (Exception e) {
-                        textFields[i].setText("0");
-                    }
-                }
-                try {
-                    txtDetail09.setText((String) loInv_Master.getMaster("cClassify"));
-                } catch (Exception e) {
-                    txtDetail09.setText("F");
-                }
+         
 //                 
 
             } else {
