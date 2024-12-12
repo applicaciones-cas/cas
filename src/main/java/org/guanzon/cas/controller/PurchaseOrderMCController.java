@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -19,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -34,8 +37,10 @@ import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
@@ -62,6 +67,7 @@ import javax.imageio.ImageIO;
 import org.guanzon.cas.inventory.base.InvMaster;
 import org.guanzon.cas.model.ImageModel;
 import org.guanzon.cas.parameters.Brand;
+import org.guanzon.cas.purchasing.controller.ImageViewer;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 
@@ -79,7 +85,15 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     private boolean pbLoaded = false;
     private int pnIndex;
     private int pnDetailRow;
+    private int pnAttachmentRow;
     private String imagePath = "D:/Guanzon/MarketPlaceImages";
+
+    private double initialX;
+    private double initialY;
+    private double mouseAnchorX;
+    private double mouseAnchorY;
+    private double scaleFactor = 1.0;
+
     @FXML
     private AnchorPane MainAnchorPane;
 
@@ -120,10 +134,14 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     private Button btnRemoveItem;
 
     @FXML
+
     private Button btnCancel;
 
     @FXML
     private Button btnAttachment;
+
+    @FXML
+    private Button btnPreview;
 
     @FXML
     private AnchorPane apMaster;
@@ -269,6 +287,12 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     @FXML
     private ImageView imageView;
 
+    @FXML
+    private StackPane stackPane1;
+
+    @FXML
+    private Group Group1;
+
     private ObservableList<ModelPurchaseOrderMC> data = FXCollections.observableArrayList();
     private final ObservableList<ImageModel> img_data = FXCollections.observableArrayList();
 
@@ -279,13 +303,13 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 /* FOCUS ON FIRST ROW */
                 tblAttachments.getSelectionModel().select(0);
                 tblAttachments.getFocusModel().focus(0);
-                pnDetailRow = tblAttachments.getSelectionModel().getSelectedIndex();
+                pnAttachmentRow = tblAttachments.getSelectionModel().getSelectedIndex();
             }
 //            setSelectedDetail(); //textfield data
         } else {
             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-            tblAttachments.getSelectionModel().select(pnDetailRow);
-            tblAttachments.getFocusModel().focus(pnDetailRow);
+            tblAttachments.getSelectionModel().select(pnAttachmentRow);
+            tblAttachments.getFocusModel().focus(pnAttachmentRow);
 //            setSelectedDetail();
         }
 
@@ -337,12 +361,22 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         return (Stage) txtField01.getScene().getWindow();
     }
 
+    private void SelectImageFromTable() {
+
+    }
+
     @FXML
     void cmdButton_Click(ActionEvent event) throws IOException {
 
         String lsButton = ((Button) event.getSource()).getId();
 
         switch (lsButton) {
+            case "btnPreview":
+                String filePath = (String) img_data.get(pnAttachmentRow).getIndex13();
+                ImageViewer img = new ImageViewer();
+//                img.setImageViewer(filePath);
+                img.display();
+                break;
             case "btnAttachment":
                 try {
                 // Open file chooser dialog
@@ -358,9 +392,14 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     Path imgPath = selectedFile.toPath();
                     Image loimage = new Image(Files.newInputStream(imgPath));
                     imageView.setImage(loimage);
-
-                    String imgPath2 = selectedFile.toURI().toString();
+                    stackPane1.setClip(new javafx.scene.shape.Rectangle(stackPane1.getWidth(), stackPane1.getHeight()));
+                    String imgPath2 = selectedFile.toString();
                     img_data.add(new ImageModel(String.valueOf(img_data.size()), imgPath2));
+
+                    if (img_data.size() > 1) {
+                        pnAttachmentRow += 1;
+                    }
+                    setSelectedAttachment();
                     initDetailsGrid2();
 //                        try (InputStream imgStream = Files.newInputStream(imgPath)) {
 //                            BufferedImage image = ImageIO.read(imgStream);
@@ -640,7 +679,14 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         if (pnDetailRow >= 0) {
             setSelectedDetail();
         }
+    }
 
+    @FXML
+    void tblAttachments_Clicked(MouseEvent event) {
+        pnAttachmentRow = tblAttachments.getSelectionModel().getSelectedIndex();
+        if (pnAttachmentRow >= 0) {
+            setSelectedAttachment();
+        }
     }
 
     private void loadRecord() {
@@ -691,6 +737,24 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         loadTableDetail();
     }
 
+    private void setSelectedAttachment() {
+        try {
+            String filePath = (String) img_data.get(pnAttachmentRow).getIndex13();
+
+            System.out.println("Attachment file" + filePath);
+            // Read image from the selected file
+            Path imgPath = Paths.get(filePath);
+            Image loimage = new Image(Files.newInputStream(imgPath));
+            imageView.setImage(loimage);
+            stackPane1.setClip(new javafx.scene.shape.Rectangle(stackPane1.getWidth(), stackPane1.getHeight()));
+
+//                    String imgPath2 = selectedFile.toURI().toString();
+        } catch (IOException ex) {
+            Logger.getLogger(PurchaseOrderMCController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     private void setSelectedDetail() {
         txtDetail01.setText((String) data.get(pnDetailRow).getIndex02());
         txtDetail02.setText((String) data.get(pnDetailRow).getIndex03());
@@ -704,13 +768,12 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         TextField[] textFields = {txtDetail07, txtDetail08, txtDetail10, txtDetail11};
         String[] keys = {"nQtyOnHnd", "nMaxLevel", "nResvOrdr", "nBackOrdr"};
 
-
         for (int i = 0; i < textFields.length; i++) {
             try {
-                textFields[i].setText(String.valueOf(loInv_Master.getMaster(keys[i])) );
+                textFields[i].setText(String.valueOf(loInv_Master.getMaster(keys[i])));
 
             } catch (Exception e) {
-              textFields[i].setText("");
+                textFields[i].setText("");
             }
         }
         try {
@@ -794,7 +857,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 System.out.println("THIS IS invmaster " + (String) loInventory.getMaster("sStockIDx"));
 
-
             } else {
                 try {
                     loBrand = oTrans.GetBrand(oTrans.getBrandID(), true);
@@ -823,7 +885,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         txtField12.setText(String.format("%.2f", lnTotalTransaction));
         oTrans.getMasterModel().setTransactionTotal(Double.valueOf(String.format("%.2f", lnTotalTransaction)));
         lnTotalTransaction = 0;
-        
+
         /*FOCUS ON FIRST ROW*/
         if (pnDetailRow < 0 || pnDetailRow >= data.size()) {
             if (!data.isEmpty()) {
@@ -839,6 +901,22 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             tblDetails.getFocusModel().focus(pnDetailRow);
             setSelectedDetail();
         }
+
+        if (pnAttachmentRow < 0 || pnAttachmentRow >= img_data.size()) {
+            if (!img_data.isEmpty()) {
+                /* FOCUS ON FIRST ROW */
+                tblAttachments.getSelectionModel().select(0);
+                tblAttachments.getFocusModel().focus(0);
+                pnAttachmentRow = tblAttachments.getSelectionModel().getSelectedIndex();
+                setSelectedAttachment();
+            }
+        } else {
+            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+            tblAttachments.getSelectionModel().select(pnAttachmentRow);
+            tblAttachments.getFocusModel().focus(pnAttachmentRow);
+            setSelectedAttachment();
+        }
+
         oTrans.setRowSelect(oTrans.getItemCount() - 1);
         initDetailsGrid();
     }
@@ -965,7 +1043,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                        
+
                         return;
                     }
                     break;
@@ -1065,6 +1143,33 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
     };
 
+    private void handleZoom(ScrollEvent event, ImageView imageView) {
+
+        double zoomFactor = 1.05;
+        double deltaY = event.getDeltaY();
+        if (deltaY < 0) {
+            zoomFactor = 1 / zoomFactor;
+        }  // Apply the new scale
+        imageView.setScaleX(imageView.getScaleX() * zoomFactor);
+        imageView.setScaleY(imageView.getScaleY() * zoomFactor);
+    }
+
+    private void handleMousePressed1(MouseEvent event, ImageView imageView) {
+        initialX = imageView.getTranslateX();
+        initialY = imageView.getTranslateY();
+        mouseAnchorX = event.getSceneX();
+        mouseAnchorY = event.getSceneY();
+    }
+// Handle mouse dragged for dragging 
+
+    private void handleMouseDragged1(MouseEvent event, ImageView imageView) {
+        double deltaX = event.getSceneX() - mouseAnchorX;
+        double deltaY = event.getSceneY() - mouseAnchorY;
+        imageView.setTranslateX(initialX + deltaX);
+        imageView.setTranslateY(initialY + deltaY);
+
+    }
+
     private void txtField_KeyPressed(KeyEvent event) {
         TextField textField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
@@ -1092,7 +1197,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                             ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                             txtField01.requestFocus();
-                            
+
                             ShowMessageFX.Information((String) poJSON.get("message"), (String) poJSON.get("message"), lsValue);
                             txtField01.requestFocus();
                         } else {
@@ -1330,13 +1435,15 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         btnAddItem.setVisible(lbShow);
         btnRemoveItem.setVisible(lbShow);
         btnAttachment.setVisible(lbShow);
-
+        btnPreview.setVisible(lbShow);
+        
         btnCancel.setManaged(lbShow);
         btnSearch.setManaged(lbShow);
         btnSave.setManaged(lbShow);
         btnAddItem.setManaged(lbShow);
         btnRemoveItem.setManaged(lbShow);
         btnAttachment.setManaged(lbShow);
+        btnPreview.setManaged(lbShow);
 
         if (fnValue == EditMode.ADDNEW) {
             btnFindSource.setManaged(lbShow);
@@ -1367,11 +1474,36 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
     }
 
+    private void initImageView() {
+
+        Group1.setOnScroll((ScrollEvent event) -> {
+            double delta = event.getDeltaY();
+            if (delta > 0) {
+                scaleFactor *= 1.1;
+            } else {
+                scaleFactor *= 0.9;
+            }
+            Group1.setScaleX(scaleFactor);
+            Group1.setScaleY(scaleFactor);
+        });
+
+        Group1.setOnMousePressed((MouseEvent event) -> {
+            mouseAnchorX = event.getSceneX() - Group1.getTranslateX();
+            mouseAnchorY = event.getSceneY() - Group1.getTranslateY();
+        });
+
+        Group1.setOnMouseDragged((MouseEvent event) -> {
+            Group1.setTranslateX(event.getSceneX() - mouseAnchorX);
+            Group1.setTranslateY(event.getSceneY() - mouseAnchorY);
+        });
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         oTrans = new PurchaseOrder(oApp, false);
         oTrans.setTransactionStatus("12340");
+
         initTextFields();
         initDetailsGrid();
         clearFields();
@@ -1379,10 +1511,12 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
         pbLoaded = true;
-
+//        stackPane1.setOnScroll(event -> handleZoom(event, imageView));
+        //  imageView.setOnMousePressed(event -> handleMousePressed1(event, imageView));
+        // imageView.setOnMouseDragged(event -> handleMouseDragged1(event, imageView));
+        initImageView();
     }
 
-    @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
