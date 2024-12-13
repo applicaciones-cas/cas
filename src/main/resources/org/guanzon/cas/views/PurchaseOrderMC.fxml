@@ -135,7 +135,7 @@
                                     </Button>
                                     <Button fx:id="btnPreview" contentDisplay="TOP" ellipsisString="" layoutX="1115.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="106.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Preview">
                                        <graphic>
-                                          <FontAwesomeIconView glyphName="PAPERCLIP" size="20" />
+                                          <FontAwesomeIconView glyphName="SEARCH" size="20" />
                                        </graphic>
                                        <effect>
                                           <Blend />

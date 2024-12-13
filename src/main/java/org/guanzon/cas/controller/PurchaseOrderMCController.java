@@ -10,6 +10,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,8 +22,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -62,7 +67,9 @@ import org.guanzon.cas.validators.purchaseorder.Validator_PurchaseOrder_Master;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javax.imageio.ImageIO;
 import org.guanzon.cas.inventory.base.InvMaster;
 import org.guanzon.cas.model.ImageModel;
@@ -85,6 +92,8 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     private boolean pbLoaded = false;
     private int pnIndex;
     private int pnDetailRow;
+    private String tblClicked;
+
     private int pnAttachmentRow;
     private String imagePath = "D:/Guanzon/MarketPlaceImages";
 
@@ -298,7 +307,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
     public void initDetailsGrid2() {
         /*FOCUS ON FIRST ROW*/
-        if (pnDetailRow < 0 || pnDetailRow >= img_data.size()) {
+        if (pnAttachmentRow < 0 || pnAttachmentRow >= img_data.size()) {
             if (!img_data.isEmpty()) {
                 /* FOCUS ON FIRST ROW */
                 tblAttachments.getSelectionModel().select(0);
@@ -361,10 +370,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         return (Stage) txtField01.getScene().getWindow();
     }
 
-    private void SelectImageFromTable() {
-
-    }
-
     @FXML
     void cmdButton_Click(ActionEvent event) throws IOException {
 
@@ -373,9 +378,32 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         switch (lsButton) {
             case "btnPreview":
                 String filePath = (String) img_data.get(pnAttachmentRow).getIndex13();
-                ImageViewer img = new ImageViewer();
-//                img.setImageViewer(filePath);
-                img.display();
+//                ImageViewer img = new ImageViewer();
+                String fileUrl = new File(filePath).toURI().toString();
+//                img.setImageViewer(fileUrl);
+//                img.display();
+
+                try {
+                    // Load FXML and Controller
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/guanzon/cas/views/ImageViewer.fxml"));
+                    Parent root = loader.load();
+
+                    // Get the controller to set the image
+                    ImageViewerController controller = loader.getController();
+                    controller.setImage(fileUrl);
+
+                    // Create a new Stage
+                    Stage stage = new Stage(StageStyle.UNDECORATED);
+                    stage.setTitle("Image Viewer");
+                    stage.initModality(Modality.APPLICATION_MODAL); // Block interaction with other windows
+                    stage.setScene(new Scene(root));
+                    stage.setAlwaysOnTop(true);
+                    stage.show();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 break;
             case "btnAttachment":
                 try {
@@ -399,15 +427,41 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     if (img_data.size() > 1) {
                         pnAttachmentRow += 1;
                     }
+                    loadTableAttachment();
                     setSelectedAttachment();
                     initDetailsGrid2();
+                    
+                        
 //                        try (InputStream imgStream = Files.newInputStream(imgPath)) {
 //                            BufferedImage image = ImageIO.read(imgStream);
 //
 //                            // Define the directory path
 //                            Path directory = Paths.get(imagePath, (String) "sample");
 //                            if (!Files.exists(directory)) {
-//                                Files.createDirectories(directory);
+//                          Files.createDirectories(directory);
+//                            }
+//
+//                            // Define the destination file path
+//                            Path imgFilePath = directory.resolve(selectedFile.getName());
+//                            try (OutputStream outputStream = Files.newOutputStream(imgFilePath)) {
+//                                ImageIO.write(image, "jpg", outputStream);
+//                            }
+//   System.out.println("Failed to add image to transaction.");
+//                            }
+//                        }
+//                            // Generate image path for external reference
+//                            String imgPathString = "https://restgk.guanzongroup.com.ph/images/mp/uploads/listing/"
+//                                    + oTrans.getMasterModel() + "/" + selectedFile.getName();
+//
+//                            // Add the image to the transaction
+//                            if (oTrans.addImage(imgPathString)) {
+//                                pnEditMode = oTrans.getEditMode();
+//                                img_data.add(new ImageModel(String.valueOf(img_data.size()), imgFilePath.toUri().toString()));
+//                                generateImages();
+//                            } else {
+//                                System.out.println("Failed to add image to transaction.");
+//                            }
+//                        }                                Files.createDirectories(directory);
 //                            }
 //
 //                            // Define the destination file path
@@ -640,17 +694,28 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 break;
             case "btnRemoveItem":
-                if (oTrans.getItemCount() - 1 < 0) {
-                    poJSON.put("result", "error");
-                    poJSON.put("message", "'No rows in the table'");
-                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                } else {
-                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this item?") == true) {
-                        oTrans.RemoveModelDetail(pnDetailRow);
-                        pnDetailRow = oTrans.getItemCount() - 1;
-                        loadTableDetail();
-                        txtField04.requestFocus();
+                //Detect which table is clicked
+                //if tblAttachment is clicked get the row and remove
+                //if tblDetail clicked then proceed to this
+                if (tblClicked == "tblDetails") {
+                    if (oTrans.getItemCount() - 1 < 0) {
+                        poJSON.put("result", "error");
+                        poJSON.put("message", "'No rows in the table'");
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                    } else {
+                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this item?") == true) {
+                            oTrans.RemoveModelDetail(pnDetailRow);
+                            pnDetailRow = oTrans.getItemCount() - 1;
+                            loadTableDetail();
+                            txtField04.requestFocus();
+                        }
                     }
+                } else {
+                    img_data.remove(pnAttachmentRow);
+                    pnAttachmentRow = img_data.size() - 1;
+                    setSelectedAttachment();
+                    loadTableAttachment();
+                    initDetailsGrid2();
                 }
 
                 break;
@@ -675,6 +740,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
     @FXML
     void tblDetails_Clicked(MouseEvent event) {
+        tblClicked = "tblDetails";
         pnDetailRow = tblDetails.getSelectionModel().getSelectedIndex();
         if (pnDetailRow >= 0) {
             setSelectedDetail();
@@ -683,6 +749,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
     @FXML
     void tblAttachments_Clicked(MouseEvent event) {
+        tblClicked = "tblAttachments";
         pnAttachmentRow = tblAttachments.getSelectionModel().getSelectedIndex();
         if (pnAttachmentRow >= 0) {
             setSelectedAttachment();
@@ -739,16 +806,22 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
     private void setSelectedAttachment() {
         try {
-            String filePath = (String) img_data.get(pnAttachmentRow).getIndex13();
-
-            System.out.println("Attachment file" + filePath);
-            // Read image from the selected file
-            Path imgPath = Paths.get(filePath);
-            Image loimage = new Image(Files.newInputStream(imgPath));
-            imageView.setImage(loimage);
-            stackPane1.setClip(new javafx.scene.shape.Rectangle(stackPane1.getWidth(), stackPane1.getHeight()));
-
-//                    String imgPath2 = selectedFile.toURI().toString();
+            if (pnAttachmentRow >= 0) {
+                String filePath = (String) img_data.get(pnAttachmentRow).getIndex13();
+                if (filePath.length() != 0) {
+                    Path imgPath = Paths.get(filePath);
+                    Image loimage = new Image(Files.newInputStream(imgPath));
+                    imageView.setImage(loimage);
+                    stackPane1.setClip(new javafx.scene.shape.Rectangle(stackPane1.getWidth(), stackPane1.getHeight()));
+                } else {
+                    imageView.setImage(null);
+                    stackPane1.setClip(new javafx.scene.shape.Rectangle(stackPane1.getWidth(), stackPane1.getHeight()));
+                }
+            } else {
+                imageView.setImage(null);
+                stackPane1.setClip(new javafx.scene.shape.Rectangle(stackPane1.getWidth(), stackPane1.getHeight()));
+                pnAttachmentRow = 0;
+            }
         } catch (IOException ex) {
             Logger.getLogger(PurchaseOrderMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -781,6 +854,23 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         } catch (Exception e) {
         }
 
+    }
+
+    private void loadTableAttachment() {
+        //load image data
+//        img_data.clear();
+        List<ImageModel> tempData = new ArrayList<>();
+
+        // Copy the data
+        for (int i = 0; i < img_data.size(); i++) {
+            tempData.add(new ImageModel(String.valueOf(i), img_data.get(i).getIndex13()));
+        }
+
+        // Clear the original data
+        img_data.clear();
+
+        // Add the copied data back if needed
+        img_data.addAll(tempData);
     }
 
     private void loadTableDetail() {
@@ -1421,6 +1511,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         pnDetailRow = -1;
         pnIndex = -1;
 
+        img_data.clear();
         data.clear();
 
     }
@@ -1436,7 +1527,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         btnRemoveItem.setVisible(lbShow);
         btnAttachment.setVisible(lbShow);
         btnPreview.setVisible(lbShow);
-        
+
         btnCancel.setManaged(lbShow);
         btnSearch.setManaged(lbShow);
         btnSave.setManaged(lbShow);
