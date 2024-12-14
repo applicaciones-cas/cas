@@ -103,6 +103,9 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     private double mouseAnchorY;
     private double scaleFactor = 1.0;
 
+    private double initialMouseX, initialMouseY; // For dragging
+    private double initialTranslateX, initialTranslateY; // For dragging
+
     @FXML
     private AnchorPane MainAnchorPane;
 
@@ -307,20 +310,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
     public void initDetailsGrid2() {
         /*FOCUS ON FIRST ROW*/
-        if (pnAttachmentRow < 0 || pnAttachmentRow >= img_data.size()) {
-            if (!img_data.isEmpty()) {
-                /* FOCUS ON FIRST ROW */
-                tblAttachments.getSelectionModel().select(0);
-                tblAttachments.getFocusModel().focus(0);
-                pnAttachmentRow = tblAttachments.getSelectionModel().getSelectedIndex();
-            }
-//            setSelectedDetail(); //textfield data
-        } else {
-            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-            tblAttachments.getSelectionModel().select(pnAttachmentRow);
-            tblAttachments.getFocusModel().focus(pnAttachmentRow);
-//            setSelectedDetail();
-        }
 
         index12.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 5;");
         index13.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 5;");
@@ -336,6 +325,19 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         });
 
         tblAttachments.setItems(img_data);
+
+        if (pnAttachmentRow < 0 || pnAttachmentRow >= img_data.size()) {
+            if (!img_data.isEmpty()) {
+                /* FOCUS ON FIRST ROW */
+                tblAttachments.getSelectionModel().select(0);
+                tblAttachments.getFocusModel().focus(0);
+                pnAttachmentRow = tblAttachments.getSelectionModel().getSelectedIndex();
+            }
+        } else {
+            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+            tblAttachments.getSelectionModel().select(pnAttachmentRow);
+            tblAttachments.getFocusModel().focus(pnAttachmentRow);
+        }
     }
 
     private void generateImages() {
@@ -425,13 +427,16 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     img_data.add(new ImageModel(String.valueOf(img_data.size()), imgPath2));
 
                     if (img_data.size() > 1) {
-                        pnAttachmentRow += 1;
+                        pnAttachmentRow = img_data.size() - 1;
                     }
+                    tblClicked = "tblAttachments";
                     loadTableAttachment();
                     setSelectedAttachment();
                     initDetailsGrid2();
-                    
-                        
+
+                    tblDetails.getSelectionModel().clearSelection();
+                    tblDetails.getFocusModel().focus(-1);
+
 //                        try (InputStream imgStream = Files.newInputStream(imgPath)) {
 //                            BufferedImage image = ImageIO.read(imgStream);
 //
@@ -694,9 +699,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 break;
             case "btnRemoveItem":
-                //Detect which table is clicked
-                //if tblAttachment is clicked get the row and remove
-                //if tblDetail clicked then proceed to this
+
                 if (tblClicked == "tblDetails") {
                     if (oTrans.getItemCount() - 1 < 0) {
                         poJSON.put("result", "error");
@@ -712,7 +715,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     }
                 } else {
                     img_data.remove(pnAttachmentRow);
-                    pnAttachmentRow = img_data.size() - 1;
+                    pnAttachmentRow -= 1;
                     setSelectedAttachment();
                     loadTableAttachment();
                     initDetailsGrid2();
@@ -726,6 +729,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     pbLoaded = true;
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
+                    setSelectedAttachment();
                     break;
                 } else {
                     return;
@@ -737,6 +741,20 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         initButton(pnEditMode);
 
     }
+    
+    private void setTableSelection(String tableName){
+        switch(tableName){
+            case "tblDetails":
+                tblAttachments.getSelectionModel().clearSelection();
+                tblAttachments.getFocusModel().focus(-1);
+                break;
+            case "tblAttachments":
+                tblDetails.getSelectionModel().clearSelection();
+                tblDetails.getFocusModel().focus(-1);
+                break;
+               
+        }
+    }
 
     @FXML
     void tblDetails_Clicked(MouseEvent event) {
@@ -745,6 +763,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         if (pnDetailRow >= 0) {
             setSelectedDetail();
         }
+      
     }
 
     @FXML
@@ -754,6 +773,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         if (pnAttachmentRow >= 0) {
             setSelectedAttachment();
         }
+
     }
 
     private void loadRecord() {
@@ -806,7 +826,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
     private void setSelectedAttachment() {
         try {
-            if (pnAttachmentRow >= 0) {
+            if (pnAttachmentRow >= 0 && pnEditMode != EditMode.UNKNOWN) {
                 String filePath = (String) img_data.get(pnAttachmentRow).getIndex13();
                 if (filePath.length() != 0) {
                     Path imgPath = Paths.get(filePath);
@@ -871,6 +891,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
         // Add the copied data back if needed
         img_data.addAll(tempData);
+
     }
 
     private void loadTableDetail() {
@@ -976,6 +997,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         oTrans.getMasterModel().setTransactionTotal(Double.valueOf(String.format("%.2f", lnTotalTransaction)));
         lnTotalTransaction = 0;
 
+        tblClicked = "tblDetails";
         /*FOCUS ON FIRST ROW*/
         if (pnDetailRow < 0 || pnDetailRow >= data.size()) {
             if (!data.isEmpty()) {
@@ -990,21 +1012,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
             tblDetails.getSelectionModel().select(pnDetailRow);
             tblDetails.getFocusModel().focus(pnDetailRow);
             setSelectedDetail();
-        }
-
-        if (pnAttachmentRow < 0 || pnAttachmentRow >= img_data.size()) {
-            if (!img_data.isEmpty()) {
-                /* FOCUS ON FIRST ROW */
-                tblAttachments.getSelectionModel().select(0);
-                tblAttachments.getFocusModel().focus(0);
-                pnAttachmentRow = tblAttachments.getSelectionModel().getSelectedIndex();
-                setSelectedAttachment();
-            }
-        } else {
-            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-            tblAttachments.getSelectionModel().select(pnAttachmentRow);
-            tblAttachments.getFocusModel().focus(pnAttachmentRow);
-            setSelectedAttachment();
         }
 
         oTrans.setRowSelect(oTrans.getItemCount() - 1);
@@ -1606,6 +1613,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         //  imageView.setOnMousePressed(event -> handleMousePressed1(event, imageView));
         // imageView.setOnMouseDragged(event -> handleMouseDragged1(event, imageView));
         initImageView();
+
     }
 
     public void setGRider(GRider foValue) {
