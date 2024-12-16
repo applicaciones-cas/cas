@@ -32,7 +32,7 @@
                              </tooltip>
                          </Button>
                      </children></AnchorPane>
-                  <Label fx:id="text" text="File Attachment" textFill="#f8f6f6">
+                  <Label fx:id="text" text="File Attachments" textFill="#f8f6f6">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
@@ -48,7 +48,7 @@
                <children>
                   <VBox prefHeight="1000.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: orange;">
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: FF8201;">
                            <children>
                               <TableView fx:id="tblAttachments" onMouseClicked="#tblAttachments_Clicked" prefHeight="200.0" prefWidth="764.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                 <columns>
@@ -61,7 +61,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </VBox.margin>
                         </AnchorPane>
-                        <AnchorPane prefHeight="466.0" prefWidth="1022.0" style="-fx-border-color: orange;">
+                        <AnchorPane prefHeight="466.0" prefWidth="1022.0" style="-fx-border-color: FF8201;">
                            <VBox.margin>
                               <Insets bottom="5.0" left="5.0" right="5.0" />
                            </VBox.margin>
@@ -79,9 +79,9 @@
             </AnchorPane>
          </center>
          <bottom>
-            <AnchorPane prefWidth="1032.0" BorderPane.alignment="CENTER">
+            <AnchorPane fx:id="bottomNav" prefWidth="1032.0" style="-fx-background-radius: 30;" BorderPane.alignment="CENTER">
                <children>
-                  <HBox layoutY="9.0" spacing="5.0" style="-fx-background-color: E9E9E9;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <HBox fx:id="hbButtons" layoutY="9.0" spacing="5.0" style="-fx-background-color: E9E9E9;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                          <Button fx:id="btnAttachment" contentDisplay="TOP" ellipsisString="" layoutX="1015.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="106.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Add Attachment">
                              <graphic>

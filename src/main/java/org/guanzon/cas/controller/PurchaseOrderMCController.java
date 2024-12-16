@@ -409,29 +409,31 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 break;
             case "btnAttachments":
-                                try {
-                // Load FXML and Controller
+            try {
+                FileAttachmentPreviewController controller = new FileAttachmentPreviewController();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/guanzon/cas/views/FileAttachmentPreview.fxml"));
+                loader.setController(getClass().getResource("/org/guanzon/cas/controller/FileAttachmentPreviewController.java"));
                 Parent root = loader.load();
+                
 
-                // Get the controller to set the image
-                FileAttachmentPreviewController controller = loader.getController();
-//                controller.setImage(fileUrl);
-
+                Scene scene = new Scene(root);
+                scene.setFill(null); // Make the scene transparent
                 // Create a new Stage
                 Stage stage = new Stage(StageStyle.UNDECORATED);
+                stage.initStyle(StageStyle.TRANSPARENT); // Remove window decorations
                 stage.setTitle("Image Viewer");
                 stage.initModality(Modality.APPLICATION_MODAL); // Block interaction with other windows
-                stage.setScene(new Scene(root));
+                stage.setScene(scene);
                 stage.setAlwaysOnTop(true);
                 stage.show();
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-                break;
+            break;
             case "btnAttachment":
                 try {
+
                 // Open file chooser dialog
                 fileChooser = new FileChooser();
                 fileChooser.setTitle("Choose Image");
@@ -734,8 +736,8 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
     }
 
-    private void setTableSelection(String tableName) {
-        switch (tableName) {
+    private void setTableSelection() {
+        switch (tblClicked) {
             case "tblDetails":
                 tblAttachments.getSelectionModel().clearSelection();
                 tblAttachments.getFocusModel().focus(-1);
@@ -754,6 +756,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         if (pnDetailRow >= 0) {
             setSelectedDetail();
             tblClicked = "tblDetails";
+            setTableSelection();
         }
 
     }
@@ -764,6 +767,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         if (pnAttachmentRow >= 0) {
             setSelectedAttachment();
             tblClicked = "tblAttachments";
+            setTableSelection();
         }
 
     }

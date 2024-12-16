@@ -39,10 +39,13 @@ public class FileAttachmentPreviewController {
     private double scaleFactor = 1.0;
     private FileChooser fileChooser;
     private int pnAttachmentRow;
+    private double xOffset = 0;
+    private double yOffset = 0;
 
     @FXML
     private AnchorPane mainPane;
-
+    @FXML
+    private AnchorPane bottomNav;
     @FXML
     private AnchorPane draggablePane;
 
@@ -77,6 +80,22 @@ public class FileAttachmentPreviewController {
     }
 
     public void initialize() {
+        draggablePane.setOnMousePressed(this::handleMousePressed);
+        draggablePane.setOnMouseDragged(this::handleMouseDragged);
+        
+          // Add inline CSS for rounded corners
+        mainPane.setStyle(
+                "-fx-background-radius: 5; " 
+        );
+        
+        draggablePane.setStyle(
+                "-fx-background-radius: 5 5 0 0; " + // Top-left and top-right corners rounded
+                "-fx-background-color:#4D5656; "
+        );
+         bottomNav.setStyle(
+                "-fx-background-radius: 0 0 5 5; " // Top-left and top-right corners rounded
+        );
+        
         btnClose.setOnAction(event -> {
             Stage stage = (Stage) btnClose.getScene().getWindow();
             stage.close();
@@ -108,6 +127,20 @@ public class FileAttachmentPreviewController {
             imageView.setTranslateX(translateX);
             imageView.setTranslateY(translateY);
         });
+    }
+    
+    
+    private void handleMousePressed(MouseEvent event) {
+        // Capture the initial offset between the mouse and the stage
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    private void handleMouseDragged(MouseEvent event) {
+        // Get the current stage and update its position
+        Stage stage = (Stage) draggablePane.getScene().getWindow();
+        stage.setX(event.getScreenX() - xOffset);
+        stage.setY(event.getScreenY() - yOffset);
     }
 
     private void loadTableAttachment() {
