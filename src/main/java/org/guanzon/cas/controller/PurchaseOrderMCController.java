@@ -29,6 +29,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -407,6 +408,28 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 }
 
                 break;
+            case "btnAttachments":
+                                try {
+                // Load FXML and Controller
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/guanzon/cas/views/FileAttachmentPreview.fxml"));
+                Parent root = loader.load();
+
+                // Get the controller to set the image
+                FileAttachmentPreviewController controller = loader.getController();
+//                controller.setImage(fileUrl);
+
+                // Create a new Stage
+                Stage stage = new Stage(StageStyle.UNDECORATED);
+                stage.setTitle("Image Viewer");
+                stage.initModality(Modality.APPLICATION_MODAL); // Block interaction with other windows
+                stage.setScene(new Scene(root));
+                stage.setAlwaysOnTop(true);
+                stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+                break;
             case "btnAttachment":
                 try {
                 // Open file chooser dialog
@@ -437,65 +460,13 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     tblDetails.getSelectionModel().clearSelection();
                     tblDetails.getFocusModel().focus(-1);
 
-//                        try (InputStream imgStream = Files.newInputStream(imgPath)) {
-//                            BufferedImage image = ImageIO.read(imgStream);
-//
-//                            // Define the directory path
-//                            Path directory = Paths.get(imagePath, (String) "sample");
-//                            if (!Files.exists(directory)) {
-//                          Files.createDirectories(directory);
-//                            }
-//
-//                            // Define the destination file path
-//                            Path imgFilePath = directory.resolve(selectedFile.getName());
-//                            try (OutputStream outputStream = Files.newOutputStream(imgFilePath)) {
-//                                ImageIO.write(image, "jpg", outputStream);
-//                            }
-//   System.out.println("Failed to add image to transaction.");
-//                            }
-//                        }
-//                            // Generate image path for external reference
-//                            String imgPathString = "https://restgk.guanzongroup.com.ph/images/mp/uploads/listing/"
-//                                    + oTrans.getMasterModel() + "/" + selectedFile.getName();
-//
-//                            // Add the image to the transaction
-//                            if (oTrans.addImage(imgPathString)) {
-//                                pnEditMode = oTrans.getEditMode();
-//                                img_data.add(new ImageModel(String.valueOf(img_data.size()), imgFilePath.toUri().toString()));
-//                                generateImages();
-//                            } else {
-//                                System.out.println("Failed to add image to transaction.");
-//                            }
-//                        }                                Files.createDirectories(directory);
-//                            }
-//
-//                            // Define the destination file path
-//                            Path imgFilePath = directory.resolve(selectedFile.getName());
-//                            try (OutputStream outputStream = Files.newOutputStream(imgFilePath)) {
-//                                ImageIO.write(image, "jpg", outputStream);
-//                            }
-//   System.out.println("Failed to add image to transaction.");
-//                            }
-//                        }
-//                            // Generate image path for external reference
-//                            String imgPathString = "https://restgk.guanzongroup.com.ph/images/mp/uploads/listing/"
-//                                    + oTrans.getMasterModel() + "/" + selectedFile.getName();
-//
-//                            // Add the image to the transaction
-//                            if (oTrans.addImage(imgPathString)) {
-//                                pnEditMode = oTrans.getEditMode();
-//                                img_data.add(new ImageModel(String.valueOf(img_data.size()), imgFilePath.toUri().toString()));
-//                                generateImages();
-//                            } else {
-//                                System.out.println("Failed to add image to transaction.");
-//                            }
-//                        }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             break;
             case "btnBrowse":
+                tblClicked = "tblDetails";
                 if (pnIndex < 98) {
                     pnIndex = 99;
                 }
@@ -514,6 +485,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 break;
 
             case "btnNew":
+                tblClicked = "tblDetails";
                 clearFields();
                 poJSON = oTrans.newTransaction();
                 Branch loCompanyID = oTrans.GetBranch(oApp.getBranchCode());
@@ -532,30 +504,31 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 break;
             case "btnUpdate":
+                tblClicked = "tblDetails";
                 try {
-                Validator_PurchaseOrder_Master ValidateMaster = new Validator_PurchaseOrder_Master(oTrans.getMasterModel());
+                    Validator_PurchaseOrder_Master ValidateMaster = new Validator_PurchaseOrder_Master(oTrans.getMasterModel());
 
-                if (!ValidateMaster.isEntryOkay()) {
-                    poJSON.put("result", "error");
-                    poJSON.put("message", ValidateMaster.getMessage());
+                    if (!ValidateMaster.isEntryOkay()) {
+                        poJSON.put("result", "error");
+                        poJSON.put("message", ValidateMaster.getMessage());
+                        ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        pnEditMode = EditMode.UNKNOWN;
+                        return;
+                    }
+                    btnFindSource.setManaged(true);
+                } catch (Exception e) {
+
+                }
+
+                pnEditMode = oTrans.getMasterModel().getEditMode();
+                poJSON = oTrans.updateTransaction();
+                if ("error".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
                     ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                     pnEditMode = EditMode.UNKNOWN;
                     return;
                 }
-                btnFindSource.setManaged(true);
-            } catch (Exception e) {
-
-            }
-
-            pnEditMode = oTrans.getMasterModel().getEditMode();
-            poJSON = oTrans.updateTransaction();
-            if ("error".equals((String) poJSON.get("result"))) {
-                System.err.println((String) poJSON.get("message"));
-                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                pnEditMode = EditMode.UNKNOWN;
-                return;
-            }
-            break;
+                break;
             case "btnPrint":
                 poJSON = oTrans.printRecord();
                 if ("error".equals((String) poJSON.get("result"))) {
@@ -574,6 +547,12 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                 break;
             case "btnFindSource":
+                tblClicked = "tblDetails";
+                tblAttachments.getSelectionModel().clearSelection();
+                tblDetails.getFocusModel().focus(- 1);
+                tblDetails.getSelectionModel().select(oTrans.getItemCount() - 1);
+                tblDetails.getFocusModel().focus(oTrans.getItemCount() - 1);
+
                 if (pnIndex < 98) {
                     pnIndex = 99;
                 }
@@ -591,6 +570,12 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 break;
 
             case "btnSearch":
+                tblClicked = "tblDetails";
+                tblAttachments.getSelectionModel().clearSelection();
+                tblDetails.getFocusModel().focus(- 1);
+                tblDetails.getSelectionModel().select(oTrans.getItemCount() - 1);
+                tblDetails.getFocusModel().focus(oTrans.getItemCount() - 1);
+
                 if (pnIndex > 3 || pnIndex < 1) {
                     pnIndex = 1;
                 }
@@ -618,6 +603,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 break;
 
             case "btnSave":
+                tblClicked = "tblDetails";
                 poJSON = oTrans.getMasterModel().setModifiedBy(oApp.getUserID());
                 if ("error".equals((String) poJSON.get("result"))) {
                     System.err.println((String) poJSON.get("message"));
@@ -657,6 +643,12 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 }
                 break;
             case "btnAddItem":
+                tblClicked = "tblDetails";
+                tblAttachments.getSelectionModel().clearSelection();
+                tblDetails.getFocusModel().focus(- 1);
+                tblDetails.getSelectionModel().select(oTrans.getItemCount() - 1);
+                tblDetails.getFocusModel().focus(oTrans.getItemCount() - 1);
+
                 if (oTrans.getItemCount() - 1 < 0) {
                     poJSON = oTrans.AddModelDetail();
                     pnDetailRow = oTrans.getItemCount() - 1;
@@ -741,9 +733,9 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         initButton(pnEditMode);
 
     }
-    
-    private void setTableSelection(String tableName){
-        switch(tableName){
+
+    private void setTableSelection(String tableName) {
+        switch (tableName) {
             case "tblDetails":
                 tblAttachments.getSelectionModel().clearSelection();
                 tblAttachments.getFocusModel().focus(-1);
@@ -752,26 +744,26 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 tblDetails.getSelectionModel().clearSelection();
                 tblDetails.getFocusModel().focus(-1);
                 break;
-               
+
         }
     }
 
     @FXML
     void tblDetails_Clicked(MouseEvent event) {
-        tblClicked = "tblDetails";
         pnDetailRow = tblDetails.getSelectionModel().getSelectedIndex();
         if (pnDetailRow >= 0) {
             setSelectedDetail();
+            tblClicked = "tblDetails";
         }
-      
+
     }
 
     @FXML
     void tblAttachments_Clicked(MouseEvent event) {
-        tblClicked = "tblAttachments";
         pnAttachmentRow = tblAttachments.getSelectionModel().getSelectedIndex();
         if (pnAttachmentRow >= 0) {
             setSelectedAttachment();
+            tblClicked = "tblAttachments";
         }
 
     }

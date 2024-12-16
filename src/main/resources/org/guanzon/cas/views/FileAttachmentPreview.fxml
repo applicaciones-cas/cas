@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="mainPane" prefHeight="712.0" prefWidth="1032.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.guanzon.cas.controller.FileAttachmentPreviewController">
+   <children>
+      <BorderPane layoutX="218.0" layoutY="76.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <AnchorPane minHeight="-Infinity" prefHeight="31.0" prefWidth="1032.0" BorderPane.alignment="CENTER">
+               <children>
+                  <AnchorPane fx:id="draggablePane" minHeight="-Infinity" prefHeight="72.0" prefWidth="1032.0" style="-fx-background-color: #4D5656;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                         <Button fx:id="btnClose" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#closeDialog" onMouseClicked="#closeDialog" prefWidth="13.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" textAlignment="CENTER" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                             <graphic>
+                                 <FontAwesomeIconView fx:id="" fill="#f79130" glyphName="CLOSE" onMouseClicked="#closeDialog" size="14" textAlignment="CENTER" />
+                             </graphic>
+                             <tooltip>
+                                 <Tooltip text="Logout" />
+                             </tooltip>
+                         </Button>
+                     </children></AnchorPane>
+                  <Label fx:id="text" text="File Attachment" textFill="#f8f6f6">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <padding>
+                        <Insets left="10.0" top="5.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </top>
+         <center>
+            <AnchorPane prefHeight="608.0" prefWidth="1032.0" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox prefHeight="1000.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: orange;">
+                           <children>
+                              <TableView fx:id="tblAttachments" onMouseClicked="#tblAttachments_Clicked" prefHeight="200.0" prefWidth="764.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                <columns>
+                                  <TableColumn fx:id="index12" prefWidth="75.0" text="No" />
+                                  <TableColumn fx:id="index13" maxWidth="1.7976931348623157E308" prefWidth="930.0" text="File Name" />
+                                </columns>
+                              </TableView>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="466.0" prefWidth="1022.0" style="-fx-border-color: orange;">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" />
+                           </VBox.margin>
+                           <children>
+                              <StackPane fx:id="stackPane1" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </StackPane>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </center>
+         <bottom>
+            <AnchorPane prefWidth="1032.0" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox layoutY="9.0" spacing="5.0" style="-fx-background-color: E9E9E9;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                         <Button fx:id="btnAttachment" contentDisplay="TOP" ellipsisString="" layoutX="1015.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="106.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Add Attachment">
+                             <graphic>
+                                 <FontAwesomeIconView glyphName="PAPERCLIP" size="20" />
+                             </graphic>
+                             <effect>
+                             </effect>
+                         </Button>
+                         <Button fx:id="btnRemoveItem" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="95.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Remove Item">
+                             <graphic>
+                                 <FontAwesomeIconView glyphName="MINUS" size="20" />
+                             </graphic>
+                             <effect>
+                             </effect>
+                         </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding></HBox>
+               </children>
+            </AnchorPane>
+         </bottom></BorderPane>
+   </children>
+</AnchorPane>

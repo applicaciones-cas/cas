@@ -141,6 +141,14 @@
                                           <Blend />
                                        </effect>
                                     </Button>
+                                    <Button fx:id="btnAttachments" contentDisplay="TOP" ellipsisString="" layoutX="1226.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="106.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Attachments">
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="FOLDER" size="20" />
+                                       </graphic>
+                                       <effect>
+                                          <Blend />
+                                       </effect>
+                                    </Button>
                                        </children>
                                        <padding>
                                           <Insets bottom="5.0" left="5.0" top="5.0" />
