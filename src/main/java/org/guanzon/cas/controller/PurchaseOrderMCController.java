@@ -98,14 +98,9 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     private int pnAttachmentRow;
     private String imagePath = "D:/Guanzon/MarketPlaceImages";
 
-    private double initialX;
-    private double initialY;
     private double mouseAnchorX;
     private double mouseAnchorY;
     private double scaleFactor = 1.0;
-
-    private double initialMouseX, initialMouseY; // For dragging
-    private double initialTranslateX, initialTranslateY; // For dragging
 
     @FXML
     private AnchorPane MainAnchorPane;
@@ -381,10 +376,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         switch (lsButton) {
             case "btnPreview":
                 String filePath = (String) img_data.get(pnAttachmentRow).getIndex13();
-//                ImageViewer img = new ImageViewer();
                 String fileUrl = new File(filePath).toURI().toString();
-//                img.setImageViewer(fileUrl);
-//                img.display();
 
                 try {
                     // Load FXML and Controller
@@ -414,7 +406,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/guanzon/cas/views/FileAttachmentPreview.fxml"));
                 loader.setController(getClass().getResource("/org/guanzon/cas/controller/FileAttachmentPreviewController.java"));
                 Parent root = loader.load();
-                
 
                 Scene scene = new Scene(root);
                 scene.setFill(null); // Make the scene transparent
@@ -636,12 +627,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
                     ShowMessageFX.Information(null, pxeModuleName, "Transaction successful Saved!");
-
-                    oTrans = new PurchaseOrder(oApp, true);
-                    pbLoaded = true;
-                    oTrans.setTransactionStatus("12340");
-                    pnEditMode = EditMode.UNKNOWN;
-
                 }
                 break;
             case "btnAddItem":
@@ -753,6 +738,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
     @FXML
     void tblDetails_Clicked(MouseEvent event) {
         pnDetailRow = tblDetails.getSelectionModel().getSelectedIndex();
+        oTrans.setRowSelect(pnDetailRow);
         if (pnDetailRow >= 0) {
             setSelectedDetail();
             tblClicked = "tblDetails";
@@ -925,7 +911,10 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                 loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
                 loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
 //                loColor = oTrans.GetColor((String) loInventory.getMaster("sColorIDx"), true);
-                ln1 = Double.parseDouble((oTrans.getDetailModel(lnCtr).getValue("nUnitPrce")).toString()) * Double.parseDouble(oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString());
+                try {
+                    ln1 = Double.parseDouble((oTrans.getDetailModel(lnCtr).getValue("nUnitPrce")).toString()) * Double.parseDouble(oTrans.getDetailModel(lnCtr).getValue("nQuantity").toString());
+                } catch (Exception e) {
+                }
 
                 try {
                     if (oTrans.getDetailModel(lnCtr).getQuantity() != 0) {
@@ -941,14 +930,19 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     lsMaxLevel = (String) loInventory.getMaster("nMaxLevel");
                 } catch (Exception e) {
                 }
-
-                if (loInventory.getMaster("xBrandNme").toString().length() == 0) {
-                    if (pnEditMode == EditMode.ADDNEW) {
-                        loInventory2 = (String) loBrand.getMaster("sDescript");
+                
+                try{
+                    if (loInventory.getMaster("xBrandNme").toString().length() == 0) {
+                        if (pnEditMode == EditMode.ADDNEW) {
+                            loInventory2 = (String) loBrand.getMaster("sDescript");
+                        }
+                    } else {
+                        loInventory2 = (String) loInventory.getMaster("xBrandNme");
                     }
-                } else {
-                    loInventory2 = (String) loInventory.getMaster("xBrandNme");
+                }catch(Exception e){
+                    
                 }
+            
                 data.add(new ModelPurchaseOrderMC(String.valueOf(lnCtr + 1),
                         loInventory2,
                         (String) loInventory.getMaster("xModelNme"),
@@ -1071,7 +1065,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     }
                     break;
                 case 11://AddDisc Rate
-                    try {
+                try {
                     double x = Double.valueOf(lsValue);
                 } catch (Exception e) {
                     ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
@@ -1181,27 +1175,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                     }
                     loadTableDetail();
                     break;
-//                case 5:
-//                    //New Cost inputted by user
-//                    if (txtField.getText().length() > 12) {
-//                        ShowMessageFX.Warning("Max characters for `New Cost` exceeds the limit.", pxeModuleName, "Please verify your entry.");
-//                        txtField.requestFocus();
-//                        return;
-//                    }
-//                    try {
-//                        double x = Double.valueOf(lsValue);
-//                    } catch (Exception e) {
-//                        ShowMessageFX.Warning("Please input numbers only.", pxeModuleName, e.getMessage());
-//                        txtField.requestFocus();
-//                    }
-//                    poJSON = oTrans.setDetail(pnDetailRow, "nUnitPrce", Double.valueOf(lsValue));
-//                    if ("error".equals((String) poJSON.get("result"))) {
-//                        System.err.println((String) poJSON.get("message"));
-//                        return;
-//                    }
-//
-//                    loadTableDetail();
-//                    break;
+
                 case 6:
                     /*this must be numeric*/
                     int x = 0;
@@ -1235,33 +1209,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         }
 
     };
-
-    private void handleZoom(ScrollEvent event, ImageView imageView) {
-
-        double zoomFactor = 1.05;
-        double deltaY = event.getDeltaY();
-        if (deltaY < 0) {
-            zoomFactor = 1 / zoomFactor;
-        }  // Apply the new scale
-        imageView.setScaleX(imageView.getScaleX() * zoomFactor);
-        imageView.setScaleY(imageView.getScaleY() * zoomFactor);
-    }
-
-    private void handleMousePressed1(MouseEvent event, ImageView imageView) {
-        initialX = imageView.getTranslateX();
-        initialY = imageView.getTranslateY();
-        mouseAnchorX = event.getSceneX();
-        mouseAnchorY = event.getSceneY();
-    }
-// Handle mouse dragged for dragging 
-
-    private void handleMouseDragged1(MouseEvent event, ImageView imageView) {
-        double deltaX = event.getSceneX() - mouseAnchorX;
-        double deltaY = event.getSceneY() - mouseAnchorY;
-        imageView.setTranslateX(initialX + deltaX);
-        imageView.setTranslateY(initialY + deltaY);
-
-    }
 
     private void txtField_KeyPressed(KeyEvent event) {
         TextField textField = (TextField) event.getSource();
@@ -1308,6 +1255,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         } else {
                             loadRecord();
                         }
+
                         break;
                     case 8:
                         /*sTermCode*/
@@ -1356,7 +1304,7 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
                         txtDetail04.clear();
                         poJSON = oTrans.searchDetail(pnDetailRow, "sBrandIDx", lsValue, false);
                         try {
-                            pnDetailRow = oTrans.getRowSelect();
+                            pnDetailRow = tblDetails.getSelectionModel().getSelectedIndex();
                         } catch (Exception e) {
                         }
                         if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
@@ -1365,6 +1313,8 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
 
                         }
 
+                        
+                        
                         break;
                     case 2: //Model
                         poJSON = oTrans.searchDetail(pnDetailRow, "sModelIDx", lsValue, true);
@@ -1605,9 +1555,6 @@ public class PurchaseOrderMCController implements Initializable, ScreenInterface
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
         pbLoaded = true;
-//        stackPane1.setOnScroll(event -> handleZoom(event, imageView));
-        //  imageView.setOnMousePressed(event -> handleMousePressed1(event, imageView));
-        // imageView.setOnMouseDragged(event -> handleMouseDragged1(event, imageView));
         initImageView();
 
     }
