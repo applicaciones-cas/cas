@@ -831,7 +831,7 @@ public class InvRequestCancellationHistoryController implements Initializable, S
                     categForm = " MC" ;
                     oTrans.setType(types);
                 } else if ("0002".equals(type)) {
-                    types = RequestControllerFactory.RequestType.MP;
+                    types = RequestControllerFactory.RequestType.MPUnits;
                     categForm = " MP" ;
                     oTrans.setType(types);
                 }else if ("0003".equals(type)) {

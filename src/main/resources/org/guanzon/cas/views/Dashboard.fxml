@@ -223,45 +223,14 @@
                                                 <Menu mnemonicParsing="false" text="_Inventory">
                                                     <items>
                                                         <MenuItem fx:id="mnuInventory" mnemonicParsing="false" onAction="#mnuInventoryClick" text="Inventory Details" />
-                                          <Menu mnemonicParsing="false" text="Stock Request">
+                                          <Menu fx:id="menuInventoryRequestROQ" mnemonicParsing="false" text="Inventory Request">
                                              <items>
-                                                <Menu fx:id="menuRequestRegular" mnemonicParsing="false" text="NEW UI Regular">
-                                                   <items>
-                                                      <MenuItem fx:id="mnuStockRequestWithoutROQ" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQClick" style="-fx-font-weight: normal;" text="Regular" />
-                                                      <MenuItem fx:id="mnuStockRequestWithoutROQSP" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQSPClick" style="-fx-font-weight: normal;" text="Regular SP" />
-                                                      <MenuItem fx:id="mnuStockRequestWithoutROQGI" mnemonicParsing="false" onAction="#mnuStockRequestWithoutROQGIClick" style="-fx-font-weight: normal;" text="Regular GI" />
-                                                   </items>
-                                                </Menu>
-                                                <Menu fx:id="menuRequestROQ" mnemonicParsing="false" styleClass="menu-item" text="NEW UI ROQ">
-                                                   <items>
-                                                      <MenuItem fx:id="mnuStockRequestROQ" mnemonicParsing="false" onAction="#mnuStockRequestROQClick" style="-fx-font-weight: normal;" text="ROQ" />
-                                                      <MenuItem fx:id="mnuStockRequestROQSP" mnemonicParsing="false" onAction="#mnuStockRequestROQSPClick" style="-fx-font-weight: normal;" text="ROQ SP" />
-                                                      <MenuItem fx:id="mnuStockRequestROQGI" mnemonicParsing="false" onAction="#mnuStockRequestROQGIClick" style="-fx-font-weight: normal;" text="ROQ GI" />
-                                                   </items>
-                                                </Menu>
-                                                <Menu fx:id="menuRequestCancel" mnemonicParsing="false" text="NEW UI Cancellation">
-                                                   <items>
-                                                      <MenuItem fx:id="mnuStockRequestCancellation" mnemonicParsing="false" onAction="#mnuStockRequestCancellationClick" style="-fx-font-weight: normal;" text="Cancellation" />
-                                                      <MenuItem fx:id="mnuStockRequestCancellationSP" mnemonicParsing="false" onAction="#mnuStockRequestCancellationSPClick" style="-fx-font-weight: normal;" text="Cancellation SP" />
-                                                      <MenuItem fx:id="mnuStockRequestCancellationGI" mnemonicParsing="false" onAction="#mnuStockRequestCancellationGIClick" style="-fx-font-weight: normal;" text="Cancellation GI" />
-                                                   </items>
-                                                </Menu>
-                                                <Menu fx:id="menuInventoryRequest" mnemonicParsing="false" text="Inventory Request">
-                                                   <items>
-                                                      <MenuItem fx:id="menuInventoryRequest" mnemonicParsing="false" text="Motorcycle" />
-                                                      <MenuItem mnemonicParsing="false" text="Spareparts" />
-                                                   </items>
-                                                </Menu>
-                                                <Menu fx:id="menuInventoryRequestROQ" mnemonicParsing="false" text="Inventory Request ROQ">
-                                                   <items>
-                                                      <MenuItem fx:id="mnuInvRequestMotorcycle" mnemonicParsing="false" onAction="#mnuInvRequestMotorcycleClick" text="Motorcycle" />
-                                                      <MenuItem fx:id="mnuInvRequestMobileUnits" mnemonicParsing="false" onAction="#mnuInvRequestMobileUnitsClick" text="Mobile Phone - Units" />
-                                                      <MenuItem fx:id="mnuInvRequestAppliance" mnemonicParsing="false" onAction="#mnuInvRequestAppliancesClick" text="Appliances" />
-                                                      <MenuItem fx:id="mnuInvRequestVehicle" mnemonicParsing="false" onAction="#mnuInvRequestVehicleClick" text="Vehicle" />
-                                                      <MenuItem fx:id="mnuInvRequestMobileAccesories" mnemonicParsing="false" onAction="#mnuInvRequestMobileAccesoriesClick" text="Mobile Phone - Accesories" />
-                                                      <MenuItem fx:id="mnuInvRequestSpareparts" mnemonicParsing="false" onAction="#mnuInvRequestSpareparttsClick" text="Spareparts" />
-                                                   </items>
-                                                </Menu>
+                                                <MenuItem fx:id="mnuInvRequestMotorcycleROQ" mnemonicParsing="false" onAction="#mnuInvRequestMotorcycleROQClick" text="Motorcycle" />
+                                                <MenuItem fx:id="mnuInvRequestMobileUnits" mnemonicParsing="false" onAction="#mnuInvRequestMobileUnitsClick" text="Mobile Phone - Units" />
+                                                <MenuItem fx:id="mnuInvRequestAppliance" mnemonicParsing="false" onAction="#mnuInvRequestAppliancesClick" text="Appliances" />
+                                                <MenuItem fx:id="mnuInvRequestVehicle" mnemonicParsing="false" onAction="#mnuInvRequestVehicleClick" text="Vehicle" />
+                                                <MenuItem fx:id="mnuInvRequestMobileAccesories" mnemonicParsing="false" onAction="#mnuInvRequestMobileAccesoriesClick" text="Mobile Phone - Accesories" />
+                                                <MenuItem fx:id="mnuInvRequestSpareparts" mnemonicParsing="false" onAction="#mnuInvRequestSpareparttsClick" text="Spareparts" />
                                              </items>
                                           </Menu>
                                                     </items>
@@ -319,6 +288,16 @@
                                                 <MenuItem fx:id="mnuHistStockRequestCancellation" mnemonicParsing="false" onAction="#mnuHistStockRequestCancellationClick" text="Stock Request Cancellation" />
                                                 <MenuItem fx:id="mnuHistStockRequestSP1" mnemonicParsing="false" onAction="#mnuHistStockRequestCancellationSPClick" text="Stock Request Cancellation SP" />
                                                 <MenuItem fx:id="mnuHistStockRequestGI1" mnemonicParsing="false" onAction="#mnuHistStockRequestCancellationGIClick" text="Stock Request Cancellation GI" />
+                                             </items>
+                                          </Menu>
+                                          <Menu fx:id="menuHistInvRequest" mnemonicParsing="false" text="Inventory Request">
+                                             <items>
+                                                <MenuItem fx:id="mnuHistInvRequestMC" mnemonicParsing="false" onAction="#mnuHistInvRequestMCClick" text="Motorcycle" />
+                                                <MenuItem fx:id="mnuHistInvRequestMPUnits" mnemonicParsing="false" onAction="#mnuHistInvRequestMPUnitsClick" text="Mobile Phone - Units" />
+                                                <MenuItem fx:id="mnuHistInvRequestAppliance" mnemonicParsing="false" onAction="#mnuHistInvRequestApplianceClick" text="Appliances" />
+                                                <MenuItem fx:id="mnuHistInvRequestVehicle" mnemonicParsing="false" onAction="#mnuHistInvRequestVehicleClick" text="Vehicle" />
+                                                <MenuItem fx:id="mnuHistInvRequestMPAccesories" mnemonicParsing="false" onAction="#mnuHistInvRequestMPAccesoriesclick" text="Mobile Phone - Accesories" />
+                                                <MenuItem fx:id="mnuHistInvRequestMCSpareparts" mnemonicParsing="false" onAction="#mnuHistInvRequestMCSparepartsClick" text="Spareparts" />
                                              </items>
                                           </Menu>
                                                     </items>

@@ -1,10 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.guanzon.cas.controller;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import com.sun.javafx.scene.control.skin.TableViewSkin;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +23,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -48,6 +47,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inventory.stock.Inv_Request;
 import org.guanzon.cas.inventory.stock.request.RequestControllerFactory;
+import org.guanzon.cas.model.ModelMobile;
 import org.guanzon.cas.model.ModelStockRequest;
 import org.guanzon.cas.model.ReportPrinter;
 import org.json.simple.JSONObject;
@@ -57,9 +57,9 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class InventoryRequestVehicleController implements Initializable, ScreenInterface {
+public class HistInventoryRequestMPUnitsController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Inventory Request Vehicle";
+    private final String pxeModuleName = "History Inventory Request MP Units";
     private GRider oApp;
     private int pnEditMode;
     private Inv_Request oTrans;
@@ -67,11 +67,11 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
     private ObservableList<ModelStockRequest> R1data = FXCollections.observableArrayList();
     private ObservableList<ModelStockRequest> R2data = FXCollections.observableArrayList();
     private int pnRow = 0;
-    private int pnROQ = 0;
     private JasperPrint jasperPrint;
     private JRViewer jrViewer;
     private String categForm = "";
     private boolean isReportRunning = false; // Flag to track if report is running
+    private int pnROQ = 0;
     ReportPrinter printer = new ReportPrinter();
 
     @Override
@@ -83,10 +83,9 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
     private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06,
             txtField07, txtField08, txtField09, txtField10, txtField11, txtField12,
             txtField13, txtField14, txtField15, txtField16, txtField17, txtField18,
-            txtField19, txtField20, txtField21, txtField22, txtField23, txtField24,
-            txtField25, txtField26;
+            txtField19, txtField20, txtField21, txtField22, txtField23, txtField24;
     @FXML
-    private AnchorPane anchorMain,
+        private AnchorPane anchorMain,
             anchorMaster,
             anchorTable,
             anchorDetails;
@@ -128,8 +127,7 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
         clearAllFields();
         InitTextFields();
         initButton(pnEditMode);
-//        initTblDetails();
-        initTblDetailsROQ();
+        initTblDetails();
         initTabAnchor();
         lblStatus.setText("UNKNOWN");
         oTrans.setWithUI(true);
@@ -168,6 +166,9 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
                     break;
 
                 case "btnNew":
+//                    
+                    txtField03.setDisable(true);
+                    txtField04.setDisable(true);
                     poJSON = oTrans.newTransaction();
                     if ("success".equals((String) poJSON.get("result"))) {
                         pnEditMode = oTrans.getEditMode();
@@ -175,9 +176,9 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
                         initButton(pnEditMode);
                         clearAllFields();
                         initTabAnchor();
-//                        loadItemData();
+                        loadItemData();
                         loadItemDataROQ();
-                        loadDetails();
+//                        loadDetails();
                         txtField01.setText((String) oTrans.getMasterModel().getTransactionNumber());
                         LocalDate currentDate = LocalDate.now();
 
@@ -202,6 +203,7 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
                         loadItemData();
                         loadItemDataROQ();
                     }
+                    pnRow = 0; 
                     break;
                 case "btnUpdate":
                     poJSON = oTrans.updateTransaction();
@@ -220,15 +222,17 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
                     initTblDetails();
                     initTabAnchor();
                     txtField03.requestFocus();
-                    tblDetails.getSelectionModel().select(pnRow + 1);
+                    tblDetailsROQ.getSelectionModel().select(pnRow + 1);
                     break;
 
                 case "btnBrowse":
-                     poJSON = oTrans.searchTransaction("sTransNox", "", pbLoaded);
+                    /*LOAD BROWSE*/
+                    poJSON = oTrans.searchTransaction("sTransNox", "", pbLoaded);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         break;
                     }
+                    
                     pnEditMode = oTrans.getEditMode();
                     R1data.clear();
                     loadTransaction();
@@ -236,13 +240,19 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
                     loadItemData();
                     initTabAnchor();
                     tblDetails.getSelectionModel().select(0);
-                        loadDetails();
+                    loadDetails();
+                    initButton(pnEditMode);
                     break;
-
+                    
                 case "btnAddItem":
-
+                    clearItem();
+                    txtField03.setEditable(true);
+                    txtField04.setEditable(true);
+                    txtField03.setDisable(false);
+                    txtField04.setDisable(false);
                     poJSON = oTrans.AddModelDetail();
-                    System.out.println(poJSON.toJSONString());
+                    System.out.println("sample1 == " + oTrans.getDetailModel().get(pnRow).getStockID());
+                    System.out.println("sample == " + poJSON.toJSONString());
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Accounting System", pxeModuleName);
                         break;
@@ -252,8 +262,8 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
                     pnEditMode = oTrans.getEditMode();
                     loadItemData();
                     loadItemDataROQ();
-                    tblDetails.getSelectionModel().select(pnRow + 1);
-
+                    tblDetails.getSelectionModel().select(pnROQ + 1);
+                    txtField03.requestFocus();
                     break;
 
                 case "btnDelItem":
@@ -295,6 +305,8 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
                             clearAllFields();
                             initTrans();
                             initTabAnchor();
+                            txtField03.setEditable(false);
+                            txtField04.setEditable(false);
                         }
                     }
                     break;
@@ -325,8 +337,7 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
             {txtField01, txtField02, txtField03, txtField04, txtField05, txtField06,
             txtField07, txtField08, txtField09, txtField10, txtField11, txtField12,
             txtField13, txtField14, txtField15, txtField16, txtField17, txtField18,
-            txtField19, txtField20, txtField21, txtField22, txtField23, txtField24,
-            txtField25, txtField26},};
+            txtField19, txtField20, txtField21, txtField22, txtField23, txtField24},};
 
 // Loop through each array of TextFields and clear them
         for (TextField[] fields : allFields) {
@@ -349,8 +360,7 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
             txtField01, txtField02, txtField03, txtField04, txtField05, txtField06,
             txtField07, txtField08, txtField09, txtField10, txtField11, txtField12,
             txtField13, txtField14, txtField15, txtField16, txtField17, txtField18,
-            txtField19, txtField20, txtField21, txtField22, txtField23, txtField24,
-            txtField25, txtField26};
+            txtField19, txtField20, txtField21, txtField22, txtField23, txtField24};
 
 // Add the listener to each text field in the focusTextFields array
         for (TextField textField : focusTextFields) {
@@ -359,7 +369,7 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
 
 // Define arrays for text fields with setOnKeyPressed handlers
         TextField[] keyPressedTextFields = {
-            txtField05, txtField09, txtField11,txtField14,txtField08
+            txtField03,txtField04,txtField05, txtField09, txtField11,txtField14,txtField08
         };
 
 // Set the same key pressed event handler for each text field in the keyPressedTextFields array
@@ -428,21 +438,58 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
                     System.out.print("CLASSIFY == ");
                     break;
                 case 8:/*ORDER QTY*/
+
+                    
                     if (lsValue.matches("\\d*")) {
                         int qty = (lsValue.isEmpty()) ? 0 : Integer.parseInt(lsValue);
                         oTrans.getDetailModel().get(pnRow).setQuantity(qty);
-//                        loadItemData();
-                        loadItemDataROQ();
-                        break;
+
+                        if (qty > 0 && !oTrans.getDetailModel().get(pnRow).getStockID().isEmpty()) {
+
+                            // Check if there are any records with an empty StockID
+                           
+                            
+
+                            // Check if the StockID is empty and replace data in tblDetails or add new detail
+                            String stockID = oTrans.getDetailModel().get(pnRow).getStockID();
+                            if (stockID.isEmpty()) {
+                                // Replace data in tblDetails with the data from tblDetailsROQ
+                                // Assuming `tblDetailsROQ` contains the new or updated data to be used.
+                                for (int i = 0; i < tblDetailsROQ.getItems().size(); i++) {
+                                    // Assuming that you need to replace the entry at `pnRow`
+                                    // Replace data at `pnRow` with data from `tblDetailsROQ` (adjust indexing as needed)
+                                    if (oTrans.getDetailModel().get(pnRow).getStockID().isEmpty()) {
+                                        // Here, replace the `tblDetails` entry with the `tblDetailsROQ` entry
+                                        // Example: oTrans.getDetailModel().get(pnRow).set... (update attributes)
+//                                        oTrans.getDetailModel().get(pnRow).setQuantity(Integer.parseInt(tblDetailsROQ.getItems().get(i).get()));
+//                                        oTrans.getDetailModel().get(pnRow).setStockID(tblDetailsROQ.getItems().get(i).getStockID());
+                                        oTrans.getDetailModel().set(pnRow, oTrans.getDetailModelOthers().get(i));
+                                        
+                                        System.out.println("empty");
+                                        // Additional attributes can be copied as needed
+                                    }
+                                }
+                            } else {
+                                // If StockID is not empty, add new detail
+                                // You can call AddModelDetail again or load the appropriate item data
+                                loadItemDataROQ();
+                                loadItemData();
+
+                                // Select next row in both tables
+                                tblDetails.getSelectionModel().select(pnRow + 1);
+                                tblDetailsROQ.getSelectionModel().select(pnROQ + 1);
+                            }
+                            
+                        }
+
                     } else {
                         ShowMessageFX.Information("Invalid Input", "Computerized Accounting System", pxeModuleName);
                     }
-//                    txtField.setText("");
-                    txtField.requestFocus();
                     break;
             }
-//            loadItemData();
+            loadItemData();
             loadItemDataROQ();
+             
         } else {
             txtField.selectAll();
         }
@@ -460,44 +507,53 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
                     case 03:
                         /*search barcode*/
                         poJson = new JSONObject();
-                        poJson = oTrans.searchDetail(pnRow, 3, lsValue, true);
+                        poJson = oTrans.searchDetail(pnRow, 26, lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
+                        txtField04.requestFocus();
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Accounting System", pxeModuleName);
                             break;
                         }
+                        
+                        
                         break;
                     case 04:/*search desciption*/
                         poJson = new JSONObject();
-                        poJson = oTrans.searchDetail(pnRow, 3, lsValue, false);
+                        String lsBrand = (txtField03.getText()==null)?"":txtField03.getText().toString();
+                        if(lsBrand.isEmpty()){
+                            oTrans.setDetail(pnRow, 26, "");
+                        }
+                        poJson = oTrans.searchDetail(pnRow, 27, lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Accounting System", pxeModuleName);
                             break;
                         }
+                        
+                        txtField08.requestFocus();
                         break;
                     case 8:/*QUANTITY ORDER*/
-                        tblDetailsROQ.requestFocus();
+                        tblDetails.requestFocus();
                         Platform.runLater(() -> {
-                            if (pnRow < tblDetailsROQ.getItems().size() - 1) {
+                            if (pnRow < tblDetails.getItems().size() - 1) {
                                 pnRow++;
 
-                                tblDetailsROQ.getSelectionModel().select(pnRow);
-                                tblDetailsROQ.scrollTo(pnRow); // Scroll to ensure the row is visible
+                                tblDetails.getSelectionModel().select(pnRow);
+                                tblDetails.scrollTo(pnRow); // Scroll to ensure the row is visible
                                 loadDetails();
 
                                 // Update focus to txtField14 after loading details
                                 Platform.runLater(() -> txtField08.requestFocus());
 
                                 // Optionally refresh the table to make sure selection is visually updated
-                                tblDetailsROQ.refresh();
+                                tblDetails.refresh();
                             }
                         });
                         break;
 
                 }
                 loadDetails();
-                txtField08.requestFocus();
+//                txtField08.requestFocus();
         }
         switch (event.getCode()) {
             case DOWN:
@@ -553,7 +609,7 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
 
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        
+
 // Manage visibility and managed state of buttons
         btnCancel.setVisible(lbShow);
         btnSearch.setVisible(lbShow);
@@ -569,20 +625,17 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
 
 // Manage visibility and managed state of other buttons
         btnBrowse.setVisible(!lbShow);
-        btnNew.setVisible(!lbShow);
+
         btnClose.setVisible(!lbShow);
         btnBrowse.setManaged(!lbShow);
-        btnNew.setManaged(!lbShow);
         btnClose.setManaged(!lbShow);
-        
-//        btnCancelTrans.setVisible(false);
-//        btnCancelTrans.setManaged(false);
-//        btnApprove.setVisible(false);
-//        btnApprove.setManaged(false);
+
+        btnNew.setVisible(false);
+        btnNew.setManaged(false);
         btnUpdate.setVisible(false);
         btnUpdate.setManaged(false);
-        btnAddItem.setVisible(false);
-        btnAddItem.setManaged(false);
+        btnAddItem.setVisible(lbShow);
+        btnAddItem.setManaged(lbShow);
         btnDelItem.setVisible(false);
         btnDelItem.setManaged(false);
         System.out.println("THIS IS YOUR INITIALIZE " + fnValue);
@@ -592,7 +645,7 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
         btnApprove.setVisible(isVisible);
         btnApprove.setManaged(isVisible);
 
-}
+    }
 
     private void initTblDetails() {
         index01.setStyle("-fx-alignment: CENTER;");
@@ -619,46 +672,36 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
         index10.setCellValueFactory(new PropertyValueFactory<>("index10"));
         index11.setCellValueFactory(new PropertyValueFactory<>("index11"));
 
-        tblDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblDetails.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
+        tblDetails.skinProperty().addListener((observable, oldValue, newValue) -> {
+        if (newValue instanceof TableViewSkin) {
+            TableViewSkin<?> skin = (TableViewSkin<?>) newValue;
+            VirtualFlow<?> virtualFlow = (VirtualFlow<?>) skin.getChildren().get(1);
+
+            // Add listener for horizontal scrollbar visibility
+            ScrollBar hScrollBar = (ScrollBar) virtualFlow.lookup(".scroll-bar:horizontal");
+            if (hScrollBar != null) {
+                hScrollBar.visibleProperty().addListener((obs, wasVisible, isVisible) -> {
+                    System.out.println("visible? == " + isVisible);
+                    if (isVisible) {
+                        System.out.println("visible? == true");
+                        index11.setMinWidth(81);
+                        index11.setMaxWidth(81);
+                    } else {
+                        
+                        System.out.println("visible? == false");
+                        index11.setMinWidth(95);
+                        index11.setMaxWidth(95);
+                    }
+                    
+                });
+            }
+        }
+    });
         tblDetails.setItems(R1data);
         tblDetails.autosize();
     }
     
-    private void initTblDetailsROQ() {
-        indexROQ01.setStyle("-fx-alignment: CENTER;");
-        indexROQ02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        indexROQ03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        indexROQ04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        indexROQ05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        indexROQ06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        indexROQ07.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        indexROQ08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        indexROQ09.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-
-        indexROQ01.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        indexROQ02.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        indexROQ03.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        indexROQ04.setCellValueFactory(new PropertyValueFactory<>("index04"));
-        indexROQ05.setCellValueFactory(new PropertyValueFactory<>("index05"));
-        indexROQ06.setCellValueFactory(new PropertyValueFactory<>("index06"));
-        indexROQ07.setCellValueFactory(new PropertyValueFactory<>("index07"));
-        indexROQ08.setCellValueFactory(new PropertyValueFactory<>("index08"));
-        indexROQ09.setCellValueFactory(new PropertyValueFactory<>("index09"));
-
-        tblDetailsROQ.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblDetailsROQ.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-        tblDetailsROQ.setItems(R2data);
-        tblDetailsROQ.autosize();
-    }
+    
 
     private void loadTransaction() {
         if (pnEditMode == EditMode.READY
@@ -666,6 +709,7 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
                 || pnEditMode == EditMode.UPDATE) {
 
             txtField01.setText((String) oTrans.getMasterModel().getTransactionNumber());
+            txtField02.setText((String) oTrans.getMasterModel().getReferenceNumber());
             txtArea01.setText((String) oTrans.getMasterModel().getRemarks());
 //            dpField01.setValue((Date) oTrans.getMasterModel().getTransaction());
 
@@ -711,15 +755,21 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
 
     private void loadDetails() {
         if (!oTrans.getDetailModel().isEmpty()) {
-            txtField03.setText((String) oTrans.getDetailModel().get(pnRow).getBrandName());
+            System.err.println("PNROW load details == " +  pnRow);
+             boolean isEmpty = oTrans.getDetailModel().get(pnRow).getStockID().isEmpty();
+                txtField03.setDisable(!isEmpty);
+                txtField04.setDisable(!isEmpty);
+                
+            txtField03.setText((String) oTrans.getDetailModel().get(pnRow).getBrandName()); 
             txtField04.setText((String) oTrans.getDetailModel().get(pnRow).getModelName()); 
-            txtField05.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantityOnHand()));
-            txtField06.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantity()));
+            txtField05.setText((String) oTrans.getDetailModel().get(pnRow).getSeriesName());
+            txtField06.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getYearModel()));
+            txtField09.setText((String) oTrans.getDetailModel().get(pnRow).getVariantName());
             txtField07.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getOnTransit()));
             txtField08.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantity()));
-            txtField10.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantityOnHand()));
-            txtField11.setText((String)oTrans.getDetailModel().get(pnRow).getColorName());
-            txtField12.setText((String)(oTrans.getDetailModel().get(pnRow).getMinimumLevel()));
+            txtField09.setText((String) oTrans.getDetailModel().get(pnRow).getModelCode());
+            txtField10.setText((String)oTrans.getDetailModel().get(pnRow).getColorName());
+            txtField12.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getMinimumLevel()));
             txtField13.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getMaximumLevel()));
             txtField14.setText(String.valueOf(oTrans.getDetailModel().get(pnRow).getQuantityOnHand()));
             txtField15.setText((String) oTrans.getDetailModel().get(pnRow).getClassify());
@@ -730,14 +780,19 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
     }
     private void loadDetailsOthers() {
         if (!oTrans.getDetailModelOthers().isEmpty()) {
+
+                boolean isEmpty = oTrans.getDetailModel().get(pnRow).getStockID().isEmpty();
+                txtField03.setDisable(!isEmpty);
+                txtField04.setDisable(!isEmpty);
+
             txtField03.setText((String) oTrans.getDetailModelOthers().get(pnROQ).getBrandName());
             txtField04.setText((String) oTrans.getDetailModelOthers().get(pnROQ).getModelName()); 
-            txtField05.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getQuantityOnHand()));
-            txtField06.setText("");
+            txtField05.setText("0");
+            txtField06.setText("0");
             txtField07.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getOnTransit()));
             txtField08.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getQuantity()));
-            txtField10.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getQuantityOnHand()));
-            txtField11.setText((String)oTrans.getDetailModelOthers().get(pnROQ).getColorName());
+            txtField09.setText((String) oTrans.getDetailModel().get(pnRow).getModelCode());
+            txtField10.setText((String)oTrans.getDetailModel().get(pnRow).getColorName());
             txtField12.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getMinimumLevel()));
             txtField13.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getMaximumLevel()));
             txtField14.setText(String.valueOf(oTrans.getDetailModelOthers().get(pnROQ).getQuantityOnHand()));
@@ -750,15 +805,30 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
     private void loadItemData() {
         int lnCtr;
         R1data.clear();
-        if (oTrans.getDetailModelOthers()!= null) {
-            for  (lnCtr = 0; lnCtr < oTrans.getDetailModelOthers().size(); lnCtr++){
-            R1data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),
-                
-            
-            (String) oTrans.getDetailModelOthers().get(lnCtr).getBrandName(),
-                (String) oTrans.getDetailModelOthers().get(lnCtr).getModelName(),
-                        "",                
-                            "",
+        if (oTrans.getDetailModel()!= null) {
+            for  (lnCtr = 0; lnCtr < oTrans.getDetailModel().size(); lnCtr++){
+            R1data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),            
+                    (String) oTrans.getDetailModel().get(lnCtr).getBrandName(),
+                    (String) oTrans.getDetailModel().get(lnCtr).getModelName(),
+                    "",
+                    "",
+                    (oTrans.getDetailModel().get(lnCtr).getColorName() == null ? "" : oTrans.getDetailModel().get(lnCtr).getColorName()),
+                    (oTrans.getDetailModel().get(lnCtr).getClassify() == null ? "" : oTrans.getDetailModel().get(lnCtr).getClassify()),
+                    oTrans.getDetailModel().get(lnCtr).getQuantityOnHand().toString(),
+                    "",
+                    oTrans.getDetailModel().get(lnCtr).getRecordOrder().toString(),
+                    oTrans.getDetailModel().get(lnCtr).getQuantity().toString()));
+            }
+        }
+    }
+    private void loadItemDataROQ() {
+        int lnCtr;
+        R2data.clear();
+        if (oTrans.getDetailModelOthers() != null) {
+            for (lnCtr = 0; lnCtr < oTrans.getDetailModelOthers().size(); lnCtr++) {
+                R2data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),
+                        (String) oTrans.getDetailModelOthers().get(lnCtr).getModelName(),
+                        "",
                         (oTrans.getDetailModelOthers().get(lnCtr).getColorName() == null ? "" : oTrans.getDetailModelOthers().get(lnCtr).getColorName()),
                         (oTrans.getDetailModelOthers().get(lnCtr).getClassify() == null ? "" : oTrans.getDetailModelOthers().get(lnCtr).getClassify()),
                         oTrans.getDetailModelOthers().get(lnCtr).getQuantityOnHand().toString(),
@@ -766,84 +836,24 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
                         oTrans.getDetailModelOthers().get(lnCtr).getRecordOrder().toString(),
                         oTrans.getDetailModelOthers().get(lnCtr).getQuantity().toString()));
             }
-        }
-    }
-        private void loadItemDataROQ() {
-        int lnCtr;
-        R2data.clear();
-        if (oTrans.getDetailModel() != null) {
-            for (lnCtr = 0; lnCtr < oTrans.getDetailModel().size(); lnCtr++) {
-                ;
-//            oTrans.getDetailModel().get(lnCtr).list();
-                R2data.add(new ModelStockRequest(String.valueOf(lnCtr + 1),
-                        (String) oTrans.getDetailModel().get(lnCtr).getModelName(),
-                        "",
-                        (oTrans.getDetailModel().get(lnCtr).getColorName() == null ? "" : oTrans.getDetailModel().get(lnCtr).getColorName()),
-                        (oTrans.getDetailModel().get(lnCtr).getClassify() == null ? "" : oTrans.getDetailModel().get(lnCtr).getClassify()),
-                        oTrans.getDetailModel().get(lnCtr).getQuantityOnHand().toString(),
-                        "",
-                        oTrans.getDetailModel().get(lnCtr).getRecordOrder().toString(),
-                        oTrans.getDetailModel().get(lnCtr).getQuantity().toString()));
-            }
             System.out.println("list " + oTrans.getItemCount());
         }
     }
-       @FXML
-    private void tblDetails_Clicked(MouseEvent event) {
-        if (tblDetails.getSelectionModel().getSelectedIndex() >= 0) {
-            pnROQ = tblDetails.getSelectionModel().getSelectedIndex();
-            System.out.println("pnROQ = " + pnROQ);
-            for(int lnctr = 0; lnctr < tblDetailsROQ.getItems().size(); lnctr++){
-                if(oTrans.getDetailModelOthers().get(pnROQ).getStockID().equalsIgnoreCase(oTrans.getDetailModel().get(lnctr).getStockID())){
-                    pnRow = lnctr;
-                    tblDetailsROQ.getSelectionModel().select(pnRow);
-                }
-            }
-            System.out.println("pnROQ = " + pnROQ);
-            loadDetailsOthers();
-            txtField08.requestFocus();
-//            txtField08.selectAll();
-        }
-        tblDetails.setOnKeyReleased((KeyEvent t) -> {
-            KeyCode key = t.getCode();
-            switch (key) {
-                case DOWN:
-                    pnROQ = tblDetails.getSelectionModel().getSelectedIndex();
-                    if (pnROQ == tblDetails.getItems().size()) {
-                        pnROQ = tblDetails.getItems().size();
-                        loadDetailsOthers();
-                    } else {
-                        loadDetailsOthers();
-                    }
-                    break;
-                case UP:
-                    int pnROQ = 0;
-                    int x = 1;
-                    pnROQ = tblDetails.getSelectionModel().getSelectedIndex();
 
-                    loadDetailsOthers();
-                    break;
-                default:
-                    break;
-            }
-        });
-    }
-        @FXML
-    private void tblDetailsROQ_Clicked(MouseEvent event) {
-        if (tblDetailsROQ.getSelectionModel().getSelectedIndex() >= 0) {
-            pnRow = tblDetailsROQ.getSelectionModel().getSelectedIndex();
-            System.out.println("pnRow = " + pnRow);
+    @FXML
+    private void tblDetails_Clicked(MouseEvent event) {
+        System.out.println("pnRow = " + pnRow);
+        if (tblDetails.getSelectionModel().getSelectedIndex() >= 0) {
+            pnRow = tblDetails.getSelectionModel().getSelectedIndex();
             loadDetails();
-            txtField08.requestFocus();
-            txtField08.selectAll();
         }
         tblDetails.setOnKeyReleased((KeyEvent t) -> {
             KeyCode key = t.getCode();
             switch (key) {
                 case DOWN:
-                    pnRow = tblDetailsROQ.getSelectionModel().getSelectedIndex();
-                    if (pnRow == tblDetailsROQ.getItems().size()) {
-                        pnRow = tblDetailsROQ.getItems().size();
+                    pnRow = tblDetails.getSelectionModel().getSelectedIndex();
+                    if (pnRow == tblDetails.getItems().size()) {
+                        pnRow = tblDetails.getItems().size();
                         loadDetails();
                     } else {
                         loadDetails();
@@ -852,7 +862,7 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
                 case UP:
                     int pnRows = 0;
                     int x = 1;
-                    pnRow = tblDetailsROQ.getSelectionModel().getSelectedIndex();
+                    pnRow = tblDetails.getSelectionModel().getSelectedIndex();
 
                     loadDetails();
                     break;
@@ -861,19 +871,21 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
             }
         });
     }
+    
     private void clearItem() {
         TextField[][] allFields = {
             // Text fields related to specific sections
-            {txtField05, txtField06,txtField07, txtField08, txtField09, txtField10, txtField11, txtField12,
+            {txtField03,txtField04,txtField05, txtField06,txtField07, txtField08, txtField09, txtField10, txtField11, txtField12,
             txtField13, txtField14, txtField15, txtField16, txtField17, txtField18,
-            txtField19, txtField20, txtField21, txtField22, txtField23, txtField24,
-            txtField25, txtField26},};
+            txtField19, txtField20, txtField21, txtField22, txtField23, txtField24},};
 
         for (TextField[] fields : allFields) {
             for (TextField field : fields) {
                 field.clear();
             }
         }
+//        txtField03.setEditable(false);
+//        txtField04.setEditable(false);
     }
 
     private void initTrans() {
@@ -882,25 +894,7 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
         oTrans = new Inv_Request(oApp, true);
         String industry = System.getProperty("store.inventory.industry");
 
-        RequestControllerFactory.RequestType types = null;
-        String[] category = industry.split(";");
-// Print the resulting array
-        for (String type : category) {
-            if (types == null) {
-                if ("0001".equals(type)) {
-                    types = RequestControllerFactory.RequestType.MC;
-                    oTrans.setType(types);
-                } else if ("0002".equals(type)) {
-                    types = RequestControllerFactory.RequestType.MP;
-                    oTrans.setType(types);
-                } else if ("0003".equals(type)) {
-                    types = RequestControllerFactory.RequestType.AUTO;
-                    oTrans.setType(types);
-                }
-
-                System.out.println("type value = " + types);
-            }
-        }
+        oTrans.setType(RequestControllerFactory.RequestType.MPUnits);
         oTrans.setCategoryType(RequestControllerFactory.RequestCategoryType.WITH_ROQ);
         oTrans.setTransactionStatus("0123");
         oTrans.isHistory(false);
@@ -940,3 +934,4 @@ public class InventoryRequestVehicleController implements Initializable, ScreenI
         return printer.loadAndShowReport(sourceFileName, params, R1data, pxeModuleName);
     }
 }
+

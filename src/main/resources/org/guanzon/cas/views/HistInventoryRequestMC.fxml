@@ -173,7 +173,7 @@
                                     <Insets right="10.0" />
                                  </GridPane.margin>
                               </Text>
-                              <TextField fx:id="txtField03" editable="false" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                              <TextField fx:id="txtField03" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                                  <font>
                                     <Font size="14.0" />
@@ -182,7 +182,7 @@
                                     <Insets right="10.0" />
                                  </GridPane.margin>
                               </Text>
-                              <TextField fx:id="txtField04" editable="false" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                              <TextField fx:id="txtField04" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Series" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                                  <font>
                                     <Font size="14.0" />
@@ -397,27 +397,7 @@
          <center>
             <AnchorPane BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane maxWidth="-Infinity" prefHeight="215.0" prefWidth="1220.0" style="-fx-border-color: FF8201;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0">
-                     <children>
-                        <TableView fx:id="tblDetailsROQ" onMouseClicked="#tblDetailsROQ_Clicked" prefWidth="1107.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <columns>
-                              <TableColumn fx:id="indexROQ01" prefWidth="30.0" text="No" />
-                              <TableColumn fx:id="indexROQ02" prefWidth="270.0" text="Model" />
-                              <TableColumn fx:id="indexROQ03" prefWidth="270.0" text="Variant" />
-                              <TableColumn fx:id="indexROQ04" prefWidth="160.0" text="Color" />
-                              <TableColumn fx:id="indexROQ05" minWidth="90.0" prefWidth="90.0" resizable="false" text="Class" />
-                              <TableColumn fx:id="indexROQ06" minWidth="90.0" prefWidth="90.0" resizable="false" text="QOH" />
-                              <TableColumn fx:id="indexROQ07" minWidth="90.0" prefWidth="90.0" resizable="false" text="AMC" />
-                              <TableColumn fx:id="indexROQ08" minWidth="90.0" prefWidth="90.0" resizable="false" text="ROQ" />
-                              <TableColumn fx:id="indexROQ09" minWidth="90.0" prefWidth="90.0" resizable="false" text="Order" />
-                           </columns>
-                        </TableView>
-                     </children>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                  </AnchorPane>
-                  <AnchorPane fx:id="anchorTable" prefWidth="1220.0" style="-fx-border-color: FF8201;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="225.0">
+                  <AnchorPane fx:id="anchorTable" prefWidth="1220.0" style="-fx-border-color: FF8201;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="5.0">
                      <children>
                         <TableView fx:id="tblDetails" onMouseClicked="#tblDetails_Clicked" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                            <columns>
@@ -431,7 +411,7 @@
                               <TableColumn fx:id="index08" minWidth="90.0" prefWidth="90.0" resizable="false" text="QOH" />
                               <TableColumn fx:id="index09" minWidth="90.0" prefWidth="90.0" resizable="false" text="AMC" />
                               <TableColumn fx:id="index10" minWidth="90.0" prefWidth="90.0" resizable="false" text="ROQ" />
-                              <TableColumn fx:id="index11" minWidth="90.0" prefWidth="90.0" resizable="false" text="Order" />
+                              <TableColumn fx:id="index11" minWidth="85.0" prefWidth="95.0" resizable="false" text="Order" />
                            </columns>
                         </TableView>
                      </children>

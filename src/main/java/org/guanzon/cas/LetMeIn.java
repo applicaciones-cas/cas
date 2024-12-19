@@ -54,6 +54,7 @@ private static boolean loadProperties() {
 
             System.setProperty("store.branch.code", po_props.getProperty("store.branch.code"));
             System.setProperty("store.inventory.industry", po_props.getProperty("store.inventory.category"));
+            System.setProperty("store.inventory.industry2", po_props.getProperty("store.inventory.category2"));
             
             return true;
         } catch (FileNotFoundException ex) {
