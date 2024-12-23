@@ -4,13 +4,10 @@
  */
 package org.guanzon.cas.controller;
 
-import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,7 +20,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -38,16 +34,14 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.LogWrapper;
-import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inv.Inventory;
-import org.guanzon.cas.inventory.base.InvSerial;
-import org.guanzon.cas.inventory.base.InvSerialLedger;
 import org.guanzon.cas.model.ModelInvSubUnit;
 import org.guanzon.cas.parameter.Category;
 import org.guanzon.cas.parameter.CategoryLevel2;
 import org.guanzon.cas.parameter.CategoryLevel3;
 import org.guanzon.cas.parameter.CategoryLevel4;
+import org.guanzon.cas.parameter.Parameters;
 import org.json.simple.JSONObject;
 
 /**
@@ -64,10 +58,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
     private String oTransnox = "";
     private int pnEditMode;
     private Inventory oTrans;
-    private Category oCategory;    
-    private CategoryLevel2 oCategory2;    
-    private CategoryLevel3 oCategory3;  
-    private CategoryLevel4 oCategory4;
+    private Parameters oParameters;
     private boolean state = false;
     private boolean pbLoaded = false;
     private int pnInventory = 0;
@@ -170,62 +161,19 @@ public class InventoryParamController implements Initializable, ScreenInterface 
     public void initialize(URL url, ResourceBundle rb) {
 
         LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-
-//        oTrans = new Inventory(oApp, "", null);
-        System.out.println("LOG WRAP == " + logwrapr);
         oTrans = new Inventory();
         oTrans.setApplicationDriver(oApp);
         oTrans.setWithParentClass(false);
         oTrans.setLogWrapper(logwrapr);
         oTrans.initialize();
 
-        System.out.println("LOG WRAP == " + logwrapr);
-        oCategory = new Category();
-        oCategory.setApplicationDriver(oApp);
-        oCategory.setWithParentClass(false);
-        oCategory.setLogWrapper(logwrapr);
-        oCategory.initialize();
-        
-        oCategory2 = new CategoryLevel2();
-        oCategory2.setApplicationDriver(oApp);
-        oCategory2.setWithParentClass(false);
-        oCategory2.setLogWrapper(logwrapr);
-        oCategory2.initialize();
-        
-        oCategory3 = new CategoryLevel3();
-        oCategory3.setApplicationDriver(oApp);
-        oCategory3.setWithParentClass(false);
-        oCategory3.setLogWrapper(logwrapr);
-        oCategory3.initialize();
-        
-        oCategory4 = new CategoryLevel4();
-        oCategory4.setApplicationDriver(oApp);
-        oCategory4.setWithParentClass(false);
-        oCategory4.setLogWrapper(logwrapr);
-        oCategory4.initialize();
-        
-
-//        oTrans.setWithParentClass(true);
+        oParameters = new Parameters(oApp, logwrapr);
         InitTextFields();
         pnEditMode = EditMode.UNKNOWN;
         ClickButton();
         initButton(pnEditMode);
 
-//        
-//        oTrans = new Inventory();
-//        
-//        oTrans.setRecordStatus("0123");
-//        oTrans.getModel().setUnitType("0");
-//        pnEditMode = EditMode.UNKNOWN;  
-//        oTrans.setWithUI(true);
-//        InitTextFields();
-//        initButton(pnEditMode);
-//        initTabAnchor();
-//        ClickButton();
-//        System.out.println("CLIENT ID == " + oApp.getClientID());
-//
-//        pbLoaded = true;
-//        // TODO
+        pbLoaded = true;
     }
 
 //    /*Handle button click*/
@@ -239,7 +187,6 @@ public class InventoryParamController implements Initializable, ScreenInterface 
         btnAddSubItem.setOnAction(this::handleButtonAction);
         btnDelSubUnit.setOnAction(this::handleButtonAction);
     }
-//    
 
     private void handleButtonAction(ActionEvent event) {
         Object source = event.getSource();
@@ -259,17 +206,20 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                     txtField02.requestFocus();
                     JSONObject poJSON;
                     poJSON = oTrans.newRecord();
+                    pnEditMode= EditMode.READY;
                     if ("success".equals((String) poJSON.get("result"))) {
                         pnEditMode = EditMode.ADDNEW;
                         initButton(pnEditMode);
                         loadInventory();
-                        initSubItemForm();
-//                            txtField06.setText((String) oTrans.getModel().getCategName1()); 
-//                            initTabAnchor();
+//                        initSubItemForm();
+                                txtField01.setText(oTrans.getModel().getStockId());
+                                txtField02.setText(oTrans.getModel().getBarCode());
+//                            txtField06.setText((String) oTrans.getModel().Category().getDescription()); 
+                            initTabAnchor();
                     } else {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         System.out.println((String) poJSON.get("message"));
-//                            initTabAnchor();
+                            initTabAnchor();
                     }
                     System.out.println("EDITMODE sa new= " + pnEditMode);
                     break;
@@ -283,8 +233,8 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                         break;
                     }
 
-                    txtSeeks01.setText(oTrans.getModel().getBarCode());
-                    txtSeeks02.setText(oTrans.getModel().getDescription());
+//                    txtSeeks01.setText(oTrans.getModel().getBarCode());
+//                    txtSeeks02.setText(oTrans.getModel().getDescription());
                     pnEditMode = EditMode.READY;
                     data.clear();
                     System.out.print("\neditmode on browse == " + pnEditMode);
@@ -296,24 +246,20 @@ public class InventoryParamController implements Initializable, ScreenInterface 
 //                        initTable();
                     System.out.println("EDITMODE sa cancel= " + pnEditMode);
                     break;
-            }
-        }
-    }
-//                case "btnUpdate":
-//                    
-//                     poJSON = oTrans.updateRecord();
-//                        if ("error".equals((String) poJSON.get("result"))){
-//                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            break;
-//                        }
-//                         pnEditMode =  oTrans.getEditMode();
-//                        System.out.println("EDITMODE sa update= " + pnEditMode);
-//                        initButton(pnEditMode);
+                case "btnUpdate":
+                     poJSON = oTrans.updateRecord();
+                        if ("error".equals((String) poJSON.get("result"))){
+                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
+                        }
+                         pnEditMode =  oTrans.getEditMode();
+                        System.out.println("EDITMODE sa update= " + pnEditMode);
+                        initButton(pnEditMode);
 //                        initTable();
-//                        initTabAnchor();
-//                    break;
-//                case "btnCancel":
-//                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){                            
+                        initTabAnchor();
+                    break;
+                case "btnCancel":
+                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){                            
 //                            clearAllFields();
 //                            oTrans = new Inventory(oApp, true);
 //                            oTrans.setRecordStatus("0123");
@@ -321,32 +267,32 @@ public class InventoryParamController implements Initializable, ScreenInterface 
 //                            pnEditMode = EditMode.UNKNOWN;     
 //                            initButton(pnEditMode);
 //                            initTabAnchor();
-//                        }
-//                        System.out.println("EDITMODE sa cancel= " + pnEditMode);
-//                    break;
-//                case "btnSave":
-//                        JSONObject saveResult = oTrans.saveRecord();
-//                        System.out.println(saveResult.toJSONString());
-//                        if ("success".equals((String) saveResult.get("result"))){
-//                            System.err.println((String) saveResult.get("message"));
-//                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            
-//                            pnEditMode = EditMode.UNKNOWN;
-//                            initButton(pnEditMode);
+                        }
+                        System.out.println("EDITMODE sa cancel= " + pnEditMode);
+                    break;
+                case "btnSave":
+                        JSONObject saveResult = oTrans.saveRecord();
+                        System.out.println(saveResult.toJSONString());
+                        if ("success".equals((String) saveResult.get("result"))){
+                            System.err.println((String) saveResult.get("message"));
+                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                            
+                            pnEditMode = EditMode.UNKNOWN;
+                            initButton(pnEditMode);
 //                            clearAllFields();
 //                            initTabAnchor();
-//                            
-//                            System.out.println("Record saved successfully.");
-//                        } else {
-//                            ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            System.out.println("Record not saved successfully.");
-//                            System.out.println((String) saveResult.get("message"));
-//                        }
-//                        
-//                     break;
-//
-//                
-//                case "btnAddSubItem":
+                            
+                            System.out.println("Record saved successfully.");
+                        } else {
+                            ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                            System.out.println("Record not saved successfully.");
+                            System.out.println((String) saveResult.get("message"));
+                        }
+                        
+                     break;
+
+                
+                case "btnAddSubItem":
 //                        clearSubItemTxtField();
 //                        poJSON = oTrans.addSubUnit();
 //                        System.out.println(poJSON.toJSONString());
@@ -358,9 +304,9 @@ public class InventoryParamController implements Initializable, ScreenInterface 
 //                        }
 //                        pnRow = oTrans.getSubUnit().getMaster().size() - 1;
 //                        loadSubUnitData();
-//                    break;
-//                case "btnDelSubUnit":
-//
+                    break;
+                case "btnDelSubUnit":
+
 //                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove this sub item?") == true){  
 //                        oTrans.getSubUnit().getMaster().remove(pnRow);
 //                        if(oTrans.getSubUnit().getMaster().size() <= 0){
@@ -372,25 +318,66 @@ public class InventoryParamController implements Initializable, ScreenInterface 
 //                        clearSubItemTxtField();
 //                        txtField22.requestFocus();
 //                    }
-//                    break;
-//            }
-//        }
-//    }
-//    
+                    break;
+            }
+        }
+    }
+
 //    /*USE TO DISABLE ANCHOR BASE ON INITMODE*/
-//    private void initTabAnchor(){
-//        boolean pbValue = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
-//        AnchorInput.setDisable(!pbValue);
-//        subItemFields.setDisable(!pbValue);
-//        AnchorTable.setDisable(!pbValue);
-//        if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UNKNOWN){
-//            AnchorTable.setDisable(pbValue);
-//        }
-//    }
+    private void initTabAnchor(){
+        boolean pbValue = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
+        AnchorInput.setDisable(!pbValue);
+        subItemFields.setDisable(!pbValue);
+        AnchorTable.setDisable(!pbValue);
+        if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UNKNOWN){
+            AnchorTable.setDisable(pbValue);
+        }
+    }
 //    
 //    /*TO CONTROL BUTTONS BASE ON INITMODE*/
+private void initButton(int fnValue) {
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
-    private void initButton(int fnValue) {
+// Manage visibility and managed state of buttons
+        btnCancel.setVisible(lbShow);
+        btnSearch.setVisible(lbShow);
+        btnSave.setVisible(lbShow);
+//        btnAddItem.setVisible(lbShow);
+//        btnDelItem.setVisible(lbShow);
+
+        btnCancel.setManaged(lbShow);
+        btnSearch.setManaged(lbShow);
+        btnSave.setManaged(lbShow);
+//        btnAddItem.setManaged(lbShow);
+//        btnDelItem.setManaged(lbShow);
+
+// Manage visibility and managed state of other buttons
+        btnBrowse.setVisible(!lbShow);
+        btnNew.setVisible(!lbShow);
+        btnClose.setVisible(lbShow);
+        btnBrowse.setManaged(!lbShow);
+        btnNew.setManaged(!lbShow);
+        btnClose.setManaged(lbShow);
+
+//        btnCancelTrans.setVisible(false);
+//        btnCancelTrans.setManaged(false);
+//        btnApprove.setVisible(false);
+//        btnApprove.setManaged(false);
+        btnUpdate.setVisible(lbShow);
+        btnUpdate.setManaged(lbShow);
+//        btnAddItem.setVisible(lbShow);
+//        btnAddItem.setManaged(lbShow);
+//        btnDelItem.setVisible(false);
+//        btnDelItem.setManaged(false);
+//        System.out.println("THIS IS YOUR INITIALIZE " + fnValue);
+//        boolean isVisible = (fnValue == 1);
+//        btnCancelTrans.setVisible(isVisible);
+//        btnCancelTrans.setManaged(isVisible);
+//        btnApprove.setVisible(isVisible);
+//        btnApprove.setManaged(isVisible);
+
+    }
+    private void initButtonx(int fnValue) {
 
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         btnCancel.setVisible(lbShow);
@@ -675,7 +662,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
 
                         poJson = new JSONObject();
 
-                        poJson = oCategory.searchRecord(lsValue, false);
+                        poJson = oParameters.Category().searchRecord(lsValue, false);
 
 //                        poJson =  oTrans.SearchMaster(6,lsValue, false);
 //                           System.out.println("poJson = " + poJson.toJSONString());
@@ -686,7 +673,8 @@ public class InventoryParamController implements Initializable, ScreenInterface 
 //                           if(!oTrans.getModel().get().equals(oTrans.getModel().getMainCategoryCode())){
 //                               txtField07.clear();
 //                           }
-                        txtField06.setText((String) oCategory.getModel().getDescription());
+//                        txtField06.setText((String) oParameters.Category().getModel().getDescription());
+                        
 //                           System.out.println(oTrans.getModel().getCategCd1());
 //                           initSubItemForm();
                         break;
@@ -916,36 +904,35 @@ public class InventoryParamController implements Initializable, ScreenInterface 
             txtField03.setText((String) oTrans.getModel().getAlternateBarCode());
             txtField04.setText((String) oTrans.getModel().getBriefDescription());
             txtField05.setText((String) oTrans.getModel().getDescription());
-
-            txtField06.setText((String) oTrans.getModel().Category().getDescription());
+            txtField06.setText((String) oTrans.getModel().getDescription());
             txtField07.setText((String) oTrans.getModel().CategoryLevel2().getDescription());
-            txtField08.setText((String) oTrans.getModel().CategoryLevel3().getDescription());
-            txtField09.setText((String) oTrans.getModel().CategoryLevel4().getDescription());
+//            txtField08.setText((String) oTrans.getModel().CategoryLevel3().getDescription());
+//            txtField09.setText((String) oTrans.getModel().CategoryLevel4().getDescription());
 
-            txtField10.setText((String) oTrans.getModel().Brand().getDescription());
-            txtField11.setText((String) oTrans.getModel().ModelDetails().getDescription());
-            txtField12.setText((String) oTrans.getModel().Color().getDescription());
-            txtField13.setText((String) oTrans.getModel().Measure().getMeasureName());
-
-            txtField14.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel1(), "#,##0.00"));
-            txtField15.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel2(), "#,##0.00"));
-            txtField16.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel3(), "#,##0.00"));
-            txtField17.setText(CommonUtils.NumberFormat(oTrans.getModel().getDealerDiscountRate(), "#,##0.00"));
-
-            txtField26.setText(String.valueOf(oTrans.getModel().getMinimumInventoryLevel()));
-            txtField27.setText(String.valueOf(oTrans.getModel().getMaximumInventoryLevel()));
-//            txtField18.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().getUnitPrice().toString()), "#,##0.00"));
-            txtField19.setText(CommonUtils.NumberFormat(oTrans.getModel().getSellingPrice(), "#,##0.00"));
-
-            txtField20.setText((String) oTrans.getModel().getSupersededId());
-            txtField21.setText(String.valueOf(oTrans.getModel().getShelfLife()));
-            cmbField01.setValue(String.valueOf(oTrans.getModel().InventoryType().getDescription()));
-            chkField01.setSelected("1".equals(oTrans.getModel().isSerialized()));
-            chkField02.setSelected("1".equals(oTrans.getModel().isComboInventory()));
-            chkField03.setSelected("1".equals(oTrans.getModel().isWithPromo()));
+//            txtField10.setText((String) oTrans.getModel().Brand().getDescription());
+//            txtField11.setText((String) oTrans.getModel().Model().getDescription());
+//            txtField12.setText((String) oTrans.getModel().Color().getDescription());
+//            txtField13.setText((String) oTrans.getModel().Measure().getMeasureName());
+//
+//            txtField14.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel1(), "#,##0.00"));
+//            txtField15.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel2(), "#,##0.00"));
+//            txtField16.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel3(), "#,##0.00"));
+//            txtField17.setText(CommonUtils.NumberFormat(oTrans.getModel().getDealerDiscountRate(), "#,##0.00"));
+//
+//            txtField26.setText(String.valueOf(oTrans.getModel().getMinimumInventoryLevel()));
+//            txtField27.setText(String.valueOf(oTrans.getModel().getMaximumInventoryLevel()));
+////            txtField18.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().getUnitPrice().toString()), "#,##0.00"));
+//            txtField19.setText(CommonUtils.NumberFormat(oTrans.getModel().getSellingPrice(), "#,##0.00"));
+//
+//            txtField20.setText((String) oTrans.getModel().getSupersededId());
+//            txtField21.setText(String.valueOf(oTrans.getModel().getShelfLife()));
+//            cmbField01.setValue(String.valueOf(oTrans.getModel().InventoryType().getDescription()));
+//            chkField01.setSelected("1".equals(oTrans.getModel().isSerialized()));
+//            chkField02.setSelected("1".equals(oTrans.getModel().isComboInventory()));
+//            chkField03.setSelected("1".equals(oTrans.getModel().isWithPromo()));
 //            chkField04.setSelected((oTrans.getModel().isActive()));
 
-            lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
+//            lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
 
         }
     }
