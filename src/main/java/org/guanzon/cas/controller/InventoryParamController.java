@@ -4,6 +4,7 @@
  */
 package org.guanzon.cas.controller;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -37,11 +38,7 @@ import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inv.Inventory;
 import org.guanzon.cas.model.ModelInvSubUnit;
-import org.guanzon.cas.parameter.Category;
-import org.guanzon.cas.parameter.CategoryLevel2;
-import org.guanzon.cas.parameter.CategoryLevel3;
-import org.guanzon.cas.parameter.CategoryLevel4;
-import org.guanzon.cas.parameter.Parameters;
+import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 
 /**
@@ -58,7 +55,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
     private String oTransnox = "";
     private int pnEditMode;
     private Inventory oTrans;
-    private Parameters oParameters;
+    private ParamControllers oParameters;
     private boolean state = false;
     private boolean pbLoaded = false;
     private int pnInventory = 0;
@@ -165,13 +162,17 @@ public class InventoryParamController implements Initializable, ScreenInterface 
     }
 
     private void initializeObject() {
+        String category = System.getProperty("store.inventory.industry");
+        System.out.println("category == " + category);
         LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
         oTrans = new Inventory();
         oTrans.setApplicationDriver(oApp);
         oTrans.setWithParentClass(false);
         oTrans.setLogWrapper(logwrapr);
         oTrans.initialize();
-        oParameters = new Parameters(oApp, logwrapr);
+        oParameters = new ParamControllers(oApp, logwrapr);
+        
+        
     }
 
 //    /*Handle button click*/
@@ -298,8 +299,8 @@ public class InventoryParamController implements Initializable, ScreenInterface 
         btnBrowse.setManaged(!lbShow);
         btnNew.setVisible(!lbShow);
         btnNew.setManaged(!lbShow);
-        btnClose.setVisible(lbShow);
-        btnClose.setManaged(lbShow);
+        btnClose.setVisible(true);
+        btnClose.setManaged(true);
     }
 
     private void initSubItemForm() {
@@ -441,11 +442,11 @@ public class InventoryParamController implements Initializable, ScreenInterface 
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
         String lsValue = (txtField.getText() == null ? "" : txtField.getText());
         JSONObject poJson;
+        poJson = new JSONObject();
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
                     case 06:
-                        poJson = new JSONObject();
                         poJson = oParameters.Category().searchRecord(lsValue, false);
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -455,7 +456,6 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                         txtField07.requestFocus();
                         break;
                     case 07:
-                        poJson = new JSONObject();
                         poJson = oParameters.CategoryLevel2().searchRecord(lsValue, false);
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -464,7 +464,6 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                         txtField07.setText((String) oParameters.CategoryLevel2().getModel().getDescription());
                         break;
                     case 8:
-                        poJson = new JSONObject();
                         poJson = oParameters.CategoryLevel3().searchRecord(lsValue, false);
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -473,7 +472,6 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                         txtField08.setText((String) oParameters.CategoryLevel3().getModel().getDescription());
                         break;
                     case 9:
-                        poJson = new JSONObject();
                         poJson = oParameters.CategoryLevel4().searchRecord(lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
@@ -483,7 +481,6 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                         txtField09.setText((String) oParameters.CategoryLevel4().getModel().getDescription());
                         break;
                     case 10:
-                        poJson = new JSONObject();
                         poJson = oParameters.Brand().searchRecord(lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
@@ -493,7 +490,6 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                         txtField10.setText((String) oParameters.Brand().getModel().getDescription());
                         break;
                     case 11:
-                        poJson = new JSONObject();
                         poJson = oParameters.Model().searchRecord(lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
@@ -503,7 +499,6 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                         txtField11.setText((String) oParameters.Model().getModel().getDescription());
                         break;
                     case 12:
-                        poJson = new JSONObject();
                         poJson = oParameters.Color().searchRecord(lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
@@ -513,7 +508,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                         txtField12.setText((String) oParameters.Color().getModel().getDescription());
                         break;
                     case 13:
-                        poJson = new JSONObject();
+                        
                         poJson = oParameters.Measurement().searchRecord(lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
@@ -627,6 +622,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
             txtField11.setText((String) oTrans.getModel().Model().getDescription());
             txtField12.setText((String) oTrans.getModel().Color().getDescription());
             txtField13.setText((String) oTrans.getModel().Measure().getMeasureName());
+
 
             txtField14.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel1(), "#,##0.00"));
             txtField15.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel2(), "#,##0.00"));

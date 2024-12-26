@@ -1468,8 +1468,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void mnuInventorySerialParamClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InventorySerialParam"
-                + ".fxml";
+        String sformname = "/org/guanzon/cas/views/InventorySerialParam.fxml";
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
