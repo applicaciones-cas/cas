@@ -267,6 +267,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                         System.out.println((String) saveResult.get("message"));
                     }
                     break;
+                    
                 case "btnBrowse":
                     String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
                     poJSON = oTrans.Inventory().searchRecord(lsValue, false);
@@ -275,7 +276,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                     
                     if ("success".equals((String) poJSON.get("result"))) {
                         
-                        poJSON = oTrans.searchRecord(stockId, false);
+                        poJSON = oTrans.searchRecordwithBarrcode(stockId, true);
                         if ("success".equals((String) poJSON.get("result"))) {
                             loadInventory();
                         } else {
@@ -623,28 +624,28 @@ public class InventoryDetailController implements Initializable, ScreenInterface
             txtField01.setText((String) oTrans.getModel().Inventory().getStockId());
             txtField02.setText((String) oTrans.getModel().Inventory().getBarCode());
             txtField03.setText((String) oTrans.getModel().Inventory().getAlternateBarCode());
-//            txtField04.setText((String) oTrans.getInvModel().getBriefDescription());
-//            txtField05.setText((String) oTrans.getInvModel().getDescription());
+            txtField04.setText((String) oTrans.getModel().Inventory().getBriefDescription());
+            txtField05.setText((String) oTrans.getModel().Inventory().getDescription());
 //
-//            txtField06.setText((String) oTrans.getInvModel().getCategName1());
-//            txtField07.setText((String) oTrans.getInvModel().getCategName2());
-//            txtField08.setText((String) oTrans.getInvModel().getCategName3());
-//            txtField09.setText((String) oTrans.getInvModel().getCategName4());
+            txtField06.setText((String) oTrans.getModel().Inventory().Category().getDescription());
+            txtField07.setText((String) oTrans.getModel().Inventory().CategoryLevel2().getDescription());
+            txtField08.setText((String) oTrans.getModel().Inventory().CategoryLevel3().getDescription());
+            txtField09.setText((String) oTrans.getModel().Inventory().CategoryLevel4().getDescription());
 //
-//            txtField10.setText((String) oTrans.getInvModel().getBrandName());
-//            txtField11.setText((String) oTrans.getInvModel().getModelName());
-//            txtField12.setText((String) oTrans.getInvModel().getColorName());
-//            txtField13.setText((String) oTrans.getInvModel().getMeasureName());
+            txtField10.setText((String) oTrans.getModel().Inventory().Brand().getDescription());
+            txtField11.setText((String) oTrans.getModel().Inventory().Model().getDescription());
+            txtField12.setText((String) oTrans.getModel().Inventory().Color().getDescription());
+            txtField13.setText((String) oTrans.getModel().Inventory().Measure().getMeasureName());
 //
-//            txtField14.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDiscountLevel1().toString()), "#,##0.00"));
-//            txtField15.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDiscountLevel2().toString()), "#,##0.00"));
-//            txtField16.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDiscountLevel3().toString()), "#,##0.00"));
-//            txtField17.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDealerDiscount().toString()), "#,##0.00"));
+            txtField14.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().Inventory().getDiscountRateLevel1().toString()), "#,##0.00"));
+            txtField15.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().Inventory().getDiscountRateLevel2().toString()), "#,##0.00"));
+            txtField16.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().Inventory().getDiscountRateLevel3().toString()), "#,##0.00"));
+            txtField17.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().Inventory().getDealerDiscountRate().toString()), "#,##0.00"));
 //
-//            txtField26.setText(String.valueOf(oTrans.getInvModel().getMinLevel()));
-//            txtField27.setText(String.valueOf(oTrans.getInvModel().getMaxLevel()));
-//            txtField29.setText(String.valueOf(oTrans.getInvModel().getMinLevel()));
-//            txtField30.setText(String.valueOf(oTrans.getInvModel().getMaxLevel()));
+            txtField26.setText(String.valueOf(oTrans.getModel().Inventory().getMinimumInventoryLevel()));
+            txtField27.setText(String.valueOf(oTrans.getModel().Inventory().getMaximumInventoryLevel()));
+            txtField29.setText(String.valueOf(oTrans.getModel().Inventory().getCost()));
+            txtField30.setText(String.valueOf(oTrans.getModel().Inventory().getSellingPrice()));
 //
 //            txtField18.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getUnitPrice().toString()), "#,##0.00"));
 //            txtField19.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getSelPrice().toString()), "#,##0.00"));
