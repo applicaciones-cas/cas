@@ -269,24 +269,46 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                     break;
                 case "btnBrowse":
                     String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
-                    poJSON = oTrans.searchRecord(lsValue, false);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        txtSeeks01.clear();
-                        break;
+                    poJSON = oTrans.Inventory().searchRecord(lsValue, false);
+                    
+                    String stockId = oTrans.Inventory().getModel().getStockId();
+                    
+                    if ("success".equals((String) poJSON.get("result"))) {
+                        
+                        poJSON = oTrans.searchRecord(stockId, false);
+                        if ("success".equals((String) poJSON.get("result"))) {
+                            loadInventory();
+                        } else {
+                            ShowMessageFX.Information("No Inventory found in your warehouse. Please save the record to create.", "Computerized Acounting System", "Inventory Detail");
+                            oTrans.newRecord();
+                            oTrans.getModel().setStockId(stockId);
+                            oTrans.getModel().setBranchCode(oApp.getBranchCode());
+                            pnEditMode= oTrans.getEditMode();
+                            loadInventory();
+                            
+                            initButton(pnEditMode);
+                        }
                     }
-                    pnEditMode = oTrans.getEditMode();
-//
-                    if (pnEditMode == EditMode.READY) {
-                        txtSeeks01.setText(oTrans.getModel().Inventory().getBarCode());
-                        txtSeeks02.setText(oTrans.getModel().Inventory().getDescription());
-                    } else {
-                        txtSeeks01.clear();
-                        txtSeeks02.clear();
-                    }
-                    pnEditMode = EditMode.READY;
-//                    data.clear();
-                    loadInventory();
+                    
+                    
+//                    poJSON = oTrans.searchRecordwithBarrcode(lsValue, false);
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        txtSeeks01.clear();
+//                        break;
+//                    }
+//                    pnEditMode = oTrans.getEditMode();
+////
+//                    if (pnEditMode == EditMode.READY) {
+//                        txtSeeks01.setText(oTrans.getModel().Inventory().getBarCode());
+//                        txtSeeks02.setText(oTrans.getModel().Inventory().getDescription());
+//                    } else {
+//                        txtSeeks01.clear();
+//                        txtSeeks02.clear();
+//                    }
+//                    
+////                    data.clear();
+//                    loadInventory();
 //                    String lsValue = (txtSeeks01.getText().toString().isEmpty() ? "" : txtSeeks01.getText().toString());
 //                    poJSON = oTrans.SearchInventory(lsValue, true);
 //                    if ("error".equals((String) poJSON.get("result"))) {
@@ -596,9 +618,11 @@ public class InventoryDetailController implements Initializable, ScreenInterface
         if (pnEditMode == EditMode.READY
                 || pnEditMode == EditMode.ADDNEW
                 || pnEditMode == EditMode.UPDATE) {
+            System.out.println("stoickid == " + (String) oTrans.getModel().getStockId());
+            System.out.println("stoickid == " + (String) oTrans.getModel().Inventory().getStockId());
             txtField01.setText((String) oTrans.getModel().Inventory().getStockId());
-//            txtField02.setText((String) oTrans.getInvModel().getBarcode());
-//            txtField03.setText((String) oTrans.getInvModel().getAltBarcode());
+            txtField02.setText((String) oTrans.getModel().Inventory().getBarCode());
+            txtField03.setText((String) oTrans.getModel().Inventory().getAlternateBarCode());
 //            txtField04.setText((String) oTrans.getInvModel().getBriefDescription());
 //            txtField05.setText((String) oTrans.getInvModel().getDescription());
 //
@@ -746,12 +770,12 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                     case 1:
                         /*search Barrcode*/
                         System.out.print("LSVALUE OF SEARCH 1 ==== " + lsValue);
-//                        poJSON = oTrans.SearchInventory(lsValue, true);
-//                        if ("error".equals((String) poJSON.get("result"))) {
-//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            txtSeeks01.clear();
-//                            break;
-//                        }
+                        poJSON = oTrans.searchRecord(lsValue, true);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks01.clear();
+                            break;
+                        }
                         pnEditMode = oTrans.getEditMode();
 
                         if (pnEditMode == EditMode.READY) {
@@ -916,9 +940,9 @@ public class InventoryDetailController implements Initializable, ScreenInterface
     private Stage getStage() {
         return (Stage) txtField01.getScene().getWindow();
     }
-//    public void setOverlay(boolean fbVal){
-//        overlay.setVisible(fbVal);
-//    }
+    public void setOverlay(boolean fbVal){
+        overlay.setVisible(fbVal);
+    }
 
     public void loadResult(String fsValue, boolean fbVal) {
         JSONObject poJson = new JSONObject();
