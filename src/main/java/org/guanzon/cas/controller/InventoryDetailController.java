@@ -192,6 +192,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
         overlay.setVisible(false);
 
     }
+
     private void initializeObject() {
         String category = System.getProperty("store.inventory.industry");
         System.out.println("category == " + category);
@@ -202,8 +203,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
         oTrans.setLogWrapper(logwrapr);
         oTrans.initialize();
         oParameters = new ParamControllers(oApp, logwrapr);
-        
-        
+
     }
 
     /*Handle button click*/
@@ -252,6 +252,8 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                     }
                     break;
                 case "btnSave":
+                    oTrans.getModel().setModifyingId(oApp.getUserID());
+                    oTrans.getModel().setModifiedDate(oApp.getServerDate());
                     JSONObject saveResult = oTrans.saveRecord();
                     if ("success".equals((String) saveResult.get("result"))) {
                         System.err.println((String) saveResult.get("message"));
@@ -267,31 +269,38 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                         System.out.println((String) saveResult.get("message"));
                     }
                     break;
-                    
+
                 case "btnBrowse":
                     String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
                     poJSON = oTrans.Inventory().searchRecord(lsValue, false);
                     
-                    String stockId = oTrans.Inventory().getModel().getStockId();
-                    
                     if ("success".equals((String) poJSON.get("result"))) {
                         
-                        poJSON = oTrans.searchRecordwithBarrcode(stockId, true);
+                        String stockId = oTrans.Inventory().getModel().getStockId();
+                        
+                        poJSON = oTrans.searchRecord(String.valueOf(stockId), true);
+                        
                         if ("success".equals((String) poJSON.get("result"))) {
+                            pnEditMode = oTrans.getEditMode();
+                            System.out.println("pnEditMode ID == " + oTrans.getEditMode());
                             loadInventory();
                         } else {
                             ShowMessageFX.Information("No Inventory found in your warehouse. Please save the record to create.", "Computerized Acounting System", "Inventory Detail");
                             oTrans.newRecord();
                             oTrans.getModel().setStockId(stockId);
                             oTrans.getModel().setBranchCode(oApp.getBranchCode());
-                            pnEditMode= oTrans.getEditMode();
+                            pnEditMode = oTrans.getEditMode();
                             loadInventory();
-                            
-                            initButton(pnEditMode);
+
                         }
+                    } else {
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        txtSeeks01.clear();
+                        break;
                     }
-                    
-                    
+                    initButton(pnEditMode);
+                    initTabAnchor();
+
 //                    poJSON = oTrans.searchRecordwithBarrcode(lsValue, false);
 //                    if ("error".equals((String) poJSON.get("result"))) {
 //                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -343,7 +352,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
 //                        Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
 //                    }
 //                }
-                break;
+                    break;
                 case "btnSerial":
 //                    if (!txtField01.getText().isEmpty()) {
 //                        if (chkField01.isSelected()) {
@@ -442,7 +451,6 @@ public class InventoryDetailController implements Initializable, ScreenInterface
 //            System.exit(1);
 //        }
 //    }
-
 //    private void loadLedger(String fsCode) throws SQLException {
 //        try {
 //            Stage stage = new Stage();
@@ -527,8 +535,6 @@ public class InventoryDetailController implements Initializable, ScreenInterface
 //            System.exit(1);
 //        }
 //    }
-
-
     /*USE TO DISABLE ANCHOR BASE ON INITMODE*/
     private void initTabAnchor() {
         System.out.print("EDIT MODE == " + pnEditMode);
@@ -742,7 +748,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
         // Create an array for text fields with setOnKeyPressed handlers
         TextField[] keyPressedTextFields = {
             txtField06, txtField07, txtField08, txtField09, txtField10,
-            txtField11, txtField12, txtField22, txtField23
+            txtField11, txtField12, txtField22, txtField25
         };
 
         // Set the same key pressed event handler for each text field in the keyPressedTextFields array
@@ -860,7 +866,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                     // Apply the TextFormatter to the TextField
                     txtField.setTextFormatter(textFormatter);
 
-//                    oTrans.getModel().in(Integer.parseInt(lsValue));
+                    oTrans.getModel().setBinId(lsValue);
                     break;
             }
         } else {
@@ -878,27 +884,48 @@ public class InventoryDetailController implements Initializable, ScreenInterface
             case F3:
                 switch (lnIndex) {
                     case 22:
-//                        poJson = new JSONObject();
-//                        poJson = oTrans.SearchMaster(4, lsValue, false);
-//                        System.out.println("poJson = " + poJson.toJSONString());
-//                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        }
-//                        System.out.print("Location == " + oTrans.getMaster(27));
-//                        txtField22.setText((String) oTrans.getMaster(27));
-//                        txtField23.setText(oTrans.getModel().getWareHouseNm());
-//                        txtField24.setText(oTrans.getModel().getSectionName());
-//                        break;
-//                    case 23:
-//                        poJson = new JSONObject();
-//                        poJson = oTrans.SearchMaster(3, lsValue, false);
-//                        System.out.println("poJson = " + poJson.toJSONString());
-//                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        }
-//                        System.out.print("Warehouse == " + oTrans.getMaster(26));
-//                        txtField23.setText((String) oTrans.getMaster(26));
+                        poJson = new JSONObject();
+                        poJson = oParameters.InventoryLocation().searchRecord(lsValue, false);
+                        System.out.println("poJson = " + poJson.toJSONString());
+
+                        oTrans.getModel().setLocationId(oParameters.InventoryLocation().getModel().getLocationId());
+
+                        if ("success".equals(poJson.get("result"))) {
+                            txtField22.setText((String) oParameters.InventoryLocation().getModel().getDescription());
+                            String warehouse = (String) oParameters.InventoryLocation().getModel().getWarehouseId();
+                            oTrans.getModel().setWarehouseId(warehouse);
+
+                            poJson = oParameters.Warehouse().searchRecord(warehouse, true);
+                            if ("success".equals(poJson.get("result"))) {
+                                txtField23.setText(oParameters.Warehouse().getModel().getWarehouseName());
+
+                                String section = (String) oParameters.InventoryLocation().getModel().getSectionId();
+                                poJson = oParameters.Section().searchRecord(section, true);
+                                if ("success".equals(poJson.get("result"))) {
+                                    txtField24.setText(oParameters.Section().getModel().getSectionName());
+                                }
+                            }
+                        } else {
+                            ShowMessageFX.Information(
+                                    (String) poJson.get("message"),
+                                    "Computerized Accounting System",
+                                    pxeModuleName
+                            );
+                        }
+
                         break;
+
+//                    case 25:
+//                        poJson = new JSONObject();
+//                        poJson = oParameters.Bin().searchRecord(lsValue, false);
+//                        System.out.println("poJson = " + poJson.toJSONString());
+//                        if ("success".equals(poJson.get("result"))) {
+//                            oTrans.getModel().setBinId(oParameters.Bin().getModel().getBinId());
+//                            txtField25.setText((String) oParameters.Bin().getModel().getBinName());
+//                        } else {
+//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        }
+//                        break;
                 }
             case ENTER:
         }
@@ -941,7 +968,8 @@ public class InventoryDetailController implements Initializable, ScreenInterface
     private Stage getStage() {
         return (Stage) txtField01.getScene().getWindow();
     }
-    public void setOverlay(boolean fbVal){
+
+    public void setOverlay(boolean fbVal) {
         overlay.setVisible(fbVal);
     }
 
