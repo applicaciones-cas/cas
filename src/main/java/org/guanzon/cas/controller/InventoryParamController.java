@@ -218,6 +218,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                     }
                     break;
                 case "btnBrowse":
+                    
                     String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
                     poJSON = oTrans.searchRecord(lsValue, false);
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -228,6 +229,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                     pnEditMode = EditMode.READY;
                     data.clear();
                     loadInventory();
+                    break;
                 case "btnUpdate":
                     poJSON = oTrans.updateRecord();
                     if ("error".equals((String) poJSON.get("result"))) {
