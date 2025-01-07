@@ -54,6 +54,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.inv.Inv;
 import org.guanzon.cas.inventory.base.InvMaster;
 import org.guanzon.cas.inv.Inv_Master;
 import org.guanzon.cas.inv.Inventory;
@@ -78,7 +79,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
     private boolean state = false;
     private boolean pbLoaded = false;
     private int pnInventory = 0;
-    private Inv_Master oTrans;
+    private Inv oTrans;
     private ParamControllers oParameters;
 
     // Anchor Panes
@@ -197,11 +198,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
         String category = System.getProperty("store.inventory.industry");
         System.out.println("category == " + category);
         LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-        oTrans = new Inv_Master();
-        oTrans.setApplicationDriver(oApp);
-        oTrans.setWithParentClass(false);
-        oTrans.setLogWrapper(logwrapr);
-        oTrans.initialize();
+        oTrans = new Inv(oApp, "", logwrapr);
         oParameters = new ParamControllers(oApp, logwrapr);
 
     }
@@ -231,12 +228,12 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                     break;
 
                 case "btnUpdate":
-                    poJSON = oTrans.updateRecord();
+                    poJSON = oTrans.InvMaster().updateRecord();
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         break;
                     }
-                    pnEditMode = oTrans.getEditMode();
+                    pnEditMode = oTrans.InvMaster().getEditMode();
 
                     System.err.println("update btn editmode ==" + pnEditMode);
                     initButton(pnEditMode);
@@ -252,9 +249,9 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                     }
                     break;
                 case "btnSave":
-                    oTrans.getModel().setModifyingId(oApp.getUserID());
-                    oTrans.getModel().setModifiedDate(oApp.getServerDate());
-                    JSONObject saveResult = oTrans.saveRecord();
+                    oTrans.InvMaster().getModel().setModifyingId(oApp.getUserID());
+                    oTrans.InvMaster().getModel().setModifiedDate(oApp.getServerDate());
+                    JSONObject saveResult = oTrans.InvMaster().saveRecord();
                     if ("success".equals((String) saveResult.get("result"))) {
                         System.err.println((String) saveResult.get("message"));
                         ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -272,24 +269,22 @@ public class InventoryDetailController implements Initializable, ScreenInterface
 
                 case "btnBrowse":
                     String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
-                    poJSON = oTrans.Inventory().searchRecord(lsValue, false);
+                    poJSON = oTrans.InvMaster().Inventory().searchRecord(lsValue, false);
                     
                     if ("success".equals((String) poJSON.get("result"))) {
                         
-                        String stockId = oTrans.Inventory().getModel().getStockId();
-                        
-                        poJSON = oTrans.searchRecord(String.valueOf(stockId), true);
+                        String stockId = oTrans.InvMaster().Inventory().getModel().getStockId();
+                        poJSON = oTrans.InvMaster().searchRecord(String.valueOf(stockId), true);
                         
                         if ("success".equals((String) poJSON.get("result"))) {
-                            pnEditMode = oTrans.getEditMode();
-                            System.out.println("pnEditMode ID == " + oTrans.getEditMode());
+                            pnEditMode = oTrans.InvMaster().getEditMode();
                             loadInventory();
                         } else {
                             ShowMessageFX.Information("No Inventory found in your warehouse. Please save the record to create.", "Computerized Acounting System", "Inventory Detail");
-                            oTrans.newRecord();
-                            oTrans.getModel().setStockId(stockId);
-                            oTrans.getModel().setBranchCode(oApp.getBranchCode());
-                            pnEditMode = oTrans.getEditMode();
+                            oTrans.InvMaster().newRecord();
+                            oTrans.InvMaster().getModel().setStockId(stockId);
+                            oTrans.InvMaster().getModel().setBranchCode(oApp.getBranchCode());
+                            pnEditMode = oTrans.InvMaster().getEditMode();
                             loadInventory();
 
                         }
@@ -341,17 +336,18 @@ public class InventoryDetailController implements Initializable, ScreenInterface
 //                    loadInventory();
                     break;
                 case "btnLedger":
-//                {
-//                    try {
-//                        if (pnEditMode == EditMode.READY
-//                                || pnEditMode == EditMode.ADDNEW
-//                                || pnEditMode == EditMode.UPDATE) {
-//                            loadLedger(oTrans.getInvModel().getStockID());
-//                        }
-//                    } catch (SQLException ex) {
-//                        Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
-//                }
+                {
+                    try {
+                        if (pnEditMode == EditMode.READY
+                                || pnEditMode == EditMode.ADDNEW
+                                || pnEditMode == EditMode.UPDATE) {
+                            System.out.print("to pass == " + oTrans.InvMaster().Inventory().getModel().getStockId() );
+                            loadLedger(oTrans.InvMaster().Inventory().getModel().getStockId());
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
                     break;
                 case "btnSerial":
 //                    if (!txtField01.getText().isEmpty()) {
@@ -451,90 +447,90 @@ public class InventoryDetailController implements Initializable, ScreenInterface
 //            System.exit(1);
 //        }
 //    }
-//    private void loadLedger(String fsCode) throws SQLException {
-//        try {
-//            Stage stage = new Stage();
-//
-//            overlay.setVisible(true);
-//
-//            FXMLLoader fxmlLoader = new FXMLLoader();
-//            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventoryLedger.fxml"));
-//
-//            InventoryLedgerController loControl = new InventoryLedgerController();
-//            loControl.setGRider(oApp);
-//            loControl.setFsCode(oTrans);
-//            loControl.setStockID(fsCode);
-//            loControl.setParentController(this);
-//            fxmlLoader.setController(loControl);
-//
-//            // Load the main interface
-//            Parent parent = fxmlLoader.load();
-//
-//            // Set up dragging
-//            final double[] xOffset = new double[1];
-//            final double[] yOffset = new double[1];
-//
-//            parent.setOnMousePressed(event -> {
-//                xOffset[0] = event.getSceneX();
-//                yOffset[0] = event.getSceneY();
-//            });
-//
-//            parent.setOnMouseDragged(event -> {
-//                double newX = event.getScreenX() - xOffset[0];
-//                double newY = event.getScreenY() - yOffset[0];
-//
-//                // Get the screen bounds
-//                Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-//
-//                // Calculate the window bounds
-//                double stageWidth = stage.getWidth();
-//                double stageHeight = stage.getHeight();
-//
-//                // Constrain the stage position to the screen bounds
-//                if (newX < 0) {
-//                    newX = 0;
-//                }
-//                if (newY < 0) {
-//                    newY = 0;
-//                }
-//                if (newX + stageWidth > screenBounds.getWidth()) {
-//                    newX = screenBounds.getWidth() - stageWidth;
-//                }
-//                if (newY + stageHeight > screenBounds.getHeight()) {
-//                    newY = screenBounds.getHeight() - stageHeight;
-//                }
-//
-//                stage.setX(newX);
-//                stage.setY(newY);
-//            });
-//
-//            Scene scene = new Scene(parent);
-//
-//            stage.setScene(scene);
-//            stage.initStyle(StageStyle.TRANSPARENT);
-//            stage.initModality(Modality.APPLICATION_MODAL);
-//
-//            stage.setTitle("Inventory Ledger");
-//
-//            // Add close request handler
-//            stage.setOnCloseRequest(event -> {
-//                System.out.println("Stage is closing");
-//                overlay.setVisible(false);
-//            });
-//
-//            stage.setOnHidden(e -> {
-//                System.out.println("Stage is hidden");
-//                overlay.setVisible(false);
-//                loadResult(oTrans.getMaster("sStockIDx").toString(), false);
-//            });
-//            stage.showAndWait();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-//            System.exit(1);
-//        }
-//    }
+    private void loadLedger(String fsCode) throws SQLException {
+        try {
+            Stage stage = new Stage();
+
+            overlay.setVisible(true);
+
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventoryLedger.fxml"));
+
+            InventoryLedgerController loControl = new InventoryLedgerController();
+            loControl.setGRider(oApp);
+            loControl.setFsCode(oTrans);
+            loControl.setStockID(fsCode);
+            loControl.setParentController(this);
+            fxmlLoader.setController(loControl);
+
+            // Load the main interface
+            Parent parent = fxmlLoader.load();
+
+            // Set up dragging
+            final double[] xOffset = new double[1];
+            final double[] yOffset = new double[1];
+
+            parent.setOnMousePressed(event -> {
+                xOffset[0] = event.getSceneX();
+                yOffset[0] = event.getSceneY();
+            });
+
+            parent.setOnMouseDragged(event -> {
+                double newX = event.getScreenX() - xOffset[0];
+                double newY = event.getScreenY() - yOffset[0];
+
+                // Get the screen bounds
+                Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+                // Calculate the window bounds
+                double stageWidth = stage.getWidth();
+                double stageHeight = stage.getHeight();
+
+                // Constrain the stage position to the screen bounds
+                if (newX < 0) {
+                    newX = 0;
+                }
+                if (newY < 0) {
+                    newY = 0;
+                }
+                if (newX + stageWidth > screenBounds.getWidth()) {
+                    newX = screenBounds.getWidth() - stageWidth;
+                }
+                if (newY + stageHeight > screenBounds.getHeight()) {
+                    newY = screenBounds.getHeight() - stageHeight;
+                }
+
+                stage.setX(newX);
+                stage.setY(newY);
+            });
+
+            Scene scene = new Scene(parent);
+
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            stage.setTitle("Inventory Ledger");
+
+            // Add close request handler
+            stage.setOnCloseRequest(event -> {
+                System.out.println("Stage is closing");
+                overlay.setVisible(false);
+            });
+
+            stage.setOnHidden(e -> {
+                System.out.println("Stage is hidden");
+                overlay.setVisible(false);
+                loadResult(oTrans.InvMaster().Inventory().getModel().getStockId(), false);
+            });
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
+    }
     /*USE TO DISABLE ANCHOR BASE ON INITMODE*/
     private void initTabAnchor() {
         System.out.print("EDIT MODE == " + pnEditMode);
@@ -625,56 +621,34 @@ public class InventoryDetailController implements Initializable, ScreenInterface
         if (pnEditMode == EditMode.READY
                 || pnEditMode == EditMode.ADDNEW
                 || pnEditMode == EditMode.UPDATE) {
-            System.out.println("stoickid == " + (String) oTrans.getModel().getStockId());
-            System.out.println("stoickid == " + (String) oTrans.getModel().Inventory().getStockId());
-            txtField01.setText((String) oTrans.getModel().Inventory().getStockId());
-            txtField02.setText((String) oTrans.getModel().Inventory().getBarCode());
-            txtField03.setText((String) oTrans.getModel().Inventory().getAlternateBarCode());
-            txtField04.setText((String) oTrans.getModel().Inventory().getBriefDescription());
-            txtField05.setText((String) oTrans.getModel().Inventory().getDescription());
+            System.out.println("stoickid == " + (String) oTrans.InvMaster().getModel().getStockId());
+            System.out.println("stoickid == " + (String) oTrans.InvMaster().getModel().Inventory().getStockId());
+            txtField01.setText((String) oTrans.InvMaster().getModel().Inventory().getStockId());
+            txtField02.setText((String) oTrans.InvMaster().getModel().Inventory().getBarCode());
+            txtField03.setText((String) oTrans.InvMaster().getModel().Inventory().getAlternateBarCode());
+            txtField04.setText((String) oTrans.InvMaster().getModel().Inventory().getBriefDescription());
+            txtField05.setText((String) oTrans.InvMaster().getModel().Inventory().getDescription());
 //
-            txtField06.setText((String) oTrans.getModel().Inventory().Category().getDescription());
-            txtField07.setText((String) oTrans.getModel().Inventory().CategoryLevel2().getDescription());
-            txtField08.setText((String) oTrans.getModel().Inventory().CategoryLevel3().getDescription());
-            txtField09.setText((String) oTrans.getModel().Inventory().CategoryLevel4().getDescription());
+            txtField06.setText((String) oTrans.InvMaster().getModel().Inventory().Category().getDescription());
+            txtField07.setText((String) oTrans.InvMaster().getModel().Inventory().CategoryLevel2().getDescription());
+            txtField08.setText((String) oTrans.InvMaster().getModel().Inventory().CategoryLevel3().getDescription());
+            txtField09.setText((String) oTrans.InvMaster().getModel().Inventory().CategoryLevel4().getDescription());
 //
-            txtField10.setText((String) oTrans.getModel().Inventory().Brand().getDescription());
-            txtField11.setText((String) oTrans.getModel().Inventory().Model().getDescription());
-            txtField12.setText((String) oTrans.getModel().Inventory().Color().getDescription());
-            txtField13.setText((String) oTrans.getModel().Inventory().Measure().getMeasureName());
+            txtField10.setText((String) oTrans.InvMaster().getModel().Inventory().Brand().getDescription());
+            txtField11.setText((String) oTrans.InvMaster().getModel().Inventory().Model().getDescription());
+            txtField12.setText((String) oTrans.InvMaster().getModel().Inventory().Color().getDescription());
+            txtField13.setText((String) oTrans.InvMaster().getModel().Inventory().Measure().getMeasureName());
 //
-            txtField14.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().Inventory().getDiscountRateLevel1().toString()), "#,##0.00"));
-            txtField15.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().Inventory().getDiscountRateLevel2().toString()), "#,##0.00"));
-            txtField16.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().Inventory().getDiscountRateLevel3().toString()), "#,##0.00"));
-            txtField17.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getModel().Inventory().getDealerDiscountRate().toString()), "#,##0.00"));
+            txtField14.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.InvMaster().getModel().Inventory().getDiscountRateLevel1().toString()), "#,##0.00"));
+            txtField15.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.InvMaster().getModel().Inventory().getDiscountRateLevel2().toString()), "#,##0.00"));
+            txtField16.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.InvMaster().getModel().Inventory().getDiscountRateLevel3().toString()), "#,##0.00"));
+            txtField17.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.InvMaster().getModel().Inventory().getDealerDiscountRate().toString()), "#,##0.00"));
 //
-            txtField26.setText(String.valueOf(oTrans.getModel().Inventory().getMinimumInventoryLevel()));
-            txtField27.setText(String.valueOf(oTrans.getModel().Inventory().getMaximumInventoryLevel()));
-            txtField29.setText(String.valueOf(oTrans.getModel().Inventory().getCost()));
-            txtField30.setText(String.valueOf(oTrans.getModel().Inventory().getSellingPrice()));
-//
-//            txtField18.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getUnitPrice().toString()), "#,##0.00"));
-//            txtField19.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getSelPrice().toString()), "#,##0.00"));
-//
-//            txtField20.setText((String) oTrans.getInvModel().getSupersed());
-//            txtField21.setText(String.valueOf(oTrans.getInvModel().getShlfLife()));
-//
-//            cmbField01.setValue(String.valueOf(oTrans.getInvModel().getCategName2()));
-//            chkField01.setSelected("1".equals(oTrans.getInvModel().getSerialze()));
-//            chkField02.setSelected("1".equals(oTrans.getInvModel().getComboInv()));
-//            chkField03.setSelected("1".equals(oTrans.getInvModel().getWthPromo()));
-//            chkField04.setSelected((oTrans.getInvModel().isActive()));
-//
-//            txtField22.setText((String) oTrans.getModel().getLocationnName());
-//            txtField23.setText((String) oTrans.getModel().getWareHouseNm());
-//            txtField24.setText((String) oTrans.getModel().getSectionName());
-//            txtField25.setText(String.valueOf(oTrans.getModel().getBinNumber()));
-//
-//            txtField28.setText((String.valueOf(oTrans.getModel().getBegQtyxx())));
-//            txtField31.setText((String.valueOf(oTrans.getModel().getClassify())));
-//            txtField32.setText((String.valueOf(oTrans.getModel().getAvgMonSl())));
-//            txtField33.setText((String.valueOf(oTrans.getModel().getResvOrdr())));
-//            txtField34.setText((String.valueOf(oTrans.getModel().getQtyOnHnd())));
+            txtField26.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getMinimumInventoryLevel()));
+            txtField27.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getMaximumInventoryLevel()));
+            txtField29.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getCost()));
+            txtField30.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getSellingPrice()));
+
 
             if (pnEditMode == EditMode.ADDNEW) {
                 txtField22.setPromptText("PRESS F3: Search");
@@ -777,13 +751,13 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                     case 1:
                         /*search Barrcode*/
                         System.out.print("LSVALUE OF SEARCH 1 ==== " + lsValue);
-                        poJSON = oTrans.searchRecord(lsValue, true);
+                        poJSON = oTrans.InvMaster().searchRecord(lsValue, true);
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                             txtSeeks01.clear();
                             break;
                         }
-                        pnEditMode = oTrans.getEditMode();
+                        pnEditMode = oTrans.InvMaster().getEditMode();
 
                         if (pnEditMode == EditMode.READY) {
 //                            txtSeeks01.setText(oTrans.getModel().getBarCodex());
@@ -866,7 +840,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                     // Apply the TextFormatter to the TextField
                     txtField.setTextFormatter(textFormatter);
 
-                    oTrans.getModel().setBinId(lsValue);
+                    oTrans.InvMaster().getModel().setBinId(lsValue);
                     break;
             }
         } else {
@@ -888,12 +862,12 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                         poJson = oParameters.InventoryLocation().searchRecord(lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
 
-                        oTrans.getModel().setLocationId(oParameters.InventoryLocation().getModel().getLocationId());
+                        oTrans.InvMaster().getModel().setLocationId(oParameters.InventoryLocation().getModel().getLocationId());
 
                         if ("success".equals(poJson.get("result"))) {
                             txtField22.setText((String) oParameters.InventoryLocation().getModel().getDescription());
                             String warehouse = (String) oParameters.InventoryLocation().getModel().getWarehouseId();
-                            oTrans.getModel().setWarehouseId(warehouse);
+                            oTrans.InvMaster().getModel().setWarehouseId(warehouse);
 
                             poJson = oParameters.Warehouse().searchRecord(warehouse, true);
                             if ("success".equals(poJson.get("result"))) {
@@ -976,7 +950,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
     public void loadResult(String fsValue, boolean fbVal) {
         JSONObject poJson = new JSONObject();
         overlay.setVisible(fbVal);
-        poJson = oTrans.openRecord(fsValue);
+        poJson = oTrans.InvMaster().openRecord(fsValue);
         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
         }
