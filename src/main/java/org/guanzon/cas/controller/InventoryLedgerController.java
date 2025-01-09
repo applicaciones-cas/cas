@@ -9,6 +9,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,36 +42,41 @@ import org.guanzon.cas.model.ModelInvLedger;
 import org.guanzon.cas.model.ModelInvSerialLedger;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
+
 /**
  * FXML Controller class
  *
  * @author User
  */
 
-public class InventoryLedgerController implements Initializable, ScreenInterface {  
+public class InventoryLedgerController implements Initializable, ScreenInterface {
+
     private final String pxeModuleName = "Inventory Ledger";
     private GRider oApp;
-    private int pnEditMode;  
-    
+    private int pnEditMode;
+
     private int pnIndex = -1;
     private int pnRow = 0;
-    
+
     private boolean pbLoaded = false;
     private boolean state = false;
-    
+
     private String psCode;
     private String lsStockID;
     private Inv oTrans;
     private ParamControllers oParameters;
     private InventoryDetailController parentController;
-    
+
+    private LocalDate fromDate, thruDate;
+
     public int tbl_row = 0;
-    
+
     private ObservableList<ModelInvSerialLedger> data = FXCollections.observableArrayList();
-    public void setParentController(InventoryDetailController cVal){
-        parentController =cVal;
+
+    public void setParentController(InventoryDetailController cVal) {
+        parentController = cVal;
     }
-    
+
     public static TableModel empModel;
     @FXML
     private AnchorPane AnchorMain;
@@ -129,45 +135,48 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
+
     public void setStockID(String foValue) {
         lsStockID = foValue;
     }
     private String fsCode;
-    
+
     private Inv poTrans;
+
     public void setFsCode(Inv fsCode) {
-         this.poTrans = fsCode;
+        this.poTrans = fsCode;
     }
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-          initializeObject();
-          initDetails();
-//            oTrans.setRecordStatus("01234");
-            btnCancel.setOnAction(this::cmdButton_Click);
-            btnClose.setOnAction(this::cmdButton_Click);
-            btnLoadLedger.setOnAction(this::cmdButton_Click);
-            btnRecalculate.setOnAction(this::cmdButton_Click);
-            pbLoaded = true;
-            initTable();
-              // InvMaster().getModel().getBarCodex());
-//            txtField02.setText(poTrans.InvMaster().getModel().getDescript());
-//            txtField03.setText(poTrans.getInvModel().getBrandName());
-//            txtField04.setText(poTrans.getInvModel().getModelName());
-//            txtField05.setText(poTrans.getInvModel().getColorName());
-//            txtField06.setText(poTrans.getInvModel().getMeasureName());
-    }    
-    private void initDetails(){
-            txtField01.setText(poTrans.InvMaster().getModel().Inventory().getBarCode());
-            txtField02.setText(poTrans.InvMaster().getModel().Inventory().getDescription());
-//            txtField03.setText(poTrans.InvMaster().getModel().Inventory().Brand().getDescription());
-            txtField04.setText(poTrans.InvMaster().getModel().Inventory().Model().getDescription());
-            txtField05.setText(poTrans.InvMaster().getModel().Inventory().Color().getDescription());
-            txtField06.setText(poTrans.InvMaster().getModel().Inventory().Measure().getMeasureName());
+
+        initializeObject();
+        initDetails();
+        handleActionButton();
+        pbLoaded = true;
+        initTable();
+       
     }
+    private void handleActionButton(){
+        btnCancel.setOnAction(this::cmdButton_Click);
+        btnClose.setOnAction(this::cmdButton_Click);
+        btnLoadLedger.setOnAction(this::cmdButton_Click);
+        btnRecalculate.setOnAction(this::cmdButton_Click);
+        btnCancel.setOnAction(this::cmdButton_Click);
+    }
+
+    private void initDetails() {
+        txtField01.setText(poTrans.InvMaster().getModel().Inventory().getBarCode());
+        txtField02.setText(poTrans.InvMaster().getModel().Inventory().getDescription());
+        txtField03.setText(poTrans.InvMaster().Inventory().getModel().Brand().getDescription());
+        txtField04.setText(poTrans.InvMaster().getModel().Inventory().Model().getDescription());
+        txtField05.setText(poTrans.InvMaster().getModel().Inventory().Color().getDescription());
+        txtField06.setText(poTrans.InvMaster().getModel().Inventory().Measure().getMeasureName());
+    }
+
     private void initializeObject() {
         String category = System.getProperty("store.inventory.industry");
         System.out.println("category == " + category);
@@ -176,18 +185,19 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
         oParameters = new ParamControllers(oApp, logwrapr);
 
     }
-     public void cmdButton_Click(ActionEvent event) {
-        String lsButton = ((Button)event.getSource()).getId();
-         
-        JSONObject poJson;    
+
+    public void cmdButton_Click(ActionEvent event) {
+        String lsButton = ((Button) event.getSource()).getId();
+
+        JSONObject poJson;
         unloadForm appUnload = new unloadForm();
-        switch (lsButton){
-           case "btnClose":  //Close
-                if(parentController != null){
-                    appUnload.useParentController(poTrans.InvMaster().getModel().Inventory().getBarCode());
+        switch (lsButton) {
+            case "btnClose":  //Close
+                if (parentController != null) {
+                    appUnload.useParentController(poTrans.InvMaster().getModel().Inventory().getStockId());
                 }
                 CommonUtils.closeStage(btnClose);
-            break;
+                break;
             case "btnRecalculate":  //Rcalculate
 //                if (data.isEmpty()){
 //                    ShowMessageFX.Information("Please ensure the ledger is loaded before performing recalculation."
@@ -218,65 +228,62 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
 //                        Logger.getLogger(InventoryLedgerController.class.getName()).log(Level.SEVERE, null, ex);
 //                    }
 //                }
-            
-            break;
 
-           case "btnLoadLedger":  //Close
+                break;
+
+            case "btnLoadLedger":  //Close
 //                CommonUtils.closeStage(btnClose);
-                    LocalDate fromDate = dpField01.getValue();
-                    LocalDate thruDate = dpField02.getValue();
-                    
-                    poTrans.OpenInvLedger(lsStockID, fromDate.toString(), thruDate.toString());
-                    loadLedger();  
-                       break;
-//                    poJson = new JSONObject();
-//                        data.clear();
-//
-//                        // Check for null dates
-////                        boolean isDateRangeEmpty = (fromDate == null || thruDate == null);
-//                        boolean isFromDateNull = (fromDate == null);
-//                        boolean isThruDateNull = (thruDate == null);
-//                        
-//                         if (isFromDateNull && isThruDateNull) {
-////                            poJson = oTrans.OpenInvLedger(poTrans.getModel().getStockID());
-//                         } else { 
-//                             if (isFromDateNull || isThruDateNull){
-//                                ShowMessageFX.Information("Invalid Date Range: Please Check your Date From and Date Thru", "Computerized Accounting System", pxeModuleName);
-//                                return;
-//                             }
-//                             
-//                             if (fromDate.isAfter(thruDate)) {
-//                                ShowMessageFX.Information("Invalid Date Range: 'From Date' should not be after 'Thru Date'.", "Computerized Accounting System", pxeModuleName);
-//                                return;
-//                             }
-//                             
-//                             String condition = "a.dTransact BETWEEN '" + fromDate + "' AND '" + thruDate + "'";
-////                             poJson = oTrans.OpenInvLedgerWithCondition(poTrans.getModel().getStockID(), condition);
-//                         }
-            
-           case "btnCancel": //OK;
+                if (isDateEntryOkay()) {
+                    poTrans.OpenInvLedger(lsStockID, fromDate, thruDate);
+                    loadLedger();
+                    break;
+                }
+
+            case "btnCancel": //OK;
                 if(parentController != null){
                     appUnload.useParentController(poTrans.InvMaster().getModel().Inventory().getStockId());
                 }
                 CommonUtils.closeStage(btnCancel);
             break;
-            
-               default: 
-                   ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
-                return;        
-        }     
-    } 
-     
-     private void loadLedger(){
-        int lnCtr2 = 0;
+//            
+//            default:
+//                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+//                return;
+        }
+    }
+
+    private boolean isDateEntryOkay() {
+        fromDate = dpField01.getValue();
+        thruDate = dpField02.getValue();
+
+        // Check if either date is null
+        if (fromDate == null || thruDate == null) {
+            ShowMessageFX.Information("Date From or Date Thru cannot be null or empty!",
+                    "Computerized Accounting System", pxeModuleName);
+            return false; // Validation failed
+        }
+
+        // Check if fromDate is after thruDate
+        if (fromDate.isAfter(thruDate)) {
+            ShowMessageFX.Information("'From Date' must be less than or equal to 'Thru Date'.",
+                    "Computerized Accounting System", pxeModuleName);
+            return false; // Validation failed
+        }
+
+        // If validation passes
+        return true;
+    }
+
+    private void loadLedger() {
+        System.out.println("nagload and ledger");
         data.clear();
-        
+
         if (poTrans.getInvLedgerCount() >= 0) {
             for (int lnCtr = 0; lnCtr < poTrans.getInvLedgerCount(); lnCtr++) {
                 System.out.println("Processing Serial Ledger at Index: " + lnCtr);
 
                 // Debugging individual components
-                System.out.println("Transaction Date: " + poTrans.InvLedger(lnCtr).getTransactionDate());
+                System.out.println("Transaction Date: " + poTrans.InvLedger(lnCtr).getTransactionDate().toString());
                 System.out.println("Branch Name: " + poTrans.InvLedger(lnCtr).Branch().getBranchName());
                 System.out.println("Source Code: " + poTrans.InvLedger(lnCtr).getSourceCode());
                 System.out.println("Source No: " + poTrans.InvLedger(lnCtr).getSourceNo());
@@ -286,34 +293,18 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                         poTrans.InvLedger(lnCtr).getTransactionDate().toString(),
                         poTrans.InvLedger(lnCtr).Branch().getBranchName(),
                         poTrans.InvLedger(lnCtr).getSourceCode(),
-                        poTrans.InvLedger(lnCtr).getSourceNo()
+                        poTrans.InvLedger(lnCtr).getSourceNo(),
+                        String.valueOf(poTrans.InvLedger(lnCtr).getQuantityIn()),
+                        String.valueOf(poTrans.InvLedger(lnCtr).getQuantityOut()),
+                        String.valueOf(poTrans.InvLedger(lnCtr).getQuantityOnHand())
                 ));
-//            lnCtr += 1;
             }
+        } else {
+            ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
         }
-
-//        if (oTrans.getInvLedgerCount() >= 0) {
-//            for (int lnCtr = 0; lnCtr < oTrans.getInvLedgerCount(); lnCtr++) {
-//                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
-//
-//                // Debugging individual components
-////                System.out.println("Transaction Date: " + oTrans.InvLedger(lnCtr).getTransactionDate().toString());
-//                System.out.println("Branch Name: " + oTrans.InvLedger(lnCtr).Branch().getBranchName());
-//                System.out.println("Source Code: " + oTrans.InvLedger(lnCtr).getSourceCode());
-//                System.out.println("Source No: " + oTrans.InvLedger(lnCtr).getSourceNo());
-//
-//                data.add(new ModelInvSerialLedger(
-//                        String.valueOf(lnCtr + 1),
-//                        oTrans.InvLedger(lnCtr).getTransactionDate(),
-//                        oTrans.InvLedger(lnCtr).Branch().getBranchName(),
-//                        oTrans.InvLedger(lnCtr).getSourceCode(),
-//                        oTrans.InvLedger(lnCtr).getSourceNo()
-//                ));
-//            }
-//        }
     }
-     
-      private void initTable() {
+
+    private void initTable() {
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
@@ -322,7 +313,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
         index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index07.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index08.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        
+
         index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
         index03.setCellValueFactory(new PropertyValueFactory<>("index03"));
@@ -340,5 +331,5 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
         tblInventoryLedger.setItems(data);
         tblInventoryLedger.autosize();
     }
-     
+
 }

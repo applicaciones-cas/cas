@@ -128,7 +128,6 @@ public class ModelInvSerialLedger {
     public String getIndex02(){return index02.get();}
     public void setIndex02(String index02){this.index02.set(index02);}
     
-    
     public String getIndex03(){return index03.get();}
     public void setIndex03(String index03){this.index03.set(index03);}
     
@@ -138,24 +137,9 @@ public class ModelInvSerialLedger {
     public String getIndex05(){return index05.get();}
     public void setIndex05(String index05){this.index05.set(index05);}
     
-//    public String getIndex06(){
-//        System.out.println("mdlInvSerial SoldStat == " + SoldStat.get(Integer.parseInt(index06.get())));
-//        return SoldStat.get(Integer.parseInt(index06.get()));
-//    }
-//    public String getIndex06(){
-//        if(!index06.get().isEmpty()){
-//            return (index06.get().equals("1")?"YES":"NO");
-//        }else{
-//            return "";
-//        }
-//    }
     public String getIndex06(){return index06.get();}
     public void setIndex06(String index06){this.index06.set(index06);}
-    
-//    public String getIndex07(){
-//         System.out.println("mdlInvSerial UnitType == " + UnitType.get(Integer.parseInt(index07.get())));
-//        return UnitType.get(Integer.parseInt(index07.get()));
-//    }
+
     public String getIndex07(){return index07.get();}
     public void setIndex07(String index07){this.index07.set(index07);}
     

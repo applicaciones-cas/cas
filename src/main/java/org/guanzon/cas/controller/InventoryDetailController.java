@@ -70,7 +70,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
 
     private final String pxeModuleName = "Inventory Details";
     private GRider oApp;
-    private String oTransnox = "";
+    private String lsStockID;
     private int pnEditMode;
 
     private double xOffset = 0;
@@ -342,7 +342,8 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                                 || pnEditMode == EditMode.ADDNEW
                                 || pnEditMode == EditMode.UPDATE) {
                             System.out.print("to pass == " + oTrans.InvMaster().Inventory().getModel().getStockId() );
-                            loadLedger(oTrans.InvMaster().Inventory().getModel().getStockId());
+                            lsStockID = oTrans.InvMaster().Inventory().getModel().getStockId();
+                            loadLedger(lsStockID);
                         }
                     } catch (SQLException ex) {
                         Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
@@ -459,7 +460,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
             InventoryLedgerController loControl = new InventoryLedgerController();
             loControl.setGRider(oApp);
             loControl.setFsCode(oTrans);
-            loControl.setStockID(fsCode);
+            loControl.setStockID(fsCode);   
             loControl.setParentController(this);
             fxmlLoader.setController(loControl);
 
@@ -521,7 +522,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
             stage.setOnHidden(e -> {
                 System.out.println("Stage is hidden");
                 overlay.setVisible(false);
-                loadResult(oTrans.InvMaster().Inventory().getModel().getStockId(), false);
+                loadResult(lsStockID, false);
             });
             stage.showAndWait();
 
@@ -948,16 +949,21 @@ public class InventoryDetailController implements Initializable, ScreenInterface
     }
 
     public void loadResult(String fsValue, boolean fbVal) {
+        
+        initializeObject();
         JSONObject poJson = new JSONObject();
         overlay.setVisible(fbVal);
-        poJson = oTrans.InvMaster().openRecord(fsValue);
+         poJson = oTrans.InvMaster().searchRecord(fsValue, true);
+//        poJson = oTrans.openRecord(fsValue);
         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
         }
         initButton(pnEditMode);
         System.out.print("\neditmode on browse == " + pnEditMode);
         initTabAnchor();
-        loadInventory();
+        loadInventory();    
+        lsStockID = oTrans.InvMaster().getModel().getStockId();
+       
 
     }
 }
