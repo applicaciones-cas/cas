@@ -62,7 +62,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
     private boolean state = false;
 
     private String psCode;
-    private String lsStockID;
+    private String lsStockID,lsBrand;
     private Inv oTrans;
     private ParamControllers oParameters;
     private InventoryDetailController parentController;
@@ -139,6 +139,9 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
     public void setStockID(String foValue) {
         lsStockID = foValue;
     }
+    public void setBranchNme(String foValue) {
+        lsBrand = foValue;
+    }
     private String fsCode;
 
     private Inv poTrans;
@@ -154,10 +157,12 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
     public void initialize(URL url, ResourceBundle rb) {
 
         initializeObject();
+        initBrand();
         initDetails();
         handleActionButton();
         pbLoaded = true;
         initTable();
+        
        
     }
     private void handleActionButton(){
@@ -167,24 +172,31 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
         btnRecalculate.setOnAction(this::cmdButton_Click);
         btnCancel.setOnAction(this::cmdButton_Click);
     }
+    private void initBrand(){
+        JSONObject poJson;
+        poJson = new JSONObject();
+        poJson = oParameters.Brand().searchRecord(lsBrand, true);
+        if ("success".equals((String) poJson.get("result"))) {
+            txtField03.setText(oParameters.Brand().getModel().getDescription());
+        }     
+    }
 
     private void initDetails() {
         txtField01.setText(poTrans.InvMaster().getModel().Inventory().getBarCode());
         txtField02.setText(poTrans.InvMaster().getModel().Inventory().getDescription());
-        txtField03.setText(poTrans.InvMaster().Inventory().getModel().Brand().getDescription());
+        
         txtField04.setText(poTrans.InvMaster().getModel().Inventory().Model().getDescription());
         txtField05.setText(poTrans.InvMaster().getModel().Inventory().Color().getDescription());
         txtField06.setText(poTrans.InvMaster().getModel().Inventory().Measure().getMeasureName());
     }
 
-    private void initializeObject() {
-        String category = System.getProperty("store.inventory.industry");
-        System.out.println("category == " + category);
-        LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-        oTrans = new Inv(oApp, "", logwrapr);
-        oParameters = new ParamControllers(oApp, logwrapr);
-
-    }
+   private void initializeObject() {
+    String category = System.getProperty("store.inventory.industry");
+    System.out.println("category == " + category);
+    LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
+    oParameters = new ParamControllers(oApp,  logwrapr); 
+    oTrans = new Inv(oApp, "", logwrapr);  // Ensure this isn't overwriting necessary data
+}
 
     public void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
@@ -196,6 +208,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                 if (parentController != null) {
                     appUnload.useParentController(poTrans.InvMaster().getModel().Inventory().getStockId());
                 }
+                initializeObject();
                 CommonUtils.closeStage(btnClose);
                 break;
             case "btnRecalculate":  //Rcalculate
@@ -243,6 +256,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                 if(parentController != null){
                     appUnload.useParentController(poTrans.InvMaster().getModel().Inventory().getStockId());
                 }
+                initializeObject();
                 CommonUtils.closeStage(btnCancel);
             break;
 //            
@@ -251,6 +265,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
 //                return;
         }
     }
+    
 
     private boolean isDateEntryOkay() {
         fromDate = dpField01.getValue();

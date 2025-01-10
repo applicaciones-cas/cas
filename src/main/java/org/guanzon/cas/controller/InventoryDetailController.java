@@ -70,7 +70,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
 
     private final String pxeModuleName = "Inventory Details";
     private GRider oApp;
-    private String lsStockID;
+    private String lsStockID, lsBrand;
     private int pnEditMode;
 
     private double xOffset = 0;
@@ -270,15 +270,18 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                 case "btnBrowse":
                     String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
                     poJSON = oTrans.InvMaster().Inventory().searchRecord(lsValue, false);
-                    
+
                     if ("success".equals((String) poJSON.get("result"))) {
-                        
+
                         String stockId = oTrans.InvMaster().Inventory().getModel().getStockId();
                         poJSON = oTrans.InvMaster().searchRecord(String.valueOf(stockId), true);
-                        
+                        System.out.print("brand sa browse == " + oTrans.InvMaster().getModel().Inventory().getBrandId());
                         if ("success".equals((String) poJSON.get("result"))) {
                             pnEditMode = oTrans.InvMaster().getEditMode();
+                            System.out.print("brand sa browse == " + oTrans.InvMaster().Inventory().getModel().Brand().getDescription());
+                            lsBrand = String.valueOf(oTrans.InvMaster().getModel().Inventory().getBrandId());
                             loadInventory();
+
                         } else {
                             ShowMessageFX.Information("No Inventory found in your warehouse. Please save the record to create.", "Computerized Acounting System", "Inventory Detail");
                             oTrans.InvMaster().newRecord();
@@ -335,22 +338,33 @@ public class InventoryDetailController implements Initializable, ScreenInterface
 //                    initTabAnchor();
 //                    loadInventory();
                     break;
-                case "btnLedger":
-                {
+                case "btnLedger": {
                     try {
                         if (pnEditMode == EditMode.READY
                                 || pnEditMode == EditMode.ADDNEW
                                 || pnEditMode == EditMode.UPDATE) {
-                            System.out.print("to pass == " + oTrans.InvMaster().Inventory().getModel().getStockId() );
-                            lsStockID = oTrans.InvMaster().Inventory().getModel().getStockId();
-                            loadLedger(lsStockID);
+                            System.out.print("to pass == " + oTrans.InvMaster().Inventory().getModel().getStockId());
+
+                            loadLedger(lsStockID, lsBrand);
                         }
                     } catch (SQLException ex) {
                         Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                    break;
-                case "btnSerial":
+                break;
+                case "btnSerial": {
+                    try {
+                        if (pnEditMode == EditMode.READY
+                                || pnEditMode == EditMode.ADDNEW
+                                || pnEditMode == EditMode.UPDATE) {
+                            System.out.print("to pass == " + oTrans.InvMaster().Inventory().getModel().getStockId());
+                            loadSerial(lsStockID, lsBrand);
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
 //                    if (!txtField01.getText().isEmpty()) {
 //                        if (chkField01.isSelected()) {
 //                            {
@@ -364,91 +378,94 @@ public class InventoryDetailController implements Initializable, ScreenInterface
 //                            ShowMessageFX.Information("This Inventory is not serialize!", "Computerized Acounting System", pxeModuleName);
 //                        }
 //                    }
-                    break;
+                break;
             }
         }
 
     }
 
-//    private void loadSerial(String fsCode) throws SQLException {
-//        try {
-//            Stage stage = new Stage();
-//
-//            overlay.setVisible(true);
-//
-//            FXMLLoader fxmlLoader = new FXMLLoader();
-//            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventorySerial.fxml"));
-//
-//            InventorySerialController loControl = new InventorySerialController();
-//            loControl.setGRider(oApp);
-//            loControl.setFsCode(oTrans);
-//
-//            fxmlLoader.setController(loControl);
-//
-//            // Load the main interface
-//            Parent parent = fxmlLoader.load();
-//            parent.setStyle("-fx-background-color: rgba(0, 0, 0, 1);");
-//
-//            // Set up dragging
-//            final double[] xOffset = new double[1];
-//            final double[] yOffset = new double[1];
-//
-//            parent.setOnMousePressed(event -> {
-//                xOffset[0] = event.getSceneX();
-//                yOffset[0] = event.getSceneY();
-//            });
-//
-//            parent.setOnMouseDragged(event -> {
-//                double newX = event.getScreenX() - xOffset[0];
-//                double newY = event.getScreenY() - yOffset[0];
-//
-//                // Get the screen bounds
-//                Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-//
-//                // Calculate the window bounds
-//                double stageWidth = stage.getWidth();
-//                double stageHeight = stage.getHeight();
-//
-//                // Constrain the stage position to the screen bounds
-//                if (newX < 0) {
-//                    newX = 0;
-//                }
-//                if (newY < 0) {
-//                    newY = 0;
-//                }
-//                if (newX + stageWidth > screenBounds.getWidth()) {
-//                    newX = screenBounds.getWidth() - stageWidth;
-//                }
-//                if (newY + stageHeight > screenBounds.getHeight()) {
-//                    newY = screenBounds.getHeight() - stageHeight;
-//                }
-//
-//                stage.setX(newX);
-//                stage.setY(newY);
-//            });
-//
-//            // Set the main interface as the scene
-//            Scene scene = new Scene(parent);
-//            stage.setScene(scene);
-//            stage.initStyle(StageStyle.TRANSPARENT);
-//            stage.initModality(Modality.APPLICATION_MODAL);
-//            stage.setTitle("Inventory Serial");
-//
-//            // Add close request handler
-//            stage.setOnCloseRequest(event -> {
-//                System.out.println("Stage is closing");
-//                overlay.setVisible(false);
-//            });
-//
-//            stage.setOnHidden(e -> overlay.setVisible(false));
-//            stage.showAndWait();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-//            System.exit(1);
-//        }
-//    }
-    private void loadLedger(String fsCode) throws SQLException {
+    private void loadSerial(String fsCode, String fsBrand) throws SQLException {
+        try {
+            Stage stage = new Stage();
+
+            overlay.setVisible(true);
+
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventorySerial.fxml"));
+
+            InventorySerialController loControl = new InventorySerialController();
+            loControl.setGRider(oApp);
+            loControl.setFsCode(oTrans);
+            loControl.setStockID(fsCode);
+            loControl.setBranchNme(fsBrand);
+
+            fxmlLoader.setController(loControl);
+
+            // Load the main interface
+            Parent parent = fxmlLoader.load();
+            parent.setStyle("-fx-background-color: rgba(0, 0, 0, 1);");
+
+            // Set up dragging
+            final double[] xOffset = new double[1];
+            final double[] yOffset = new double[1];
+
+            parent.setOnMousePressed(event -> {
+                xOffset[0] = event.getSceneX();
+                yOffset[0] = event.getSceneY();
+            });
+
+            parent.setOnMouseDragged(event -> {
+                double newX = event.getScreenX() - xOffset[0];
+                double newY = event.getScreenY() - yOffset[0];
+
+                // Get the screen bounds
+                Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+                // Calculate the window bounds
+                double stageWidth = stage.getWidth();
+                double stageHeight = stage.getHeight();
+
+                // Constrain the stage position to the screen bounds
+                if (newX < 0) {
+                    newX = 0;
+                }
+                if (newY < 0) {
+                    newY = 0;
+                }
+                if (newX + stageWidth > screenBounds.getWidth()) {
+                    newX = screenBounds.getWidth() - stageWidth;
+                }
+                if (newY + stageHeight > screenBounds.getHeight()) {
+                    newY = screenBounds.getHeight() - stageHeight;
+                }
+
+                stage.setX(newX);
+                stage.setY(newY);
+            });
+
+            // Set the main interface as the scene
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Inventory Serial");
+
+            // Add close request handler
+            stage.setOnCloseRequest(event -> {
+                System.out.println("Stage is closing");
+                overlay.setVisible(false);
+            });
+
+            stage.setOnHidden(e -> overlay.setVisible(false));
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
+    }
+
+    private void loadLedger(String fsCode, String fsBrand) throws SQLException {
         try {
             Stage stage = new Stage();
 
@@ -460,7 +477,9 @@ public class InventoryDetailController implements Initializable, ScreenInterface
             InventoryLedgerController loControl = new InventoryLedgerController();
             loControl.setGRider(oApp);
             loControl.setFsCode(oTrans);
-            loControl.setStockID(fsCode);   
+
+            loControl.setStockID(fsCode);
+            loControl.setBranchNme(fsBrand);
             loControl.setParentController(this);
             fxmlLoader.setController(loControl);
 
@@ -522,7 +541,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
             stage.setOnHidden(e -> {
                 System.out.println("Stage is hidden");
                 overlay.setVisible(false);
-                loadResult(lsStockID, false);
+                loadResult(lsStockID, true);
             });
             stage.showAndWait();
 
@@ -532,6 +551,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
             System.exit(1);
         }
     }
+
     /*USE TO DISABLE ANCHOR BASE ON INITMODE*/
     private void initTabAnchor() {
         System.out.print("EDIT MODE == " + pnEditMode);
@@ -650,7 +670,8 @@ public class InventoryDetailController implements Initializable, ScreenInterface
             txtField29.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getCost()));
             txtField30.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getSellingPrice()));
 
-
+            lsStockID = oTrans.InvMaster().getModel().getStockId();
+//            lsBrand = txtField10.getText();
             if (pnEditMode == EditMode.ADDNEW) {
                 txtField22.setPromptText("PRESS F3: Search");
             }
@@ -949,11 +970,11 @@ public class InventoryDetailController implements Initializable, ScreenInterface
     }
 
     public void loadResult(String fsValue, boolean fbVal) {
-        
+
         initializeObject();
         JSONObject poJson = new JSONObject();
-        overlay.setVisible(fbVal);
-         poJson = oTrans.InvMaster().searchRecord(fsValue, true);
+        overlay.setVisible(false);
+        poJson = oTrans.InvMaster().searchRecord(fsValue, fbVal);
 //        poJson = oTrans.openRecord(fsValue);
         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -961,9 +982,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
         initButton(pnEditMode);
         System.out.print("\neditmode on browse == " + pnEditMode);
         initTabAnchor();
-        loadInventory();    
-        lsStockID = oTrans.InvMaster().getModel().getStockId();
-       
+        loadInventory();
 
     }
 }
