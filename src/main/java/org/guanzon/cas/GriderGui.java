@@ -20,7 +20,7 @@ import org.guanzon.appdriver.base.GRider;
 public class GriderGui extends Application {
     public final static String pxeMainFormTitle = "Computerized Accounting System";
     public final static String pxeMainForm = "/org/guanzon/cas/views/Dashboard.fxml";
-//    public final static String pxeStageIcon = "images/icon.png";
+    public final static String pxeStageIcon = "/org/guanzon/cas/images/guanzon.png";
     public static GRider oApp;
     
     @Override
@@ -46,7 +46,7 @@ public class GriderGui extends Application {
         
         stage.setScene(scene);
         stage.initStyle(StageStyle.UNDECORATED);
-//        stage.getIcons().add(new Image(pxeStageIcon));
+        stage.getIcons().add(new Image(pxeStageIcon));
         stage.setTitle(pxeMainFormTitle);
         
         // set stage as maximized but not full screen

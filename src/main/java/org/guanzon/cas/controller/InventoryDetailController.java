@@ -58,6 +58,7 @@ import org.guanzon.cas.inv.Inv;
 import org.guanzon.cas.inventory.base.InvMaster;
 import org.guanzon.cas.inv.Inv_Master;
 import org.guanzon.cas.inv.Inventory;
+import org.guanzon.cas.inv.ObservableListUtil;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 
@@ -148,15 +149,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
     void chkFiled04_Clicked(MouseEvent event) {
 
     }
-    ObservableList<String> unitType = FXCollections.observableArrayList(
-            "LDU",
-            "Regular",
-            "Free",
-            "Live",
-            "Service",
-            "RDU",
-            "Others"
-    );
+
 
     /**
      * Initializes the controller class.
@@ -174,22 +167,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
         pnEditMode = EditMode.UNKNOWN;
         ClickButton();
         initButton(pnEditMode);
-//        AnchorTable.setVisible(false);
         pbLoaded = true;
-//        oTrans = new InvMaster(oApp, true);
-//        if (oTransnox == null || oTransnox.isEmpty()) { // Check if oTransnox is null or empty
-//            pnEditMode = EditMode.UNKNOWN;
-//            initButton(pnEditMode);
-//        }
-//        oTrans.setRecordStatus("0123");
-////        dpField01.setValue(LocalDate.now());
-//        pnEditMode = EditMode.UNKNOWN;
-//        oTrans.setWithUI(true);
-//        initButton(pnEditMode);
-//        initTabAnchor();
-//        ClickButton();
-//        InitTextFields();
-//        pbLoaded = true;
         overlay.setVisible(false);
 
     }
@@ -669,6 +647,11 @@ public class InventoryDetailController implements Initializable, ScreenInterface
             txtField27.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getMaximumInventoryLevel()));
             txtField29.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getCost()));
             txtField30.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getSellingPrice()));
+            
+            System.out.println("to load == " + oTrans.InvMaster().getModel().Inventory().getInventoryTypeId());
+            ObservableList<String> unitTypes = ObservableListUtil.UNIT_TYPES;
+            cmbField01.setItems(unitTypes);
+            cmbField01.getSelectionModel().select(7);
 
             lsStockID = oTrans.InvMaster().getModel().getStockId();
 //            lsBrand = txtField10.getText();
@@ -756,7 +739,6 @@ public class InventoryDetailController implements Initializable, ScreenInterface
         txtSeeks02.setOnKeyPressed(this::txtSeeks_KeyPressed);
 
         lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
-
     }
 
     /*Text seek/search*/

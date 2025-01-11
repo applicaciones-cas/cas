@@ -212,6 +212,8 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                 CommonUtils.closeStage(btnClose);
                 break;
             case "btnRecalculate":  //Rcalculate
+                ShowMessageFX.Information("This feature is currently unavailable.", 
+                            "Computerized Acounting System", pxeModuleName); 
 //                if (data.isEmpty()){
 //                    ShowMessageFX.Information("Please ensure the ledger is loaded before performing recalculation."
 //                            + "Recalculation cannot be completed correctly without loading the ledger first.", 
@@ -251,6 +253,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                     loadLedger();
                     break;
                 }
+                break;
 
             case "btnCancel": //OK;
                 if(parentController != null){

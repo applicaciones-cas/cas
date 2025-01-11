@@ -147,22 +147,7 @@ public class InventorySerialController implements Initializable {
         initDetails();
         pbLoaded = true;
         ClickButton();
-        initTable();
-//            oTrans = new InvSerial(oApp, true);
-//            ClickButton();
-//            oTrans.setRecordStatus("01234");
-//            pbLoaded = true;
-//            initTable();
-//            poTrans.getInvModel().setUnitType("7");
-//            txtField01.setText(poTrans.getModel().getBarCodex());
-//            txtField02.setText(poTrans.getModel().getDescript());
-//            txtField03.setText(poTrans.getInvModel().getBrandName());
-//            txtField04.setText(poTrans.getInvModel().getModelName());
-//            txtField05.setText(poTrans.getInvModel().getColorName());
-//            txtField06.setText(poTrans.getInvModel().getMeasureName());
-//            
-//            
-//            
+        initTable();   
     }
 
     private void initializeObject() {
@@ -193,12 +178,7 @@ public class InventorySerialController implements Initializable {
         
         ObservableList<String> unitTypes = ObservableListUtil.UNIT_TYPES;
         cmbField01.setItems(unitTypes);
-
-         // Pre-select the 7th index (index starts from 0, so index 7 is the 8th item)
-         cmbField01.getSelectionModel().select(7);
-//            cmbField01.setOnAction(event -> {
-//                poTrans.InvLedger(pnRow).setUnitType(String.valueOf(cmbField01.getSelectionModel().getSelectedIndex()))
-//                        };
+        cmbField01.getSelectionModel().select(7);
     }
 
     /*Handle button click*/
@@ -248,10 +228,14 @@ public class InventorySerialController implements Initializable {
                 System.out.println("Processing Serial Ledger at Index: " + lnCtr);
 
                 // Debugging individual components
-                System.out.println("Transaction Date: " + poTrans.InvSerial(lnCtr).getSerialId());
-                System.out.println("Branch Name: " + poTrans.InvSerial(lnCtr).getSerialOne());
-                System.out.println("Source Code: " + poTrans.InvSerial(lnCtr).getSerialTwo());
-//                System.out.println("Source No: " + oTrans.InvSerial(lnCtr).Inventory().);
+                System.out.println("Serial 02: " + String.valueOf(lnCtr + 1));
+                System.out.println("Serial ID: " + poTrans.InvSerial(lnCtr).getSerialId());
+                System.out.println("Serial 01: " + poTrans.InvSerial(lnCtr).getSerialOne());
+                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getSerialTwo());
+                System.out.println("Serial 01: " + poTrans.InvSerial(lnCtr).getLocationId());
+                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getSoldStatus());
+                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getUnitType());
+                System.out.println("-------------------------------------------------------------");
 
                 data.add(new ModelInvSerial(
                         String.valueOf(lnCtr + 1),
