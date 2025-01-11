@@ -910,18 +910,6 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                         }
 
                         break;
-
-//                    case 25:
-//                        poJson = new JSONObject();
-//                        poJson = oParameters.Bin().searchRecord(lsValue, false);
-//                        System.out.println("poJson = " + poJson.toJSONString());
-//                        if ("success".equals(poJson.get("result"))) {
-//                            oTrans.getModel().setBinId(oParameters.Bin().getModel().getBinId());
-//                            txtField25.setText((String) oParameters.Bin().getModel().getBinName());
-//                        } else {
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        }
-//                        break;
                 }
             case ENTER:
         }
