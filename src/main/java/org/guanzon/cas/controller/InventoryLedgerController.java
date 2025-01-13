@@ -223,6 +223,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
 //                    try {
 //
 //                        dpField01.setValue(null);
+                
 //                        dpField02.setValue(null);
 ////                        poJson = poTrans.recalculate(poTrans.InvMaster().getModel().Inventory().getStockId());
 //                        if("error".equalsIgnoreCase(poJson.get("result").toString())){

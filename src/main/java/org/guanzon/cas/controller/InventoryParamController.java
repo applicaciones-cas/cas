@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import static javafx.collections.FXCollections.observableList;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -62,6 +63,8 @@ public class InventoryParamController implements Initializable, ScreenInterface 
     private int pnRow = 0;
 
     private ObservableList<ModelInvSubUnit> data = FXCollections.observableArrayList();
+    String category = System.getProperty("store.inventory.industry");
+    
     @FXML
     private AnchorPane AnchorInput, AnchorTable, AnchorMain;
 
@@ -151,6 +154,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
         clearAllFields();
         initializeObject();
         InitTextFields();
@@ -159,10 +163,11 @@ public class InventoryParamController implements Initializable, ScreenInterface 
         initButton(pnEditMode);
         AnchorTable.setVisible(false);
         pbLoaded = true;
+//        System.out.println("categ == " + );
     }
 
     private void initializeObject() {
-        String category = System.getProperty("store.inventory.industry");
+        
         System.out.println("category == " + category);
         LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
         oTrans = new Inventory();
@@ -171,6 +176,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
         oTrans.setLogWrapper(logwrapr);
         oTrans.initialize();
         oParameters = new ParamControllers(oApp, logwrapr);
+        
         
         
     }
@@ -211,6 +217,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                         initButton(pnEditMode);
                         loadInventory();;
                         initTabAnchor();
+                        
                     } else {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         System.out.println((String) poJSON.get("message"));
@@ -299,10 +306,25 @@ public class InventoryParamController implements Initializable, ScreenInterface 
         // Manage visibility and managed state of other buttons
         btnBrowse.setVisible(!lbShow);
         btnBrowse.setManaged(!lbShow);
-        btnNew.setVisible(!lbShow);
-        btnNew.setManaged(!lbShow);
+        
         btnClose.setVisible(true);
         btnClose.setManaged(true);
+        
+        //allows you to check if branch is warehouse
+        isWarehouse();
+        
+    }
+    private boolean isWarehouse() {
+        //Only warehouse branch can use the Button New to create Inventorry
+        JSONObject poJson = oParameters.Branch().searchRecordAttributes(oApp.getBranchCode(), true);
+
+        if ("success".equals(poJson.get("result"))) {
+            boolean isWarehouse = oParameters.Branch().getModel().isWarehouse();
+            btnNew.setVisible(isWarehouse);
+            btnNew.setManaged(isWarehouse);
+            return true;
+        }
+        return false;
     }
 
     private void initSubItemForm() {
@@ -464,6 +486,11 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                         }
                         oTrans.getModel().setCategoryIdSecondLevel(oParameters.CategoryLevel2().getModel().getCategoryId());
                         txtField07.setText((String) oParameters.CategoryLevel2().getModel().getDescription());
+                        poJson = oParameters.InventoryType().searchRecord(oParameters.CategoryLevel2().getModel().getInventoryTypeCode(), true);
+                        if("success".equals((String)poJson.get("result"))){
+                            cmbField01.setValue(oParameters.InventoryType().getModel().getDescription());
+                            oTrans.getModel().setInventoryTypeId(oParameters.CategoryLevel2().getModel().getInventoryTypeCode());
+                        }
                         break;
                     case 8:
                         poJson = oParameters.CategoryLevel3().searchRecord(lsValue, false);
@@ -535,6 +562,8 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                 CommonUtils.SetPreviousFocus(txtField);
         }
     }
+    
+    
 
     private void txtSeeks_KeyPressed(KeyEvent event) {
         TextField txtSeeks = (TextField) event.getSource();
@@ -556,6 +585,8 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                         txtSeeks02.setText(oTrans.getModel().getDescription());
                         pnEditMode = oTrans.getEditMode();
                         loadInventory();
+                        
+                        
                         break;
                     case 2:
                         poJSON = oTrans.searchRecord(lsValue, false);
@@ -638,7 +669,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
 
             txtField20.setText((String) oTrans.getModel().getSupersededId());
             txtField21.setText(String.valueOf(oTrans.getModel().getShelfLife()));
-            cmbField01.setValue(String.valueOf(oTrans.getModel().InventoryType().getDescription()));
+            
             chkField01.setSelected("1".equals(oTrans.getModel().isSerialized()));
             chkField02.setSelected("1".equals(oTrans.getModel().isComboInventory()));
             chkField03.setSelected("1".equals(oTrans.getModel().isWithPromo()));
