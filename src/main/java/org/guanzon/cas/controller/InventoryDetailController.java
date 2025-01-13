@@ -258,6 +258,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                             pnEditMode = oTrans.InvMaster().getEditMode();
                             System.out.print("brand sa browse == " + oTrans.InvMaster().Inventory().getModel().Brand().getDescription());
                             lsBrand = String.valueOf(oTrans.InvMaster().getModel().Inventory().getBrandId());
+                            
                             loadInventory();
 
                         } else {
@@ -336,6 +337,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                                 || pnEditMode == EditMode.ADDNEW
                                 || pnEditMode == EditMode.UPDATE) {
                             System.out.print("to pass == " + oTrans.InvMaster().Inventory().getModel().getStockId());
+                            
                             loadSerial(lsStockID, lsBrand);
                         }
                     } catch (SQLException ex) {
@@ -770,6 +772,7 @@ public class InventoryDetailController implements Initializable, ScreenInterface
                             txtSeeks01.clear();
                             txtSeeks02.clear();
                         }
+                        lsBrand = String.valueOf(oTrans.InvMaster().getModel().Inventory().getBrandId());
                         initButton(pnEditMode);
                         System.out.print("\neditmode on browse == " + pnEditMode);
                         initTabAnchor();
