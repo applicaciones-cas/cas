@@ -291,7 +291,7 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
 
                         poJSON = oTrans.updateRecord();
 
-                        if ("success".equals(poJSON.get("result"))) {
+                        if ("success".equals((String)poJSON.get("result"))) {
                             oTrans.getModel().setRecordStatus(status);
                             oTrans.getModel().setApproved(oApp.getUserID());
                             oTrans.getModel().setModifyingId(oApp.getUserID());
@@ -341,6 +341,8 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
         btnCancel.setManaged(lbShow);
         btnSearch.setManaged(lbShow);
         btnUpdate.setVisible(!lbShow);
+        btnApproved.setVisible(!lbShow);
+        btnDisapproved.setVisible(!lbShow);
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
 
@@ -348,13 +350,17 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
             btnCancel.setVisible(lbShow);
             btnSearch.setVisible(lbShow);
             btnSave.setVisible(lbShow);
-
+            
+            btnApproved.setVisible(lbShow);
+            btnDisapproved.setVisible(lbShow);
             btnUpdate.setVisible(!lbShow);
             btnBrowse.setVisible(!lbShow);
             btnNew.setVisible(!lbShow);
             btnBrowse.setManaged(false);
             btnNew.setManaged(false);
             btnUpdate.setManaged(false);
+            btnApproved.setManaged(false);
+            btnDisapproved.setManaged(false);
             btnClose.setManaged(false);
         } else {
         }
