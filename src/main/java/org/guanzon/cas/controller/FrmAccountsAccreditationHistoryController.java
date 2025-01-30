@@ -55,9 +55,9 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class FrmAccountsAccreditationController implements Initializable, ScreenInterface {
+public class FrmAccountsAccreditationHistoryController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Accounts Accreditation";
+    private final String pxeModuleName = "History Accounts Accreditation";
     private GRider oApp;
     private Account_Accreditation oTrans;
     private ParamControllers oParameters;
@@ -92,14 +92,12 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
 
     @FXML
     private Button btnBrowse,
-            btnNew,
             btnSave,
-            btnUpdate,
             btnSearch,
             btnCancel,
             btnClose,
-            btnDisapproved,
-            btnApproved;
+            btnAdd,
+            btnDelete;
 
     @FXML
     private Label lblStat;
@@ -150,6 +148,7 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
         pnEditMode = EditMode.UNKNOWN;
         clearAllFields();
         initializeObject();
@@ -188,15 +187,9 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
 //    /*Handle button click*/
     private void ClickButton() {
         btnCancel.setOnAction(this::handleButtonAction);
-        btnNew.setOnAction(this::handleButtonAction);
         btnSave.setOnAction(this::handleButtonAction);
-        btnUpdate.setOnAction(this::handleButtonAction);
         btnClose.setOnAction(this::handleButtonAction);
         btnBrowse.setOnAction(this::handleButtonAction);
-        btnApproved.setOnAction(this::handleButtonAction);
-        btnDisapproved.setOnAction(this::handleButtonAction);
-//        btnAddSubItem.setOnAction(this::handleButtonAction);
-//        btnDelSubUnit.setOnAction(this::handleButtonAction);
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -205,6 +198,9 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
         if (source instanceof Button) {
             Button clickedButton = (Button) source;
             unloadForm appUnload = new unloadForm();
+            
+            JSONObject poJSON;
+            poJSON = oTrans.newRecord();
             switch (clickedButton.getId()) {
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
@@ -212,29 +208,29 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
                         appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
                     }
                     break;
-                case "btnNew":
-                    clearAllFields();
-                    txtField02.requestFocus();
-                    JSONObject poJSON;
-                    poJSON = oTrans.newRecord();
-                    pnEditMode = EditMode.READY;
-                    if ("success".equals((String) poJSON.get("result"))) {
-                        pnEditMode = EditMode.ADDNEW;
-                        initButton(pnEditMode);
-                        RetreiveDetails();
-                        initTabAnchor();
-                    } else {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        System.out.println((String) poJSON.get("message"));
-                        initTabAnchor();
-
-                    }
-
-                    break;
+//                case "btnNew":
+//                    clearAllFields();
+//                    txtField02.requestFocus();
+//                    JSONObject poJSON;
+//                    poJSON = oTrans.newRecord();
+//                    pnEditMode = EditMode.READY;
+//                    if ("success".equals((String) poJSON.get("result"))) {
+//                        pnEditMode = EditMode.ADDNEW;
+//                        initButton(pnEditMode);
+//                        RetreiveDetails();
+//                        initTabAnchor();
+//                    } else {
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        System.out.println((String) poJSON.get("message"));
+//                        initTabAnchor();
+//
+//                    }
+//
+//                    break;
                 case "btnBrowse":
                     clearAllFields();
                     String lsValue = (txtSeek01.getText() == null) ? "" : txtSeek01.getText();
-                    poJSON = oTrans.searchRecord(lsValue, false, true);
+                    poJSON = oTrans.searchRecord(lsValue, false, false);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 //                        txtSeeks01.clear();
@@ -244,28 +240,28 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
 //                    data.clear();
                     RetreiveDetails();
                     break;
-                case "btnUpdate":
-                    poJSON = oTrans.updateRecord();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        break;
-                    } else {
-                        pnEditMode = oTrans.getEditMode();
-                        System.out.println("EDITMODE sa update= " + pnEditMode);
-                        initButton(pnEditMode);
-                        initTabAnchor();
-                        break;
-                    }
-                case "btnCancel":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-                        clearAllFields();
-                        initializeObject();
-                        pnEditMode = EditMode.UNKNOWN;
-                        initButton(pnEditMode);
-                        initTabAnchor();
-                    }
-                    System.out.println("EDITMODE sa cancel= " + pnEditMode);
-                    break;
+//                case "btnUpdate":
+//                    poJSON = oTrans.updateRecord();
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        break;
+//                    } else {
+//                        pnEditMode = oTrans.getEditMode();
+//                        System.out.println("EDITMODE sa update= " + pnEditMode);
+//                        initButton(pnEditMode);
+//                        initTabAnchor();
+//                        break;
+//                    }
+//                case "btnCancel":
+//                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+//                        clearAllFields();
+//                        initializeObject();
+//                        pnEditMode = EditMode.UNKNOWN;
+//                        initButton(pnEditMode);
+//                        initTabAnchor();
+//                    }
+//                    System.out.println("EDITMODE sa cancel= " + pnEditMode);
+//                    break;
                 case "btnSave":
                     oTrans.getModel().setModifyingId(oApp.getUserID());
                     oTrans.getModel().setModifiedDate(oApp.getServerDate());
@@ -283,40 +279,6 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
                     }
 
                     break;
-                case "btnApproved":
-                case "btnDisapproved":
-                    if (!txtField01.getText().isEmpty()) {
-                        // Determine the status based on the button clicked
-                        String status = (event.getSource() == btnApproved) ? "1" : "3"; // Set status to "1" for Approved, "3" for Disapproved
-
-                        poJSON = oTrans.updateRecord();
-
-                        if ("success".equals(poJSON.get("result"))) {
-                            oTrans.getModel().setRecordStatus(status);
-                            oTrans.getModel().setApproved(oApp.getUserID());
-                            oTrans.getModel().setModifyingId(oApp.getUserID());
-                            oTrans.getModel().setDateApproved(oApp.getServerDate());
-                            oTrans.getModel().setModifiedDate(oApp.getServerDate());
-                            JSONObject postResult = oTrans.saveRecord();
-
-                            if ("success".equals(postResult.get("result"))) {
-                                // Check which button was clicked and display the appropriate message
-                                if (event.getSource() == btnApproved) {
-                                    ShowMessageFX.Information("The transaction was successfully approved.", "Computerized Accounting System", pxeModuleName);
-                                } else {
-                                    ShowMessageFX.Information("The transaction was successfully disapproved.", "Computerized Accounting System", pxeModuleName);
-                                }
-
-                                pnEditMode = EditMode.UNKNOWN;
-                                initButton(pnEditMode);
-                                clearAllFields();
-                            }
-                        }
-                    } else {
-                        ShowMessageFX.Information("No record found!", "Computerized Accounting System", pxeModuleName);
-                    }
-                    break;
-
             }
         }
     }
@@ -340,21 +302,15 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
         btnSave.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
         btnSearch.setManaged(lbShow);
-        btnUpdate.setVisible(!lbShow);
         btnBrowse.setVisible(!lbShow);
-        btnNew.setVisible(!lbShow);
 
         if (lbShow) {
             btnCancel.setVisible(lbShow);
             btnSearch.setVisible(lbShow);
             btnSave.setVisible(lbShow);
 
-            btnUpdate.setVisible(!lbShow);
             btnBrowse.setVisible(!lbShow);
-            btnNew.setVisible(!lbShow);
             btnBrowse.setManaged(false);
-            btnNew.setManaged(false);
-            btnUpdate.setManaged(false);
             btnClose.setManaged(false);
         } else {
         }
@@ -537,7 +493,7 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
         cmbField03.setOnAction(event -> {
             oTrans.getModel().setTransactionType(String.valueOf(cmbField03.getSelectionModel().getSelectedIndex()));
         });
-
+        
         cpField02.setOnAction(event -> {
             // Get the selected date
             oTrans.getModel().setDateTransact(SQLUtil.toDate(cpField02.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
@@ -548,8 +504,8 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
         TextField[][] allFields = {
             {txtField01, txtField02, txtField03, txtField04,
                 txtField05,},};
-        cmbField02.getSelectionModel().select(0);
-        cmbField03.getSelectionModel().select(0);
+         cmbField02.getSelectionModel().select(0);
+         cmbField03.getSelectionModel().select(0);
         for (TextField[] fields : allFields) {
             for (TextField field : fields) {
                 field.clear();
@@ -558,7 +514,7 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
         data.clear();
         cpField02.setValue(LocalDate.now());
         lblStat.setText("UNKNOWN");
-
+        
     }
 
     private void RetreiveDetails() {
@@ -566,9 +522,9 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
         poJson = new JSONObject();
         if (pnEditMode == EditMode.READY
                 || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.ADDNEW) {
-
+            
             String lsValue = oTrans.getModel().getRecordStatus();
-            System.out.println(lsValue + " lblstat");
+System.out.println(lsValue + " lblstat");
             // Use a Map to store the status mappings
             Map<String, String> statusMap = new HashMap<>();
             statusMap.put("0", "OPEN");
@@ -577,7 +533,7 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
 
             // Set the label text based on the status
             lblStat.setText(statusMap.getOrDefault(lsValue, "UNKNOWN"));
-
+            
             txtField01.setText(oTrans.getModel().getTransactionNo() == null ? "" : oTrans.getModel().getTransactionNo());
             txtField02.setText(oTrans.getModel().ClientMaster().getCompanyName() == null ? "" : oTrans.getModel().ClientMaster().getCompanyName());
             txtField03.setText(oTrans.getModel().ClientInstitutionContact().getContactPersonName() == null ? "" : oTrans.getModel().ClientInstitutionContact().getContactPersonName());
@@ -597,7 +553,7 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
                     : Integer.parseInt(oTrans.getModel().getTransactionType())
             ));
             if (pnEditMode == 0) {
-
+                
                 oTrans.getModel().setDateTransact(SQLUtil.toDate(cpField02.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
                 poJson = oParameters.Category().searchRecord(category, true);
                 if ("success".equals((String) poJson.get("result"))) {

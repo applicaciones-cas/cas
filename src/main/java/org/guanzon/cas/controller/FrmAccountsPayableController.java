@@ -6,9 +6,12 @@ package org.guanzon.cas.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -43,11 +46,16 @@ import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.LogWrapper;
+import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.clients.account.AP_Client_Master;
+import org.guanzon.cas.client.account.APClients;
+import org.guanzon.cas.client.account.AP_Client_Master;
 import org.guanzon.cas.clients.account.GlobalVariables;
+import org.guanzon.cas.inv.Inventory;
 import org.guanzon.cas.model.ModelAPClientLedger;
 import org.guanzon.cas.model.SharedModel;
+import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 
 /**
@@ -59,13 +67,17 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
     private final String pxeModuleName = "Accounts Payable Clients";
     private GRider oApp;
     private int pnEditMode;  
-    private AP_Client_Master oTrans;
+    private APClients oTrans;
+    private ParamControllers oParameters;
     private boolean state = false;
     private boolean pbLoaded = false;
     private String oTransnox = "";
     private DashboardController fdController = new DashboardController();
     private String lsSearchRes = ""; 
     private SharedModel sharedModel;
+    String category = System.getProperty("store.inventory.industry", "").trim().replace(";", "");
+
+    
     
     public void initModel(SharedModel sharedModel) {
         this.sharedModel = sharedModel;
@@ -190,23 +202,29 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        oTrans = new AP_Client_Master(oApp, true);
-        oTrans.setRecordStatus("0123");
-        if (oTransnox == null || oTransnox.isEmpty()) { // Check if oTransnox is null or empty
-            pnEditMode = EditMode.UNKNOWN;
-            initButton(pnEditMode);
-        }
+        
         pnEditMode = EditMode.UNKNOWN;        
         initButton(pnEditMode);
-
+        clearAllFields();
+        initializeObject();
         InitTextFields();
         ClickButton();
         initSearchFields();
-        InitSearchFields();
+//        InitSearchFields();
         initTabAnchor();
         pbLoaded = true;
-    }    
+    }  
+    
+    private void initializeObject() {
+//        String category = System.getProperty("store.inventory.industry", "").trim().replace(";", "");
+//
+//        System.out.println("category == " + category);
+        LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
+        oTrans = new APClients(oApp, "", logwrapr);
+        oParameters = new ParamControllers(oApp, logwrapr);
+
+    }
+    
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -242,24 +260,24 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
             case F3:
                 switch (lnIndex){
                     case 01: /*search company id*/
-                        poJson = oTrans.searchRecord(lsValue, true);
-                        if ("error".equals((String) poJson.get("result"))){
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtSearch02.clear();
-                            break;
-                        }
-                        pnEditMode = oTrans.getEditMode();                        
-                        retrieveDetails();
+//                        poJson = oTrans.(lsValue, true);
+//                        if ("error".equals((String) poJson.get("result"))){
+//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtSearch02.clear();
+//                            break;
+//                        }
+//                        pnEditMode = oTrans.getEditMode();                        
+//                        retrieveDetails();
                     break;
                     case 02: /*search company name*/
-                        poJson = oTrans.searchRecord(lsValue, false);
-                        if ("error".equals((String) poJson.get("result"))){
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtSearch02.clear();
-                            break;
-                        }
-                        pnEditMode = oTrans.getEditMode();
-                        retrieveDetails();
+//                        poJson = oTrans.searchRecord(lsValue, false);
+//                        if ("error".equals((String) poJson.get("result"))){
+//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtSearch02.clear();
+//                            break;
+//                        }
+//                        pnEditMode = oTrans.getEditMode();
+//                        retrieveDetails();
                     break;
                 }
             case ENTER:
@@ -288,62 +306,84 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                         }
                     break;
                 case "btnNew":
-                    poJSON = oTrans.newRecord();
-                    if ("success".equals((String) poJSON.get("result"))){
-                        
-                        clearAllFields();
+                    
+                    clearAllFields();
+//                    txtField02.requestFocus();
+                    poJSON = oTrans.APClientMaster().newRecord();
+                    if ("success".equals((String) poJSON.get("result"))) {
                         pnEditMode = EditMode.ADDNEW;
                         initButton(pnEditMode);
-
-                        System.out.println("ADDNEW = " + EditMode.ADDNEW);
-                        System.out.println("EDITMODE = " + pnEditMode);
-
-                        txtField02.requestFocus();
-                        txtField07.setText((String) oTrans.getModel().getCreditLimit());
-                        txtField10.setText((String) oTrans.getModel().getBeginBal());
-                        txtField08.setText((String) oTrans.getModel().getDiscount());
-                        txtField11.setText((String) oTrans.getModel().getABalance());
-                        txtField12.setText((String) oTrans.getModel().getOBalance());
-                        txtField13.setText((String) oTrans.getModel().getCategoryName());
-                        System.out.println("getCategoryName = "  + oTrans.getModel().getCategoryName());
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-                        // Parse the formatted date string into a LocalDate object
-                        if(oTrans.getMaster(5) != null && !oTrans.getMaster(5).toString().trim().isEmpty()){
-                            LocalDate localbdate = LocalDate.parse(CommonUtils.dateFormat(oTrans.getMaster(5), "yyyy-MM-dd"), formatter);
-                            // Set the value of the DatePicker to the parsed LocalDate
-                                cpField01.setValue(localbdate);
+                        poJSON = oParameters.Category().searchRecord(category, true);
+                        if("success".equals((String)poJSON.get("result"))){
+                            txtField13.setText((String) oParameters.Category().getModel().getDescription());
                         }
-                        // Parse the formatted date string into a LocalDate object
-                        if(oTrans.getMaster(6) != null && !oTrans.getMaster(6).toString().trim().isEmpty()){
-                            LocalDate localbdate = LocalDate.parse(CommonUtils.dateFormat(oTrans.getMaster(6), "yyyy-MM-dd"), formatter);
-
-                            // Set the value of the DatePicker to the parsed LocalDate
-                            cpField02.setValue(localbdate);
-                        }
+//                        retrieveDetails();
                         initTabAnchor();
-                    }else{
-                        ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        System.out.println("Record not saved successfully.");
+                        cpField01.setValue(LocalDate.now());
+                        cpField02.setValue(LocalDate.now());
+                        System.out.println("pnEditMode == " + pnEditMode);
+                    } else {
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         System.out.println((String) poJSON.get("message"));
                         initTabAnchor();
                     }
+                    
+                    
+//                    poJSON = oTrans.newRecord();
+//                    if ("success".equals((String) poJSON.get("result"))){
+//                        
+//                        clearAllFields();
+//                        pnEditMode = EditMode.ADDNEW;
+//                        initButton(pnEditMode);
+//
+//                        System.out.println("ADDNEW = " + EditMode.ADDNEW);
+//                        System.out.println("EDITMODE = " + pnEditMode);
+//
+//                        txtField02.requestFocus();
+//                        txtField07.setText((String) oTrans.getModel().getCreditLimit());
+//                        txtField10.setText((String) oTrans.getModel().getBeginBal());
+//                        txtField08.setText((String) oTrans.getModel().getDiscount());
+//                        txtField11.setText((String) oTrans.getModel().getABalance());
+//                        txtField12.setText((String) oTrans.getModel().getOBalance());
+//                        txtField13.setText((String) oTrans.getModel().getCategoryName());
+//                        System.out.println("getCategoryName = "  + oTrans.getModel().getCategoryName());
+//                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//
+//                        // Parse the formatted date string into a LocalDate object
+//                        if(oTrans.getMaster(5) != null && !oTrans.getMaster(5).toString().trim().isEmpty()){
+//                            LocalDate localbdate = LocalDate.parse(CommonUtils.dateFormat(oTrans.getMaster(5), "yyyy-MM-dd"), formatter);
+//                            // Set the value of the DatePicker to the parsed LocalDate
+//                                cpField01.setValue(localbdate);
+//                        }
+//                        // Parse the formatted date string into a LocalDate object
+//                        if(oTrans.getMaster(6) != null && !oTrans.getMaster(6).toString().trim().isEmpty()){
+//                            LocalDate localbdate = LocalDate.parse(CommonUtils.dateFormat(oTrans.getMaster(6), "yyyy-MM-dd"), formatter);
+//
+//                            // Set the value of the DatePicker to the parsed LocalDate
+//                            cpField02.setValue(localbdate);
+//                        }
+//                        initTabAnchor();
+//                    }else{
+//                        ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        System.out.println("Record not saved successfully.");
+//                        System.out.println((String) poJSON.get("message"));
+//                        initTabAnchor();
+//                    }
                     break;
                 case "btnUpdate":
-                         poJSON = oTrans.updateRecord();
-                        if ("error".equals((String) poJSON.get("result"))){
-                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-                        pnEditMode =  oTrans.getEditMode();
-                        
-                        initButton(pnEditMode);
-                        initTabAnchor();
+//                         poJSON = oTrans.updateRecord();
+//                        if ("error".equals((String) poJSON.get("result"))){
+//                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        }
+//                        pnEditMode =  oTrans.getEditMode();
+//                        
+//                        initButton(pnEditMode);
+//                        initTabAnchor();
                     break;
                 case "btnCancel":
                         if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
                             clearAllFields();
-                            oTrans = new AP_Client_Master(oApp, true);
-                            oTrans.setRecordStatus("0123");
+                            initializeObject();
                             pnEditMode = EditMode.UNKNOWN;
                             initButton(pnEditMode);
                             initTabAnchor();
@@ -351,34 +391,74 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                     break;
                 case "btnBrowse":  
                             String lsValue = (txtSearch01.getText()==null?"":txtSearch01.getText());
-                            poJSON =  oTrans.searchRecord(lsValue, false);
+                            poJSON =  oTrans.APClientMaster().searchRecord(lsValue, false);
                            System.out.println("poJson = " + poJSON.toJSONString());
                            if("error".equalsIgnoreCase(poJSON.get("result").toString())){
                                 ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                                 break;
                            }
                            pnEditMode = EditMode.READY;
-                           txtSearch02.setText(oTrans.getModel().getClientName());
-                           txtSearch01.setText(oTrans.getModel().getClientID());
+//                           txtSearch02.setText(oTrans.getModel().getClientName());
+//                           txtSearch01.setText(oTrans.getModel().getClientID());
                            
                             retrieveDetails();
                     
                     break;
                 case "btnSave":
-                        JSONObject saveResult = oTrans.saveRecord();
-                        if ("success".equals((String) saveResult.get("result"))){
-                            System.err.println((String) saveResult.get("message"));
-                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                            clearAllFields();
-                            pnEditMode = EditMode.UNKNOWN;
-                            initButton(pnEditMode);
-                            initTabAnchor();
-                            System.out.println("Record saved successfully.");
-                        } else {
-                            ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                            System.out.println("Record not saved successfully.");
-                            System.out.println((String) saveResult.get("message"));
-                        }
+                    System.out.println("pnEditModesave == " + pnEditMode);
+                    oTrans.APClientMaster().getModel().setModifyingId(oApp.getUserID());
+                    oTrans.APClientMaster().getModel().setModifiedDate(oApp.getServerDate());
+                    JSONObject saveResult = oTrans.APClientMaster().saveRecord();
+                    if ("success".equals((String) saveResult.get("result"))) {
+                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                        pnEditMode = EditMode.UNKNOWN;
+                        initButton(pnEditMode);
+                        clearAllFields();
+                        System.out.println("Record saved successfully.");
+                    } else {
+                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                        System.out.println("Record not saved successfully.");
+                        System.out.println((String) saveResult.get("message"));
+                    }
+                    
+                    
+                    
+                    
+//                    System.err.println("EDITMODE BEFORE SAVE == " + EditMode.ADDNEW);
+//                    System.err.println("EDITMODE BEFORE SAVE == " + pnEditMode);
+//                    oTrans.APClientMaster().getModel().setModifyingId(oApp.getUserID());
+//                    oTrans.APClientMaster().getModel().setModifiedDate(oApp.getServerDate());
+//                    JSONObject saveResult = oTrans.APClientMaster().saveRecord();
+//                    if ("success".equals((String) saveResult.get("result"))) {
+//                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        pnEditMode = EditMode.UNKNOWN;
+//                        initButton(pnEditMode);
+//                        clearAllFields();
+//                        System.out.println("Record saved successfully.");
+//                    } else {
+//                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        System.out.println("Record not saved successfully.");
+//                        System.out.println((String) saveResult.get("message"));
+//                    }
+
+                    
+                    
+                    
+                    
+//                        JSONObject saveResult = oTrans.saveRecord();
+//                        if ("success".equals((String) saveResult.get("result"))){
+//                            System.err.println((String) saveResult.get("message"));
+//                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            clearAllFields();
+//                            pnEditMode = EditMode.UNKNOWN;
+//                            initButton(pnEditMode);
+//                            initTabAnchor();
+//                            System.out.println("Record saved successfully.");
+//                        } else {
+//                            ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            System.out.println("Record not saved successfully.");
+//                            System.out.println((String) saveResult.get("message"));
+//                        }
                         
                      break;
 
@@ -414,7 +494,7 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
         // Set a custom StringConverter to format date
           DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
        
-        initdatepicker();
+//        initdatepicker();
     }
     private void initTabAnchor(){
         boolean pbValue = pnEditMode == EditMode.ADDNEW || 
@@ -435,7 +515,7 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                         poJson = new JSONObject();
                         String input = "";
                         input = lsValue;
-                            poJson =  oTrans.SearchClient(lsValue, false);
+                           poJson =  oTrans.APClientMaster().searchRecord(lsValue, false);
                            System.out.println("poJson = " + poJson.toJSONString());
                            if("error".equalsIgnoreCase(poJson.get("result").toString())){
                                loadCompanyTransaction();
@@ -443,36 +523,43 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
                                System.out.println("receivedData = " + GlobalVariables.sClientID);
 //                               poJson = oTrans.SearchClient(receivedData, tr);
                            }
-                           txtField01.setText((String) poJson.get("sClientID"));                    
-                           txtField02.setText((String) poJson.get("sCompnyNm"));                           
-                           txtField03.setText((String) poJson.get("xAddressx"));
-                           txtField04.setText((String) poJson.get("sCPerson1"));                         
-                           txtField05.setText((String) poJson.get("sMobileNo"));
-                           txtField06.setText((String) poJson.get("sTaxIDNox"));
+                           retrieveDetails();
+//                           txtField01.setText(oTrans.APClientMaster().getModel().ClientMaster().getClientId());
+//                           txtField02.setText(oTrans.APClientMaster().getModel().ClientMaster().getCompanyName());
+//                           txtField03.setText(oTrans.APClientMaster().getModel().ClientAddress().getAddress());
+//                           txtField04.setText(oTrans.APClientMaster().getModel().ClientAddress().getAddress());
+//                           txtField05.setText(oTrans.APClientMaster().getModel().ClientAddress().getAddress());
+                           
+//                           txtField01.setText((String) poJson.get("sClientID"));                    
+//                           txtField02.setText((String) poJson.get("sCompnyNm"));                           
+//                           txtField03.setText((String) poJson.get("xAddressx"));
+//                           txtField04.setText((String) poJson.get("sCPerson1"));                         
+//                           txtField05.setText((String) poJson.get("sMobileNo"));
+//                           txtField06.setText((String) poJson.get("sTaxIDNox"));
                         break;
-                        
-                    case 9: /*search branch*/
-//                        receivedDataLabel.setText(receivedData);
-                        poJson = new JSONObject();
-                        poJson =  oTrans.SearchTerm(lsValue, false);
-                       System.out.println("poJson = " + poJson.toJSONString());
-                       if("error".equalsIgnoreCase(poJson.get("result").toString())){
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtField09.clear();
-                       }
-                       txtField09.setText((String) poJson.get("sDescript"));        
-                        break;
-                    case 13: /*search branch*/
-//                        receivedDataLabel.setText(receivedData);
-                        poJson = new JSONObject();
-                        poJson =  oTrans.SearchCategory(lsValue, false);
-                       System.out.println("poJson = " + poJson.toJSONString());
-                       if("error".equalsIgnoreCase(poJson.get("result").toString())){
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtField13.clear();
-                       }
-                       txtField13.setText((String) poJson.get("xCategrNm"));        
-                        break;
+//                        
+//                    case 9: /*search branch*/
+////                        receivedDataLabel.setText(receivedData);
+//                        poJson = new JSONObject();
+//                        poJson =  oTrans.SearchTerm(lsValue, false);
+//                       System.out.println("poJson = " + poJson.toJSONString());
+//                       if("error".equalsIgnoreCase(poJson.get("result").toString())){
+//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtField09.clear();
+//                       }
+//                       txtField09.setText((String) poJson.get("sDescript"));        
+//                        break;
+//                    case 13: /*search branch*/
+////                        receivedDataLabel.setText(receivedData);
+//                        poJson = new JSONObject();
+//                        poJson =  oTrans.SearchCategory(lsValue, false);
+//                       System.out.println("poJson = " + poJson.toJSONString());
+//                       if("error".equalsIgnoreCase(poJson.get("result").toString())){
+//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtField13.clear();
+//                       }
+//                       txtField13.setText((String) poJson.get("xCategrNm"));        
+//                        break;
                 }
             case ENTER:
                 
@@ -488,59 +575,60 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
         }
     }
     
-    public void initdatepicker(){
-        // Set a custom StringConverter to format date
-          DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        cpField01.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(LocalDate date) {
-                if (date != null) {
-                    oTrans.setMaster(5, dateFormatter.format(date).toString());
-                    System.out.println("dCltSince = " + date);
-                    
-                    cpField01.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
-                    return dateFormatter.format(date);
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    oTrans.setMaster(5,LocalDate.parse(string, dateFormatter).toString());
-                    return LocalDate.parse(string, dateFormatter);
-                } else {
-                    return null;
-                }
-            }
-        });
-        cpField02.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(LocalDate date) {
-                if (date != null) {
-                    oTrans.setMaster(6, dateFormatter.format(date).toString());
-                    System.out.println("dBegDatex = " + date);
-                    
-                    cpField02.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
-                    return dateFormatter.format(date);
-                } else {
-                    return "";
-                }
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    oTrans.setMaster(6,LocalDate.parse(string, dateFormatter).toString());
-                    return LocalDate.parse(string, dateFormatter);
-                } else {
-                    return null;
-                }
-            }
-        });
-
-    }
+//    public void initdatepicker(){
+//        // Set a custom StringConverter to format date
+//          DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        cpField01.setConverter(new StringConverter<LocalDate>() {
+//            @Override
+//            public String toString(LocalDate date) {
+//                if (date != null) {
+////                    oTrans.APClientMaster().getModel().setBeginningDate(dateFormatter.format(date).toString());
+////                    oTrans.setMaster(5, dateFormatter.format(date).toString());
+//                    System.out.println("dCltSince = " + date);
+//                    
+////                    cpField01.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+//                    return dateFormatter.format(date);
+//                } else {
+//                    return "";
+//                }
+//            }
+//
+//            @Override
+//            public LocalDate fromString(String string) {
+//                if (string != null && !string.isEmpty()) {
+//                    oTrans.setMaster(5,LocalDate.parse(string, dateFormatter).toString());
+//                    return LocalDate.parse(string, dateFormatter);
+//                } else {
+//                    return null;
+//                }
+//            }
+//        });
+//        cpField02.setConverter(new StringConverter<LocalDate>() {
+//            @Override
+//            public String toString(LocalDate date) {
+//                if (date != null) {
+//                    oTrans.setMaster(6, dateFormatter.format(date).toString());
+//                    System.out.println("dBegDatex = " + date);
+//                    
+//                    cpField02.setValue(LocalDate.parse(date.format(dateFormatter), dateFormatter));
+//                    return dateFormatter.format(date);
+//                } else {
+//                    return "";
+//                }
+//            }
+//
+//            @Override
+//            public LocalDate fromString(String string) {
+//                if (string != null && !string.isEmpty()) {
+//                    oTrans.setMaster(6,LocalDate.parse(string, dateFormatter).toString());
+//                    return LocalDate.parse(string, dateFormatter);
+//                } else {
+//                    return null;
+//                }
+//            }
+//        });
+//
+//    }
     
     final ChangeListener<? super Boolean> txtField_Focus = (ObservableValue<? extends Boolean> o,Boolean ov,Boolean nv)->{ 
         if (!pbLoaded) return;
@@ -554,42 +642,64 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
             switch (lnIndex){
                 case 1: /*company id*/
 //                    jsonObject = oTrans.setMaster( 8,lsValue);
-                    jsonObject = oTrans.setMaster(1, lsValue);
+//                    jsonObject =  oTrans.APClientMaster().getModel().(lsValue);
                     break;
                 case 2:/*company name*/
                     break;
                 case 3:/*address*/   
                     break;
                 case 4:/*Contact person*/
-                    jsonObject =oTrans.setMaster(3,jsonObject.get("sContctID"));
+//                    jsonObject =oTrans.setMaster(3,jsonObject.get("sContctID"));
                     break;
                 case 5:/*contact no*/
                     break;  
                 case 6:/*tin No */
                     break;
                 case 7:/*Credit limit*/
-                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
-                    jsonObject = oTrans.setMaster(10,(Double.parseDouble(lsValue.replace(",", ""))));
-                    break;
-                case 8:/*discount*/     
-                    txtField.setText(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "0.00"));
-                    jsonObject = oTrans.setMaster(9,(Double.parseDouble(lsValue)));
-                    break;
+                case 8:
+                case 10:
+                case 11:
+                case 12:
+                    double discount = Double.parseDouble(lsValue);
+                        if (lnIndex == 7) {
+                            oTrans.APClientMaster().getModel().setCreditLimit(discount);
+                        }
+                        if (lnIndex == 8) {
+                            oTrans.APClientMaster().getModel().setDiscount(discount);
+                        }
+                        if (lnIndex == 10) {
+                            oTrans.APClientMaster().getModel().setBeginningBalance(discount);
+                        }
+                        if (lnIndex == 11) {
+                            oTrans.APClientMaster().getModel().setAccountBalance(discount);
+                        }
+                        if (lnIndex == 12) {
+                            oTrans.APClientMaster().getModel().setOBalance(discount);
+                        }
+                        txtField.setText(CommonUtils.NumberFormat(discount, "0.00"));
+                        break;
+//                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+//                    jsonObject = oTrans.setMaster(10,(Double.parseDouble(lsValue.replace(",", ""))));
+//                    break;
+//                case 8:/*discount*/     
+////                    txtField.setText(CommonUtils.NumberFormat(Double.parseDouble(lsValue), "0.00"));
+////                    jsonObject = oTrans.setMaster(9,(Double.parseDouble(lsValue)));
+//                    break;
                 case 9:/*term */
                     break;
-                case 10 :/*beginning balance*/
-                    
-                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
-                    jsonObject = oTrans.setMaster(7,(Double.parseDouble(lsValue.replace(",", ""))));
-                    break;
-                case 11 :/*available balance*/
-                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
-                    jsonObject = oTrans.setMaster(11,(Double.parseDouble(lsValue.replace(",", ""))));
-                    break;
-                case 12 :/*outstanding balance*/
-                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
-                    jsonObject = oTrans.setMaster(12,(Double.parseDouble(lsValue.replace(",", ""))));
-                    break;
+//                case 10 :/*beginning balance*/
+//                    
+////                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+////                    jsonObject = oTrans.setMaster(7,(Double.parseDouble(lsValue.replace(",", ""))));
+//                    break;
+//                case 11 :/*available balance*/
+////                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+////                    jsonObject = oTrans.setMaster(11,(Double.parseDouble(lsValue.replace(",", ""))));
+//                    break;
+//                case 12 :/*outstanding balance*/
+////                    txtField.setText( (CommonUtils.NumberFormat(Double.parseDouble(lsValue), "#,##0.00")));
+//                    jsonObject = oTrans.setMaster(12,(Double.parseDouble(lsValue.replace(",", ""))));
+//                    break;
             }                    
         } else
             txtField.selectAll();
@@ -598,7 +708,7 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
     @FXML
     void ChkVATReg_Clicked(MouseEvent event) {
         boolean isChecked = chkfield01.isSelected();
-        oTrans.setMaster(14,(isChecked) ? "1" : "0");
+//        oTrans.setMaster(14,(isChecked) ? "1" : "0");
         String val = (isChecked) ? "1" : "0";
     }
     /*OPEN WINDOW FOR */
@@ -738,27 +848,27 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
             case F3:
                 switch (lnIndex){
                     case 01: /*search company*/
-                        poJson = new JSONObject();
-                            poJson =  oTrans.searchRecord(lsValue, true);
-                           System.out.println("poJson = " + poJson.toJSONString());
-                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
-                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                           }
-                           pnEditMode = oTrans.getEditMode();
-                           txtSearch02.setText(oTrans.getModel().getClientName());
-                           txtSearch01.setText(oTrans.getModel().getClientID());
-                           
-                        break;
-                    case 02: /*search company*/
-                        poJson = new JSONObject();
-                            poJson =  oTrans.searchRecord(lsValue, false);
-                           System.out.println("poJson = " + poJson.toJSONString());
-                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
-                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                           }
-                           pnEditMode = oTrans.getEditMode();
-                           txtSearch02.setText(oTrans.getModel().getClientName());
-                           txtSearch01.setText(oTrans.getModel().getClientID());
+//                        poJson = new JSONObject();
+//                            poJson =  oTrans.searchRecord(lsValue, true);
+//                           System.out.println("poJson = " + poJson.toJSONString());
+//                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+//                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//                           }
+//                           pnEditMode = oTrans.getEditMode();
+//                           txtSearch02.setText(oTrans.getModel().getClientName());
+//                           txtSearch01.setText(oTrans.getModel().getClientID());
+//                           
+//                        break;
+//                    case 02: /*search company*/
+//                        poJson = new JSONObject();
+//                            poJson =  oTrans.searchRecord(lsValue, false);
+//                           System.out.println("poJson = " + poJson.toJSONString());
+//                           if("error".equalsIgnoreCase(poJson.get("result").toString())){
+//                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//                           }
+//                           pnEditMode = oTrans.getEditMode();
+//                           txtSearch02.setText(oTrans.getModel().getClientName());
+//                           txtSearch01.setText(oTrans.getModel().getClientID());
                            
                         break;
                 }
@@ -778,65 +888,83 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
         retrieveDetails();
     }
     private void retrieveDetails(){
-        if(pnEditMode == EditMode.READY || 
-                pnEditMode == EditMode.ADDNEW || 
-                pnEditMode == EditMode.UPDATE){
-            txtField01.setText((String) oTrans.getModel().getClientID());
-            txtField02.setText((String) oTrans.getModel().getClientName());
-            txtField03.setText((String) oTrans.getModel().getAddress());
-            txtField04.setText((String) oTrans.getModel().getContactPerson());
-            txtField05.setText((String) oTrans.getModel().getContactNo());
-            txtField06.setText((String) oTrans.getModel().getTaxIDNumber());
-            txtField07.setText(oTrans.getModel().getCreditLimit().toString());
-            txtField08.setText(oTrans.getModel().getDiscount().toString());
-            txtField09.setText((String) oTrans.getModel().getTermName());
-            txtField10.setText(oTrans.getModel().getBeginBal().toString());
-            txtField11.setText(oTrans.getModel().getABalance().toString());
-            txtField12.setText(oTrans.getModel().getOBalance().toString());
-            txtField13.setText((String) oTrans.getModel().getCategoryName());
-            StatusLabel();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (pnEditMode == EditMode.READY
+                || pnEditMode == EditMode.ADDNEW
+                || pnEditMode == EditMode.UPDATE) {
+            
+            txtField01.setText((String) oTrans.APClientMaster().getModel().getClientId());
+            txtField02.setText((String) oTrans.APClientMaster().getModel().ClientMaster().getCompanyName());
+            txtField03.setText((String) oTrans.APClientMaster().getModel().ClientAddress().getAddress());
+            txtField04.setText((String) oTrans.APClientMaster().getModel().ClientInstitutionContact().getContactPersonName());
+            txtField05.setText((String) oTrans.APClientMaster().getModel().ClientInstitutionContact().getMobileNo());
+            txtField06.setText((String) oTrans.APClientMaster().getModel().ClientMaster().getTaxIdNumber());
+            txtField07.setText(CommonUtils.NumberFormat(oTrans.APClientMaster().getModel().getCreditLimit(), "#,##0.00"));
+            txtField08.setText(CommonUtils.NumberFormat(oTrans.APClientMaster().getModel().getDiscount(), "#,##0.00"));
+            txtField09.setText((String) oTrans.APClientMaster().getModel().Term().getDescription());
+            txtField10.setText(CommonUtils.NumberFormat(oTrans.APClientMaster().getModel().getBeginningBalance(), "#,##0.00"));
+            txtField11.setText(CommonUtils.NumberFormat(oTrans.APClientMaster().getModel().getAccountBalance(), "#,##0.00"));            
+            txtField12.setText(CommonUtils.NumberFormat(oTrans.APClientMaster().getModel().getOBalance(), "#,##0.00"));
+            txtField13.setText((String) oTrans.APClientMaster().getModel().Category().getDescription());
+            
 
-            // Parse the formatted date string into a LocalDate object
-            if(oTrans.getMaster(5) != null && !oTrans.getMaster(5).toString().trim().isEmpty()){
-                LocalDate localbdate = LocalDate.parse(oTrans.getMaster(5).toString(), formatter);
-
-                // Set the value of the DatePicker to the parsed LocalDate
-                cpField01.setValue(localbdate);
-            }
-            // Parse the formatted date string into a LocalDate object
-            if(oTrans.getMaster(6) != null && !oTrans.getMaster(6).toString().trim().isEmpty()){
-                LocalDate localbdate = LocalDate.parse(oTrans.getMaster(6).toString(), formatter);
-
-                // Set the value of the DatePicker to the parsed LocalDate
-                cpField02.setValue(localbdate);
+            if (oTrans.APClientMaster().getModel().getdateClientSince() != null && !oTrans.APClientMaster().getModel().getdateClientSince().toString().isEmpty()) {
+                cpField01.setValue(strToDate(SQLUtil.dateFormat(oTrans.APClientMaster().getModel().getdateClientSince(), SQLUtil.FORMAT_SHORT_DATE)));
             }
             
-            chkfield01.setSelected(("1".equals((String) oTrans.getMaster("cVatablex"))));
-              loadLedger();
-//              txtSearch01.clear();
-//              txtSearch02.clear();
+            
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//            if(oTrans.APClientMaster().getModel().getdateClientSince() != null && !oTrans.APClientMaster().getModel().getdateClientSince().toString().trim().isEmpty()){
+//                LocalDate clientSinceDate = LocalDate.parse(oTrans.APClientMaster().getModel().getdateClientSince().toString(), formatter);
+//                cpField01.setValue(clientSinceDate);
+//            }
+//            if(oTrans.APClientMaster().getModel().getBeginningDate()!= null && !oTrans.APClientMaster().getModel().getBeginningDate().toString().trim().isEmpty()){
+//                LocalDate beginningDate = LocalDate.parse(oTrans.APClientMaster().getModel().getBeginningDate().toString(), formatter);
+//                cpField02.setValue(beginningDate);
+//            }
+ 
+            chkfield01.setSelected(("1".equals((String) oTrans.APClientMaster().getModel().getVatable())));
+            String lsValue = oTrans.APClientMaster().getModel().getRecordStatus();
+
+            // Use a Map to store the status mappings
+            Map<String, String> statusMap = new HashMap<>();
+            statusMap.put("0", "OPEN");
+            statusMap.put("1", "APPROVED");
+            statusMap.put("3", "DISAPPROVED");
+            statusMap.put("4", "BLACKLISTED");
+
+            // Set the label text based on the status
+            lblStat.setText(statusMap.getOrDefault(lsValue, "UNKNOWN"));
+
+            
+//              loadLedger();
+////              txtSearch01.clear();
+////              txtSearch02.clear();
         }
     
     }
-    private void loadLedger(){
-        int lnCtr;
-        data.clear();
-//        oTrans.getAddress(pnAddress).list();
-        if(oTrans.getLedger()!= null){
-            for (lnCtr = 0; lnCtr < oTrans.getLedger().getMaster().size(); lnCtr++){
-                data.add(new ModelAPClientLedger(String.valueOf(lnCtr + 1),
-                    (String)oTrans.getLedger(lnCtr, "dTransact"), 
-                    (String)oTrans.getLedger(lnCtr, "sSourceCd"), 
-                    (String)oTrans.getLedger(lnCtr, "sSourceNo"), 
-                    (String)oTrans.getLedger(lnCtr,  "nAmountIn"),
-                    (String)oTrans.getLedger(lnCtr,  "nAmountOt")));  
-
-            }
-        }
-        
-         
+    
+    public static LocalDate strToDate(String val) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(val, dateFormatter);
     }
+//    private void loadLedger(){
+//        int lnCtr;
+//        data.clear();
+////        oTrans.getAddress(pnAddress).list();
+//        if(oTrans.getLedger()!= null){
+//            for (lnCtr = 0; lnCtr < oTrans.getLedger().getMaster().size(); lnCtr++){
+//                data.add(new ModelAPClientLedger(String.valueOf(lnCtr + 1),
+//                    (String)oTrans.getLedger(lnCtr, "dTransact"), 
+//                    (String)oTrans.getLedger(lnCtr, "sSourceCd"), 
+//                    (String)oTrans.getLedger(lnCtr, "sSourceNo"), 
+//                    (String)oTrans.getLedger(lnCtr,  "nAmountIn"),
+//                    (String)oTrans.getLedger(lnCtr,  "nAmountOt")));  
+//
+//            }
+//        }
+//        
+//         
+//    }
     private void clearAllFields() {
         // Arrays of TextFields grouped by sections
         TextField[][] allFields = {
@@ -859,39 +987,25 @@ public class FrmAccountsPayableController implements Initializable,ScreenInterfa
         }   
     }
  
-    public void loadReturn(String lsValue) {
-        System.out.println("loadReturn lsValue = " + lsValue);
-        JSONObject poJson = new JSONObject();
-         poJson =  oTrans.SearchClient(lsValue, true);
-        System.out.println("poJson = " + poJson.toJSONString());
-        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-            ShowMessageFX.Information((String)poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-        }
-        txtField01.setText((String) poJson.get("sClientID"));                    
-        txtField02.setText((String) poJson.get("sCompnyNm"));                           
-        txtField03.setText((String) poJson.get("xAddressx"));
-        txtField04.setText((String) poJson.get("sCPerson1"));                         
-        txtField05.setText((String) poJson.get("sMobileNo"));
-        txtField06.setText((String) poJson.get("sTaxIDNox"));
-    }
+//    public void loadReturn(String lsValue) {
+//        System.out.println("loadReturn lsValue = " + lsValue);
+//        JSONObject poJson = new JSONObject();
+//         poJson =  oTrans.SearchClient(lsValue, true);
+//        System.out.println("poJson = " + poJson.toJSONString());
+//        if("error".equalsIgnoreCase(poJson.get("result").toString())){
+//            ShowMessageFX.Information((String)poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//        }
+//        txtField01.setText((String) poJson.get("sClientID"));                    
+//        txtField02.setText((String) poJson.get("sCompnyNm"));                           
+//        txtField03.setText((String) poJson.get("xAddressx"));
+//        txtField04.setText((String) poJson.get("sCPerson1"));                         
+//        txtField05.setText((String) poJson.get("sMobileNo"));
+//        txtField06.setText((String) poJson.get("sTaxIDNox"));
+//    }
     
-    private void StatusLabel(){
-    String lsValue = oTrans.getModel().getRecdStat();
+//    private void StatusLabel(){
     
-        switch (lsValue) {
-            case "0":
-                lblStat.setText("OPEN");
-                break;
-            case "1":
-                lblStat.setText("APPROVED");
-                break;
-            case "3":
-                lblStat.setText("DISAPPROVED");
-                break;  
-            case "4":
-                lblStat.setText("BLACKLISTED");
-                break;    
-        }
-    }
+//    }
 
+    
 }

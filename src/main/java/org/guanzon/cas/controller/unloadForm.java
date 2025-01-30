@@ -81,8 +81,8 @@ public class unloadForm {
             ((ClientMasterParameterController) parentController).loadReturn(lsValue);
         } else if (parentController instanceof ClientMasterTransactionCompanyController) {
             ((ClientMasterTransactionCompanyController) parentController).loadReturn(lsValue);
-        }else if (parentController instanceof FrmAccountsPayableController) {
-            ((FrmAccountsPayableController) parentController).loadReturn(lsValue);
+//        }else if (parentController instanceof FrmAccountsPayableController) {
+//            ((FrmAccountsPayableController) parentController).loadReturn(lsValue);
         }else if (parentController instanceof FrmAccountsReceivableController) {
             ((FrmAccountsReceivableController) parentController).loadReturn(lsValue);
         }else if (parentController instanceof InventoryDetailController) {

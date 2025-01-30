@@ -517,6 +517,9 @@ public class DashboardController implements Initializable {
 
             /*########## HISTORY #########*/
  /*HISTORY > Inventory Request OLD*/
+            case "/org/guanzon/cas/views/FrmAccountsAccreditationHistory.fxml":
+                return "History Accounts Accreditation";
+                
             case "/org/guanzon/cas/views/InvRequestHistory.fxml":
                 return "Inventory Request History";
 
@@ -815,6 +818,7 @@ public class DashboardController implements Initializable {
 
             case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
                 return new FrmAccountsPayableController();
+                 
             case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
                 return new FrmAccountsReceivableController();
 
@@ -972,6 +976,9 @@ public class DashboardController implements Initializable {
 
             /*########## HISTORY #########*/
  /*HISTORY > Inventory Request OLD*/
+            case "/org/guanzon/cas/views/FrmAccountsAccreditationHistory.fxml":
+                return new FrmAccountsAccreditationHistoryController();
+                
             case "/org/guanzon/cas/views/InvRequestHistory.fxml":
                 return new InvRequestHistoryController();
 
@@ -1537,6 +1544,17 @@ public class DashboardController implements Initializable {
 
     /*########## HISTORY #########*/
  /*HISTORY > Inventory Request old*/
+    
+    @FXML
+    private void mnuHistoryAccountsAccreditation_Clicked(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/FrmAccountsAccreditationHistory.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    
 
     @FXML
     private void mnuHistInvRequestVehicleClick(ActionEvent event) {

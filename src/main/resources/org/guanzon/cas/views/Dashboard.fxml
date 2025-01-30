@@ -276,6 +276,7 @@
                                                 </Menu>
                                                 <Menu mnemonicParsing="false" text="_History">
                                                     <items>
+                                          <MenuItem fx:id="mnuHistoryAccountsAccreditation" mnemonicParsing="false" onAction="#mnuHistoryAccountsAccreditation_Clicked" text="History Accounts Accreditations" />
                                           <Menu fx:id="menuHistStockRequest" mnemonicParsing="false" text="Stock Request">
                                             <items>
                                                               <MenuItem fx:id="mnuHistStockRequest" mnemonicParsing="false" onAction="#mnuHistStockRequestClick" text="Stock Request" />

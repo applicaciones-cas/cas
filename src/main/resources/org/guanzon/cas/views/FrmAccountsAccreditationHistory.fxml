@@ -39,14 +39,6 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="New">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="FILE" size="20" />
-                           </graphic>
-                           <effect>
-                              <Blend />
-                           </effect>
-                        </Button>
                         <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Save">
                            <graphic>
                               <FontAwesomeIconView glyphName="SAVE" size="20" />
@@ -54,33 +46,6 @@
                            <effect>
                               <Blend />
                            </effect>
-                        </Button>
-                        <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Update">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="EDIT" size="20" />
-                           </graphic>
-                           <effect>
-                              <Blend />
-                           </effect>
-                        </Button>
-                        <Button fx:id="btnApproved" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Approved">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="THUMBS_ALT_UP" size="20" />
-                           </graphic>
-                           <effect>
-                              <Blend />
-                           </effect>
-                        </Button>
-                        <Button fx:id="btnDisapproved" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Disapproved">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="THUMBS_ALT_DOWN" size="20" />
-                           </graphic>
-                           <effect>
-                              <Blend />
-                           </effect>
-                           <font>
-                              <Font size="10.0" />
-                           </font>
                         </Button>
                         <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Search">
                            <graphic>
