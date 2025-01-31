@@ -97,7 +97,8 @@ public class FrmAccountsAccreditationHistoryController implements Initializable,
             btnCancel,
             btnClose,
             btnAdd,
-            btnDelete;
+            btnDelete,
+            btnUpload;
 
     @FXML
     private Label lblStat;
@@ -190,6 +191,7 @@ public class FrmAccountsAccreditationHistoryController implements Initializable,
         btnSave.setOnAction(this::handleButtonAction);
         btnClose.setOnAction(this::handleButtonAction);
         btnBrowse.setOnAction(this::handleButtonAction);
+        btnUpload.setOnAction(this::handleButtonAction);
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -208,60 +210,21 @@ public class FrmAccountsAccreditationHistoryController implements Initializable,
                         appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
                     }
                     break;
-//                case "btnNew":
-//                    clearAllFields();
-//                    txtField02.requestFocus();
-//                    JSONObject poJSON;
-//                    poJSON = oTrans.newRecord();
-//                    pnEditMode = EditMode.READY;
-//                    if ("success".equals((String) poJSON.get("result"))) {
-//                        pnEditMode = EditMode.ADDNEW;
-//                        initButton(pnEditMode);
-//                        RetreiveDetails();
-//                        initTabAnchor();
-//                    } else {
-//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        System.out.println((String) poJSON.get("message"));
-//                        initTabAnchor();
-//
-//                    }
-//
-//                    break;
+                case "btnUpload":
+                     ShowMessageFX.Information("This feature is currently in development!", "Computerized Acounting System", pxeModuleName);
+                    break;
+//               
                 case "btnBrowse":
                     clearAllFields();
                     String lsValue = (txtSeek01.getText() == null) ? "" : txtSeek01.getText();
                     poJSON = oTrans.searchRecord(lsValue, false, false);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        txtSeeks01.clear();
                         break;
                     }
                     pnEditMode = EditMode.READY;
-//                    data.clear();
                     RetreiveDetails();
                     break;
-//                case "btnUpdate":
-//                    poJSON = oTrans.updateRecord();
-//                    if ("error".equals((String) poJSON.get("result"))) {
-//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        break;
-//                    } else {
-//                        pnEditMode = oTrans.getEditMode();
-//                        System.out.println("EDITMODE sa update= " + pnEditMode);
-//                        initButton(pnEditMode);
-//                        initTabAnchor();
-//                        break;
-//                    }
-//                case "btnCancel":
-//                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-//                        clearAllFields();
-//                        initializeObject();
-//                        pnEditMode = EditMode.UNKNOWN;
-//                        initButton(pnEditMode);
-//                        initTabAnchor();
-//                    }
-//                    System.out.println("EDITMODE sa cancel= " + pnEditMode);
-//                    break;
                 case "btnSave":
                     oTrans.getModel().setModifyingId(oApp.getUserID());
                     oTrans.getModel().setModifiedDate(oApp.getServerDate());
@@ -283,16 +246,6 @@ public class FrmAccountsAccreditationHistoryController implements Initializable,
         }
     }
 
-//    /*USE TO DISABLE ANCHOR BASE ON INITMODE*/
-//    private void initTabAnchor() {
-//        boolean pbValue = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
-////        AnchorInput.setDisable(!pbValue);
-////        subItemFields.setDisable(!pbValue);
-//        AnchorTable.setDisable(!pbValue);
-//        if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UNKNOWN) {
-//            AnchorTable.setDisable(pbValue);
-//        }
-//    }
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         btnCancel.setVisible(lbShow);

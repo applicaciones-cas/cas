@@ -99,7 +99,8 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
             btnCancel,
             btnClose,
             btnDisapproved,
-            btnApproved;
+            btnApproved,
+            btnUpload;
 
     @FXML
     private Label lblStat;
@@ -187,16 +188,18 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
 
 //    /*Handle button click*/
     private void ClickButton() {
-        btnCancel.setOnAction(this::handleButtonAction);
-        btnNew.setOnAction(this::handleButtonAction);
-        btnSave.setOnAction(this::handleButtonAction);
-        btnUpdate.setOnAction(this::handleButtonAction);
-        btnClose.setOnAction(this::handleButtonAction);
-        btnBrowse.setOnAction(this::handleButtonAction);
-        btnApproved.setOnAction(this::handleButtonAction);
-        btnDisapproved.setOnAction(this::handleButtonAction);
-//        btnAddSubItem.setOnAction(this::handleButtonAction);
-//        btnDelSubUnit.setOnAction(this::handleButtonAction);
+        Button[] buttons = {btnUpload,
+                            btnCancel,
+                            btnNew,
+                            btnSave,
+                            btnUpdate,
+                            btnClose,
+                            btnBrowse,
+                            btnApproved,
+                            btnDisapproved};
+        for (Button button : buttons) {
+            button.setOnAction(this::handleButtonAction);
+        }
     }
 
     private void handleButtonAction(ActionEvent event) {
@@ -285,52 +288,30 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
                     break;
                 case "btnApproved":
                 case "btnDisapproved":
-                    if (!txtField01.getText().isEmpty()) {
-                        // Determine the status based on the button clicked
-                        String status = (event.getSource() == btnApproved) ? "1" : "3"; // Set status to "1" for Approved, "3" for Disapproved
-
-                        poJSON = oTrans.updateRecord();
-
-                        if ("success".equals((String)poJSON.get("result"))) {
-                            oTrans.getModel().setRecordStatus(status);
-                            oTrans.getModel().setApproved(oApp.getUserID());
-                            oTrans.getModel().setModifyingId(oApp.getUserID());
-                            oTrans.getModel().setDateApproved(oApp.getServerDate());
-                            oTrans.getModel().setModifiedDate(oApp.getServerDate());
-                            JSONObject postResult = oTrans.saveRecord();
-
-                            if ("success".equals(postResult.get("result"))) {
-                                // Check which button was clicked and display the appropriate message
-                                if (event.getSource() == btnApproved) {
-                                    ShowMessageFX.Information("The transaction was successfully approved.", "Computerized Accounting System", pxeModuleName);
-                                } else {
-                                    ShowMessageFX.Information("The transaction was successfully disapproved.", "Computerized Accounting System", pxeModuleName);
-                                }
-
-                                pnEditMode = EditMode.UNKNOWN;
-                                initButton(pnEditMode);
-                                clearAllFields();
-                            }
+                    if (oTrans.getModel().getTransactionNo() != null) {
+                        String buttonId = ((Button) event.getSource()).getId();
+                        boolean isApproved = "btnApproved".equals(buttonId);
+                        poJSON = isApproved ? oTrans.postTransaction() : oTrans.voidTransaction();
+                        String result = (String) poJSON.get("result");
+                        ShowMessageFX.Information("success".equals(result)
+                                ? "The transaction was successfully " + (isApproved ? "approved." : "disapproved.")
+                                : "Unable to " + (isApproved ? "approve" : "disapprove") + " the transaction.",
+                                "Computerized Accounting System",
+                                pxeModuleName);
+                        if ("success".equals(result)) {
+                            clearAllFields();
                         }
-                    } else {
-                        ShowMessageFX.Information("No record found!", "Computerized Accounting System", pxeModuleName);
+                    }else{
+                        ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
                     }
                     break;
-
+                case "btnUpload":
+                    ShowMessageFX.Information("This feature is currently in development!", "Computerized Acounting System", pxeModuleName);
+                    break;
             }
         }
     }
 
-//    /*USE TO DISABLE ANCHOR BASE ON INITMODE*/
-//    private void initTabAnchor() {
-//        boolean pbValue = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
-////        AnchorInput.setDisable(!pbValue);
-////        subItemFields.setDisable(!pbValue);
-//        AnchorTable.setDisable(!pbValue);
-//        if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UNKNOWN) {
-//            AnchorTable.setDisable(pbValue);
-//        }
-//    }
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         btnCancel.setVisible(lbShow);
@@ -341,8 +322,11 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
         btnCancel.setManaged(lbShow);
         btnSearch.setManaged(lbShow);
         btnUpdate.setVisible(!lbShow);
+        
         btnApproved.setVisible(!lbShow);
+        btnUpload.setVisible(!lbShow);
         btnDisapproved.setVisible(!lbShow);
+        
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
 
@@ -350,17 +334,22 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
             btnCancel.setVisible(lbShow);
             btnSearch.setVisible(lbShow);
             btnSave.setVisible(lbShow);
-            
+
             btnApproved.setVisible(lbShow);
             btnDisapproved.setVisible(lbShow);
-            btnUpdate.setVisible(!lbShow);
+            btnUpload.setVisible(lbShow);
+            
+            btnUpdate.setVisible(!lbShow); 
             btnBrowse.setVisible(!lbShow);
             btnNew.setVisible(!lbShow);
             btnBrowse.setManaged(false);
             btnNew.setManaged(false);
             btnUpdate.setManaged(false);
+            
+            btnUpload.setManaged(false);
             btnApproved.setManaged(false);
             btnDisapproved.setManaged(false);
+            
             btnClose.setManaged(false);
         } else {
         }
@@ -455,14 +444,22 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
                     case 02:
                         poJson = oTrans.Client().Master().searchRecord(lsValue, false);
                         if ("success".equals(poJson.get("result"))) {
-                            txtField02.setText(oTrans.Client().Master().getModel().getCompanyName());
-                            oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
-                            poJson = oTrans.Client().ClientInstitutionContact().searchRecordx(oTrans.Client().Master().getModel().getClientId(), false);
+                            poJson = oTrans.searchRecordbyClient(oTrans.Client().Master().getModel().getClientId(), false);
                             if ("success".equals(poJson.get("result"))) {
-                                txtField03.setText(oTrans.Client().ClientInstitutionContact().getModel().getContactPersonName());
-                                oTrans.getModel().setContatId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
+                                ShowMessageFX.Information("The company is already accredited or has already gained entry.!", "Computerized Acounting System", pxeModuleName);
+                                break;
                             }
+                                txtField02.setText(oTrans.Client().Master().getModel().getCompanyName());
+                                oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
+                                poJson = oTrans.Client().ClientInstitutionContact().searchRecordx(oTrans.Client().Master().getModel().getClientId(), false);
+                                if ("success".equals(poJson.get("result"))) {
+                                    txtField03.setText(oTrans.Client().ClientInstitutionContact().getModel().getContactPersonName());
+                                    oTrans.getModel().setContatId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
+                                }
+                            
                         }
+                         
+                        
                         break;
                 }
             case ENTER:
