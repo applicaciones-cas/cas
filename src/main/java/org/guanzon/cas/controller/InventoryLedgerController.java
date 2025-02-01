@@ -302,7 +302,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
                 System.out.println("Processing Serial Ledger at Index: " + lnCtr);
 
                 // Debugging individual components
-                System.out.println("Transaction Date: " + poTrans.InvLedger(lnCtr).getTransactionDate().toString());
+                System.out.println("Transaction Date: " + poTrans.InvLedger(lnCtr).getTransactionDate());
                 System.out.println("Branch Name: " + poTrans.InvLedger(lnCtr).Branch().getBranchName());
                 System.out.println("Source Code: " + poTrans.InvLedger(lnCtr).getSourceCode());
                 System.out.println("Source No: " + poTrans.InvLedger(lnCtr).getSourceNo());
