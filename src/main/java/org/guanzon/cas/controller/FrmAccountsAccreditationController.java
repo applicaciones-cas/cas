@@ -293,11 +293,13 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
                         boolean isApproved = "btnApproved".equals(buttonId);
                         poJSON = isApproved ? oTrans.postTransaction() : oTrans.voidTransaction();
                         String result = (String) poJSON.get("result");
-                        ShowMessageFX.Information("success".equals(result)
-                                ? "The transaction was successfully " + (isApproved ? "approved." : "disapproved.")
-                                : "Unable to " + (isApproved ? "approve" : "disapprove") + " the transaction.",
-                                "Computerized Accounting System",
-                                pxeModuleName);
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        ShowMessageFX.Information("success".equals(result)
+//                                ? (String) poJSON.get("message") + (isApproved ? "approved." : "disapproved.")
+//                                : "Unable to " + (isApproved ? "approve" : "disapprove") + " the transaction.",
+//                                "Computerized Accounting System",
+//                                pxeModuleName);
+                        
                         if ("success".equals(result)) {
                             clearAllFields();
                         }
@@ -451,16 +453,19 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
                             }
                                 txtField02.setText(oTrans.Client().Master().getModel().getCompanyName());
                                 oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
-                                poJson = oTrans.Client().ClientInstitutionContact().searchRecordx(oTrans.Client().Master().getModel().getClientId(), false);
+                                
+                                poJson = oTrans.Client().ClientInstitutionContact().searchRecordbyclient(oTrans.Client().Master().getModel().getClientId(), false);
                                 if ("success".equals(poJson.get("result"))) {
                                     txtField03.setText(oTrans.Client().ClientInstitutionContact().getModel().getContactPersonName());
-                                    oTrans.getModel().setContatId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
-                                }
-                            
+                                    oTrans.getModel().setContactId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
+                                } 
                         }
-                         
-                        
+                        poJson = oTrans.Client().ClientAddress().searchRecordbyclient(oTrans.Client().Master().getModel().getClientId(), false);
+                                if ("success".equals(poJson.get("result"))) {
+                                    oTrans.getModel().setAddressId(oTrans.Client().ClientAddress().getModel().getClientId());
+                                }
                         break;
+                    
                 }
             case ENTER:
         }
@@ -617,13 +622,46 @@ public class FrmAccountsAccreditationController implements Initializable, Screen
             poJson = oParameters.Category().searchRecord(category, true);
             if ("success".equals(poJson.get("result") == null ? "" : poJson.get("result"))) {
                 txtField05.setText(oParameters.Category().getModel().getDescription() == null ? "" : oParameters.Category().getModel().getDescription());
+                oTrans.getModel().setCategoryCode(oParameters.Category().getModel().getCategoryId());
             }
         }
+        
     }
 
     public static LocalDate strToDate(String val) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(val, dateFormatter);
+    }
+    private void insertApprove(){
+        JSONObject poJson;
+        poJson = new JSONObject();
+        String AcctType = oTrans.getModel().getAccountType();
+        
+        switch (AcctType) {
+            case "1":
+                System.out.println("Account Type is 1");
+                oTrans.ARClient().ARClientMaster().getModel().setClientId(oTrans.getModel().ClientMaster().getClientId());
+                // Add logic for AcctType = 1
+                break;
+            case "0":
+                System.out.println("Account Type is 0");
+                 oTrans.APClient().APClientMaster().getModel().setClientId(oTrans.getModel().ClientMaster().getClientId());
+                 poJson = oTrans.APClient().APClientMaster().saveRecord();
+     
+                    if ("success".equals((String) poJson.get("result"))) {
+                           ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                           pnEditMode = EditMode.UNKNOWN;
+                    }else{
+                        ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                    }
+                // Add logic for AcctType = 0
+                break;
+            default:
+                System.out.println("Unknown Account Type: " + AcctType);
+            // Handle unexpected values
+        }
+        
+    
     }
 
 }

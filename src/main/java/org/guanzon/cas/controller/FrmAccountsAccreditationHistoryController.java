@@ -360,10 +360,10 @@ public class FrmAccountsAccreditationHistoryController implements Initializable,
                         if ("success".equals(poJson.get("result"))) {
                             txtField02.setText(oTrans.Client().Master().getModel().getCompanyName());
                             oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
-                            poJson = oTrans.Client().ClientInstitutionContact().searchRecordx(oTrans.Client().Master().getModel().getClientId(), false);
+                            poJson = oTrans.Client().ClientInstitutionContact().searchRecordbyclient(oTrans.Client().Master().getModel().getClientId(), false);
                             if ("success".equals(poJson.get("result"))) {
                                 txtField03.setText(oTrans.Client().ClientInstitutionContact().getModel().getContactPersonName());
-                                oTrans.getModel().setContatId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
+                                oTrans.getModel().setContactId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
                             }
                         }
                         break;

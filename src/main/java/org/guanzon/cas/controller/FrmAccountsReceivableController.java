@@ -701,13 +701,11 @@ public class FrmAccountsReceivableController implements Initializable,ScreenInte
         if (pnEditMode == EditMode.READY
                 || pnEditMode == EditMode.ADDNEW
                 || pnEditMode == EditMode.UPDATE) {
-            System.out.println("address = " + oTrans.ARClientMaster().getModel().Client().ClientAddress().getModel().getAddress());
-            txtField01.setText((String) oTrans.ARClientMaster().getModel().getClientId());
-            txtField02.setText((String) oTrans.ARClientMaster().getModel().Client().Master().getModel().getCompanyName());
-            txtField03.setText((String) oTrans.ARClientMaster().getModel().Client().ClientAddress().getModel().getAddress());
-            txtField04.setText((String) oTrans.ARClientMaster().getModel().Client().ClientInstitutionContact().getModel().getContactPersonName());
-            txtField05.setText((String) oTrans.ARClientMaster().getModel().Client().ClientInstitutionContact().getModel().getMobileNo());
-            txtField06.setText((String) oTrans.ARClientMaster().getModel().Client().Master().getModel().getTaxIdNumber());
+            txtField02.setText((String) oTrans.ARClientMaster().getModel().ClientMaster().getCompanyName());
+            txtField03.setText((String) oTrans.ARClientMaster().getModel().ClientAddress().getAddress());
+            txtField04.setText((String) oTrans.ARClientMaster().getModel().ClientInstitutionContact().getContactPersonName());
+            txtField05.setText((String) oTrans.ARClientMaster().getModel().ClientInstitutionContact().getMobileNo());
+            txtField06.setText((String) oTrans.ARClientMaster().getModel().ClientMaster().getTaxIdNumber());
             txtField07.setText(CommonUtils.NumberFormat(oTrans.ARClientMaster().getModel().getCreditLimit(), "#,##0.00"));
             txtField08.setText(CommonUtils.NumberFormat(oTrans.ARClientMaster().getModel().getDiscount(), "#,##0.00"));
             txtField09.setText((String) oTrans.ARClientMaster().getModel().Term().getDescription());
