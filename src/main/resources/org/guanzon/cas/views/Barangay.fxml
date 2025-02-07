@@ -19,7 +19,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="ChildAnchorPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="AnchorMain" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane layoutX="107.0" layoutY="129.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -29,37 +29,37 @@
                             <children>
                                   <HBox fx:id="hbButtons" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                       <children>
-                              <Button fx:id="btnBrowse" contentDisplay="TOP" graphicTextGap="3.0" layoutX="10.0" layoutY="10.0" maxHeight="70.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Browse">
+                              <Button fx:id="btnBrowse" contentDisplay="TOP" graphicTextGap="3.0" layoutX="10.0" layoutY="10.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Browse">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" styleClass="FontIcon" />
                                  </graphic>
                               </Button>
-                                            <Button fx:id="btnNew" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="New">
+                                            <Button fx:id="btnNew" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="New">
                                                 <graphic>
                                                     <FontAwesomeIconView glyphName="PLUS" size="20" styleClass="FontIcon" />
                                                 </graphic>
                                             </Button>
-                                            <Button fx:id="btnSave" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Save">
+                                            <Button fx:id="btnSave" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Save">
                                                 <graphic>
                                                     <FontAwesomeIconView glyphName="SAVE" size="20" styleClass="FontIcon" />
                                                 </graphic>
                                             </Button>
-                                            <Button fx:id="btnUpdate" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Update">
+                                            <Button fx:id="btnUpdate" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Update">
                                                 <graphic>
                                                     <FontAwesomeIconView glyphName="EDIT" size="20" styleClass="FontIcon" />
                                                 </graphic>
                                             </Button>
-                                            <Button fx:id="btnCancel" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Cancel">
+                                            <Button fx:id="btnCancel" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Cancel">
                                                 <graphic>
                                                     <FontAwesomeIconView glyphName="CLOSE" size="20" styleClass="FontIcon" />
                                                 </graphic>
                                             </Button>
-                                            <Button fx:id="btnActivate" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Activate">
+                                            <Button fx:id="btnActivate" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Activate">
                                                 <graphic>
                                                     <FontAwesomeIconView fx:id="faActivate" glyphName="CHECK" size="20" styleClass="FontIcon" />
                                                 </graphic>
                                             </Button>
-                                            <Button fx:id="btnClose" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Close">
+                                            <Button fx:id="btnClose" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Close">
                                                 <graphic>
                                                     <FontAwesomeIconView glyphName="POWER_OFF" size="20" styleClass="FontIcon" />
                                                 </graphic>
@@ -81,9 +81,9 @@
                                 <Insets left="5.0" right="5.0" />
                             </BorderPane.margin>
                             <children>
-                        <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-border-color: FF8201; -fx-border-radius: 5;" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                        <VBox fx:id="AnchorInput" alignment="TOP_CENTER" spacing="15.0" style="-fx-border-color: FF8201; -fx-border-radius: 5;" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                            <children>
-                              <AnchorPane>
+                              <AnchorPane fx:id="AnchorInputs">
                                  <children>
                                     <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <columnConstraints>
@@ -143,7 +143,7 @@
                                                                     <Insets left="10.0" />
                                                                 </GridPane.margin>
                                                             </Label>
-                                                            <CheckBox fx:id="cbActive" disable="true" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
+                                                            <CheckBox fx:id="cbField01" mnemonicParsing="false" onMouseClicked="#cbField01_Clicked" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
                                                                 <font>
                                                                     <Font size="14.0" />
                                                                 </font>
@@ -154,7 +154,7 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </padding>
                                                             </CheckBox>
-                                          <CheckBox fx:id="cbHasRoute" disable="true" layoutX="171.0" layoutY="72.0" mnemonicParsing="false" selected="true" text=" Has Route" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                          <CheckBox fx:id="cbField02" layoutX="171.0" layoutY="72.0" mnemonicParsing="false" onMouseClicked="#cbField02_Clicked" selected="true" text=" Has Route" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -162,7 +162,7 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox fx:id="cbBlacklist" disable="true" layoutX="171.0" layoutY="103.0" mnemonicParsing="false" selected="true" text="Black List" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                          <CheckBox fx:id="cbField03" layoutX="171.0" layoutY="103.0" mnemonicParsing="false" onMouseClicked="#cbField03_Clicked" selected="true" text="Black List" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
@@ -227,7 +227,7 @@
                                                 <Insets left="30.0" />
                                              </GridPane.margin>
                                           </Text>
-                                          <TextField fx:id="txtField99" promptText="Press F3: Search" GridPane.columnIndex="1">
+                                          <TextField fx:id="txtSeeks01" promptText="Press F3: Search" GridPane.columnIndex="1">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>

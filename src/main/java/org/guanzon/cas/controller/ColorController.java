@@ -111,6 +111,7 @@ public class ColorController implements Initializable, ScreenInterface {
                     if ("success".equals((String) poJSON.get("result"))) {
                         pnEditMode = EditMode.ADDNEW;
                         initButton(pnEditMode);
+                        loadRecord();
                     } else {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                     }
@@ -173,8 +174,8 @@ public class ColorController implements Initializable, ScreenInterface {
         btnCancel.setManaged(lbShow);
         btnSave.setVisible(lbShow);
         btnSave.setManaged(lbShow);
-        btnUpdate.setVisible(lbShow);
-        btnUpdate.setManaged(lbShow);
+        btnUpdate.setVisible(!lbShow);
+        btnUpdate.setManaged(!lbShow);
 
         btnBrowse.setVisible(!lbShow);
         btnBrowse.setManaged(!lbShow);
