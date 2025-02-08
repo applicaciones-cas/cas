@@ -157,6 +157,30 @@ public class ColorController implements Initializable, ScreenInterface {
                         ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                     }
                     break;
+                case "btnActivate":
+                    String Status = oParameters.Color().getModel().getRecordStatus();
+                    JSONObject poJsON;
+                    switch (Status) {
+                        case "0":
+                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                poJsON = oParameters.Color().postTransaction();
+                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                loadRecord();
+                            }
+                            break;
+                        case "1":
+                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                poJsON = oParameters.Color().voidTransaction();
+                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                loadRecord();
+                            }
+                            break;
+                        default:
+
+                            break;
+
+                    }
+                    break;
             }
         }
     }
@@ -228,26 +252,25 @@ public class ColorController implements Initializable, ScreenInterface {
             txtField.selectAll();
         }
     };
-    
-        private void loadRecord() {
+
+    private void loadRecord() {
         boolean lbActive = oParameters.Color().getModel().getRecordStatus() == "1";
-        
 
         txtField01.setText(oParameters.Color().getModel().getColorId());
-        txtField02.setText( oParameters.Color().getModel().getDescription());
+        txtField02.setText(oParameters.Color().getModel().getDescription());
 //        cbActive.setSelected( lbActive);
-        
-        switch(oParameters.Color().getModel().getRecordStatus()){
-            case "0":
+
+        switch (oParameters.Color().getModel().getRecordStatus()) {
+            case "1":
                  btnActivate.setText("Deactivate");
                 faActivate.setGlyphName("CLOSE");
-                cbActive.setSelected( false);
-                break;
-            case "1":
-                btnActivate.setText("Activate");
-                faActivate.setGlyphName("CHECK");
                 cbActive.setSelected( true);
                 break;
-        }   
+            case "0":
+                btnActivate.setText("Activate");
+                faActivate.setGlyphName("CHECK");
+                cbActive.setSelected( false);
+                break;
+        }
     }
 }

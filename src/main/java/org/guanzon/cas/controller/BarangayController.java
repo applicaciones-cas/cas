@@ -41,7 +41,7 @@ public class BarangayController implements Initializable, ScreenInterface {
     private int pnInventory = 0;
     private int pnRow = 0;
     private ObservableList<ModelResultSet> data = FXCollections.observableArrayList();
-
+    private String psPrimary = "";
     @FXML
     private AnchorPane AnchorMain,AnchorInputs;
     @FXML
@@ -145,9 +145,9 @@ public class BarangayController implements Initializable, ScreenInterface {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         break;
                     }
-                    pnEditMode = oParameters.Color().getEditMode();
+                    pnEditMode = oParameters.Barangay().getEditMode();
                     initButton(pnEditMode);
-        initTabAnchor();
+                    initTabAnchor();
                     break;
                 case "btnCancel":
                     if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
@@ -155,7 +155,7 @@ public class BarangayController implements Initializable, ScreenInterface {
                         initializeObject();
                         pnEditMode = EditMode.UNKNOWN;
                         initButton(pnEditMode);
-        initTabAnchor();
+                        initTabAnchor();
                     }
                     break;
                 case "btnSave":
@@ -171,6 +171,32 @@ public class BarangayController implements Initializable, ScreenInterface {
                         ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                     }
                     break;
+                case "btnActivate":
+                    String Status = oParameters.Barangay().getModel().getRecordStatus();
+                    JSONObject poJsON;
+                    
+                    switch (Status) {
+                        case "0":
+                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                poJsON = oParameters.Barangay().postTransaction();
+                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                loadRecord();
+                            }
+                            break;
+                        case "1":
+                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                poJsON = oParameters.Barangay().voidTransaction();
+                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                loadRecord();
+                            }
+                            break;
+                        default:
+
+                            break;
+
+                    }
+                break;
+
             }
         }
     }
@@ -280,6 +306,8 @@ public class BarangayController implements Initializable, ScreenInterface {
     private void loadRecord() {
         boolean lbActive = oParameters.Barangay().getModel().getRecordStatus() == "1";
         
+        psPrimary = oParameters.Barangay().getModel().getBarangayId();
+        
         txtField01.setText(oParameters.Barangay().getModel().getBarangayId());
         txtField02.setText(oParameters.Barangay().getModel().getBarangayName());
         txtField03.setText(oParameters.Barangay().getModel().Town().getTownName());
@@ -288,15 +316,15 @@ public class BarangayController implements Initializable, ScreenInterface {
         cbField03.setSelected(oParameters.Barangay().getModel().isBlacklisted());
 
         switch(oParameters.Barangay().getModel().getRecordStatus()){
-            case "0":
+            case "1":
                  btnActivate.setText("Deactivate");
                 faActivate.setGlyphName("CLOSE");
-                cbField01.setSelected( false);
+                cbField01.setSelected( true);
                 break;
-            case "1":
+            case "0":
                 btnActivate.setText("Activate");
                 faActivate.setGlyphName("CHECK");
-                cbField01.setSelected( true);
+                cbField01.setSelected( false);
                 break;
         }   
     }
