@@ -29,37 +29,37 @@
                             <children>
                                 <HBox fx:id="hbButtons" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <Button fx:id="btnBrowse" contentDisplay="TOP" graphicTextGap="3.0" layoutX="10.0" layoutY="10.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Browse">
+                                        <Button fx:id="btnBrowse" contentDisplay="TOP" graphicTextGap="3.0" layoutX="10.0" layoutY="10.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Browse">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" styleClass="FontIcon" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnNew" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="New">
+                                        <Button fx:id="btnNew" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="New">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="PLUS" size="20" styleClass="FontIcon" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnSave" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Save">
+                                        <Button fx:id="btnSave" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Save">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="SAVE" size="20" styleClass="FontIcon" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnUpdate" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Update">
+                                        <Button fx:id="btnUpdate" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Update">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="EDIT" size="20" styleClass="FontIcon" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnCancel" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Cancel">
+                                        <Button fx:id="btnCancel" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Cancel">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="CLOSE" size="20" styleClass="FontIcon" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnActivate" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Activate">
+                                        <Button fx:id="btnActivate" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Activate">
                                             <graphic>
                                                 <FontAwesomeIconView fx:id="faActivate" glyphName="CHECK" size="20" styleClass="FontIcon" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnClose" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Close">
+                                        <Button fx:id="btnClose" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Close">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="POWER_OFF" size="20" styleClass="FontIcon" />
                                             </graphic>
@@ -98,7 +98,9 @@
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         <RowConstraints minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
                                                     </rowConstraints>
                                                     <children>
                                                         <TextField fx:id="txtField01" editable="false" GridPane.columnIndex="1">
@@ -123,7 +125,7 @@
                                                                 <Insets left="5.0" />
                                                             </padding>
                                                         </TextField>
-                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model Code">
+                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model ID">
                                                             <GridPane.margin>
                                                                 <Insets left="10.0" />
                                                             </GridPane.margin>
@@ -143,12 +145,12 @@
                                                 </Text>
                                              </graphic>
                                                         </Label>
-                                                        <CheckBox fx:id="cbField01" disable="true" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                                        <CheckBox fx:id="cbField01" disable="true" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="6">
                                                             <font>
                                                                 <Font size="14.0" />
                                                             </font>
                                                             <GridPane.margin>
-                                                                <Insets left="25.0" />
+                                                                <Insets />
                                                             </GridPane.margin>
                                                         </CheckBox>
                                           <TextField fx:id="txtField03" layoutX="177.0" layoutY="42.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
@@ -184,7 +186,7 @@
                                                 <Insets />
                                              </GridPane.margin>
                                           </TextField>
-                                          <Label contentDisplay="RIGHT" layoutX="20.0" layoutY="45.0" text="Model Name" GridPane.rowIndex="2">
+                                          <Label contentDisplay="RIGHT" layoutX="20.0" layoutY="45.0" text="Model Code" GridPane.rowIndex="2">
                                              <graphic>
                                                 <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
                                                    <font>
@@ -208,7 +210,7 @@
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
                                           </Label>
-                                          <Label contentDisplay="RIGHT" layoutX="10.0" layoutY="105.0" text="Brief Description" GridPane.rowIndex="4">
+                                          <Label contentDisplay="RIGHT" layoutX="10.0" layoutY="105.0" text="Year Model" GridPane.rowIndex="4">
                                              <graphic>
                                                 <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
                                                    <font>
@@ -220,6 +222,31 @@
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
                                           </Label>
+                                          <CheckBox fx:id="cbField02" disable="true" mnemonicParsing="false" selected="true" text="End of Life" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </CheckBox>
+                                          <Label contentDisplay="RIGHT" text="Series" GridPane.rowIndex="5">
+                                             <graphic>
+                                                <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text2" text="*">
+                                                   <font>
+                                                      <Font name="Rockwell" size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </graphic>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
+                                          </Label>
+                                          <TextField fx:id="txtField06" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                             <padding>
+                                                <Insets left="5.0" />
+                                             </padding>
+                                          </TextField>
                                                     </children>
                                                 </GridPane>
                                             </children>

@@ -65,10 +65,11 @@ public class ModelController implements Initializable, ScreenInterface {
             txtField03,
             txtField04,
             txtField05,
+            txtField06,
             txtSeeks01;
 
     @FXML
-    private CheckBox cbField01;
+    private CheckBox cbField01,cbField02;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -233,9 +234,11 @@ public class ModelController implements Initializable, ScreenInterface {
         txtField02.focusedProperty().addListener(txtField_Focus);
         txtField03.focusedProperty().addListener(txtField_Focus);
         txtField04.focusedProperty().addListener(txtField_Focus);        
-        txtField05.focusedProperty().addListener(txtField_Focus);
+        txtField05.focusedProperty().addListener(txtField_Focus);      
+        txtField06.focusedProperty().addListener(txtField_Focus);
         
         txtField02.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField06.setOnKeyPressed(this::txtField_KeyPressed);
     }
     private void txtField_KeyPressed(KeyEvent event) {
         TextField txtField = (TextField) event.getSource();
@@ -247,12 +250,20 @@ public class ModelController implements Initializable, ScreenInterface {
             case F3:
                 switch (lnIndex) {
                     case 02:
-                        poJson = oParameters.InventoryType().searchRecord(lsValue, false);
+                        poJson = oParameters.Brand().searchRecord(lsValue, false);
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
-                        oParameters.CategoryLevel2().getModel().setInventoryTypeCode( oParameters.InventoryType().getModel().getInventoryTypeId());
-                        txtField02.setText((String)oParameters.InventoryType().getModel().getDescription());
+                        oParameters.Model().getModel().setBrandId( oParameters.Brand().getModel().getBrandId());
+                        txtField02.setText((String)oParameters.Brand().getModel().getDescription());
+                        break;
+                    case 06:
+                        poJson = oParameters.ModelSeries().searchRecord(lsValue, false);
+                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+                        oParameters.Model().getModel().setSeriesId( oParameters.ModelSeries().getModel().getSeriesID());
+                        txtField06.setText((String)oParameters.ModelSeries().getModel().getDescription());
                         break;
                 }
             case ENTER:
@@ -287,8 +298,17 @@ public class ModelController implements Initializable, ScreenInterface {
                     case 1:
                         oParameters.Model().getModel().setModelId(lsValue);
                         break;
-                    case 2:
+//                    case 2:
+//                        oParameters.Model().getModel().setDescription(lsValue);
+//                        break;
+                    case 3:
+                        oParameters.Model().getModel().setModelCode(lsValue);
+                        break;
+                    case 4:
                         oParameters.Model().getModel().setDescription(lsValue);
+                        break;
+                    case 5:
+                        oParameters.Model().getModel().setYearModel(Integer.parseInt(lsValue));
                         break;
 
                     default:
@@ -309,8 +329,9 @@ public class ModelController implements Initializable, ScreenInterface {
         txtField02.setText(oParameters.Model().getModel().Brand().getDescription());
         txtField03.setText(oParameters.Model().getModel().getModelCode());
         txtField04.setText(oParameters.Model().getModel().getDescription());
-        txtField05.setText(oParameters.Model().getModel().getModelId());
-
+        txtField05.setText(String.valueOf(oParameters.Model().getModel().getYearModel()));
+        txtField06.setText(oParameters.Model().getModel().ModelSeries().getDescription());
+        
         switch (oParameters.Model().getModel().getRecordStatus()) {
             case "1":
                 btnActivate.setText("Deactivate");
@@ -331,6 +352,14 @@ public class ModelController implements Initializable, ScreenInterface {
             oParameters.Model().getModel().setRecordStatus("1");
         } else {
             oParameters.Model().getModel().setRecordStatus("0");
+        }
+    }
+    @FXML
+    void cbField02_Clicked(MouseEvent event) {
+        if (cbField02.isSelected()) {
+            oParameters.Model().getModel().setEndOfLife("1");
+        } else {
+            oParameters.Model().getModel().setEndOfLife("0");
         }
     }
 
