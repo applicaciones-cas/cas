@@ -13,9 +13,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.UP;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
@@ -26,7 +32,7 @@ import org.json.simple.JSONObject;
 public class ColorDetailController implements Initializable, ScreenInterface {
 
     private GRider oApp;
-    private final String pxeModuleName = "Color";
+    private final String pxeModuleName = "Color Detail";
     private int pnEditMode;
     private ParamControllers oParameters;
     private boolean state = false;
@@ -55,6 +61,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
     @FXML
     private TextField txtField01,
             txtField02,
+            txtField03,
             txtSeeks01;
 
     @FXML
@@ -78,7 +85,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
     private void initializeObject() {
         LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
         oParameters = new ParamControllers(oApp, logwrapr);
-        oParameters.Color().setRecordStatus("0123");
+        oParameters.ColorDetail().setRecordStatus("0123");
     }
 
     private void ClickButton() {
@@ -106,18 +113,19 @@ public class ColorDetailController implements Initializable, ScreenInterface {
                 case "btnNew":
                     clearAllFields();
                     txtField02.requestFocus();
-                    JSONObject poJSON = oParameters.Color().newRecord();
+                    JSONObject poJSON = oParameters.ColorDetail().newRecord();
                     pnEditMode = EditMode.READY;
                     if ("success".equals((String) poJSON.get("result"))) {
                         pnEditMode = EditMode.ADDNEW;
                         initButton(pnEditMode);
+                        loadRecord();
                     } else {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                     }
                     break;
                 case "btnBrowse":
                     String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
-                    poJSON = oParameters.Color().searchRecord(lsValue, false);
+                    poJSON = oParameters.ColorDetail().searchRecord(lsValue, false);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         txtSeeks01.clear();
@@ -127,12 +135,12 @@ public class ColorDetailController implements Initializable, ScreenInterface {
                     loadRecord();
                     break;
                 case "btnUpdate":
-                    poJSON = oParameters.Color().updateRecord();
+                    poJSON = oParameters.ColorDetail().updateRecord();
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         break;
                     }
-                    pnEditMode = oParameters.Color().getEditMode();
+                    pnEditMode = oParameters.ColorDetail().getEditMode();
                     initButton(pnEditMode);
                     break;
                 case "btnCancel":
@@ -144,9 +152,9 @@ public class ColorDetailController implements Initializable, ScreenInterface {
                     }
                     break;
                 case "btnSave":
-                    oParameters.Color().getModel().setModifyingId(oApp.getUserID());
-                    oParameters.Color().getModel().setModifiedDate(oApp.getServerDate());
-                    JSONObject saveResult = oParameters.Color().saveRecord();
+                    oParameters.ColorDetail().getModel().setModifyingId(oApp.getUserID());
+                    oParameters.ColorDetail().getModel().setModifiedDate(oApp.getServerDate());
+                    JSONObject saveResult = oParameters.ColorDetail().saveRecord();
                     if ("success".equals((String) saveResult.get("result"))) {
                         ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                         pnEditMode = EditMode.UNKNOWN;
@@ -156,6 +164,30 @@ public class ColorDetailController implements Initializable, ScreenInterface {
                         ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                     }
                     break;
+                case "btnActivate":
+                    String Status = oParameters.ColorDetail().getModel().getRecordStatus();
+                    JSONObject poJsON;
+                    switch (Status) {
+                        case "0":
+                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                poJsON = oParameters.ColorDetail().postTransaction();
+                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                loadRecord();
+                            }
+                            break;
+                        case "1":
+                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                poJsON = oParameters.ColorDetail().voidTransaction();
+                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                loadRecord();
+                            }
+                            break;
+                        default:
+
+                            break;
+
+                    }
+                    break;
             }
         }
     }
@@ -163,6 +195,7 @@ public class ColorDetailController implements Initializable, ScreenInterface {
     private void clearAllFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
         txtSeeks01.clear();
     }
 
@@ -173,11 +206,13 @@ public class ColorDetailController implements Initializable, ScreenInterface {
         btnCancel.setManaged(lbShow);
         btnSave.setVisible(lbShow);
         btnSave.setManaged(lbShow);
-        btnUpdate.setVisible(lbShow);
-        btnUpdate.setManaged(lbShow);
+        btnUpdate.setVisible(!lbShow);
+        btnUpdate.setManaged(!lbShow);
 
         btnBrowse.setVisible(!lbShow);
         btnBrowse.setManaged(!lbShow);
+        btnNew.setVisible(!lbShow);
+        btnNew.setManaged(!lbShow);
 
         btnClose.setVisible(true);
         btnClose.setManaged(true);
@@ -191,8 +226,40 @@ public class ColorDetailController implements Initializable, ScreenInterface {
         for (TextField textField : focusTextFields) {
             textField.focusedProperty().addListener(txtField_Focus);
         }
+        
+        txtField03.setOnKeyPressed(this::txtField_KeyPressed);
     }
-
+    private void txtField_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        JSONObject poJson;
+        poJson = new JSONObject();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 03:
+                        poJson = oParameters.Color().searchRecord(lsValue, false);
+                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+                        oParameters.ColorDetail().getModel().setColorCode(oParameters.Color().getModel().getColorId());
+                        txtField03.setText((String)oParameters.Color().getModel().getDescription());
+                        break;
+                    
+                }
+            case ENTER:
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
+        }
+    }
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         if (!pbLoaded) {
             return;
@@ -210,11 +277,14 @@ public class ColorDetailController implements Initializable, ScreenInterface {
             try {
                 switch (lnIndex) {
                     case 1:
-                        oParameters.Color().getModel().setColorId(lsValue);
+                        oParameters.ColorDetail().getModel().setColorId(lsValue);
                         break;
                     case 2:
-                        oParameters.Color().getModel().setDescription(lsValue);
+                        oParameters.ColorDetail().getModel().setDescription(lsValue);
                         break;
+//                    case 3:
+//                        oParameters.ColorDetail().getModel().setDescription(lsValue);
+//                        break;
                     default:
                         break;
                 }
@@ -225,26 +295,26 @@ public class ColorDetailController implements Initializable, ScreenInterface {
             txtField.selectAll();
         }
     };
-    
-        private void loadRecord() {
-        boolean lbActive = oParameters.Color().getModel().getRecordStatus() == "1";
-        
 
-        txtField01.setText(oParameters.Color().getModel().getColorId());
-        txtField02.setText( oParameters.Color().getModel().getDescription());
+    private void loadRecord() {
+        boolean lbActive = oParameters.ColorDetail().getModel().getRecordStatus() == "1";
+
+        txtField01.setText(oParameters.ColorDetail().getModel().getColorId());
+        txtField02.setText(oParameters.ColorDetail().getModel().getDescription());
+        txtField03.setText(oParameters.ColorDetail().getModel().Color().getDescription());
 //        cbActive.setSelected( lbActive);
-        
-        switch(oParameters.Color().getModel().getRecordStatus()){
-            case "0":
+
+        switch (oParameters.ColorDetail().getModel().getRecordStatus()) {
+            case "1":
                  btnActivate.setText("Deactivate");
                 faActivate.setGlyphName("CLOSE");
-                cbActive.setSelected( false);
-                break;
-            case "1":
-                btnActivate.setText("Activate");
-                faActivate.setGlyphName("CHECK");
                 cbActive.setSelected( true);
                 break;
-        }   
+            case "0":
+                btnActivate.setText("Activate");
+                faActivate.setGlyphName("CHECK");
+                cbActive.setSelected( false);
+                break;
+        }
     }
 }

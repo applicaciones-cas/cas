@@ -145,7 +145,7 @@
                                                 </Text>
                                              </graphic>
                                                         </Label>
-                                                        <CheckBox fx:id="cbField01" disable="true" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                                        <CheckBox fx:id="cbField01" mnemonicParsing="false" selected="true" text="Active" GridPane.columnIndex="1" GridPane.rowIndex="6">
                                                             <font>
                                                                 <Font size="14.0" />
                                                             </font>
@@ -222,7 +222,7 @@
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
                                           </Label>
-                                          <CheckBox fx:id="cbField02" disable="true" mnemonicParsing="false" selected="true" text="End of Life" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                                          <CheckBox fx:id="cbField02" mnemonicParsing="false" selected="true" text="End of Life" GridPane.columnIndex="1" GridPane.rowIndex="7">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>

@@ -206,8 +206,13 @@ public class ModelController implements Initializable, ScreenInterface {
     private void clearAllFields() {
         txtField01.clear();
         txtField02.clear();
+        txtField03.clear();
+        txtField04.clear();
+        txtField05.clear();
+        txtField06.clear();
         txtSeeks01.clear();
         cbField01.setSelected(false);
+        cbField02.setSelected(false);
     }
 
     private void initButton(int fnValue) {

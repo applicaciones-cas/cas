@@ -73,7 +73,7 @@
                         </AnchorPane>
                     </bottom>
                     <center>
-                        <AnchorPane maxWidth="550.0" prefWidth="550.0" BorderPane.alignment="CENTER_LEFT">
+                        <AnchorPane fx:id="AnchorInputs" maxWidth="550.0" prefWidth="550.0" BorderPane.alignment="CENTER_LEFT">
                             <opaqueInsets>
                                 <Insets />
                             </opaqueInsets>
