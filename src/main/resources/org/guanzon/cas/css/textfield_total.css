@@ -1,0 +1,5 @@
+.text-field {
+    -fx-text-fill: white;     /* Sets the text color to white */
+    -fx-font-size: 16px;      /* Sets the font size */
+    -fx-font-weight: bold;    /* Makes the text bold */
+}
