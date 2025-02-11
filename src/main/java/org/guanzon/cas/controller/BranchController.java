@@ -378,7 +378,7 @@ public class BranchController implements Initializable, ScreenInterface {
         txtField05.setText(oParameters.Branch().getModel().getCompanyId() + " Company name");
         txtField06.setText(oParameters.Branch().getModel().TownCity().getTownName());
         txtField07.setText(oParameters.Branch().getModel().getAddress());
-
+        cbField02.setSelected(oParameters.Branch().getModel().isWarehouse());
         switch (oParameters.Branch().getModel().getRecordStatus()) {
             case "1":
                 btnActivate.setText("Deactivate");
