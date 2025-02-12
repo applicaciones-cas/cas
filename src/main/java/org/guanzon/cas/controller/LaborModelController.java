@@ -1,10 +1,13 @@
 package org.guanzon.cas.controller;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,7 +16,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -22,11 +28,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javax.sql.rowset.CachedRowSet;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.model.ModelInvSerialLedger;
+import org.guanzon.cas.model.ModelListParameter;
 import org.guanzon.cas.model.ModelResultSet;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
@@ -41,9 +50,12 @@ public class LaborModelController implements Initializable, ScreenInterface {
     private boolean pbLoaded = false;
     private int pnInventory = 0;
     private int pnRow = 0;
-    private ObservableList<ModelResultSet> data = FXCollections.observableArrayList();
+    private ObservableList<ModelListParameter> data = FXCollections.observableArrayList();
+    private CachedRowSet cacheLaborList;
 
-
+    private int pnIndex;
+    private int pnListRow;
+    String brand = "";
     @FXML
     private AnchorPane AnchorMain, AnchorInputs;
     @FXML
@@ -61,15 +73,21 @@ public class LaborModelController implements Initializable, ScreenInterface {
     @FXML
     private FontAwesomeIconView faActivate;
 
-    
     @FXML
     private TextField txtField01,
             txtField02,
             txtField03,
+            txtField04,
             txtSeeks01;
 
     @FXML
     private CheckBox cbField01;
+
+    @FXML
+    private TableView tblList;
+
+    @FXML
+    private TableColumn index01, index02, index03;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -84,6 +102,7 @@ public class LaborModelController implements Initializable, ScreenInterface {
         InitTextFields();
         ClickButton();
         initTabAnchor();
+        initTable();
         pbLoaded = true;
     }
 
@@ -91,9 +110,8 @@ public class LaborModelController implements Initializable, ScreenInterface {
         LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
         oParameters = new ParamControllers(oApp, logwrapr);
         oParameters.LaborModel().setRecordStatus("0123");
-        System.out.println("init1 == " +  oParameters.LaborModel());
-        System.out.println("init2 == " +  oParameters.LaborModel().getModel().getLaborId());
-        System.out.println("init3 == " + oParameters.LaborModel().getModel().getNextCode());
+        System.out.println("init1 == " + oParameters.LaborModel());
+        System.out.println("init2 == " + oParameters.LaborModel().getModel().getLaborId());
     }
 
     private void ClickButton() {
@@ -127,8 +145,8 @@ public class LaborModelController implements Initializable, ScreenInterface {
                         pnEditMode = EditMode.ADDNEW;
                         initButton(pnEditMode);
                         initTabAnchor();
-                        
-                    System.out.println("tran == " + oParameters.LaborModel().getModel().getLaborId() );
+
+                        System.out.println("tran == " + oParameters.LaborModel().getModel().getLaborId());
                         loadRecord();
                     } else {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -167,6 +185,8 @@ public class LaborModelController implements Initializable, ScreenInterface {
                     }
                     break;
                 case "btnSave":
+                    System.out.println("model id == " + oParameters.Model().getModel().getModelId());
+                    oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
                     oParameters.LaborModel().getModel().setModifyingId(oApp.getUserID());
                     oParameters.LaborModel().getModel().setModifiedDate(oApp.getServerDate());
                     JSONObject saveResult = oParameters.LaborModel().saveRecord();
@@ -213,6 +233,7 @@ public class LaborModelController implements Initializable, ScreenInterface {
         txtField02.clear();
         txtField03.clear();
         txtSeeks01.clear();
+        data.clear();
     }
 
     private void initButton(int fnValue) {
@@ -238,27 +259,50 @@ public class LaborModelController implements Initializable, ScreenInterface {
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
         txtField03.focusedProperty().addListener(txtField_Focus);
+        txtField01.setOnKeyPressed(this::txtField_KeyPressed);
         txtField02.setOnKeyPressed(this::txtField_KeyPressed);
     }
+
     private void txtField_KeyPressed(KeyEvent event) {
         TextField txtField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
         String lsValue = (txtField.getText() == null ? "" : txtField.getText());
         JSONObject poJson;
         poJson = new JSONObject();
+
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
-                    case 02:
-                        poJson = oParameters.Model().searchRecord(lsValue, false);
+                    case 01:
+                        poJson = oParameters.Brand().searchRecord(lsValue, false);
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
-                        oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
-                        txtField02.setText((String)oParameters.Model().getModel().getDescription());
-                        oParameters.LaborModel().LaborList(oParameters.Model().getModel().getModelId());
+                        txtField01.setText((String) oParameters.Brand().getModel().getDescription());
+                        brand = oParameters.Brand().getModel().getBrandId();
+                        txtField02.requestFocus();
                         break;
-                    
+                    case 02:
+                        if (brand.isEmpty() || brand == null) {
+                            poJson = oParameters.Model().searchRecord(lsValue, false);
+                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            }
+                            oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
+                            txtField02.setText((String) oParameters.Model().getModel().getDescription());
+                            oParameters.LaborModel().LaborList(oParameters.Model().getModel().getModelId());
+                        } else {
+                            poJson = oParameters.Model().searchRecordbyBrand(brand, true);
+                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            }
+                            oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
+                            txtField02.setText((String) oParameters.Model().getModel().getDescription());
+                            oParameters.LaborModel().LaborList(oParameters.Model().getModel().getModelId());
+                        }
+                        LoadList();
+                        break;
+
                 }
             case ENTER:
         }
@@ -295,7 +339,7 @@ public class LaborModelController implements Initializable, ScreenInterface {
 //                    case 2:
 //                        oParameters.LaborModel().getModel().setLaborName(lsValue);
 //                        break;
-                    case 3:
+                    case 4:
                         double amount = Double.parseDouble(lsValue);
                         if (lnIndex == 3) {
                             oParameters.LaborModel().getModel().setAmount(amount);
@@ -319,7 +363,8 @@ public class LaborModelController implements Initializable, ScreenInterface {
 
         txtField01.setText(oParameters.LaborModel().getModel().getLaborId());
         txtField02.setText(oParameters.LaborModel().getModel().Model().getDescription());
-        txtField03.setText(CommonUtils.NumberFormat(oParameters.LaborModel().getModel().getAmount(), "#,##0.00"));
+        txtField03.setText(oParameters.LaborModel().getModel().Model().getDescription());
+        txtField04.setText(CommonUtils.NumberFormat(oParameters.LaborModel().getModel().getAmount(), "#,##0.00"));
         switch (oParameters.LaborModel().getModel().getRecordStatus()) {
             case "1":
                 btnActivate.setText("Deactivate");
@@ -352,5 +397,194 @@ public class LaborModelController implements Initializable, ScreenInterface {
         boolean isEditable = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
         AnchorInputs.setDisable(!isEditable);
     }
-    
+
+    private void initTable() {
+        index01.setStyle("-fx-alignment: CENTER;");
+        index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+
+        index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
+        index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
+        index03.setCellValueFactory(new PropertyValueFactory<>("index03"));
+
+        tblList.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblList.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+        tblList.setItems(data);
+        tblList.autosize();
+    }
+
+    private void LoadList() {
+        System.out.println("Loading Labor List...");
+        data.clear();
+
+        // ✅ Get cached data from the data handler
+        cacheLaborList = oParameters.LaborModel().getCachedLaborList();
+
+        if (cacheLaborList == null) {
+            System.out.println("No cached data found! Fetching from database...");
+            oParameters.LaborModel().LaborList(""); // Reload data if cache is empty
+            return;
+        }
+
+        try {
+            cacheLaborList.beforeFirst(); // Reset cursor before reading
+
+            while (cacheLaborList.next()) {
+                String laborId = cacheLaborList.getString("sLaborIDx");
+                String laborName = cacheLaborList.getString("sLaborNme");
+                String amount = cacheLaborList.getString("nAmountxx");
+
+                System.out.println("Labor ID: " + laborId);
+                System.out.println("Labor Name: " + laborName);
+                System.out.println("Amount: " + amount);
+
+                data.add(new ModelListParameter(laborId, laborName, amount));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    
+//    private void LoadList() {
+//    System.out.println("Loading Labor List...");
+//    data.clear();
+//
+//    if (oParameters.LaborModel().getListCount() > 0) {
+//        for (int lnCtr = 0; lnCtr < oParameters.LaborModel().getListCount(); lnCtr++) {
+//            System.out.println("Processing Serial Ledger at Index: " + lnCtr);
+//
+//            if (oParameters.LaborModel().LaborModel(lnCtr) == null) {
+//                System.out.println("LaborModel at index " + lnCtr + " is NULL! Skipping...");
+//                continue;
+//            }
+//
+//            String laborId = oParameters.LaborModel().LaborModel(lnCtr).getLaborId();
+//            String laborName = oParameters.LaborModel().LaborModel(lnCtr).Labor() != null
+//                    ? oParameters.LaborModel().LaborModel(lnCtr).Labor().getLaborName()
+//                    : "Unknown";
+//
+//            // Handle NULL nAmountxx by displaying "(NULL)" instead of skipping
+//            String amount = (oParameters.LaborModel().LaborModel(lnCtr).getAmount() != null)
+//                    ? String.valueOf(oParameters.LaborModel().LaborModel(lnCtr).getAmount())
+//                    : "(NULL)";
+//
+//            if (laborId == null || laborId.isEmpty()) {
+//                System.out.println("Skipping record due to NULL Labor ID.");
+//                continue;
+//            }
+//
+//            // Debugging individual components
+//            System.out.println("Labor ID: " + laborId);
+//            System.out.println("Labor Name: " + laborName);
+//            System.out.println("Amount: " + amount);
+//
+//            data.add(new ModelListParameter(laborId, laborName, amount));
+//        }
+//    } else {
+//        ShowMessageFX.Information("No Record Found!", "Computerized Accounting System", pxeModuleName);
+//    }
+//}
+//    private void LoadList() {
+//        System.out.println("nagload and ledger");
+//        data.clear();
+//
+//        if (oParameters.LaborModel().getListCount()>= 0) {
+//            for (int lnCtr = 0; lnCtr < oParameters.LaborModel().getListCount(); lnCtr++) {
+//                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
+//
+//                // Debugging individual components
+//                System.out.println("Labor ID: " + oParameters.LaborModel().LaborModel(lnCtr).getLaborId());
+//                System.out.println("Labor Name: " + oParameters.LaborModel().LaborModel(lnCtr).Labor().getLaborName());
+//                System.out.println("Amount: " +  oParameters.LaborModel().LaborModel(lnCtr).getAmount().toString());
+//
+//               
+//                data.add(new ModelListParameter(
+//                        oParameters.LaborModel().LaborModel(lnCtr).getLaborId(),                        
+//                        oParameters.LaborModel().LaborModel(lnCtr).Labor().getLaborName(),
+//                        String.valueOf(oParameters.LaborModel().LaborModel(lnCtr).getAmount().toString())));
+//            }
+//        } else {
+//            ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
+//        }
+//    }
+//private void LoadList() {
+//        System.out.println("nagload and ledger");
+//        data.clear();
+//
+//        if (oParameters.LaborModel().getListCount() > 0) {  // Ensure there's data
+//        for (int lnCtr = 0; lnCtr < oParameters.LaborModel().getListCount(); lnCtr++) {
+//                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
+//
+//                // Debugging individual components
+//                System.out.println("Labor ID: " + oParameters.LaborModel().LaborModel(lnCtr).getLaborId());
+//                System.out.println("Model Name: " + oParameters.LaborModel().LaborModel(lnCtr).Model().getDescription());
+//                System.out.println("-----------------------------------------------------------");
+//                data.add(new ModelResultSet(
+//                        String.valueOf(lnCtr + 1),
+//                        oParameters.LaborModel().LaborModel(lnCtr).getLaborId().toString(),
+//                        oParameters.LaborModel().LaborModel(lnCtr).Model().getDescription()));
+//            } 
+//        } else {
+//            ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
+//        }
+//    }
+    @FXML
+    void tblList_Clicked(MouseEvent event) {
+    pnListRow = tblList.getSelectionModel().getSelectedIndex();
+
+    if (pnListRow >= 0) {
+        try {
+            // ✅ Ensure cached data is available
+            if (cacheLaborList == null) {
+                System.out.println("No cached data found! Cannot retrieve selected row.");
+                return;
+            }
+
+            cacheLaborList.absolute(pnListRow + 1); // ✅ Move cursor to selected row (1-based index)
+
+            double newAmount = cacheLaborList.getDouble("nAmountxx"); // ✅ Get current amount
+            txtField04.setText(CommonUtils.NumberFormat(newAmount, "#,##0.00")); // ✅ Format & Display
+            txtField03.setText(cacheLaborList.getString("sLaborNme"));
+            // Debugging output
+            System.out.println("Selected Labor ID: " + cacheLaborList.getString("sLaborIDx"));
+            System.out.println("Selected Labor Name: " + cacheLaborList.getString("sLaborNme"));
+            System.out.println("Selected Amount: " + newAmount);
+
+            // ✅ Listen for text changes & update cache and UI when value changes
+            txtField04.textProperty().addListener((observable, oldValue, newValue) -> {
+                try {
+                    double updatedAmount = Double.parseDouble(newValue.replace(",", "")); // Remove commas before parsing
+                    cacheLaborList.updateDouble("nAmountxx", updatedAmount); // ✅ Update cache
+                    cacheLaborList.updateRow(); // ✅ Commit changes to cache
+                    
+                    // ✅ Update data list for UI refresh
+                    data.set(pnListRow, new ModelListParameter(
+                            cacheLaborList.getString("sLaborIDx"),
+                            cacheLaborList.getString("sLaborNme"),
+                            CommonUtils.NumberFormat(updatedAmount, "#,##0.00")
+                    ));
+
+                    tblList.refresh(); // ✅ Refresh TableView to show updated value
+
+                    System.out.println("Updated Amount for Row " + pnListRow + ": " + updatedAmount);
+
+                } catch (NumberFormatException | SQLException e) {
+                    System.out.println("Invalid amount entered.");
+                }
+            });
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
 }
