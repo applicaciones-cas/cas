@@ -65,7 +65,6 @@ public class LaborModelController implements Initializable, ScreenInterface {
     private Button btnBrowse,
             btnNew,
             btnSave,
-            btnUpdate,
             btnCancel,
             btnActivate,
             btnClose;
@@ -118,7 +117,7 @@ public class LaborModelController implements Initializable, ScreenInterface {
         btnBrowse.setOnAction(this::handleButtonAction);
         btnNew.setOnAction(this::handleButtonAction);
         btnSave.setOnAction(this::handleButtonAction);
-        btnUpdate.setOnAction(this::handleButtonAction);
+//        btnUpdate.setOnAction(this::handleButtonAction);
         btnCancel.setOnAction(this::handleButtonAction);
         btnActivate.setOnAction(this::handleButtonAction);
         btnClose.setOnAction(this::handleButtonAction);
@@ -146,7 +145,6 @@ public class LaborModelController implements Initializable, ScreenInterface {
                         initButton(pnEditMode);
                         initTabAnchor();
 
-                        System.out.println("tran == " + oParameters.LaborModel().getModel().getLaborId());
                         loadRecord();
                     } else {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -154,27 +152,37 @@ public class LaborModelController implements Initializable, ScreenInterface {
                     }
                     break;
                 case "btnBrowse":
+                    
                     String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
-//                    poJSON = oParameters.LaborModel().searchRecordwithModel(lsValue, false);
-//                    if ("error".equals((String) poJSON.get("result"))) {
-//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        txtSeeks01.clear();
-//                        break;
-//                    }
-                    pnEditMode = EditMode.READY;
-                    loadRecord();
-                    initTabAnchor();
-                    break;
-                case "btnUpdate":
-                    poJSON = oParameters.LaborModel().updateRecord();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        break;
-                    }
-                    pnEditMode = oParameters.LaborModel().getEditMode();
+                    poJSON = oParameters.Model().searchRecord(lsValue, false);
+                            if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
+                            }
+                     poJSON = oParameters.Brand().searchRecord(oParameters.Model().getModel().getBrandId(), true);
+                            if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
+                            }
+                            txtField01.setText((String) oParameters.Brand().getModel().getDescription());
+                            oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
+                            txtField02.setText((String) oParameters.Model().getModel().getDescription());
+                            oParameters.LaborModel().LaborList(oParameters.Model().getModel().getModelId());
+                    pnEditMode = EditMode.UPDATE;
                     initButton(pnEditMode);
-                    initTabAnchor();
+                    LoadList();
+                    initTabAnchor(); 
                     break;
+//                case "btnUpdate":
+////                    poJSON = oParameters.LaborModel().updateRecord();
+////                    if ("error".equals((String) poJSON.get("result"))) {
+////                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+////                        break;
+////                    }
+//                    pnEditMode = EditMode.UPDATE ;
+//                    initButton(pnEditMode);
+//                    initTabAnchor();
+//                    break;
                 case "btnCancel":
                     if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
                         clearAllFields();
@@ -206,15 +214,17 @@ public class LaborModelController implements Initializable, ScreenInterface {
                     switch (Status) {
                         case "0":
                             if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
-                                poJsON = oParameters.LaborModel().postTransaction();
-                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+//                                poJsON = oParameters.LaborModel().postTransaction();
+                                oParameters.LaborModel().getModel().setRecordStatus("1");
+//                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 loadRecord();
                             }
                             break;
                         case "1":
                             if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
-                                poJsON = oParameters.LaborModel().voidTransaction();
-                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+//                                poJsON = oParameters.LaborModel().voidTransaction();
+                                oParameters.LaborModel().getModel().setRecordStatus("0");
+//                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 loadRecord();
                             }
                             break;
@@ -232,6 +242,7 @@ public class LaborModelController implements Initializable, ScreenInterface {
         txtField01.clear();
         txtField02.clear();
         txtField03.clear();
+        txtField04.clear();
         txtSeeks01.clear();
         data.clear();
     }
@@ -243,8 +254,8 @@ public class LaborModelController implements Initializable, ScreenInterface {
         btnCancel.setManaged(lbShow);
         btnSave.setVisible(lbShow);
         btnSave.setManaged(lbShow);
-        btnUpdate.setVisible(!lbShow);
-        btnUpdate.setManaged(!lbShow);
+//        btnUpdate.setVisible(!lbShow);
+//        btnUpdate.setManaged(!lbShow);
 
         btnBrowse.setVisible(!lbShow);
         btnBrowse.setManaged(!lbShow);
@@ -278,15 +289,18 @@ public class LaborModelController implements Initializable, ScreenInterface {
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
+                        clearAllFields();
                         txtField01.setText((String) oParameters.Brand().getModel().getDescription());
                         brand = oParameters.Brand().getModel().getBrandId();
                         txtField02.requestFocus();
+                        
                         break;
                     case 02:
                         if (brand.isEmpty() || brand == null) {
                             poJson = oParameters.Model().searchRecord(lsValue, false);
                             if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
                                 ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
                             }
                             oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
                             txtField02.setText((String) oParameters.Model().getModel().getDescription());
@@ -295,6 +309,7 @@ public class LaborModelController implements Initializable, ScreenInterface {
                             poJson = oParameters.Model().searchRecordbyBrand(brand, true);
                             if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
                                 ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
                             }
                             oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
                             txtField02.setText((String) oParameters.Model().getModel().getDescription());
@@ -360,9 +375,9 @@ public class LaborModelController implements Initializable, ScreenInterface {
 
     private void loadRecord() {
         boolean lbActive = oParameters.LaborModel().getModel().getRecordStatus() == "1";
-
-        txtField01.setText(oParameters.LaborModel().getModel().getLaborId());
-        txtField02.setText(oParameters.LaborModel().getModel().Model().getDescription());
+//
+//        txtField01.setText(oParameters.LaborModel().getModel().getLaborId());
+//        txtField02.setText(oParameters.LaborModel().getModel().Model().getDescription());
         txtField03.setText(oParameters.LaborModel().getModel().Model().getDescription());
         txtField04.setText(CommonUtils.NumberFormat(oParameters.LaborModel().getModel().getAmount(), "#,##0.00"));
         switch (oParameters.LaborModel().getModel().getRecordStatus()) {
@@ -396,6 +411,10 @@ public class LaborModelController implements Initializable, ScreenInterface {
 
         boolean isEditable = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
         AnchorInputs.setDisable(!isEditable);
+        if (pnEditMode == EditMode.UPDATE){
+            txtField01.setDisable(false);
+            txtField02.setDisable(false);
+        }
     }
 
     private void initTable() {
@@ -450,90 +469,6 @@ public class LaborModelController implements Initializable, ScreenInterface {
         }
     }
 
-//    
-//    private void LoadList() {
-//    System.out.println("Loading Labor List...");
-//    data.clear();
-//
-//    if (oParameters.LaborModel().getListCount() > 0) {
-//        for (int lnCtr = 0; lnCtr < oParameters.LaborModel().getListCount(); lnCtr++) {
-//            System.out.println("Processing Serial Ledger at Index: " + lnCtr);
-//
-//            if (oParameters.LaborModel().LaborModel(lnCtr) == null) {
-//                System.out.println("LaborModel at index " + lnCtr + " is NULL! Skipping...");
-//                continue;
-//            }
-//
-//            String laborId = oParameters.LaborModel().LaborModel(lnCtr).getLaborId();
-//            String laborName = oParameters.LaborModel().LaborModel(lnCtr).Labor() != null
-//                    ? oParameters.LaborModel().LaborModel(lnCtr).Labor().getLaborName()
-//                    : "Unknown";
-//
-//            // Handle NULL nAmountxx by displaying "(NULL)" instead of skipping
-//            String amount = (oParameters.LaborModel().LaborModel(lnCtr).getAmount() != null)
-//                    ? String.valueOf(oParameters.LaborModel().LaborModel(lnCtr).getAmount())
-//                    : "(NULL)";
-//
-//            if (laborId == null || laborId.isEmpty()) {
-//                System.out.println("Skipping record due to NULL Labor ID.");
-//                continue;
-//            }
-//
-//            // Debugging individual components
-//            System.out.println("Labor ID: " + laborId);
-//            System.out.println("Labor Name: " + laborName);
-//            System.out.println("Amount: " + amount);
-//
-//            data.add(new ModelListParameter(laborId, laborName, amount));
-//        }
-//    } else {
-//        ShowMessageFX.Information("No Record Found!", "Computerized Accounting System", pxeModuleName);
-//    }
-//}
-//    private void LoadList() {
-//        System.out.println("nagload and ledger");
-//        data.clear();
-//
-//        if (oParameters.LaborModel().getListCount()>= 0) {
-//            for (int lnCtr = 0; lnCtr < oParameters.LaborModel().getListCount(); lnCtr++) {
-//                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
-//
-//                // Debugging individual components
-//                System.out.println("Labor ID: " + oParameters.LaborModel().LaborModel(lnCtr).getLaborId());
-//                System.out.println("Labor Name: " + oParameters.LaborModel().LaborModel(lnCtr).Labor().getLaborName());
-//                System.out.println("Amount: " +  oParameters.LaborModel().LaborModel(lnCtr).getAmount().toString());
-//
-//               
-//                data.add(new ModelListParameter(
-//                        oParameters.LaborModel().LaborModel(lnCtr).getLaborId(),                        
-//                        oParameters.LaborModel().LaborModel(lnCtr).Labor().getLaborName(),
-//                        String.valueOf(oParameters.LaborModel().LaborModel(lnCtr).getAmount().toString())));
-//            }
-//        } else {
-//            ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
-//        }
-//    }
-//private void LoadList() {
-//        System.out.println("nagload and ledger");
-//        data.clear();
-//
-//        if (oParameters.LaborModel().getListCount() > 0) {  // Ensure there's data
-//        for (int lnCtr = 0; lnCtr < oParameters.LaborModel().getListCount(); lnCtr++) {
-//                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
-//
-//                // Debugging individual components
-//                System.out.println("Labor ID: " + oParameters.LaborModel().LaborModel(lnCtr).getLaborId());
-//                System.out.println("Model Name: " + oParameters.LaborModel().LaborModel(lnCtr).Model().getDescription());
-//                System.out.println("-----------------------------------------------------------");
-//                data.add(new ModelResultSet(
-//                        String.valueOf(lnCtr + 1),
-//                        oParameters.LaborModel().LaborModel(lnCtr).getLaborId().toString(),
-//                        oParameters.LaborModel().LaborModel(lnCtr).Model().getDescription()));
-//            } 
-//        } else {
-//            ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
-//        }
-//    }
     @FXML
     void tblList_Clicked(MouseEvent event) {
     pnListRow = tblList.getSelectionModel().getSelectedIndex();
