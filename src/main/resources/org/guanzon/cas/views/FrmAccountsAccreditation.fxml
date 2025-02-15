@@ -63,6 +63,33 @@
                               <Blend />
                            </effect>
                         </Button>
+                        <Button fx:id="btnUpload" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Upload">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="CLOUD_UPLOAD" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnApproved" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Approved">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="THUMBS_ALT_UP" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnDisapproved" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Disapproved">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="THUMBS_ALT_DOWN" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </Button>
                         <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" stylesheets="@../css/StyleSheet.css" text="Search">
                            <graphic>
                               <FontAwesomeIconView glyphName="SEARCH" size="20" />
@@ -170,7 +197,7 @@
                <children>
                   <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
-                      <AnchorPane fx:id="AnchroInputs" prefHeight="160.0" style="-fx-border-color: FF8201;">
+                      <AnchorPane fx:id="AnchorInputs" prefHeight="160.0" style="-fx-border-color: FF8201;">
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
@@ -310,19 +337,6 @@
                                           <Insets left="5.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <Label text="Status" GridPane.halignment="RIGHT" GridPane.rowIndex="7" GridPane.valignment="CENTER">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                       <GridPane.margin>
-                                          <Insets right="5.0" />
-                                       </GridPane.margin>
-                                    </Label>
-                                    <ComboBox fx:id="cmbField03" maxWidth="130.0" minWidth="218.0" visibleRowCount="20" GridPane.columnIndex="1" GridPane.rowIndex="7">
-                                       <GridPane.margin>
-                                          <Insets left="5.0" />
-                                       </GridPane.margin>
-                                    </ComboBox>
                                     <Separator prefWidth="200.0" GridPane.columnSpan="5" GridPane.rowIndex="3" />
                                     <Label text="Category" GridPane.halignment="RIGHT" GridPane.rowIndex="5" GridPane.valignment="CENTER">
                                        <font>
@@ -337,6 +351,19 @@
                                           <Insets left="5.0" />
                                        </GridPane.margin>
                                     </TextField>
+                                    <Label text="Account Type" GridPane.halignment="RIGHT" GridPane.rowIndex="7" GridPane.valignment="CENTER">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="5.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <ComboBox fx:id="cmbField03" maxWidth="130.0" minWidth="218.0" visibleRowCount="20" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                                       <GridPane.margin>
+                                          <Insets left="5.0" />
+                                       </GridPane.margin>
+                                    </ComboBox>
                                  </children>
                               </GridPane>
                            </children>

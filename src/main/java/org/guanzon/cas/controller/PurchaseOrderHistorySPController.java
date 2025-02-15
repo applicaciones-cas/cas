@@ -791,7 +791,7 @@ public class PurchaseOrderHistorySPController implements Initializable, ScreenIn
         } else {
             btnVoid.setDisable(true);
         }
-        oTrans.setTransType("SP");
+//        oTrans.setTransType("SP");
 
     }
 

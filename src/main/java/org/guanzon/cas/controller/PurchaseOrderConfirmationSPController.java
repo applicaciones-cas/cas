@@ -770,7 +770,7 @@ public class PurchaseOrderConfirmationSPController implements Initializable, Scr
         } else {
             btnConfirm.setDisable(true);
         }
-        oTrans.setTransType("SP");
+//        oTrans.setTransType("SP");
 
     }
 

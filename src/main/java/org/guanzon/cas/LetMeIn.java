@@ -19,7 +19,7 @@ public class LetMeIn extends Application {
             path = "/srv/GGC_Maven_Systems";
         }
         System.setProperty("sys.default.path.config", path);
-        System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/");
+        System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/new/");
         
         if (!loadProperties()) {
             System.err.println("Unable to load config.");
@@ -54,6 +54,7 @@ private static boolean loadProperties() {
 
             System.setProperty("store.branch.code", po_props.getProperty("store.branch.code"));
             System.setProperty("store.inventory.industry", po_props.getProperty("store.inventory.category"));
+            System.setProperty("store.inventory.industry2", po_props.getProperty("store.inventory.category2"));
             
             return true;
         } catch (FileNotFoundException ex) {

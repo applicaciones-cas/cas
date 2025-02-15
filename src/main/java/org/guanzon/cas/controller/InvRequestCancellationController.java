@@ -828,7 +828,7 @@ public class InvRequestCancellationController implements Initializable, ScreenIn
                     types = RequestControllerFactory.RequestType.MC;
                     oTrans.setType(types);
                 } else if ("0002".equals(type)) {
-                    types = RequestControllerFactory.RequestType.MP;
+                    types = RequestControllerFactory.RequestType.MPUnits;
                     oTrans.setType(types);
                 }else if ("0003".equals(type)) {
                     types = RequestControllerFactory.RequestType.AUTO;

@@ -60,128 +60,94 @@ public class DashboardController implements Initializable {
     List<String> tabName = new ArrayList<>();
 
     @FXML
-    private Button btnClose, btnMinimize;
+    private Button btnClose,
+            btnMinimize;
 
     @FXML
-    private MenuItem mnuPOQuotationRequest;
+    private MenuItem mnuAccountsPayable,
+            mnuAccountsReceivable,
+            mnuClientParameter,
+            mnuClientTransactionCompany,
+            mnuClientTransactionIndividual,
+            mnuNewCustomer,
+            mnuInventoryParam,
+            mnuInventorySerialParam,
+            mnuParameterBarangay,
+            mnuParameterCountry,
+            mnuParameterProvince,
+            mnuParameterRegion,
+            mnuParameterBanks,
+            mnuParameterBanks_Branches,
+            mnuParameterCategory,
+            mnuParameterCategoryLevel2,
+            mnuParameterCategoryLevel3,
+            mnuParameterCategoryLevel4,
+            mnuParameterColor,
+            mnuParameterColorDetail,
+            mnuParameterAffiliated,
+            mnuParameterBranch,
+            mnuParameterCompany,
+            mnuParameterDepartment,
+            mnuParameterInvLocation,
+            mnuParameterInvType,
+            mnuParameterLabor,
+            mnuParameterLaborCategory,
+            mnuParameterLaborModel,
+            mnuParameterBrand,
+            mnuParameterMade,
+            mnuParameterModel,
+            mnuParameterMeasure,
+            mnuParameterRelationship,
+            mnuParameterSalesman,
+            mnuParameterSection,
+            mnuParameterSize,
+            mnuParameterTerm,
+            mnuParameterWarehouse,
+            mnuInventory,
+            mnuInvRequestMotorcycleROQ,
+            mnuInvRequestSpareparts,
+            mnuInvRequestAppliance,
+            mnuInvRequestMobileAccesories,
+            mnuInvRequestMobileUnits,
+            mnuInvRequestVehicle,
+            mnuAccountsAccreditation,
+            mnuPOQuotation,
+            mnuPOQuotationRequest,
+            mnuPurchaseOrderMC,
+            mnuPurchaseOrderConfirmationMC,
+            mnuPurchaseOrderHistoryMC,
+            mnuPurchaseOrderSP,
+            mnuPurchaseOrderConfirmationSP,
+            mnuPurchaseOrderHistorySP,
+            mnuHistStockRequest,
+            mnuHistStockRequestSP,
+            mnuHistStockRequestGI,
+            mnuHistStockRequestCancellation,
+            mnuHistStockRequestSP1,
+            mnuHistStockRequestGI1,
+            mnuHistInvRequestMC,
+            mnuHistInvRequestMPUnits,
+            mnuHistInvRequestAppliance,
+            mnuHistInvRequestVehicle,
+            mnuHistInvRequestMPAccesories,
+            mnuHistInvRequestMCSpareparts;
 
     @FXML
-    private MenuItem mnuParameterBranch;
+    private Menu menuInventoryRequestROQ,
+            menuHistStockRequest,
+            menuHistStockRequestCancel,
+            menuHistInvRequest;
 
     @FXML
-    private MenuItem mnuPOQuotation;
-    @FXML
-    private Menu menuRequestRegular, menuRequestROQ, menuRequestCancel, menuHistStockRequest, menuHistStockRequestCancel;
-
-    @FXML
-    private MenuItem mnuStockRequestWithoutROQ, mnuStockRequestWithoutROQSP, mnuStockRequestWithoutROQGI;
-    @FXML
-    private MenuItem mnuStockRequestROQ, mnuStockRequestROQSP, mnuStockRequestROQGI;
-    @FXML
-    private MenuItem mnuStockRequestCancellation, mnuStockRequestCancellationSP, mnuStockRequestCancellationGI;
-
-    @FXML
-    private MenuItem mnuHistStockRequest, mnuHistStockRequestSP, mnuHistStockRequestGI;
-    @FXML
-    private MenuItem mnuHistStockRequestCancellation, mnuHistStockRequestSP1, mnuHistStockRequestGI1;
+    private StackPane workingSpace;
 
     @FXML
     private TabPane tabpane;
-    @FXML
-    StackPane workingSpace;
 
     @FXML
-    private Label AppBranch;
-
-    @FXML
-    private Label AppUserInfo;
-
-    @FXML
-    private Label AppDateTime;
-    @FXML
-    private MenuItem mnuInventoryParam;
-    @FXML
-    private MenuItem mnuInventorySerialParam;
-    @FXML
-    private MenuItem mnuParameterBarangay;
-    @FXML
-    private MenuItem mnuParameterCountry;
-    @FXML
-    private MenuItem mnuParameterProvince;
-    @FXML
-    private MenuItem mnuParameterRegion;
-    @FXML
-    private MenuItem mnuParameterBanks;
-    @FXML
-    private MenuItem mnuParameterBanks_Branches;
-    @FXML
-    private MenuItem mnuParameterCategory;
-    @FXML
-    private MenuItem mnuParameterCategoryLevel2;
-    @FXML
-    private MenuItem mnuParameterCategoryLevel3;
-    @FXML
-    private MenuItem mnuParameterCategoryLevel4;
-    @FXML
-    private MenuItem mnuParameterColor;
-    @FXML
-    private MenuItem mnuParameterColorDetail;
-    @FXML
-    private MenuItem mnuParameterAffiliated;
-    @FXML
-    private MenuItem mnuParameterCompany;
-    @FXML
-    private MenuItem mnuParameterDepartment;
-    @FXML
-    private MenuItem mnuParameterInvLocation;
-    @FXML
-    private MenuItem mnuParameterInvType;
-    @FXML
-    private MenuItem mnuParameterLabor;
-    @FXML
-    private MenuItem mnuParameterLaborCategory;
-    @FXML
-    private MenuItem mnuParameterLaborModel;
-    @FXML
-    private MenuItem mnuParameterBrand;
-    @FXML
-    private MenuItem mnuParameterMade;
-    @FXML
-    private MenuItem mnuParameterModel;
-    @FXML
-    private MenuItem mnuParameterMeasure;
-    @FXML
-    private MenuItem mnuParameterRelationship;
-    @FXML
-    private MenuItem mnuParameterSalesman;
-    @FXML
-    private MenuItem mnuParameterSection;
-    @FXML
-    private MenuItem mnuParameterSize;
-    @FXML
-    private MenuItem mnuParameterTerm;
-    @FXML
-    private MenuItem mnuParameterWarehouse;
-    @FXML
-    private MenuItem mnuInventory;
-    @FXML
-    private MenuItem mnuPurchaseOrderMC;
-    @FXML
-    private MenuItem mnuPurchaseOrderConfirmationMC;
-    @FXML
-    private MenuItem mnuPurchaseOrderHistoryMC;
-    @FXML
-    private MenuItem mnuPurchaseOrderSP;
-    @FXML
-    private MenuItem mnuPurchaseOrderConfirmationSP;
-    @FXML
-    private MenuItem mnuPurchaseOrderHistorySP;
-    @FXML
-    private MenuItem mnuPurchaseOrderEntry;
-    @FXML
-    private MenuItem mnuPurchaseOrderEntryHistory;
-    @FXML
-    private MenuItem mnuPurchaseOrderReceiving;
+    private Label AppBranch,
+            AppUserInfo,
+            AppDateTime;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -196,58 +162,93 @@ public class DashboardController implements Initializable {
         }
 
         String industry = System.getProperty("store.inventory.industry");
-
+        String subCategory = System.getProperty("store.inventory.industry2");
         RequestControllerFactory.RequestType types = null;
         String[] category = industry.split(";");
-
+        String[] category2 = subCategory.split(";");
         // Print the resulting array
         for (String type : category) {
             if (types == null) {
-                menuRequestRegular.getItems().clear();
-                menuRequestROQ.getItems().clear();
-                menuRequestCancel.getItems().clear();
-                menuHistStockRequest.getItems().clear();
-                menuHistStockRequestCancel.getItems().clear();
+                menuInventoryRequestROQ.getItems().clear();
                 if ("0001".equals(type)) {
-                    menuRequestRegular.getItems().add(mnuStockRequestWithoutROQ);
-                    menuRequestRegular.getItems().add(mnuStockRequestWithoutROQSP);
-                    menuRequestROQ.getItems().add(mnuStockRequestROQ);
-                    menuRequestROQ.getItems().add(mnuStockRequestROQSP);
-                    menuRequestCancel.getItems().add(mnuStockRequestCancellation);
-                    menuRequestCancel.getItems().add(mnuStockRequestCancellationSP);
-                    menuHistStockRequest.getItems().add(mnuHistStockRequest);
-                    menuHistStockRequest.getItems().add(mnuHistStockRequestSP);
-                    menuHistStockRequestCancel.getItems().add(mnuHistStockRequestCancellation);
-                    menuHistStockRequestCancel.getItems().add(mnuHistStockRequestSP1);
+                    menuInventoryRequestROQ.getItems().add(mnuInvRequestMotorcycleROQ);
+                    menuInventoryRequestROQ.getItems().add(mnuInvRequestSpareparts);
                 } else if ("0002".equals(type)) {
-                    menuRequestRegular.getItems().add(mnuStockRequestWithoutROQ);
-                    menuRequestROQ.getItems().add(mnuStockRequestROQ);
-                    menuRequestCancel.getItems().add(mnuStockRequestCancellation);
-                    menuHistStockRequest.getItems().add(mnuHistStockRequest);
-                    menuHistStockRequest.getItems().add(mnuHistStockRequest);
-                    menuHistStockRequestCancel.getItems().add(mnuHistStockRequestCancellation);
-                } else if ("0003".equals(type)) {
-                    menuRequestRegular.getItems().add(mnuStockRequestWithoutROQ);
-                    menuRequestROQ.getItems().add(mnuStockRequestROQ);
-                    menuRequestCancel.getItems().add(mnuStockRequestCancellation);
-                    menuHistStockRequest.getItems().add(mnuHistStockRequest);
-                    menuHistStockRequest.getItems().add(mnuHistStockRequest);
-                    menuHistStockRequestCancel.getItems().add(mnuHistStockRequestCancellation);
-                } else if ("0004".equals(type)) {
-                    menuRequestRegular.getItems().add(mnuStockRequestWithoutROQGI);
-                    menuRequestROQ.getItems().add(mnuStockRequestROQGI);
-                    menuRequestCancel.getItems().add(mnuStockRequestCancellationGI);
-                    menuHistStockRequest.getItems().add(mnuHistStockRequestGI);
-                    menuHistStockRequestCancel.getItems().add(mnuHistStockRequestGI1);
-                }
+                    for (String sub : category2) {
+                        System.out.println("Sub Category === " + sub);
+                        System.out.println("branch name === " + oApp.getBranchName());
 
-                System.out.println("type value = " + types);
+                        // If sub equals "0009"
+                        if ("0009".equals(sub)) {
+                            if (oApp.getBranchName().toLowerCase().contains("xtreme")) {
+                                // If branch name contains "xtreme"
+                                menuInventoryRequestROQ.getItems().add(mnuInvRequestAppliance);
+                            } else {
+                                // If branch name does NOT contain "xtreme"
+                                menuInventoryRequestROQ.getItems().add(mnuInvRequestMobileUnits);
+                                menuInventoryRequestROQ.getItems().add(mnuInvRequestMobileAccesories);
+                                menuInventoryRequestROQ.getItems().add(mnuInvRequestAppliance);
+                            }
+                        } else {
+                            // If sub does not equal "0009"
+                            menuInventoryRequestROQ.getItems().add(mnuInvRequestMotorcycleROQ);
+                            menuInventoryRequestROQ.getItems().add(mnuInvRequestSpareparts);
+                        }
+                    }
+                } else if ("0003".equals(type)) {
+                    menuInventoryRequestROQ.getItems().add(mnuInvRequestVehicle);
+                }
             }
         }
-        for (int lnCtr = 0; lnCtr <= menuRequestRegular.getItems().size() - 1; lnCtr++) {
 
-            System.out.println(menuRequestRegular.getItems().get(lnCtr));
-        }
+//        for (String type : category) {
+//            if (types == null) {
+//                menuRequestRegular.getItems().clear();
+//                menuRequestROQ.getItems().clear();
+//                menuRequestCancel.getItems().clear();
+//                menuHistStockRequest.getItems().clear();
+//                menuHistStockRequestCancel.getItems().clear();
+//                if ("0001".equals(type)) {
+//                   menuRequestRegular.getItems().add(mnuStockRequestWithoutROQ);
+//                   menuRequestRegular.getItems().add(mnuStockRequestWithoutROQSP);
+//                   menuRequestROQ.getItems().add(mnuStockRequestROQ);
+//                   menuRequestROQ.getItems().add(mnuStockRequestROQSP);
+//                   menuRequestCancel.getItems().add(mnuStockRequestCancellation);
+//                   menuRequestCancel.getItems().add(mnuStockRequestCancellationSP);
+//                   menuHistStockRequest.getItems().add(mnuHistStockRequest);
+//                   menuHistStockRequest.getItems().add(mnuHistStockRequestSP);
+//                   menuHistStockRequestCancel.getItems().add(mnuHistStockRequestCancellation);
+//                   menuHistStockRequestCancel.getItems().add(mnuHistStockRequestSP1);
+//                } else if ("0002".equals(type)) {
+//                   menuRequestRegular.getItems().add(mnuStockRequestWithoutROQ);
+//                   menuRequestROQ.getItems().add(mnuStockRequestROQ);
+//                   menuRequestCancel.getItems().add(mnuStockRequestCancellation);
+//                   menuHistStockRequest.getItems().add(mnuHistStockRequest);
+//                   menuHistStockRequest.getItems().add(mnuHistStockRequest);
+//                   menuHistStockRequestCancel.getItems().add(mnuHistStockRequestCancellation);
+//                } else if ("0003".equals(type)) {
+//                   menuRequestRegular.getItems().add(mnuStockRequestWithoutROQ);
+//                   menuRequestROQ.getItems().add(mnuStockRequestROQ);
+//                   menuRequestCancel.getItems().add(mnuStockRequestCancellation);
+//                   menuHistStockRequest.getItems().add(mnuHistStockRequest);
+//                   menuHistStockRequest.getItems().add(mnuHistStockRequest);
+//                   menuHistStockRequestCancel.getItems().add(mnuHistStockRequestCancellation);
+//                }else if ("0004".equals(type)) {
+//                   menuRequestRegular.getItems().add(mnuStockRequestWithoutROQGI);
+//                   menuRequestROQ.getItems().add(mnuStockRequestROQGI);
+//                   menuRequestCancel.getItems().add(mnuStockRequestCancellationGI);
+//                   menuHistStockRequest.getItems().add(mnuHistStockRequestGI);
+//                   menuHistStockRequestCancel.getItems().add(mnuHistStockRequestGI1);
+//                }
+//
+//                System.out.println("type value = " + types);
+//            }
+//        }
+//        for(int lnCtr = 0; lnCtr <= menuRequestRegular.getItems().size()-1; lnCtr++){
+//            
+//                
+//            System.out.println(menuRequestRegular.getItems().get(lnCtr));
+//        }
         getTime();
         loadUserInfo();
         setTabPane();
@@ -263,7 +264,7 @@ public class DashboardController implements Initializable {
     }
 
     private void loadUserInfo() {
-        AppUserInfo.setText(oApp.getLogName() + " || " + oApp.getDivisionName());
+        AppUserInfo.setText(oApp.getLogName() + " || " + oApp.getDivisionName() + " || " + oApp.getUserID());
     }
 
     public TabPane loadAnimate(String fsFormName) {
@@ -341,25 +342,31 @@ public class DashboardController implements Initializable {
 
     public String SetTabTitle(String menuaction) {
         switch (menuaction) {
-            /*Files Menu > Accounts*/
+            /*########## FILES #########*/
+ /*Files Menu > Accounts*/
             case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
                 return "Accounts Payable Clients";
+
             case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
                 return "Accounts Receivable Clients";
 
             /*Files Menu > Clients*/
             case "/org/guanzon/cas/views/ClientMasterParameter.fxml":
                 return "Client Parameter";
+
             case "/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml":
                 return "Client Transactions Company";
+
             case "/org/guanzon/cas/views/ClientMasterTransactionIndividual.fxml":
                 return "Client Transactions Individual";
+
             case "/org/guanzon/cas/views/NewCustomer.fxml":
                 return "Client Transactions Standard";
 
             /*Files Menu > Inventory*/
             case "/org/guanzon/cas/views/InventoryParam.fxml":
                 return "Inventory Parameter";
+
             case "/org/guanzon/cas/views/InventorySerialParam.fxml":
                 return "Inventory Serial Parameter";
 
@@ -369,99 +376,124 @@ public class DashboardController implements Initializable {
             /*Files Menu > Parameters*/
             case "/org/guanzon/cas/views/AffiliatedCompany.fxml":
                 return "Affiliated Company";
+
             case "/org/guanzon/cas/views/Banks.fxml":
                 return "Banks";
+
             case "/org/guanzon/cas/views/BanksBranches.fxml":
                 return "Banks Branches";
+
             case "/org/guanzon/cas/views/Barangay.fxml":
                 return "Barangay";
+
             case "/org/guanzon/cas/views/Branch.fxml":
                 return "Branch";
+
             case "/org/guanzon/cas/views/Brand.fxml":
                 return "Brand";
+
             case "/org/guanzon/cas/views/Category.fxml":
                 return "Category";
+
             case "/org/guanzon/cas/views/CategoryLevel2.fxml":
                 return "Category Level 2";
+
             case "/org/guanzon/cas/views/CategoryLevel3.fxml":
                 return "Category Level 3";
+
             case "/org/guanzon/cas/views/CategoryLevel4.fxml":
                 return "Category Level 4";
+
             case "/org/guanzon/cas/views/Color.fxml":
                 return "Color";
+
             case "/org/guanzon/cas/views/ColorDetail.fxml":
                 return "Color Detail";
+
             case "/org/guanzon/cas/views/Company.fxml":
                 return "Company";
+
             case "/org/guanzon/cas/views/Country.fxml":
                 return "Country";
+
             case "/org/guanzon/cas/views/Department.fxml":
                 return "Department";
+
             case "/org/guanzon/cas/views/InventoryLocation.fxml":
                 return "Inventory Location";
+
             case "/org/guanzon/cas/views/InventoryType.fxml":
                 return "Inventory Type";
+
             case "/org/guanzon/cas/views/Labor.fxml":
                 return "Labor";
+
             case "/org/guanzon/cas/views/LaborCategory.fxml":
                 return "Labor Category";
+
             case "/org/guanzon/cas/views/LaborModel.fxml":
                 return "Labor Model";
+
             case "/org/guanzon/cas/views/Made.fxml":
                 return "Made";
+
             case "/org/guanzon/cas/views/Measure.fxml":
                 return "Measure";
+
             case "/org/guanzon/cas/views/Model.fxml":
                 return "Model";
+
             case "/org/guanzon/cas/views/Province.fxml":
                 return "Province";
+
             case "/org/guanzon/cas/views/Region.fxml":
                 return "Region";
+
             case "/org/guanzon/cas/views/Relationship.fxml":
                 return "Relationship";
+
             case "/org/guanzon/cas/views/Salesman.fxml":
                 return "Salesman";
+
             case "/org/guanzon/cas/views/Section.fxml":
                 return "Section";
+
             case "/org/guanzon/cas/views/Size.fxml":
                 return "Size";
+
             case "/org/guanzon/cas/views/Term.fxml":
                 return "Term";
+
             case "/org/guanzon/cas/views/Warehouse.fxml":
                 return "Warehouse";
 
 
-            /*INVENTORY MENU*/
+            /*########## INVENTORY #########*/
+ /*INVENTORY > Inventory Details*/
             case "/org/guanzon/cas/views/InventoryDetail.fxml":
                 return "Inventory Details";
 
-            /*Inventory Stock Request NEW UI*/
-            case "/org/guanzon/cas/views/InvRequestWithoutROQ.fxml":
-                return "Inventory Request";
+            /*INVENTORY > Inventory Request*/
+            case "/org/guanzon/cas/views/InventoryRequestMotorcycleROQ.fxml":
+                return "Inventory Request MC";
 
-            case "/org/guanzon/cas/views/InvRequestWithoutROQSP.fxml":
-                return "Inventory Request SP";
+            case "/org/guanzon/cas/views/InventoryRequestMobilephoneUnitsROQ.fxml":
+                return "Inventory Request Mobilephone Units";
 
-            case "/org/guanzon/cas/views/InvRequestWithoutROQGI.fxml":
-                return "Inventory Request GI";
+            case "/org/guanzon/cas/views/InventoryRequestAppliancesROQ.fxml":
+                return "Inventory Request Appliances";
 
-            case "/org/guanzon/cas/views/InvRequestROQ.fxml":
-                return "Inventory Request ROQ";
+            case "/org/guanzon/cas/views/InventoryRequestVehicleROQ.fxml":
+                return "Inventory Request Vehicle";
 
-            case "/org/guanzon/cas/views/InvRequestROQSP.fxml":
-                return "Inventory Request ROQ SP";
+            case "/org/guanzon/cas/views/InventoryRequestMobilephoneAccesoriesROQ.fxml":
+                return "Inventory Request Mobilephone Accesories";
 
-            /*Inventory Stock Request cancellation NEW UI*/
-            case "/org/guanzon/cas/views/InvRequestCancellation.fxml":
-                return "Inventory Request Cancel";
+            case "/org/guanzon/cas/views/InventoryRequestSparepartsROQ.fxml":
+                return "Inventory Request Spareparts";
 
-            case "/org/guanzon/cas/views/InvRequestCancellationSP.fxml":
-                return "Inventory Request Cancel SP";
-
-            case "/org/guanzon/cas/views/InvRequestCancellationGI.fxml":
-                return "Inventory Request Cancel GI";
-
-            /*PURCHASE ORDER QUOTATION MENU*/
+            /*########## PURCHASING #########*/
+ /*PURCHASE ORDER QUOTATION MENU*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
                 return "Purchase Quotation Request";
 
@@ -483,7 +515,11 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/PurchaseOrderHistorySP.fxml":
                 return "Purchase Order History SP";
 
-            /*History Menu*/
+            /*########## HISTORY #########*/
+ /*HISTORY > Inventory Request OLD*/
+            case "/org/guanzon/cas/views/FrmAccountsAccreditationHistory.fxml":
+                return "History Accounts Accreditation";
+                
             case "/org/guanzon/cas/views/InvRequestHistory.fxml":
                 return "Inventory Request History";
 
@@ -502,13 +538,22 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/InvRequestCancellationHistoryGI.fxml":
                 return "Inventory Request Cancellation History GI";
 
-            /* Others Menu */
-            case "/org/guanzon/cas/views/PurchasingOrder_Entry.fxml":
-                return "Purchasing Order Entry";
-            case "/org/guanzon/cas/views/PurchasingOrder_Entry_History.fxml":
-                return "Purchasing Order Entry History";
-            case "/org/guanzon/cas/views/PurchasingOrder_Receiving.fxml":
-                return "Purchasing Order Receiving";
+            /*HISTORY > Inventory Request*/
+            case "/org/guanzon/cas/views/HistInventoryRequestMC.fxml":
+                return "History Inventory Request MC";
+
+            case "/org/guanzon/cas/views/HistInventoryRequestMPUnits.fxml":
+                return "History Inventory Request MP Units";
+
+            case "/org/guanzon/cas/views/HistInventoryRequestAppliance.fxml":
+                return "History Inventory Request Appliance";
+                
+            case "/org/guanzon/cas/views/HistInventoryRequestMPAccesories.fxml":
+                return "History Inventory Request MP Accesories";
+
+            case "/org/guanzon/cas/views/HistInventoryRequestMCSpareparts.fxml":
+                return "History Inventory Request MC Spareparts";
+                
             default:
                 return null;
         }
@@ -761,15 +806,19 @@ public class DashboardController implements Initializable {
         switch (fsValue) {
             case "/org/guanzon/cas/views/ClientMasterParameter.fxml":
                 return new ClientMasterParameterController();
+
             case "/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml":
                 return new ClientMasterTransactionCompanyController();
+
             case "/org/guanzon/cas/views/ClientMasterTransactionIndividual.fxml":
                 return new ClientMasterTransactionIndividualController();
+
             case "/org/guanzon/cas/views/NewCustomer.fxml":
                 return new NewCustomerController();
 
             case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
                 return new FrmAccountsPayableController();
+                 
             case "/org/guanzon/cas/views/FrmAccountsReceivable.fxml":
                 return new FrmAccountsReceivableController();
 
@@ -785,96 +834,120 @@ public class DashboardController implements Initializable {
             //Parameter MenuControllers
             case "/org/guanzon/cas/views/AffiliatedCompany.fxml":
                 return new AffiliatedCompanyController();
+
             case "/org/guanzon/cas/views/Banks.fxml":
                 return new BanksController();
+
             case "/org/guanzon/cas/views/BanksBranches.fxml":
                 return new BankBranchesController();
+
             case "/org/guanzon/cas/views/Barangay.fxml":
                 return new BarangayController();
+
             case "/org/guanzon/cas/views/Branch.fxml":
                 return new BranchController();
+
             case "/org/guanzon/cas/views/Brand.fxml":
                 return new BrandController();
+
             case "/org/guanzon/cas/views/Category.fxml":
                 return new CategoryController();
+
             case "/org/guanzon/cas/views/CategoryLevel2.fxml":
                 return new CategoryLevel2Controller();
+
             case "/org/guanzon/cas/views/CategoryLevel3.fxml":
                 return new CategoryLevel3Controller();
+
             case "/org/guanzon/cas/views/CategoryLevel4.fxml":
                 return new CategoryLevel4Controller();
+
             case "/org/guanzon/cas/views/Color.fxml":
                 return new ColorController();
+
             case "/org/guanzon/cas/views/ColorDetail.fxml":
                 return new ColorDetailController();
+
             case "/org/guanzon/cas/views/Company.fxml":
                 return new CompanyController();
+
             case "/org/guanzon/cas/views/Country.fxml":
                 return new CountryController();
+
             case "/org/guanzon/cas/views/Department.fxml":
                 return new DepartmentController();
+
             case "/org/guanzon/cas/views/InventoryLocation.fxml":
                 return new InventoryLocationController();
+
             case "/org/guanzon/cas/views/InventoryType.fxml":
                 return new InventoryTypeController();
+
             case "/org/guanzon/cas/views/Labor.fxml":
                 return new LaborController();
+
             case "/org/guanzon/cas/views/LaborCategory.fxml":
                 return new LaborCategoryController();
+
             case "/org/guanzon/cas/views/LaborModel.fxml":
                 return new LaborModelController();
+
             case "/org/guanzon/cas/views/Made.fxml":
                 return new MadeController();
+
             case "/org/guanzon/cas/views/Measure.fxml":
                 return new MeasureController();
+
             case "/org/guanzon/cas/views/Model.fxml":
                 return new ModelController();
+
             case "/org/guanzon/cas/views/Province.fxml":
                 return new ProvinceController();
+
             case "/org/guanzon/cas/views/Region.fxml":
                 return new RegionController();
+
             case "/org/guanzon/cas/views/Relationship.fxml":
                 return new RelationshipController();
+
             case "/org/guanzon/cas/views/Salesman.fxml":
                 return new SalesmanController();
+
             case "/org/guanzon/cas/views/Section.fxml":
                 return new SectionController();
+
             case "/org/guanzon/cas/views/Size.fxml":
                 return new SizeController();
+
             case "/org/guanzon/cas/views/Term.fxml":
                 return new TermController();
+
             case "/org/guanzon/cas/views/Warehouse.fxml":
                 return new WarehouseController();
 
-            /*Inventory menu*/
+            /*########## INVENTORY #########*/
+ /*INVENTORY > Inventory Details*/
             case "/org/guanzon/cas/views/InventoryDetail.fxml":
                 return new InventoryDetailController();
 
-            /*Inventory Stock Request NEW UI*/
-            case "/org/guanzon/cas/views/InvRequestWithoutROQ.fxml":
-                return new InvRequestWithoutROQController();
+            /*INVENTORY > Inventory Request*/
+            case "/org/guanzon/cas/views/InventoryRequestMotorcycleROQ.fxml":
+                return new InventoryRequestMotorcycleROQController();
 
-            case "/org/guanzon/cas/views/InvRequestWithoutROQSP.fxml":
-                return new InvRequestWithoutROQSPController();
+            case "/org/guanzon/cas/views/InventoryRequestMobilephoneUnitsROQ.fxml":
+                return new InventoryRequestMobilephoneUnitsROQController();
 
-            case "/org/guanzon/cas/views/InvRequestWithoutROQGI.fxml":
-                return new InvRequestWithoutROQGIController();
+            case "/org/guanzon/cas/views/InventoryRequestAppliancesROQ.fxml":
+                return new InventoryRequestAppliancesROQController();
 
-            case "/org/guanzon/cas/views/InvRequestROQ.fxml":
-                return new InvRequestROQController();
+            case "/org/guanzon/cas/views/InventoryRequestVehicleROQ.fxml":
+                return new InventoryRequestVehicleROQController();
 
-            case "/org/guanzon/cas/views/InvRequestROQSP.fxml":
-                return new InvRequestROQSPController();
+            case "/org/guanzon/cas/views/InventoryRequestMobilephoneAccesoriesROQ.fxml":
+                return new InventoryRequestMobilephoneAccesoriesROQController();
 
-            /*Inventory Stock Request cancellation NEW UI*/
-            case "/org/guanzon/cas/views/InvRequestCancellation.fxml":
-                return new InvRequestCancellationController();
-
-            case "/org/guanzon/cas/views/InvRequestCancellationSP.fxml":
-                return new InvRequestCancellationSPController();
-
-            case "/org/guanzon/cas/views/InvRequestCancellationGI.fxml":
-                return new InvRequestCancellationGIController();
+            case "/org/guanzon/cas/views/InventoryRequestSparepartsROQ.fxml":
+                return new InventoryRequestSparepartsROQController();
 
             /*PO Menu*/
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
@@ -885,19 +958,27 @@ public class DashboardController implements Initializable {
 
             case "/org/guanzon/cas/views/PurchaseOrderMC.fxml":
                 return new PurchaseOrderMCController();
+
             case "/org/guanzon/cas/views/PurchaseOrderConfirmationMC.fxml":
                 return new PurchaseOrderConfirmationMCController();
+
             case "/org/guanzon/cas/views/PurchaseOrderHistoryMC.fxml":
                 return new PurchaseOrderHistoryMCController();
 
             case "/org/guanzon/cas/views/PurchaseOrderSP.fxml":
                 return new PurchaseOrderSPController();
+
             case "/org/guanzon/cas/views/PurchaseOrderConfirmationSP.fxml":
                 return new PurchaseOrderConfirmationSPController();
+
             case "/org/guanzon/cas/views/PurchaseOrderHistorySP.fxml":
                 return new PurchaseOrderHistorySPController();
 
-            /*History Menu*/
+            /*########## HISTORY #########*/
+ /*HISTORY > Inventory Request OLD*/
+            case "/org/guanzon/cas/views/FrmAccountsAccreditationHistory.fxml":
+                return new FrmAccountsAccreditationHistoryController();
+                
             case "/org/guanzon/cas/views/InvRequestHistory.fxml":
                 return new InvRequestHistoryController();
 
@@ -916,12 +997,21 @@ public class DashboardController implements Initializable {
             case "/org/guanzon/cas/views/InvRequestCancellationHistoryGI.fxml":
                 return new InvRequestCancellationHistoryGIController();
 
-            case "/org/guanzon/cas/views/PurchasingOrder_Entry.fxml":
-                return new PurchasingOrder_EntryController();
-            case "/org/guanzon/cas/views/PurchasingOrder_Entry_History.fxml":
-                return new PurchasingOrder_Entry_HistoryController();
-            case "/org/guanzon/cas/views/PurchasingOrder_Receiving.fxml":
-                return new PurchasingOrder_ReceivingController();
+            /*HISTORY > Inventory Request*/
+            case "/org/guanzon/cas/views/HistInventoryRequestMC.fxml":
+                return new HistInventoryRequestMCController();
+
+            case "/org/guanzon/cas/views/HistInventoryRequestMPUnits.fxml":
+                return new HistInventoryRequestMPUnitsController();
+
+            case "/org/guanzon/cas/views/HistInventoryRequestAppliance.fxml":
+                return new HistInventoryReqeustApplianceController();
+                
+            case "/org/guanzon/cas/views/HistInventoryRequestMPAccesories.fxml":
+                return new HistInventoryRequestMPAccesoriesController();
+                
+            case "/org/guanzon/cas/views/HistInventoryRequestMCSpareparts.fxml":
+                return new HistInventoryRequestMCSparepartsController();
 
             default:
                 return null;
@@ -1310,89 +1400,6 @@ public class DashboardController implements Initializable {
         }
     }
 
-    /*Stock Request NEW UI*/
-    @FXML
-    private void mnuStockRequestWithoutROQClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InvRequestWithoutROQ.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    @FXML
-    private void mnuStockRequestWithoutROQSPClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InvRequestWithoutROQSP.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    @FXML
-    private void mnuStockRequestWithoutROQGIClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InvRequestWithoutROQGI.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    @FXML
-    private void mnuStockRequestROQClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InvRequestROQ.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    @FXML
-    private void mnuStockRequestROQSPClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InvRequestROQSP.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    @FXML
-    private void mnuStockRequestROQGIClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InvRequestROQGI.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    /*Stock Request Cancellation NEW UI*/
-    @FXML
-    private void mnuStockRequestCancellationClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InvRequestCancellation.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    @FXML
-    private void mnuStockRequestCancellationSPClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InvRequestCancellationSP.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    @FXML
-    private void mnuStockRequestCancellationGIClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InvRequestCancellationGI.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
     /*PO*/
     @FXML
     private void mnuPOQuotationRequestClick(ActionEvent event) {
@@ -1468,13 +1475,145 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void mnuInventorySerialParamClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/InventorySerialParam"
-                + ".fxml";
+        String sformname = "/org/guanzon/cas/views/InventorySerialParam.fxml";
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));
         }
     }
 
+    /*########## INVENTORY #########*/
+ /*INVENTORY > Inventory Request*/
+    @FXML
+    void mnuInvRequestMotorcycleROQClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryRequestMotorcycleROQ.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+
+    }
+
+    @FXML
+    void mnuInvRequestMobileUnitsClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryRequestMobilephoneUnitsROQ.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+
+    }
+
+    @FXML
+    void mnuInvRequestAppliancesClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryRequestAppliancesROQ.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+
+    }
+
+    @FXML
+    void mnuInvRequestVehicleClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryRequestVehicleROQ.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+
+    }
+
+    @FXML
+    void mnuInvRequestMobileAccesoriesClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryRequestMobilephoneAccesoriesROQ.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+
+    }
+
+    @FXML
+    void mnuInvRequestSpareparttsClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InventoryRequestSparepartsROQ.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    /*########## HISTORY #########*/
+ /*HISTORY > Inventory Request old*/
+    
+    @FXML
+    private void mnuHistoryAccountsAccreditation_Clicked(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/FrmAccountsAccreditationHistory.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
+    
+
+    @FXML
+    private void mnuHistInvRequestVehicleClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/InvRequestHistory.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    
+
+
+
+    /*HISTORY > Inventory Request*/
+    @FXML
+    private void mnuHistInvRequestMCClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/HistInventoryRequestMC.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuHistInvRequestMPUnitsClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/HistInventoryRequestMPUnits.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuHistInvRequestApplianceClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/HistInventoryRequestAppliance.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+
+    @FXML
+    private void mnuHistInvRequestMPAccesoriesclick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/HistInventoryRequestMPAccesories.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    @FXML
+    private void mnuHistInvRequestMCSparepartsClick(ActionEvent event) {
+        String sformname = "/org/guanzon/cas/views/HistInventoryRequestMCSpareparts.fxml";
+        //check tab
+        if (checktabs(SetTabTitle(sformname)) == 1) {
+            setScene2(loadAnimate(sformname));
+        }
+    }
+    
     /*Stock Request History*/
     @FXML
     private void mnuHistStockRequestClick(ActionEvent event) {
@@ -1524,33 +1663,6 @@ public class DashboardController implements Initializable {
     @FXML
     private void mnuHistStockRequestCancellationGIClick(ActionEvent event) {
         String sformname = "/org/guanzon/cas/views/InvRequestCancellationHistoryGI.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    @FXML
-    private void mnuPurchaseOrderEntryClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/PurchasingOrder_Entry.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    @FXML
-    private void mnuPurchaseOrderEntryHistoryClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/PurchasingOrder_Entry_History.fxml";
-        //check tab
-        if (checktabs(SetTabTitle(sformname)) == 1) {
-            setScene2(loadAnimate(sformname));
-        }
-    }
-
-    @FXML
-    private void mnuPurchaseOrderReceivingClick(ActionEvent event) {
-        String sformname = "/org/guanzon/cas/views/PurchasingOrder_Receiving.fxml";
         //check tab
         if (checktabs(SetTabTitle(sformname)) == 1) {
             setScene2(loadAnimate(sformname));

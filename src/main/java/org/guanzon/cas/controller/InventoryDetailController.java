@@ -52,8 +52,14 @@ import javafx.stage.StageStyle;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.inv.Inv;
 import org.guanzon.cas.inventory.base.InvMaster;
+import org.guanzon.cas.inv.Inv_Master;
+import org.guanzon.cas.inv.Inventory;
+import org.guanzon.cas.inv.ObservableListUtil;
+import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 
 /**
@@ -61,204 +67,68 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class InventoryDetailController implements  Initializable,ScreenInterface {
-    
+public class InventoryDetailController implements Initializable, ScreenInterface {
+
     private final String pxeModuleName = "Inventory Details";
-  private GRider oApp;
-    private String oTransnox = "";
-    private int pnEditMode;  
-    
+    private GRider oApp;
+    private String lsStockID, lsBrand;
+    private int pnEditMode;
+
     private double xOffset = 0;
     private double yOffset = 0;
-    
+
     private boolean state = false;
     private boolean pbLoaded = false;
-    private int pnInventory = 0; 
-    
-    private InvMaster oTrans;
-    
-    
-    
+    private int pnInventory = 0;
+    private Inv oTrans;
+    private ParamControllers oParameters;
+
+    // Anchor Panes
     @FXML
-    private AnchorPane AnchorMain,AnchorTable,AnchorInput;
+    private AnchorPane AnchorMain, AnchorTable, AnchorInput;
+
+// StackPane
     @FXML
     public StackPane overlay;
-    
+
+// GridPanes
     @FXML
-    private GridPane gridEditable;
+    private GridPane gridEditable, gridFix;
+
+// Text Fields
     @FXML
-    private GridPane gridFix;
+    private TextField txtSeeks01, txtSeeks02,
+            txtField01, txtField02, txtField03, txtField04, txtField05,
+            txtField06, txtField07, txtField08, txtField09, txtField10,
+            txtField11, txtField12, txtField13, txtField14, txtField15,
+            txtField16, txtField17, txtField18, txtField19, txtField20,
+            txtField21, txtField22, txtField23, txtField24, txtField25,
+            txtField26, txtField27, txtField28, txtField29, txtField30,
+            txtField31, txtField32, txtField33, txtField34,
+            txtField261, txtField271;
 
-    @FXML
-    private TextField txtSeeks02;
-
-    @FXML
-    private TextField txtSeeks01;
-
-    @FXML
-    private HBox hbButtons;
-
-    @FXML
-    private Button btnBrowse;
-
-//    @FXML
-//    private Button btnNew;
-
-    @FXML
-    private Button btnSave;
-
-    @FXML
-    private Button btnUpdate;
-
-    @FXML
-    private Button btnSearch;
-
-    @FXML
-    private Button btnCancel;
-
-    @FXML
-    private Button btnLedger;
-
-    @FXML
-    private Button btnSerial;
-
-    @FXML
-    private Button btnClose;
-
-
-    @FXML
-    private TextField txtField01;
-
-    @FXML
-    private TextField txtField02;
-
-    @FXML
-    private TextField txtField03;
-
-    @FXML
-    private TextField txtField04;
-
-    @FXML
-    private TextField txtField05;
-
+// ComboBox
     @FXML
     private ComboBox cmbField01;
 
+// CheckBoxes
     @FXML
-    private TextField txtField06;
+    private CheckBox chkField01, chkField02, chkField03, chkField04;
 
+// Buttons
     @FXML
-    private TextField txtField07;
+    private Button btnBrowse, btnSave, btnUpdate, btnSearch, btnCancel,
+            btnLedger, btnSerial, btnClose;
 
-    @FXML
-    private TextField txtField08;
-
-    @FXML
-    private TextField txtField09;
-
-    @FXML
-    private TextField txtField10;
-
-    @FXML
-    private TextField txtField11;
-
-    @FXML
-    private TextField txtField12;
-
-    @FXML
-    private TextField txtField13;
-
-    @FXML
-    private TextField txtField14;
-
-    @FXML
-    private TextField txtField15;
-
-    @FXML
-    private TextField txtField16;
-
-    @FXML
-    private TextField txtField17;
-
-    @FXML
-    private TextField txtField261;
-
-    @FXML
-    private TextField txtField271;
-
-    @FXML
-    private TextField txtField18;
-
-    @FXML
-    private TextField txtField19;
-
+// Labels and Texts
     @FXML
     private Text lblShelf, lblMeasure;
-
-    @FXML
-    private CheckBox chkField01;
-
-    @FXML
-    private CheckBox chkField02;
-
-    @FXML
-    private CheckBox chkField03;
-
-    @FXML
-    private TextField txtField20;
-
-    @FXML
-    private TextField txtField21;
-
     @FXML
     private Label lblStatus;
 
-    @FXML
-    private CheckBox chkField04;
-
-    
-
-    @FXML
-    private TextField txtField22;
-
-    @FXML
-    private TextField txtField23;
-//
-    @FXML
-    private TextField txtField24;
-
-    @FXML
-    private TextField txtField25;
-
+// Date Picker
     @FXML
     private DatePicker dpField01;
-
-    @FXML
-    private TextField txtField26;
-
-    @FXML
-    private TextField txtField27;
-
-    @FXML
-    private TextField txtField28;
-
-    @FXML
-    private TextField txtField29;
-
-    @FXML
-    private TextField txtField30;
-
-    @FXML
-    private TextField txtField31;
-
-    @FXML
-    private TextField txtField32;
-    
-    @FXML
-    private TextField txtField33;
-
-    @FXML
-    private TextField txtField34;
 
     @FXML
     void chkFiled01_Clicked(MouseEvent event) {
@@ -279,15 +149,8 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
     void chkFiled04_Clicked(MouseEvent event) {
 
     }
-    ObservableList<String> unitType = FXCollections.observableArrayList(
-                "LDU",
-                "Regular",
-                "Free",
-                "Live",
-                "Service",
-                "RDU",
-                "Others"
-        );
+
+
     /**
      * Initializes the controller class.
      */
@@ -298,35 +161,37 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        oTrans = new InvMaster(oApp, true);
-        if (oTransnox == null || oTransnox.isEmpty()) { // Check if oTransnox is null or empty
-            pnEditMode = EditMode.UNKNOWN;
-        initButton(pnEditMode);
-        }
-        oTrans.setRecordStatus("0123");
-//        dpField01.setValue(LocalDate.now());
-        pnEditMode = EditMode.UNKNOWN;    
-        oTrans.setWithUI(true);    
-        initButton(pnEditMode);
-        initTabAnchor();
-        ClickButton();
+        clearAllFields();
+        initializeObject();
         InitTextFields();
+        pnEditMode = EditMode.UNKNOWN;
+        ClickButton();
+        initButton(pnEditMode);
         pbLoaded = true;
         overlay.setVisible(false);
-        
-    }    
-    
+
+    }
+
+    private void initializeObject() {
+        String category = System.getProperty("store.inventory.industry");
+        System.out.println("category == " + category);
+        LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
+        oTrans = new Inv(oApp, "", logwrapr);
+        oParameters = new ParamControllers(oApp, logwrapr);
+
+    }
+
     /*Handle button click*/
     private void ClickButton() {
         btnCancel.setOnAction(this::handleButtonAction);
         btnSave.setOnAction(this::handleButtonAction);
-        btnUpdate.setOnAction(this::handleButtonAction);        
-        btnLedger.setOnAction(this::handleButtonAction);        
+        btnUpdate.setOnAction(this::handleButtonAction);
+        btnLedger.setOnAction(this::handleButtonAction);
         btnSerial.setOnAction(this::handleButtonAction);
         btnClose.setOnAction(this::handleButtonAction);
         btnBrowse.setOnAction(this::handleButtonAction);
     }
-    
+
     private void handleButtonAction(ActionEvent event) {
         Object source = event.getSource();
         JSONObject poJSON;
@@ -334,444 +199,517 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
             Button clickedButton = (Button) source;
             unloadForm appUnload = new unloadForm();
             switch (clickedButton.getId()) {
-                case"btnClose":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
-                            appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
-                        }
+                case "btnClose":
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                        appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
+                    }
                     break;
-                
+
                 case "btnUpdate":
-                    poJSON = oTrans.updateRecord();
-                        if ("error".equals((String) poJSON.get("result"))){
-                            ShowMessageFX.Information((String)poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            break;
-                        }
-                        pnEditMode =  oTrans.getEditMode();
-                        
-                        System.err.println("update btn editmode ==" + pnEditMode);
-                        initButton(pnEditMode);
-                        initTabAnchor();
+                    poJSON = oTrans.InvMaster().updateRecord();
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        break;
+                    }
+                    pnEditMode = oTrans.InvMaster().getEditMode();
+
+                    System.err.println("update btn editmode ==" + pnEditMode);
+                    initButton(pnEditMode);
+                    initTabAnchor();
                     break;
                 case "btnCancel":
-                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)){
-                            oTrans = new InvMaster(oApp, true);
-                            oTrans.setRecordStatus("0123"); 
-                            oTrans.setWithUI(true);
-                            pnEditMode = EditMode.UNKNOWN;     
-                            initButton(pnEditMode);
-                            initTabAnchor();
-                            clearAllFields();
-                        }
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                        clearAllFields();
+                        initializeObject();
+                        pnEditMode = EditMode.UNKNOWN;
+                        initButton(pnEditMode);
+                        initTabAnchor();
+                    }
                     break;
                 case "btnSave":
-                        JSONObject saveResult = oTrans.saveRecord();
-                        if ("success".equals((String) saveResult.get("result"))){
-                            System.err.println((String) saveResult.get("message"));
-                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                            clearAllFields();
-                            pnEditMode = EditMode.UNKNOWN;
-                            initButton(pnEditMode);
-                            initTabAnchor();
-                            System.out.println("Record saved successfully.");
-                        } else {
-                            ShowMessageFX.Information((String)saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                            System.out.println("Record not saved successfully.");
-                            System.out.println((String) saveResult.get("message"));
-                        }
-                     break;
-                case "btnBrowse": 
-                    String lsValue = (txtSeeks01.getText().toString().isEmpty() ?"": txtSeeks01.getText().toString());
-                       poJSON = oTrans.SearchInventory(lsValue, true);
-                        if ("error".equals((String) poJSON.get("result"))){
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtSeeks01.clear();
-                            break;
-                        }
-                        pnEditMode = oTrans.getEditMode();
-                        
-                        if(pnEditMode==EditMode.READY){
-                            txtSeeks01.setText(oTrans.getModel().getBarCodex());
-                            txtSeeks02.setText(oTrans.getModel().getDescript());
-                        }else{
-                            txtSeeks01.clear();
-                            txtSeeks02.clear();
-                        }
+                    oTrans.InvMaster().getModel().setModifyingId(oApp.getUserID());
+                    oTrans.InvMaster().getModel().setModifiedDate(oApp.getServerDate());
+                    JSONObject saveResult = oTrans.InvMaster().saveRecord();
+                    if ("success".equals((String) saveResult.get("result"))) {
+                        System.err.println((String) saveResult.get("message"));
+                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                        clearAllFields();
+                        pnEditMode = EditMode.UNKNOWN;
                         initButton(pnEditMode);
-                        System.out.print("\neditmode on browse == " + pnEditMode);
                         initTabAnchor();
-                        loadInventory();
-                    break;
-                case "btnLedger":
-                        {
-                            try {
-                                if(pnEditMode == EditMode.READY ||
-                                    pnEditMode == EditMode.ADDNEW ||
-                                    pnEditMode == EditMode.UPDATE){
-                                    loadLedger(oTrans.getInvModel().getStockID());
-                                }
-                            } catch (SQLException ex) {
-                                Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }  
-                    break;
-                case "btnSerial":
-                    if (!txtField01.getText().isEmpty()){
-                        if (chkField01.isSelected()){
-                            {
-                                try {
-                                    loadSerial(oTrans.getInvModel().getStockID());
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            } 
-                        } else {
-                            ShowMessageFX.Information("This Inventory is not serialize!", "Computerized Acounting System", pxeModuleName);
-                        }
+                        System.out.println("Record saved successfully.");
+                    } else {
+                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                        System.out.println("Record not saved successfully.");
+                        System.out.println((String) saveResult.get("message"));
                     }
+                    break;
+
+                case "btnBrowse":
+                    String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
+                    poJSON = oTrans.InvMaster().Inventory().searchRecord(lsValue, false);
+
+                    if ("success".equals((String) poJSON.get("result"))) {
+
+                        String stockId = oTrans.InvMaster().Inventory().getModel().getStockId();
+                        poJSON = oTrans.InvMaster().searchRecord(String.valueOf(stockId), true);
+                        System.out.print("brand sa browse == " + oTrans.InvMaster().getModel().Inventory().getBrandId());
+                        if ("success".equals((String) poJSON.get("result"))) {
+                            pnEditMode = oTrans.InvMaster().getEditMode();
+                            System.out.print("brand sa browse == " + oTrans.InvMaster().Inventory().getModel().Brand().getDescription());
+                            lsBrand = String.valueOf(oTrans.InvMaster().getModel().Inventory().getBrandId());
+                            
+                            loadInventory();
+
+                        } else {
+                            ShowMessageFX.Information("No Inventory found in your warehouse. Please save the record to create.", "Computerized Acounting System", "Inventory Detail");
+                            oTrans.InvMaster().newRecord();
+                            oTrans.InvMaster().getModel().setStockId(stockId);
+                            oTrans.InvMaster().getModel().setBranchCode(oApp.getBranchCode());
+                            pnEditMode = oTrans.InvMaster().getEditMode();
+                            loadInventory();
+
+                        }
+                    } else {
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        txtSeeks01.clear();
+                        break;
+                    }
+                    initButton(pnEditMode);
+                    initTabAnchor();
+
+//                    poJSON = oTrans.searchRecordwithBarrcode(lsValue, false);
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        txtSeeks01.clear();
+//                        break;
+//                    }
+//                    pnEditMode = oTrans.getEditMode();
+////
+//                    if (pnEditMode == EditMode.READY) {
+//                        txtSeeks01.setText(oTrans.getModel().Inventory().getBarCode());
+//                        txtSeeks02.setText(oTrans.getModel().Inventory().getDescription());
+//                    } else {
+//                        txtSeeks01.clear();
+//                        txtSeeks02.clear();
+//                    }
+//                    
+////                    data.clear();
+//                    loadInventory();
+//                    String lsValue = (txtSeeks01.getText().toString().isEmpty() ? "" : txtSeeks01.getText().toString());
+//                    poJSON = oTrans.SearchInventory(lsValue, true);
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        txtSeeks01.clear();
+//                        break;
+//                    }
+//                    pnEditMode = oTrans.getEditMode();
+//
+//                    if (pnEditMode == EditMode.READY) {
+//                        txtSeeks01.setText(oTrans.getModel().getBarCodex());
+//                        txtSeeks02.setText(oTrans.getModel().getDescript());
+//                    } else {
+//                        txtSeeks01.clear();
+//                        txtSeeks02.clear();
+//                    }
+//                    initButton(pnEditMode);
+//                    System.out.print("\neditmode on browse == " + pnEditMode);
+//                    initTabAnchor();
+//                    loadInventory();
+                    break;
+                case "btnLedger": {
+                    try {
+                        if (pnEditMode == EditMode.READY
+                                || pnEditMode == EditMode.ADDNEW
+                                || pnEditMode == EditMode.UPDATE) {
+                            System.out.print("to pass == " + oTrans.InvMaster().Inventory().getModel().getStockId());
+
+                            loadLedger(lsStockID, lsBrand);
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                break;
+                case "btnSerial": {
+                    try {
+                        if (pnEditMode == EditMode.READY
+                                || pnEditMode == EditMode.ADDNEW
+                                || pnEditMode == EditMode.UPDATE) {
+                            System.out.print("to pass == " + oTrans.InvMaster().Inventory().getModel().getStockId());
+                            
+                            loadSerial(lsStockID, lsBrand);
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+//                    if (!txtField01.getText().isEmpty()) {
+//                        if (chkField01.isSelected()) {
+//                            {
+//                                try {
+//                                    loadSerial(oTrans.getInvModel().getStockID());
+//                                } catch (SQLException ex) {
+//                                    Logger.getLogger(InventoryDetailController.class.getName()).log(Level.SEVERE, null, ex);
+//                                }
+//                            }
+//                        } else {
+//                            ShowMessageFX.Information("This Inventory is not serialize!", "Computerized Acounting System", pxeModuleName);
+//                        }
+//                    }
                 break;
             }
         }
-    
+
     }
-    private void loadSerial(String fsCode) throws SQLException {
-    try {
-        Stage stage = new Stage();
 
-        overlay.setVisible(true);
+    private void loadSerial(String fsCode, String fsBrand) throws SQLException {
+        try {
+            Stage stage = new Stage();
 
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventorySerial.fxml"));
+            overlay.setVisible(true);
 
-        InventorySerialController loControl = new InventorySerialController();
-        loControl.setGRider(oApp);
-        loControl.setFsCode(oTrans);
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventorySerial.fxml"));
 
-        fxmlLoader.setController(loControl);
+            InventorySerialController loControl = new InventorySerialController();
+            loControl.setGRider(oApp);
+            loControl.setFsCode(oTrans);
+            loControl.setStockID(fsCode);
+            loControl.setBranchNme(fsBrand);
 
-        // Load the main interface
-        Parent parent = fxmlLoader.load();
-        parent.setStyle("-fx-background-color: rgba(0, 0, 0, 1);");
+            fxmlLoader.setController(loControl);
 
-        // Set up dragging
-        final double[] xOffset = new double[1];
-        final double[] yOffset = new double[1];
+            // Load the main interface
+            Parent parent = fxmlLoader.load();
+            parent.setStyle("-fx-background-color: rgba(0, 0, 0, 1);");
 
-        parent.setOnMousePressed(event -> {
-            xOffset[0] = event.getSceneX();
-            yOffset[0] = event.getSceneY();
-        });
+            // Set up dragging
+            final double[] xOffset = new double[1];
+            final double[] yOffset = new double[1];
 
-        parent.setOnMouseDragged(event -> {
-            double newX = event.getScreenX() - xOffset[0];
-            double newY = event.getScreenY() - yOffset[0];
+            parent.setOnMousePressed(event -> {
+                xOffset[0] = event.getSceneX();
+                yOffset[0] = event.getSceneY();
+            });
 
-            // Get the screen bounds
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            parent.setOnMouseDragged(event -> {
+                double newX = event.getScreenX() - xOffset[0];
+                double newY = event.getScreenY() - yOffset[0];
 
-            // Calculate the window bounds
-            double stageWidth = stage.getWidth();
-            double stageHeight = stage.getHeight();
+                // Get the screen bounds
+                Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-            // Constrain the stage position to the screen bounds
-            if (newX < 0) newX = 0;
-            if (newY < 0) newY = 0;
-            if (newX + stageWidth > screenBounds.getWidth()) newX = screenBounds.getWidth() - stageWidth;
-            if (newY + stageHeight > screenBounds.getHeight()) newY = screenBounds.getHeight() - stageHeight;
+                // Calculate the window bounds
+                double stageWidth = stage.getWidth();
+                double stageHeight = stage.getHeight();
 
-            stage.setX(newX);
-            stage.setY(newY);
-        });
+                // Constrain the stage position to the screen bounds
+                if (newX < 0) {
+                    newX = 0;
+                }
+                if (newY < 0) {
+                    newY = 0;
+                }
+                if (newX + stageWidth > screenBounds.getWidth()) {
+                    newX = screenBounds.getWidth() - stageWidth;
+                }
+                if (newY + stageHeight > screenBounds.getHeight()) {
+                    newY = screenBounds.getHeight() - stageHeight;
+                }
 
-        // Set the main interface as the scene
-        Scene scene = new Scene(parent);
-        stage.setScene(scene);
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Inventory Serial");
+                stage.setX(newX);
+                stage.setY(newY);
+            });
 
-        // Add close request handler
-        stage.setOnCloseRequest(event -> {
-            System.out.println("Stage is closing");
-            overlay.setVisible(false);
-        });
+            // Set the main interface as the scene
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Inventory Serial");
 
-        stage.setOnHidden(e -> overlay.setVisible(false));
-        stage.showAndWait();
-    } catch (IOException e) {
-        e.printStackTrace();
-        ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-        System.exit(1);
+            // Add close request handler
+            stage.setOnCloseRequest(event -> {
+                System.out.println("Stage is closing");
+                overlay.setVisible(false);
+            });
+
+            stage.setOnHidden(e -> overlay.setVisible(false));
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
     }
-}
 
-    private void loadLedger(String fsCode) throws SQLException {
-    try {
-        Stage stage = new Stage();
+    private void loadLedger(String fsCode, String fsBrand) throws SQLException {
+        try {
+            Stage stage = new Stage();
 
-        overlay.setVisible(true);
+            overlay.setVisible(true);
 
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventoryLedger.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventoryLedger.fxml"));
 
-        InventoryLedgerController loControl = new InventoryLedgerController();
-        loControl.setGRider(oApp);
-        loControl.setFsCode(oTrans);
-        loControl.setStockID(fsCode);
-        loControl.setParentController(this);
-        fxmlLoader.setController(loControl);
+            InventoryLedgerController loControl = new InventoryLedgerController();
+            loControl.setGRider(oApp);
+            loControl.setFsCode(oTrans);
 
-        // Load the main interface
-        Parent parent = fxmlLoader.load();
+            loControl.setStockID(fsCode);
+            loControl.setBranchNme(fsBrand);
+            loControl.setParentController(this);
+            fxmlLoader.setController(loControl);
 
-        // Set up dragging
-        final double[] xOffset = new double[1];
-        final double[] yOffset = new double[1];
-        
-        parent.setOnMousePressed(event -> {
-            xOffset[0] = event.getSceneX();
-            yOffset[0] = event.getSceneY();
-        });
+            // Load the main interface
+            Parent parent = fxmlLoader.load();
 
-        parent.setOnMouseDragged(event -> {
-            double newX = event.getScreenX() - xOffset[0];
-            double newY = event.getScreenY() - yOffset[0];
-            
-            // Get the screen bounds
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-            
-            // Calculate the window bounds
-            double stageWidth = stage.getWidth();
-            double stageHeight = stage.getHeight();
-            
-            // Constrain the stage position to the screen bounds
-            if (newX < 0) newX = 0;
-            if (newY < 0) newY = 0;
-            if (newX + stageWidth > screenBounds.getWidth()) newX = screenBounds.getWidth() - stageWidth;
-            if (newY + stageHeight > screenBounds.getHeight()) newY = screenBounds.getHeight() - stageHeight;
+            // Set up dragging
+            final double[] xOffset = new double[1];
+            final double[] yOffset = new double[1];
 
-            stage.setX(newX);
-            stage.setY(newY);
-        });
+            parent.setOnMousePressed(event -> {
+                xOffset[0] = event.getSceneX();
+                yOffset[0] = event.getSceneY();
+            });
 
-        Scene scene = new Scene(parent);
-        
-        stage.setScene(scene);
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.initModality(Modality.APPLICATION_MODAL);
+            parent.setOnMouseDragged(event -> {
+                double newX = event.getScreenX() - xOffset[0];
+                double newY = event.getScreenY() - yOffset[0];
 
-        stage.setTitle("Inventory Ledger");
-        
-        // Add close request handler
-        stage.setOnCloseRequest(event -> {
-            System.out.println("Stage is closing");
-            overlay.setVisible(false);
-        });
-        
-        stage.setOnHidden(e -> {
-            System.out.println("Stage is hidden");
-            overlay.setVisible(false);
-            loadResult(oTrans.getMaster("sStockIDx").toString(), false);
-        });
-        stage.showAndWait();
+                // Get the screen bounds
+                Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 
-    } catch (IOException e) {
-        e.printStackTrace();
-        ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-        System.exit(1);
+                // Calculate the window bounds
+                double stageWidth = stage.getWidth();
+                double stageHeight = stage.getHeight();
+
+                // Constrain the stage position to the screen bounds
+                if (newX < 0) {
+                    newX = 0;
+                }
+                if (newY < 0) {
+                    newY = 0;
+                }
+                if (newX + stageWidth > screenBounds.getWidth()) {
+                    newX = screenBounds.getWidth() - stageWidth;
+                }
+                if (newY + stageHeight > screenBounds.getHeight()) {
+                    newY = screenBounds.getHeight() - stageHeight;
+                }
+
+                stage.setX(newX);
+                stage.setY(newY);
+            });
+
+            Scene scene = new Scene(parent);
+
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            stage.setTitle("Inventory Ledger");
+
+            // Add close request handler
+            stage.setOnCloseRequest(event -> {
+                System.out.println("Stage is closing");
+                overlay.setVisible(false);
+            });
+
+            stage.setOnHidden(e -> {
+                System.out.println("Stage is hidden");
+                overlay.setVisible(false);
+                loadResult(lsStockID, true);
+            });
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
     }
-}
 
-
-    /*USE TO DISABLE ANCHOR BASE ON INITMODE*/    
-    private void initTabAnchor(){
+    /*USE TO DISABLE ANCHOR BASE ON INITMODE*/
+    private void initTabAnchor() {
         System.out.print("EDIT MODE == " + pnEditMode);
-        boolean pbValue = pnEditMode == EditMode.ADDNEW || 
-                pnEditMode == EditMode.UPDATE;
-        
+        boolean pbValue = pnEditMode == EditMode.ADDNEW
+                || pnEditMode == EditMode.UPDATE;
+
         System.out.print("pbValue == " + pbValue);
         AnchorInput.setDisable(pbValue);
         gridFix.setDisable(pbValue);
         gridEditable.setDisable(!pbValue);
-        
-            if(pnEditMode == EditMode.READY ||pnEditMode == EditMode.UNKNOWN){
-                AnchorInput.setDisable(!pbValue);
-                gridFix.setDisable(!pbValue);
-                gridEditable.setDisable(!pbValue);
-            }
-            System.out.println("EDIT MODE STAT == " + pnEditMode);
-            if (pnEditMode == EditMode.UPDATE || pnEditMode == 2) { 
-                  txtField22.setDisable(true);
-             }
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == 0) { 
-                  txtField22.setDisable(false);
-             }
-                         
+
+        if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UNKNOWN) {
+            AnchorInput.setDisable(!pbValue);
+            gridFix.setDisable(!pbValue);
+            gridEditable.setDisable(!pbValue);
+        }
+        System.out.println("EDIT MODE STAT == " + pnEditMode);
+        if (pnEditMode == EditMode.UPDATE || pnEditMode == 2) {
+            txtField22.setDisable(true);
+        }
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == 0) {
+            txtField22.setDisable(false);
+        }
+
     }
-    
+
     /*TO CONTROL BUTTONS BASE ON INITMODE*/
- private void initButton(int fnValue) {
-    boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-    
-    // Set visibility and manageability for buttons based on lbShow
-    btnSave.setVisible(lbShow);
-    btnSave.setManaged(lbShow);
-    
-    btnSearch.setVisible(lbShow);
-    btnSearch.setManaged(lbShow);
-    
-    btnCancel.setVisible(lbShow);
-    btnCancel.setManaged(lbShow);
-    
-    btnLedger.setVisible(!lbShow);
-    btnLedger.setManaged(!lbShow);
-    
-    btnSerial.setVisible(!lbShow);
-    btnSerial.setManaged(!lbShow);
-    
-    btnClose.setVisible(!lbShow);
-    btnClose.setManaged(!lbShow);
-    
-    btnUpdate.setVisible(!lbShow);
-    btnUpdate.setManaged(!lbShow);
-    
-    btnBrowse.setVisible(!lbShow);
-    btnBrowse.setManaged(!lbShow);
-    
-    txtSeeks01.setDisable(!lbShow);
-    txtSeeks02.setDisable(!lbShow);
-    
-    if (lbShow) {
-        txtSeeks01.clear();
-        txtSeeks02.clear();
-        
-        txtSeeks01.setDisable(true);
-        txtSeeks02.setDisable(true);
-        
-        btnUpdate.setManaged(false);
-        btnBrowse.setManaged(false);
-        btnCancel.setManaged(true);
-        btnLedger.setManaged(false);
-        btnSerial.setManaged(false);
-        btnClose.setManaged(false);
-    } else {
-        txtSeeks01.setDisable(false);
-        txtSeeks02.setDisable(false);
-        
-        txtSeeks01.requestFocus();
-        
-        btnUpdate.setManaged(true);
-        btnBrowse.setManaged(true);
-        btnCancel.setManaged(false);
-        btnLedger.setManaged(true);
-        btnSerial.setManaged(true);
-        btnClose.setManaged(true);
-    }
-}
+    private void initButton(int fnValue) {
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
 
-    
-    private void loadInventory(){
-     if(pnEditMode == EditMode.READY || 
-                pnEditMode == EditMode.ADDNEW || 
-                pnEditMode == EditMode.UPDATE){
-            txtField01.setText((String) oTrans.getInvModel().getStockID());
-            txtField02.setText((String) oTrans.getInvModel().getBarcode());
-            txtField03.setText((String) oTrans.getInvModel().getAltBarcode());
-            txtField04.setText((String) oTrans.getInvModel().getBriefDescription());
-            txtField05.setText((String) oTrans.getInvModel().getDescription());
-            
-            txtField06.setText((String) oTrans.getInvModel().getCategName1());
-            txtField07.setText((String) oTrans.getInvModel().getCategName2());
-            txtField08.setText((String) oTrans.getInvModel().getCategName3());
-            txtField09.setText((String) oTrans.getInvModel().getCategName4());
-            
-            txtField10.setText((String) oTrans.getInvModel().getBrandName());
-            txtField11.setText((String) oTrans.getInvModel().getModelName());
-            txtField12.setText((String) oTrans.getInvModel().getColorName());
-            txtField13.setText((String) oTrans.getInvModel().getMeasureName());
-            
-            
-             txtField14.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDiscountLevel1().toString()), "#,##0.00"));
-            txtField15.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDiscountLevel2().toString()), "#,##0.00"));
-            txtField16.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDiscountLevel3().toString()), "#,##0.00"));
-            txtField17.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getDealerDiscount().toString()), "#,##0.00"));
-            
-            txtField26.setText(String.valueOf(oTrans.getInvModel().getMinLevel()));
-            txtField27.setText(String.valueOf(oTrans.getInvModel().getMaxLevel()));
-            txtField29.setText(String.valueOf(oTrans.getInvModel().getMinLevel()));
-            txtField30.setText(String.valueOf(oTrans.getInvModel().getMaxLevel()));
-            
-            txtField18.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getUnitPrice().toString()), "#,##0.00"));
-            txtField19.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.getInvModel().getSelPrice().toString()), "#,##0.00"));
-            
-            txtField20.setText((String) oTrans.getInvModel().getSupersed());
-            txtField21.setText(String.valueOf(oTrans.getInvModel().getShlfLife()));
-            
-            cmbField01.setValue(String.valueOf(oTrans.getInvModel().getCategName2()));
-            chkField01.setSelected("1".equals(oTrans.getInvModel().getSerialze()));
-            chkField02.setSelected("1".equals(oTrans.getInvModel().getComboInv()));
-            chkField03.setSelected("1".equals(oTrans.getInvModel().getWthPromo()));
-            chkField04.setSelected((oTrans.getInvModel().isActive()));
-            
-            txtField22.setText((String)oTrans.getModel().getLocationnName());
-            txtField23.setText((String)oTrans.getModel().getWareHouseNm());
-            txtField24.setText((String)oTrans.getModel().getSectionName());
-            txtField25.setText(String.valueOf(oTrans.getModel().getBinNumber()));
-            
-            txtField28.setText((String.valueOf(oTrans.getModel().getBegQtyxx())));
-            txtField31.setText((String.valueOf(oTrans.getModel().getClassify())));
-            txtField32.setText((String.valueOf(oTrans.getModel().getAvgMonSl())));
-            txtField33.setText((String.valueOf(oTrans.getModel().getResvOrdr())));
-            txtField34.setText((String.valueOf(oTrans.getModel().getQtyOnHnd())));
+        // Set visibility and manageability for buttons based on lbShow
+        btnSave.setVisible(lbShow);
+        btnSave.setManaged(lbShow);
 
-            if(pnEditMode == EditMode.ADDNEW) txtField22.setPromptText("PRESS F3: Search");
-           
-            lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
-           DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        btnSearch.setVisible(lbShow);
+        btnSearch.setManaged(lbShow);
 
-            // Get the object from the model
-            Object dbegInvxx = oTrans.getModel().getDBegInvxx();
+        btnCancel.setVisible(lbShow);
+        btnCancel.setManaged(lbShow);
 
-            if (dbegInvxx == null) {
-                // If the object is null, set the DatePicker to the current date
-                dpField01.setValue(LocalDate.now());
-            } else if (dbegInvxx instanceof Timestamp) {
-                // If the object is a Timestamp, convert it to LocalDate
-                Timestamp timestamp = (Timestamp) dbegInvxx;
-                LocalDate localDate = timestamp.toLocalDateTime().toLocalDate();
-                dpField01.setValue(localDate);
-            } else if (dbegInvxx instanceof Date) {
-                // If the object is a java.sql.Date, convert it to LocalDate
-                Date sqlDate = (Date) dbegInvxx;
-                LocalDate localDate = sqlDate.toLocalDate();
-                dpField01.setValue(localDate);
-            } else {
-                // Handle unexpected types or throw an exception
-                throw new IllegalArgumentException("Expected a Timestamp or Date, but got: " + dbegInvxx.getClass().getName());
-            }            
-            initSubItemForm();
-     }
-    }
-    private void initSubItemForm(){
-        if (!oTrans.getInvModel().getCategCd1().isEmpty()) { // Ensure the string is not empty
-            switch (oTrans.getInvModel().getCategCd1()) {
-                case "0001":
-                case "0002":
-                case "0003":
-                    lblMeasure.setVisible(false);
-                    lblShelf.setVisible(false);
-                    txtField13.setVisible(false);
-                    txtField21  .setVisible(false);
-                    break;
-                case "0004":
-                    lblMeasure.setVisible(true);
-                    lblShelf.setVisible(true);
-                    txtField13.setVisible(true);
-                    txtField21.setVisible(true);
-                    break;
-            }
+        btnLedger.setVisible(!lbShow);
+        btnLedger.setManaged(!lbShow);
+
+        btnSerial.setVisible(!lbShow);
+        btnSerial.setManaged(!lbShow);
+
+        btnClose.setVisible(!lbShow);
+        btnClose.setManaged(!lbShow);
+
+        btnUpdate.setVisible(!lbShow);
+        btnUpdate.setManaged(!lbShow);
+
+        btnBrowse.setVisible(!lbShow);
+        btnBrowse.setManaged(!lbShow);
+
+        txtSeeks01.setDisable(!lbShow);
+        txtSeeks02.setDisable(!lbShow);
+
+        if (lbShow) {
+            txtSeeks01.clear();
+            txtSeeks02.clear();
+
+            txtSeeks01.setDisable(true);
+            txtSeeks02.setDisable(true);
+
+            btnUpdate.setManaged(false);
+            btnBrowse.setManaged(false);
+            btnCancel.setManaged(true);
+            btnLedger.setManaged(false);
+            btnSerial.setManaged(false);
+            btnClose.setManaged(false);
+        } else {
+            txtSeeks01.setDisable(false);
+            txtSeeks02.setDisable(false);
+
+            txtSeeks01.requestFocus();
+
+            btnUpdate.setManaged(true);
+            btnBrowse.setManaged(true);
+            btnCancel.setManaged(false);
+            btnLedger.setManaged(true);
+            btnSerial.setManaged(true);
+            btnClose.setManaged(true);
         }
     }
-    private void InitTextFields(){
+
+    private void loadInventory() {
+        if (pnEditMode == EditMode.READY
+                || pnEditMode == EditMode.ADDNEW
+                || pnEditMode == EditMode.UPDATE) {
+            System.out.println("stoickid == " + (String) oTrans.InvMaster().getModel().getStockId());
+            System.out.println("stoickid == " + (String) oTrans.InvMaster().getModel().Inventory().getStockId());
+            txtField01.setText((String) oTrans.InvMaster().getModel().Inventory().getStockId());
+            txtField02.setText((String) oTrans.InvMaster().getModel().Inventory().getBarCode());
+            txtField03.setText((String) oTrans.InvMaster().getModel().Inventory().getAlternateBarCode());
+            txtField04.setText((String) oTrans.InvMaster().getModel().Inventory().getBriefDescription());
+            txtField05.setText((String) oTrans.InvMaster().getModel().Inventory().getDescription());
+//
+            txtField06.setText((String) oTrans.InvMaster().getModel().Inventory().Category().getDescription());
+            txtField07.setText((String) oTrans.InvMaster().getModel().Inventory().CategoryLevel2().getDescription());
+            txtField08.setText((String) oTrans.InvMaster().getModel().Inventory().CategoryLevel3().getDescription());
+            txtField09.setText((String) oTrans.InvMaster().getModel().Inventory().CategoryLevel4().getDescription());
+//
+            txtField10.setText((String) oTrans.InvMaster().getModel().Inventory().Brand().getDescription());
+            txtField11.setText((String) oTrans.InvMaster().getModel().Inventory().Model().getDescription());
+            txtField12.setText((String) oTrans.InvMaster().getModel().Inventory().Color().getDescription());
+            txtField13.setText((String) oTrans.InvMaster().getModel().Inventory().Measure().getMeasureName());
+//
+            txtField14.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.InvMaster().getModel().Inventory().getDiscountRateLevel1().toString()), "#,##0.00"));
+            txtField15.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.InvMaster().getModel().Inventory().getDiscountRateLevel2().toString()), "#,##0.00"));
+            txtField16.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.InvMaster().getModel().Inventory().getDiscountRateLevel3().toString()), "#,##0.00"));
+            txtField17.setText(CommonUtils.NumberFormat(Double.parseDouble(oTrans.InvMaster().getModel().Inventory().getDealerDiscountRate().toString()), "#,##0.00"));
+//
+            txtField26.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getMinimumInventoryLevel()));
+            txtField27.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getMaximumInventoryLevel()));
+            txtField29.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getCost()));
+            txtField30.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getSellingPrice()));
+            
+            System.out.println("to load == " + oTrans.InvMaster().getModel().Inventory().getInventoryTypeId());
+            ObservableList<String> unitTypes = ObservableListUtil.UNIT_TYPES;
+            cmbField01.setItems(unitTypes);
+            cmbField01.getSelectionModel().select(7);
+
+            lsStockID = oTrans.InvMaster().getModel().getStockId();
+//            lsBrand = txtField10.getText();
+            if (pnEditMode == EditMode.ADDNEW) {
+                txtField22.setPromptText("PRESS F3: Search");
+            }
+
+            lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            // Get the object from the model
+//            Object dbegInvxx = oTrans.getModel().getDBegInvxx();
+//
+//            if (dbegInvxx == null) {
+//                // If the object is null, set the DatePicker to the current date
+//                dpField01.setValue(LocalDate.now());
+//            } else if (dbegInvxx instanceof Timestamp) {
+//                // If the object is a Timestamp, convert it to LocalDate
+//                Timestamp timestamp = (Timestamp) dbegInvxx;
+//                LocalDate localDate = timestamp.toLocalDateTime().toLocalDate();
+//                dpField01.setValue(localDate);
+//            } else if (dbegInvxx instanceof Date) {
+//                // If the object is a java.sql.Date, convert it to LocalDate
+//                Date sqlDate = (Date) dbegInvxx;
+//                LocalDate localDate = sqlDate.toLocalDate();
+//                dpField01.setValue(localDate);
+//            } else {
+//                // Handle unexpected types or throw an exception
+//                throw new IllegalArgumentException("Expected a Timestamp or Date, but got: " + dbegInvxx.getClass().getName());
+//            }
+            initSubItemForm();
+        }
+    }
+
+    private void initSubItemForm() {
+//        if (!oTrans.getInvModel().getCategCd1().isEmpty()) { // Ensure the string is not empty
+//            switch (oTrans.getInvModel().getCategCd1()) {
+//                case "0001":
+//                case "0002":
+//                case "0003":
+//                    lblMeasure.setVisible(false);
+//                    lblShelf.setVisible(false);
+//                    txtField13.setVisible(false);
+//                    txtField21.setVisible(false);
+//                    break;
+//                case "0004":
+//                    lblMeasure.setVisible(true);
+//                    lblShelf.setVisible(true);
+//                    txtField13.setVisible(true);
+//                    txtField21.setVisible(true);
+//                    break;
+//            }
+//        }
+    }
+
+    private void InitTextFields() {
 
         // Create an array for text fields with focusedProperty listeners
         TextField[] focusTextFields = {
@@ -791,102 +729,110 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         // Create an array for text fields with setOnKeyPressed handlers
         TextField[] keyPressedTextFields = {
             txtField06, txtField07, txtField08, txtField09, txtField10,
-            txtField11, txtField12, txtField22, txtField23
+            txtField11, txtField12, txtField22, txtField25
         };
 
         // Set the same key pressed event handler for each text field in the keyPressedTextFields array
         for (TextField textField : keyPressedTextFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-        
+
         txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
         txtSeeks02.setOnKeyPressed(this::txtSeeks_KeyPressed);
-        
-        lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
 
+        lblStatus.setText(chkField04.isSelected() ? "ACTIVE" : "INACTIVE");
     }
+
     /*Text seek/search*/
-    private void txtSeeks_KeyPressed(KeyEvent event){
-        TextField txtSeeks = (TextField)event.getSource();
-        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
-        String lsValue = (txtSeeks.getText() == null ?"": txtSeeks.getText());
+    private void txtSeeks_KeyPressed(KeyEvent event) {
+        TextField txtSeeks = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtSeeks.getText() == null ? "" : txtSeeks.getText());
         JSONObject poJSON;
         switch (event.getCode()) {
-            case F3:            
+            case F3:
             case ENTER:
-                switch (lnIndex){
-                    
-                    case 1: /*search Barrcode*/
+                switch (lnIndex) {
+
+                    case 1:
+                        /*search Barrcode*/
                         System.out.print("LSVALUE OF SEARCH 1 ==== " + lsValue);
-                        poJSON = oTrans.SearchInventory(lsValue, true);
-                        if ("error".equals((String) poJSON.get("result"))){
+                        poJSON = oTrans.InvMaster().searchRecord(lsValue, true);
+                        if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                             txtSeeks01.clear();
                             break;
                         }
-                        pnEditMode = oTrans.getEditMode();
-                        
-                        if(pnEditMode==EditMode.READY){
-                            txtSeeks01.setText(oTrans.getModel().getBarCodex());
-                            txtSeeks02.setText(oTrans.getModel().getDescript());
-                        }else{
+                        pnEditMode = oTrans.InvMaster().getEditMode();
+
+                        if (pnEditMode == EditMode.READY) {
+//                            txtSeeks01.setText(oTrans.getModel().getBarCodex());
+//                            txtSeeks02.setText(oTrans.getModel().getDescript());
+                        } else {
                             txtSeeks01.clear();
                             txtSeeks02.clear();
                         }
+                        lsBrand = String.valueOf(oTrans.InvMaster().getModel().Inventory().getBrandId());
                         initButton(pnEditMode);
                         System.out.print("\neditmode on browse == " + pnEditMode);
                         initTabAnchor();
                         loadInventory();
-                        
+
                         break;
-                    case 2 :
-                         poJSON = oTrans.SearchInventory(lsValue, false);
-                        if ("error".equals((String) poJSON.get("result"))){
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtSeeks02.clear();
-                            break;
-                        }
-                         pnEditMode = oTrans.getEditMode();
-                        
-                        if(pnEditMode==EditMode.READY){
-                            txtSeeks01.setText(oTrans.getModel().getBarCodex());
-                            txtSeeks02.setText(oTrans.getModel().getDescript());
-                        }else{
-                            txtSeeks01.clear();
-                            txtSeeks02.clear();
-                        }
-                        initButton(pnEditMode);
-                        System.out.print("\neditmode on browse == " + pnEditMode);
-                        
-                        initTabAnchor();
-                        loadInventory();
+                    case 2:
+//                        poJSON = oTrans.SearchInventory(lsValue, false);
+//                        if ("error".equals((String) poJSON.get("result"))) {
+//                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                            txtSeeks02.clear();
+//                            break;
+//                        }
+//                        pnEditMode = oTrans.getEditMode();
+//
+//                        if (pnEditMode == EditMode.READY) {
+//                            txtSeeks01.setText(oTrans.getModel().getBarCodex());
+//                            txtSeeks02.setText(oTrans.getModel().getDescript());
+//                        } else {
+//                            txtSeeks01.clear();
+//                            txtSeeks02.clear();
+//                        }
+//                        initButton(pnEditMode);
+//                        System.out.print("\neditmode on browse == " + pnEditMode);
+//
+//                        initTabAnchor();
+//                        loadInventory();
                         break;
                 }
-                
+
         }
-        switch (event.getCode()){
-        case ENTER:
-            CommonUtils.SetNextFocus(txtSeeks);
-        case DOWN:
-            CommonUtils.SetNextFocus(txtSeeks);
-            break;
-        case UP:
-            CommonUtils.SetPreviousFocus(txtSeeks);
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtSeeks);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtSeeks);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtSeeks);
         }
     }
-    
+
     /*textfield lost focus*/
-    final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{ 
-        if (!pbLoaded) return;
-       
-        TextField txtField = (TextField)((ReadOnlyBooleanPropertyBase)o).getBean();
+    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        if (!pbLoaded) {
+            return;
+        }
+
+        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
         JSONObject jsonObject = new JSONObject();
-        if (lsValue == null) return;         
-        if(!nv){ /*Lost Focus*/
-            switch (lnIndex){
-                case 25: /*Stock ID*/
+        if (lsValue == null) {
+            return;
+        }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lnIndex) {
+                case 25:
+                    /*Stock ID*/
                     UnaryOperator<TextFormatter.Change> limitText = change -> {
                         String newText = change.getControlNewText();
                         if (newText.length() > 5) {
@@ -900,76 +846,86 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
 
                     // Apply the TextFormatter to the TextField
                     txtField.setTextFormatter(textFormatter);
-                    
-                    oTrans.getModel().setBinNumber(Integer.parseInt(lsValue));
-                    break;            
-            }                  
-        } else
+
+                    oTrans.InvMaster().getModel().setBinId(lsValue);
+                    break;
+            }
+        } else {
             txtField.selectAll();
+        }
     };
+
     /*Txtfield search*/
-    private void txtField_KeyPressed(KeyEvent event){
-        TextField txtField = (TextField)event.getSource();
-        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
-        String lsValue = (txtField.getText() == null ?"": txtField.getText());
+    private void txtField_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
         JSONObject poJson;
         switch (event.getCode()) {
             case F3:
-                switch (lnIndex){
+                switch (lnIndex) {
                     case 22:
                         poJson = new JSONObject();
-                        poJson = oTrans.SearchMaster(4,lsValue, false);
+                        poJson = oParameters.InventoryLocation().searchRecord(lsValue, false);
                         System.out.println("poJson = " + poJson.toJSONString());
-                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
+
+                        oTrans.InvMaster().getModel().setLocationId(oParameters.InventoryLocation().getModel().getLocationId());
+
+                        if ("success".equals(poJson.get("result"))) {
+                            txtField22.setText((String) oParameters.InventoryLocation().getModel().getDescription());
+                            String warehouse = (String) oParameters.InventoryLocation().getModel().getWarehouseId();
+                            oTrans.InvMaster().getModel().setWarehouseId(warehouse);
+
+                            poJson = oParameters.Warehouse().searchRecord(warehouse, true);
+                            if ("success".equals(poJson.get("result"))) {
+                                txtField23.setText(oParameters.Warehouse().getModel().getWarehouseName());
+
+                                String section = (String) oParameters.InventoryLocation().getModel().getSectionId();
+                                poJson = oParameters.Section().searchRecord(section, true);
+                                if ("success".equals(poJson.get("result"))) {
+                                    txtField24.setText(oParameters.Section().getModel().getSectionName());
+                                }
+                            }
+                        } else {
+                            ShowMessageFX.Information(
+                                    (String) poJson.get("message"),
+                                    "Computerized Accounting System",
+                                    pxeModuleName
+                            );
                         }
-                        System.out.print( "Location == " + oTrans.getMaster(27));
-                        txtField22.setText((String) oTrans.getMaster(27)); 
-                        txtField23.setText(oTrans.getModel().getWareHouseNm());
-                        txtField24.setText(oTrans.getModel().getSectionName()); 
-                        break;
-                    case 23:
-                        poJson = new JSONObject();
-                        poJson = oTrans.SearchMaster(3,lsValue, false);
-                        System.out.println("poJson = " + poJson.toJSONString());
-                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-                        }
-                        System.out.print( "Warehouse == " + oTrans.getMaster(26));
-                        txtField23.setText((String) oTrans.getMaster(26));  
+
                         break;
                 }
-            case ENTER: 
+            case ENTER:
         }
-        switch (event.getCode()){
-        case ENTER:
-            CommonUtils.SetNextFocus(txtField);
-        case DOWN:
-            CommonUtils.SetNextFocus(txtField);
-            break;
-        case UP:
-            CommonUtils.SetPreviousFocus(txtField);
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
         }
     }
-    
+
     private void clearAllFields() {
         // Arrays of TextFields grouped by sections
         TextField[][] allFields = {
             // Text fields related to specific sections
             {txtSeeks01, txtSeeks02, txtField01, txtField02, txtField03, txtField04,
-             txtField05, txtField06, txtField07, txtField08, txtField09,txtField10, 
-             txtField11, txtField12, txtField13, txtField14, txtField15,txtField16, 
-             txtField17, txtField18, txtField19, txtField20, txtField21,txtField22, 
-             txtField23, txtField24, txtField25, txtField26, txtField27,txtField28,txtField29, 
-             txtField30, txtField31, txtField32, txtField33, txtField34},
-        };
+                txtField05, txtField06, txtField07, txtField08, txtField09, txtField10,
+                txtField11, txtField12, txtField13, txtField14, txtField15, txtField16,
+                txtField17, txtField18, txtField19, txtField20, txtField21, txtField22,
+                txtField23, txtField24, txtField25, txtField26, txtField27, txtField28, txtField29,
+                txtField30, txtField31, txtField32, txtField33, txtField34},};
         chkField01.setSelected(false);
         chkField02.setSelected(false);
         chkField03.setSelected(false);
         chkField04.setSelected(false);
         cmbField01.setValue(null);
         cmbField01.setValue(null);
-        
+
         // Loop through each array of TextFields and clear them
         for (TextField[] fields : allFields) {
             for (TextField field : fields) {
@@ -978,23 +934,28 @@ public class InventoryDetailController implements  Initializable,ScreenInterface
         }
     }
 
-    private Stage getStage(){
-	return (Stage) txtField01.getScene().getWindow();
+    private Stage getStage() {
+        return (Stage) txtField01.getScene().getWindow();
     }
-//    public void setOverlay(boolean fbVal){
-//        overlay.setVisible(fbVal);
-//    }
-    public void loadResult(String fsValue, boolean fbVal){
-        JSONObject poJson = new JSONObject();
+
+    public void setOverlay(boolean fbVal) {
         overlay.setVisible(fbVal);
-        poJson = oTrans.openRecord(fsValue);
-        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
+    }
+
+    public void loadResult(String fsValue, boolean fbVal) {
+
+        initializeObject();
+        JSONObject poJson = new JSONObject();
+        overlay.setVisible(false);
+        poJson = oTrans.InvMaster().searchRecord(fsValue, fbVal);
+//        poJson = oTrans.openRecord(fsValue);
+        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
         }
         initButton(pnEditMode);
         System.out.print("\neditmode on browse == " + pnEditMode);
         initTabAnchor();
         loadInventory();
-               
+
     }
 }

@@ -836,17 +836,14 @@ public class InvRequestROQController implements Initializable, ScreenInterface {
         for (String type : category) {
             if (types == null) {
                 if ("0001".equals(type)) {
-//                    types = RequestControllerFactory.RequestType.MC;
+                    types = RequestControllerFactory.RequestType.MC;
                     oTrans.setType(types);
                 } else if ("0002".equals(type)) {
-//                    types = RequestControllerFactory.RequestType.MP;
+                    types = RequestControllerFactory.RequestType.MPUnits;
                     oTrans.setType(types);
                 } else if ("0003".equals(type)) {
-//                    types = RequestControllerFactory.RequestType.AUTO;
+                    types = RequestControllerFactory.RequestType.AUTO;
                     oTrans.setType(types);
-                }else if ("0003".equals(type)) {
-//                    types = RequestControllerFactory.RequestType.AUTO;
-//                    oTrans.setType(types);
                 }
 
                 System.out.println("type value = " + types);
