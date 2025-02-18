@@ -66,8 +66,8 @@ public class LaborController implements Initializable, ScreenInterface {
     private FontAwesomeIconView faActivate;
 
     @FXML
-   private ComboBox cmbField01;
-    
+    private ComboBox cmbField01;
+
     @FXML
     private TextField txtField01,
             txtField02,
@@ -77,7 +77,7 @@ public class LaborController implements Initializable, ScreenInterface {
             txtSeeks01;
 
     @FXML
-    private CheckBox cbField01,cbField02;
+    private CheckBox cbField01, cbField02;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -100,9 +100,9 @@ public class LaborController implements Initializable, ScreenInterface {
         LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
         oParameters = new ParamControllers(oApp, logwrapr);
         oParameters.Labor().setRecordStatus("0123");
-        
-        System.out.println("init1 == " +  oParameters.Labor());
-        System.out.println("init2 == " +  oParameters.Labor().getModel().getLaborId());
+
+        System.out.println("init1 == " + oParameters.Labor());
+        System.out.println("init2 == " + oParameters.Labor().getModel().getLaborId());
         System.out.println("init3 == " + oParameters.Labor().getModel().getNextCode());
     }
 
@@ -225,7 +225,7 @@ public class LaborController implements Initializable, ScreenInterface {
         txtSeeks01.clear();
         cbField01.setSelected(false);
 //        cbField02.setSelected(false);
-        
+
         cmbField01.getSelectionModel().select(0);
     }
 
@@ -254,6 +254,41 @@ public class LaborController implements Initializable, ScreenInterface {
         txtField03.focusedProperty().addListener(txtField_Focus);
         txtField04.focusedProperty().addListener(txtField_Focus);
         txtField05.focusedProperty().addListener(txtField_Focus);
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
+    }
+
+    private void txtSeeks_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        JSONObject poJson;
+        poJson = new JSONObject();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 01:
+                        poJson = oParameters.Labor().searchRecord(lsValue, false);
+                        if ("error".equals((String) poJson.get("result"))) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        txtSeeks01.setText((String) oParameters.Labor().getModel().getLaborName());
+                        pnEditMode = EditMode.READY;
+                        loadRecord();
+                        break;
+                }
+            case ENTER:
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
+        }
     }
 
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
@@ -336,6 +371,7 @@ public class LaborController implements Initializable, ScreenInterface {
             oParameters.Labor().getModel().setRecordStatus("0");
         }
     }
+
     @FXML
     void cbField02_Clicked(MouseEvent event) {
         if (cbField02.isSelected()) {
@@ -354,6 +390,7 @@ public class LaborController implements Initializable, ScreenInterface {
         boolean isEditable = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
         AnchorInputs.setDisable(!isEditable);
     }
+
     private void initComboBoxes() {
         // Set the items of the ComboBox to the list of genders
         cmbField01.setItems(LaborType);

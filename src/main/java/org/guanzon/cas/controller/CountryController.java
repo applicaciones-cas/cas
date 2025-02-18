@@ -43,7 +43,7 @@ public class CountryController implements Initializable, ScreenInterface {
     private ObservableList<ModelResultSet> data = FXCollections.observableArrayList();
 
     @FXML
-    private AnchorPane AnchorMain,AnchorInputs;
+    private AnchorPane AnchorMain, AnchorInputs;
     @FXML
     private HBox hbButtons;
 
@@ -120,11 +120,11 @@ public class CountryController implements Initializable, ScreenInterface {
                     if ("success".equals((String) poJSON.get("result"))) {
                         pnEditMode = EditMode.ADDNEW;
                         initButton(pnEditMode);
-        initTabAnchor();
+                        initTabAnchor();
                         loadRecord();
                     } else {
                         ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-        initTabAnchor();
+                        initTabAnchor();
                     }
                     break;
                 case "btnBrowse":
@@ -137,7 +137,7 @@ public class CountryController implements Initializable, ScreenInterface {
                     }
                     pnEditMode = EditMode.READY;
                     loadRecord();
-        initTabAnchor();
+                    initTabAnchor();
                     break;
                 case "btnUpdate":
                     poJSON = oParameters.Country().updateRecord();
@@ -147,7 +147,7 @@ public class CountryController implements Initializable, ScreenInterface {
                     }
                     pnEditMode = oParameters.Color().getEditMode();
                     initButton(pnEditMode);
-        initTabAnchor();
+                    initTabAnchor();
                     break;
                 case "btnCancel":
                     if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
@@ -155,7 +155,7 @@ public class CountryController implements Initializable, ScreenInterface {
                         initializeObject();
                         pnEditMode = EditMode.UNKNOWN;
                         initButton(pnEditMode);
-        initTabAnchor();
+                        initTabAnchor();
                     }
                     break;
                 case "btnSave":
@@ -169,6 +169,31 @@ public class CountryController implements Initializable, ScreenInterface {
                         clearAllFields();
                     } else {
                         ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                    }
+                    break;
+                case "btnActivate":
+                    String Status = oParameters.Made().getModel().getRecordStatus();
+                    JSONObject poJsON;
+
+                    switch (Status) {
+                        case "0":
+                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                poJsON = oParameters.Country().postTransaction();
+                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                loadRecord();
+                            }
+                            break;
+                        case "1":
+                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                poJsON = oParameters.Country().voidTransaction();
+                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                loadRecord();
+                            }
+                            break;
+                        default:
+
+                            break;
+
                     }
                     break;
             }
@@ -206,8 +231,43 @@ public class CountryController implements Initializable, ScreenInterface {
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
+
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
     }
 
+    private void txtSeeks_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        JSONObject poJson;
+        poJson = new JSONObject();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 01:
+                        poJson = oParameters.Country().searchRecord(lsValue, false);
+                        if ("error".equals((String) poJson.get("result"))) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        txtSeeks01.setText((String) oParameters.Country().getModel().getCountryName());
+                        pnEditMode = EditMode.READY;
+                        loadRecord();
+                        break;
+                }
+            case ENTER:
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
+        }
+    }
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         if (!pbLoaded) {
             return;
@@ -243,7 +303,7 @@ public class CountryController implements Initializable, ScreenInterface {
             txtField.selectAll();
         }
     };
-    
+
     private void txtField_KeyPressed(KeyEvent event) {
         TextField txtField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
@@ -274,47 +334,45 @@ public class CountryController implements Initializable, ScreenInterface {
                 CommonUtils.SetPreviousFocus(txtField);
         }
     }
-    
+
     private void loadRecord() {
         boolean lbActive = oParameters.Country().getModel().getRecordStatus() == "1";
-        
+
         txtField01.setText(oParameters.Country().getModel().getCountryId());
         txtField02.setText(oParameters.Country().getModel().getCountryName());
         txtField03.setText(oParameters.Country().getModel().getNationality());
 
-
-        switch(oParameters.Country().getModel().getRecordStatus()){
+        switch (oParameters.Country().getModel().getRecordStatus()) {
             case "0":
-                 btnActivate.setText("Deactivate");
+                btnActivate.setText("Deactivate");
                 faActivate.setGlyphName("CLOSE");
-                cbField01.setSelected( false);
+                cbField01.setSelected(false);
                 break;
             case "1":
                 btnActivate.setText("Activate");
                 faActivate.setGlyphName("CHECK");
-                cbField01.setSelected( true);
+                cbField01.setSelected(true);
                 break;
-        }   
+        }
     }
-    
+
     @FXML
     void cbField01_Clicked(MouseEvent event) {
-        if (cbField01.isSelected()){
+        if (cbField01.isSelected()) {
             oParameters.Country().getModel().setRecordStatus("1");
-        }else{
+        } else {
             oParameters.Country().getModel().setRecordStatus("0");
         }
     }
-    
+
     private void initTabAnchor() {
-    if (AnchorInputs == null) {
-        System.err.println("Error: AnchorInput is not initialized.");
-        return;
+        if (AnchorInputs == null) {
+            System.err.println("Error: AnchorInput is not initialized.");
+            return;
+        }
+
+        boolean isEditable = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
+        AnchorInputs.setDisable(!isEditable);
     }
-    
-    boolean isEditable = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
-    AnchorInputs.setDisable(!isEditable);
+
 }
-
-    }
-

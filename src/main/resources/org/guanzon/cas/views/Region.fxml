@@ -29,37 +29,37 @@
                             <children>
                                 <HBox fx:id="hbButtons" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <Button fx:id="btnBrowse" contentDisplay="TOP" graphicTextGap="3.0" layoutX="10.0" layoutY="10.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Browse">
+                                        <Button fx:id="btnBrowse" contentDisplay="TOP" graphicTextGap="3.0" layoutX="10.0" layoutY="10.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Browse">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" styleClass="FontIcon" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnNew" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="New">
+                                        <Button fx:id="btnNew" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="New">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="PLUS" size="20" styleClass="FontIcon" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnSave" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Save">
+                                        <Button fx:id="btnSave" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Save">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="SAVE" size="20" styleClass="FontIcon" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnUpdate" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Update">
+                                        <Button fx:id="btnUpdate" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Update">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="EDIT" size="20" styleClass="FontIcon" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnCancel" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Cancel">
+                                        <Button fx:id="btnCancel" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Cancel">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="CLOSE" size="20" styleClass="FontIcon" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnActivate" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Activate">
+                                        <Button fx:id="btnActivate" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Activate">
                                             <graphic>
                                                 <FontAwesomeIconView fx:id="faActivate" glyphName="CHECK" size="20" styleClass="FontIcon" />
                                             </graphic>
                                         </Button>
-                                        <Button fx:id="btnClose" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false"  prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Close">
+                                        <Button fx:id="btnClose" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process_dark" text="Close">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="POWER_OFF" size="20" styleClass="FontIcon" />
                                             </graphic>

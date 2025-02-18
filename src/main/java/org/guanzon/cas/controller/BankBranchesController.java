@@ -242,10 +242,46 @@ public class BankBranchesController implements Initializable, ScreenInterface {
         txtField07.focusedProperty().addListener(txtField_Focus);
         txtField08.focusedProperty().addListener(txtField_Focus);
         txtField09.focusedProperty().addListener(txtField_Focus);
-        
+
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
     }
+
+    private void txtSeeks_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        JSONObject poJson;
+        poJson = new JSONObject();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 01:
+                        poJson = oParameters.BanksBranch().searchRecord(lsValue, false);
+                        if ("error".equals((String) poJson.get("result"))) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        txtSeeks01.setText((String) oParameters.BanksBranch().getModel().getBranchBankName());
+                        pnEditMode = EditMode.READY;
+                        loadRecord();
+                        break;
+                }
+            case ENTER:
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
+        }
+    }
+
     private void txtField_KeyPressed(KeyEvent event) {
         TextField txtField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
@@ -261,7 +297,7 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
                         oParameters.BanksBranch().getModel().setBankID(oParameters.Banks().getModel().getBankID());
-                        txtField03.setText((String)oParameters.InventoryType().getModel().getDescription());
+                        txtField03.setText((String) oParameters.InventoryType().getModel().getDescription());
                         break;
                     case 07:
                         poJson = oParameters.TownCity().searchRecord(lsValue, false);
@@ -269,7 +305,7 @@ public class BankBranchesController implements Initializable, ScreenInterface {
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
                         oParameters.BanksBranch().getModel().setTownID(oParameters.TownCity().getModel().getTownId());
-                        txtField04.setText((String)oParameters.Category().getModel().getDescription());
+                        txtField04.setText((String) oParameters.Category().getModel().getDescription());
                         break;
                 }
             case ENTER:
