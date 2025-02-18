@@ -16,10 +16,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
@@ -64,7 +66,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
 
     @FXML
     private CheckBox cbField01;
-    
+
     @FXML
     private DatePicker dpField01;
 
@@ -232,6 +234,41 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
     private void InitTextFields() {
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
+    }
+
+    private void txtSeeks_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        JSONObject poJson;
+        poJson = new JSONObject();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 01:
+                        poJson = oParameters.AffiliatedCompany().searchRecord(lsValue, false);
+                        if ("error".equals((String) poJson.get("result"))) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        txtSeeks01.setText((String) oParameters.AffiliatedCompany().getModel().getCompanyName());
+                        pnEditMode = EditMode.READY;
+                        loadRecord();
+                        break;
+                }
+            case ENTER:
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
+        }
     }
 
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
@@ -272,18 +309,17 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
 
         txtField01.setText(oParameters.AffiliatedCompany().getModel().getCompanyId());
         txtField02.setText(oParameters.AffiliatedCompany().getModel().getCompanyName());
-        if (pnEditMode == 0){
+        if (pnEditMode == 0) {
             oParameters.AffiliatedCompany().getModel().setDateAffiliat(SQLUtil.toDate(dpField01.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-        } else if(oParameters.AffiliatedCompany().getModel().getDateAffiliat().toString() != null 
-                && !oParameters.AffiliatedCompany().getModel().getDateAffiliat().toString().isEmpty()){
-                
-                dpField01.setValue(strToDate(SQLUtil.dateFormat(
-                    oParameters.AffiliatedCompany().getModel().getDateAffiliat(), 
+        } else if (oParameters.AffiliatedCompany().getModel().getDateAffiliat().toString() != null
+                && !oParameters.AffiliatedCompany().getModel().getDateAffiliat().toString().isEmpty()) {
+
+            dpField01.setValue(strToDate(SQLUtil.dateFormat(
+                    oParameters.AffiliatedCompany().getModel().getDateAffiliat(),
                     SQLUtil.FORMAT_SHORT_DATE)));
-            
+
         }
 
-        
         switch (oParameters.AffiliatedCompany().getModel().getRecordStatus()) {
             case "1":
                 btnActivate.setText("Deactivate");
@@ -297,6 +333,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
                 break;
         }
     }
+
     public static LocalDate strToDate(String val) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(val, dateFormatter);
@@ -320,7 +357,8 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
         boolean isEditable = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
         AnchorInputs.setDisable(!isEditable);
     }
-    private void initDatePicker(){
+
+    private void initDatePicker() {
         dpField01.setOnAction(event -> {
             oParameters.AffiliatedCompany().getModel().setDateAffiliat(SQLUtil.toDate(dpField01.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
         });

@@ -66,7 +66,7 @@ public class TermController implements Initializable, ScreenInterface {
             txtSeeks01;
 
     @FXML
-    private CheckBox cbField01,cbField02;
+    private CheckBox cbField01, cbField02;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -232,48 +232,43 @@ public class TermController implements Initializable, ScreenInterface {
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
         txtField03.focusedProperty().addListener(txtField_Focus);
-        
-//        txtField02.setOnKeyPressed(this::txtField_KeyPressed);
-//        txtField06.setOnKeyPressed(this::txtField_KeyPressed);
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
+
     }
-//    private void txtField_KeyPressed(KeyEvent event) {
-//        TextField txtField = (TextField) event.getSource();
-//        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
-//        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
-//        JSONObject poJson;
-//        poJson = new JSONObject();
-//        switch (event.getCode()) {
-//            case F3:
-//                switch (lnIndex) {
-//                    case 02:
-//                        poJson = oParameters.Brand().searchRecord(lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        }
-//                        oParameters.Term().getModel().setMeasureId(oParameters.Brand().getModel().getBrandId());
-//                        txtField02.setText((String)oParameters.Brand().getModel().getDescription());
-//                        break;
-//                    case 06:
-//                        poJson = oParameters.ModelSeries().searchRecord(lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        }
-//                        oParameters.Term().getModel().setSeriesId( oParameters.ModelSeries().getModel().getSeriesID());
-//                        txtField06.setText((String)oParameters.ModelSeries().getModel().getDescription());
-//                        break;
-//                }
-//            case ENTER:
-//        }
-//        switch (event.getCode()) {
-//            case ENTER:
-//                CommonUtils.SetNextFocus(txtField);
-//            case DOWN:
-//                CommonUtils.SetNextFocus(txtField);
-//                break;
-//            case UP:
-//                CommonUtils.SetPreviousFocus(txtField);
-//        }
-//    }
+
+    private void txtSeeks_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        JSONObject poJson;
+        poJson = new JSONObject();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 01:
+                        poJson = oParameters.Term().searchRecord(lsValue, false);
+                        if ("error".equals((String) poJson.get("result"))) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        txtSeeks01.setText((String) oParameters.Term().getModel().getDescription());
+                        pnEditMode = EditMode.READY;
+                        loadRecord();
+                        break;
+                }
+            case ENTER:
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
+        }
+    }
 
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         if (!pbLoaded) {
@@ -319,7 +314,7 @@ public class TermController implements Initializable, ScreenInterface {
         txtField01.setText(oParameters.Term().getModel().getTermCode());
         txtField02.setText(oParameters.Term().getModel().getDescription());
         txtField03.setText(CommonUtils.NumberFormat(oParameters.Term().getModel().getTermValue(), "#,##0.00"));
-        
+
         switch (oParameters.Term().getModel().getRecordStatus()) {
             case "1":
                 btnActivate.setText("Deactivate");
@@ -342,7 +337,7 @@ public class TermController implements Initializable, ScreenInterface {
             oParameters.Term().getModel().setRecordStatus("0");
         }
     }
-    
+
     @FXML
     void cbField02_Clicked(MouseEvent event) {
         if (cbField02.isSelected()) {
@@ -351,7 +346,7 @@ public class TermController implements Initializable, ScreenInterface {
             oParameters.Term().getModel().setRecordStatus("0");
         }
     }
-    
+
     private void initTabAnchor() {
         if (AnchorInputs == null) {
             System.err.println("Error: AnchorInput is not initialized.");

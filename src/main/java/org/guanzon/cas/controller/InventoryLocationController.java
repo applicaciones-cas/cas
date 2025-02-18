@@ -232,10 +232,44 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
         txtField02.focusedProperty().addListener(txtField_Focus);
         txtField03.focusedProperty().addListener(txtField_Focus);
         txtField04.focusedProperty().addListener(txtField_Focus);
-        
-        
+
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
+    }
+
+    private void txtSeeks_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        JSONObject poJson;
+        poJson = new JSONObject();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 01:
+                        poJson = oParameters.InventoryLocation().searchRecord(lsValue, false);
+                        if ("error".equals((String) poJson.get("result"))) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        txtSeeks01.setText((String) oParameters.InventoryLocation().getModel().getDescription());
+                        pnEditMode = EditMode.READY;
+                        loadRecord();
+                        break;
+                }
+            case ENTER:
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
+        }
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -252,8 +286,8 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
                         if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
-                        oParameters.InventoryLocation().getModel().setWarehouseId( oParameters.Warehouse().getModel().getWarehouseId());
-                        txtField03.setText((String)oParameters.Warehouse().getModel().getWarehouseName());
+                        oParameters.InventoryLocation().getModel().setWarehouseId(oParameters.Warehouse().getModel().getWarehouseId());
+                        txtField03.setText((String) oParameters.Warehouse().getModel().getWarehouseName());
                         break;
                     case 04:
                         poJson = oParameters.Section().searchRecord(lsValue, false);
@@ -261,7 +295,7 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
                         oParameters.InventoryLocation().getModel().setSectionId(oParameters.Section().getModel().getSectionId());
-                        txtField04.setText((String)oParameters.Section().getModel().getSectionName());
+                        txtField04.setText((String) oParameters.Section().getModel().getSectionName());
                         break;
                 }
             case ENTER:
@@ -276,7 +310,7 @@ public class InventoryLocationController implements Initializable, ScreenInterfa
                 CommonUtils.SetPreviousFocus(txtField);
         }
     }
-    
+
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         if (!pbLoaded) {
             return;

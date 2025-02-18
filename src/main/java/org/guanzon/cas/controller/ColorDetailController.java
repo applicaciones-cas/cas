@@ -226,9 +226,45 @@ public class ColorDetailController implements Initializable, ScreenInterface {
         for (TextField textField : focusTextFields) {
             textField.focusedProperty().addListener(txtField_Focus);
         }
-        
+
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
     }
+
+    private void txtSeeks_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        JSONObject poJson;
+        poJson = new JSONObject();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 01:
+                        poJson = oParameters.ColorDetail().searchRecord(lsValue, false);
+                        if ("error".equals((String) poJson.get("result"))) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        txtSeeks01.setText((String) oParameters.ColorDetail().getModel().getDescription());
+                        pnEditMode = EditMode.READY;
+                        loadRecord();
+                        break;
+                }
+            case ENTER:
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
+        }
+    }
+
     private void txtField_KeyPressed(KeyEvent event) {
         TextField txtField = (TextField) event.getSource();
         int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
@@ -244,9 +280,9 @@ public class ColorDetailController implements Initializable, ScreenInterface {
                             ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
                         oParameters.ColorDetail().getModel().setColorCode(oParameters.Color().getModel().getColorId());
-                        txtField03.setText((String)oParameters.Color().getModel().getDescription());
+                        txtField03.setText((String) oParameters.Color().getModel().getDescription());
                         break;
-                    
+
                 }
             case ENTER:
         }
@@ -306,14 +342,14 @@ public class ColorDetailController implements Initializable, ScreenInterface {
 
         switch (oParameters.ColorDetail().getModel().getRecordStatus()) {
             case "1":
-                 btnActivate.setText("Deactivate");
+                btnActivate.setText("Deactivate");
                 faActivate.setGlyphName("CLOSE");
-                cbActive.setSelected( true);
+                cbActive.setSelected(true);
                 break;
             case "0":
                 btnActivate.setText("Activate");
                 faActivate.setGlyphName("CHECK");
-                cbActive.setSelected( false);
+                cbActive.setSelected(false);
                 break;
         }
     }

@@ -219,6 +219,60 @@ public class LaborModelController implements Initializable, ScreenInterface {
         txtField03.focusedProperty().addListener(txtField_Focus);
         txtField01.setOnKeyPressed(this::txtField_KeyPressed);
         txtField02.setOnKeyPressed(this::txtField_KeyPressed);
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
+    }
+
+    private void txtSeeks_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        JSONObject poJson;
+        poJson = new JSONObject();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 01:
+
+                        poJson = oParameters.Model().searchRecord(lsValue, false);
+                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
+                        }
+                        poJson = oParameters.Brand().searchRecord(oParameters.Model().getModel().getBrandId(), true);
+                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
+                        }
+                        txtField01.setText((String) oParameters.Brand().getModel().getDescription());
+                        oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
+                        txtField02.setText((String) oParameters.Model().getModel().getDescription());
+                        oParameters.LaborModel().LaborList(oParameters.Model().getModel().getModelId());
+                        pnEditMode = EditMode.UPDATE;
+                        initButton(pnEditMode);
+                        LoadList();
+                        initTabAnchor();
+//                        poJson = oParameters.Barangay().searchRecord(lsValue, false);
+//                    if ("error".equals((String) poJson.get("result"))) {
+//                        ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        txtSeeks01.clear();
+//                        break;
+//                    }
+//                    txtSeeks01.setText((String) oParameters.Barangay().getModel().getBarangayName());
+//                    pnEditMode = EditMode.READY;
+//                    loadRecord();
+                        break;
+                }
+            case ENTER:
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
+        }
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -323,13 +377,13 @@ public class LaborModelController implements Initializable, ScreenInterface {
     private void loadRecord() {
         txtField03.setText(oParameters.LaborModel().getModel().Model().getDescription());
         txtField04.setText(CommonUtils.NumberFormat(oParameters.LaborModel().getModel().getAmount(), "#,##0.00"));
-        
+
     }
 
-@FXML
-void cbField01_Clicked(MouseEvent event) {
-    oParameters.LaborModel().getModel().setRecordStatus(cbField01.isSelected() ? "1" : "0");
-}
+    @FXML
+    void cbField01_Clicked(MouseEvent event) {
+        oParameters.LaborModel().getModel().setRecordStatus(cbField01.isSelected() ? "1" : "0");
+    }
 
     private void initTabAnchor() {
         if (AnchorInputs == null) {
@@ -365,40 +419,39 @@ void cbField01_Clicked(MouseEvent event) {
     }
 
     private void LoadList() {
-    System.out.println("Loading Labor List...");
-    data.clear();
+        System.out.println("Loading Labor List...");
+        data.clear();
 
-    // ✅ Get cached data from the data handler
-    cacheLaborList = oParameters.LaborModel().getCachedLaborList();
+        // ✅ Get cached data from the data handler
+        cacheLaborList = oParameters.LaborModel().getCachedLaborList();
 
-    if (cacheLaborList == null) {
-        System.out.println("No cached data found! Fetching from database...");
-        oParameters.LaborModel().LaborList(""); // Reload data if cache is empty
-        return;
-    }
-
-    try {
-        cacheLaborList.beforeFirst(); // Reset cursor before reading
-        int count = 1; // Initialize counter
-
-        for (; cacheLaborList.next(); count++) {
-            String laborName = cacheLaborList.getString("sLaborNme");
-            String amount = cacheLaborList.getString("nAmountxx");
-            String recordStat = cacheLaborList.getString("cRecdStat");
-
-            System.out.println("Entry No: " + count);
-            System.out.println("Labor Name: " + laborName);
-            System.out.println("Amount: " + amount);
-            System.out.println("Status: " + recordStat);
-
-            data.add(new ModelListParameter(String.valueOf(count), laborName, amount, recordStat));
+        if (cacheLaborList == null) {
+            System.out.println("No cached data found! Fetching from database...");
+            oParameters.LaborModel().LaborList(""); // Reload data if cache is empty
+            return;
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
+        try {
+            cacheLaborList.beforeFirst(); // Reset cursor before reading
+            int count = 1; // Initialize counter
 
+            for (; cacheLaborList.next(); count++) {
+                String laborName = cacheLaborList.getString("sLaborNme");
+                String amount = cacheLaborList.getString("nAmountxx");
+                String recordStat = cacheLaborList.getString("cRecdStat");
+
+                System.out.println("Entry No: " + count);
+                System.out.println("Labor Name: " + laborName);
+                System.out.println("Amount: " + amount);
+                System.out.println("Status: " + recordStat);
+
+                data.add(new ModelListParameter(String.valueOf(count), laborName, amount, recordStat));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 //    @FXML
 //    void tblList_Clicked(MouseEvent event) {
@@ -448,61 +501,61 @@ void cbField01_Clicked(MouseEvent event) {
 //        ));
 //        tblList.refresh();
 //    }
-@FXML
-void tblList_Clicked(MouseEvent event) {
-    pnListRow = tblList.getSelectionModel().getSelectedIndex();
+    @FXML
+    void tblList_Clicked(MouseEvent event) {
+        pnListRow = tblList.getSelectionModel().getSelectedIndex();
 
-    if (pnListRow >= 0) {
-        try {
-            if (cacheLaborList == null) {
-                return;
+        if (pnListRow >= 0) {
+            try {
+                if (cacheLaborList == null) {
+                    return;
+                }
+
+                cacheLaborList.absolute(pnListRow + 1);
+                double newAmount = cacheLaborList.getDouble("nAmountxx");
+                txtField04.setText(CommonUtils.NumberFormat(newAmount, "#,##0.00"));
+                txtField03.setText(cacheLaborList.getString("sLaborNme"));
+                cbField01.setSelected("1".equals(cacheLaborList.getString("cRecdStat")));
+
+                txtField04.textProperty().addListener((observable, oldValue, newValue) -> {
+                    try {
+                        double updatedAmount = Double.parseDouble(newValue.replace(",", ""));
+                        cacheLaborList.updateDouble("nAmountxx", updatedAmount);
+                        cacheLaborList.updateRow();
+
+                        data.set(pnListRow, new ModelListParameter(
+                                String.valueOf(pnListRow + 1), // Replaced labor ID with count
+                                cacheLaborList.getString("sLaborNme"),
+                                CommonUtils.NumberFormat(updatedAmount, "#,##0.00"),
+                                cacheLaborList.getString("cRecdStat")
+                        ));
+
+                        tblList.refresh();
+                    } catch (NumberFormatException | SQLException e) {
+                    }
+                });
+
+                cbField01.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                    try {
+                        String updatedStatus = newValue ? "1" : "0";
+                        cacheLaborList.updateString("cRecdStat", updatedStatus);
+                        cacheLaborList.updateRow();
+
+                        data.set(pnListRow, new ModelListParameter(
+                                String.valueOf(pnListRow + 1), // Replaced labor ID with count
+                                cacheLaborList.getString("sLaborNme"),
+                                CommonUtils.NumberFormat(cacheLaborList.getDouble("nAmountxx"), "#,##0.00"),
+                                cacheLaborList.getString("cRecdStat")
+                        ));
+
+                        tblList.refresh();
+                    } catch (SQLException e) {
+                    }
+                });
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-
-            cacheLaborList.absolute(pnListRow + 1);
-            double newAmount = cacheLaborList.getDouble("nAmountxx");
-            txtField04.setText(CommonUtils.NumberFormat(newAmount, "#,##0.00"));
-            txtField03.setText(cacheLaborList.getString("sLaborNme"));
-            cbField01.setSelected("1".equals(cacheLaborList.getString("cRecdStat")));
-
-            txtField04.textProperty().addListener((observable, oldValue, newValue) -> {
-                try {
-                    double updatedAmount = Double.parseDouble(newValue.replace(",", ""));
-                    cacheLaborList.updateDouble("nAmountxx", updatedAmount);
-                    cacheLaborList.updateRow();
-
-                    data.set(pnListRow, new ModelListParameter(
-                            String.valueOf(pnListRow + 1),  // Replaced labor ID with count
-                            cacheLaborList.getString("sLaborNme"),
-                            CommonUtils.NumberFormat(updatedAmount, "#,##0.00"),
-                            cacheLaborList.getString("cRecdStat")
-                    ));
-
-                    tblList.refresh();
-                } catch (NumberFormatException | SQLException e) {
-                }
-            });
-
-            cbField01.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                try {
-                    String updatedStatus = newValue ? "1" : "0";
-                    cacheLaborList.updateString("cRecdStat", updatedStatus);
-                    cacheLaborList.updateRow();
-
-                    data.set(pnListRow, new ModelListParameter(
-                            String.valueOf(pnListRow + 1),  // Replaced labor ID with count
-                            cacheLaborList.getString("sLaborNme"),
-                            CommonUtils.NumberFormat(cacheLaborList.getDouble("nAmountxx"), "#,##0.00"),
-                            cacheLaborList.getString("cRecdStat")
-                    ));
-
-                    tblList.refresh();
-                } catch (SQLException e) {
-                }
-            });
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
-}
 
 }

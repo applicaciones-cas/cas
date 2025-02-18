@@ -13,9 +13,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
@@ -218,6 +220,42 @@ public class ColorController implements Initializable, ScreenInterface {
         for (TextField textField : focusTextFields) {
             textField.focusedProperty().addListener(txtField_Focus);
         }
+
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
+    }
+
+    private void txtSeeks_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        JSONObject poJson;
+        poJson = new JSONObject();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 01:
+                        poJson = oParameters.Color().searchRecord(lsValue, false);
+                        if ("error".equals((String) poJson.get("result"))) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        txtSeeks01.setText((String) oParameters.Color().getModel().getDescription());
+                        pnEditMode = EditMode.READY;
+                        loadRecord();
+                        break;
+                }
+            case ENTER:
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
+        }
     }
 
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
@@ -262,14 +300,14 @@ public class ColorController implements Initializable, ScreenInterface {
 
         switch (oParameters.Color().getModel().getRecordStatus()) {
             case "1":
-                 btnActivate.setText("Deactivate");
+                btnActivate.setText("Deactivate");
                 faActivate.setGlyphName("CLOSE");
-                cbActive.setSelected( true);
+                cbActive.setSelected(true);
                 break;
             case "0":
                 btnActivate.setText("Activate");
                 faActivate.setGlyphName("CHECK");
-                cbActive.setSelected( false);
+                cbActive.setSelected(false);
                 break;
         }
     }

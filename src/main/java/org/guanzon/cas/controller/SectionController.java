@@ -65,7 +65,7 @@ public class SectionController implements Initializable, ScreenInterface {
             txtSeeks01;
 
     @FXML
-    private CheckBox cbField01,cbField02;
+    private CheckBox cbField01, cbField02;
 
     @Override
     public void setGRider(GRider foValue) {
@@ -228,48 +228,43 @@ public class SectionController implements Initializable, ScreenInterface {
     private void InitTextFields() {
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
-        
-//        txtField02.setOnKeyPressed(this::txtField_KeyPressed);
-//        txtField06.setOnKeyPressed(this::txtField_KeyPressed);
+        txtSeeks01.setOnKeyPressed(this::txtSeeks_KeyPressed);
+
     }
-//    private void txtField_KeyPressed(KeyEvent event) {
-//        TextField txtField = (TextField) event.getSource();
-//        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
-//        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
-//        JSONObject poJson;
-//        poJson = new JSONObject();
-//        switch (event.getCode()) {
-//            case F3:
-//                switch (lnIndex) {
-//                    case 02:
-//                        poJson = oParameters.Brand().searchRecord(lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        }
-//                        oParameters.Section().getModel().setMeasureId(oParameters.Brand().getModel().getBrandId());
-//                        txtField02.setText((String)oParameters.Brand().getModel().getDescription());
-//                        break;
-//                    case 06:
-//                        poJson = oParameters.ModelSeries().searchRecord(lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        }
-//                        oParameters.Section().getModel().setSeriesId( oParameters.ModelSeries().getModel().getSeriesID());
-//                        txtField06.setText((String)oParameters.ModelSeries().getModel().getDescription());
-//                        break;
-//                }
-//            case ENTER:
-//        }
-//        switch (event.getCode()) {
-//            case ENTER:
-//                CommonUtils.SetNextFocus(txtField);
-//            case DOWN:
-//                CommonUtils.SetNextFocus(txtField);
-//                break;
-//            case UP:
-//                CommonUtils.SetPreviousFocus(txtField);
-//        }
-//    }
+
+    private void txtSeeks_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        JSONObject poJson;
+        poJson = new JSONObject();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 01:
+                        poJson = oParameters.Section().searchRecord(lsValue, false);
+                        if ("error".equals((String) poJson.get("result"))) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        txtSeeks01.setText((String) oParameters.Section().getModel().getSectionName());
+                        pnEditMode = EditMode.READY;
+                        loadRecord();
+                        break;
+                }
+            case ENTER:
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
+        }
+    }
 
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         if (!pbLoaded) {
@@ -309,7 +304,7 @@ public class SectionController implements Initializable, ScreenInterface {
 
         txtField01.setText(oParameters.Section().getModel().getSectionId());
         txtField02.setText(oParameters.Section().getModel().getSectionName());
-        
+
         switch (oParameters.Section().getModel().getRecordStatus()) {
             case "1":
                 btnActivate.setText("Deactivate");
@@ -332,7 +327,6 @@ public class SectionController implements Initializable, ScreenInterface {
             oParameters.Section().getModel().setRecordStatus("0");
         }
     }
-    
 
     private void initTabAnchor() {
         if (AnchorInputs == null) {

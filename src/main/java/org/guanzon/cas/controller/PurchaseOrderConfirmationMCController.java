@@ -495,7 +495,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         } else {
             btnConfirm.setDisable(true);
         }
-        oTrans.setTransType("MC");
+//        oTrans.setTransType("MC");
 
     }
 
@@ -518,20 +518,20 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
         txtDetail05.setText((String) data.get(pnDetailRow).getIndex08());
         txtDetail06.setText(Integer.toString(oTrans.getDetailModel(pnDetailRow).getQuantity()));
 
-        InvMaster loInv_Master = oTrans.GetInvMaster((String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx"), true);
+//        InvMaster loInv_Master = oTrans.GetInvMaster((String) oTrans.getDetailModel(pnDetailRow).getValue("sStockIDx"), true);
 
         TextField[] textFields = {txtDetail07, txtDetail08, txtDetail10, txtDetail11};
         String[] keys = {"nQtyOnHnd", "nMaxLevel", "nResvOrdr", "nBackOrdr"};
 
         for (int i = 0; i < textFields.length; i++) {
             try {
-                textFields[i].setText(String.valueOf(loInv_Master.getMaster(keys[i])));
+//                textFields[i].setText(String.valueOf(loInv_Master.getMaster(keys[i])));
             } catch (Exception e) {
                 textFields[i].setText("0");
             }
         }
         try {
-            txtDetail09.setText((String) loInv_Master.getMaster("cClassify"));
+//            txtDetail09.setText((String) loInv_Master.getMaster("cClassify"));
         } catch (Exception e) {
             txtDetail09.setText("F");
         }
@@ -604,8 +604,8 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
 ;
                 loInventory = oTrans.GetInventory((String) oTrans.getDetailModel(lnCtr).getValue("sStockIDx"), true);
                 
-                oTrans.setBrandID((String) loInventory.getMaster("sBrandIDx"));
-                loBrand = oTrans.GetBrand(oTrans.getBrandID(), true);
+//                oTrans.setBrandID((String) loInventory.getMaster("sBrandIDx"));
+//                loBrand = oTrans.GetBrand(oTrans.getBrandID(), true);
                 
                 loMdl = oTrans.GetModel((String) loInventory.getMaster("sModelIDx"), true);
                 loMdlVrnt = oTrans.GetModel_Variant((String) loMdl.getModel().getVariantID(), true);
@@ -629,7 +629,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
 
                 if (loInventory.getMaster("xBrandNme").toString().length() == 0) {
                     if (pnEditMode == EditMode.ADDNEW) {
-                        loInventory2 = (String) loBrand.getMaster("sDescript");
+//                        loInventory2 = (String) loBrand.getMaster("sDescript");
                     }
                 } else {
                     loInventory2 = (String) loInventory.getMaster("xBrandNme");
@@ -691,7 +691,7 @@ public class PurchaseOrderConfirmationMCController implements Initializable, Scr
             setSelectedDetail();
 
         }
-        oTrans.setRowSelect(oTrans.getItemCount() - 1);
+//        oTrans.setRowSelect(oTrans.getItemCount() - 1);
         initDetailsGrid();
     }
 
